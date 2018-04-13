@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">倒计时</string>
+    <string name="title_activity_widget_list">倒计时</string>
+    <string name="deleted">已删除</string>
+    <string name="undo">撤回</string>
+    <string name="alert">注意</string>
+    <string name="msg_alert_dream">本应用支持屏幕保护功能。将会在屏幕保护中显示列表中第一项倒计时内容，您可以拖拽来重新排序。同时，你可以在屏幕保护中显示通知信息，但是需要相关权限。</string>
+    <string name="goto_open">前往开启</string>
+</resources>

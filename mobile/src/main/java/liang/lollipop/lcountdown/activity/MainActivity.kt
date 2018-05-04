@@ -13,6 +13,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import android.widget.TextView
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -32,7 +33,7 @@ import java.util.*
  * 小部件的参数设置Activity
  * @author Lollipop
  */
-class MainActivity : BaseActivity(), View.OnClickListener{
+class MainActivity : BaseActivity(), View.OnClickListener,CompoundButton.OnCheckedChangeListener{
 
     companion object {
 
@@ -73,6 +74,8 @@ class MainActivity : BaseActivity(), View.OnClickListener{
         if(isCreateModel){
             val bottomSheetBehavior = BottomSheetBehavior.from(sheetGroup)
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }else{
+            updateBtn.hide()
         }
 
         nameInputView.addTextChangedListener(object :TextWatcher{
@@ -113,7 +116,24 @@ class MainActivity : BaseActivity(), View.OnClickListener{
         style4Btn.setOnClickListener(this)
         style4Btn.background = style4BtnBG
 
+        val bottomSheetBehavior = BottomSheetBehavior.from(sheetGroup)
+        bottomSheetBehavior.setBottomSheetCallback(object :BottomSheetBehavior.BottomSheetCallback(){
 
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+                if(newState == BottomSheetBehavior.STATE_EXPANDED){
+                    updateBtn.show()
+                }else{
+                    updateBtn.hide()
+                }
+
+            }
+
+        })
+
+        noTimeCheckBox.setOnCheckedChangeListener(this)
 
     }
 
@@ -133,6 +153,8 @@ class MainActivity : BaseActivity(), View.OnClickListener{
         signInputView.setText(widgetBean.signValue)
 
         calendar.timeInMillis = widgetBean.endTime
+
+        noTimeCheckBox.isChecked = widgetBean.noTime
 
         onEndTimeChange()
 
@@ -203,6 +225,20 @@ class MainActivity : BaseActivity(), View.OnClickListener{
 
     }
 
+    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+
+        when(buttonView){
+
+            noTimeCheckBox -> {
+
+                timeView.visibility = if(isChecked){View.GONE}else{View.VISIBLE}
+
+            }
+
+        }
+
+    }
+
     override fun onHandler(message: Message) {
 
         when(message.what){
@@ -225,6 +261,7 @@ class MainActivity : BaseActivity(), View.OnClickListener{
         widgetBean.endTime = calendar.timeInMillis
         widgetBean.signValue = signInputView.text.toString()
         widgetBean.widgetStyle = widgetStyle
+        widgetBean.noTime = noTimeCheckBox.isChecked
 
         if(isCreateModel){
             WidgetDBUtil.write(this).add(widgetBean).close()

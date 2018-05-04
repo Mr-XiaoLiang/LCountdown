@@ -43,11 +43,11 @@ class CountdownWidget: AppWidgetProvider() {
 
     override fun onRestored(context: Context?, oldWidgetIds: IntArray?, newWidgetIds: IntArray?) {
         super.onRestored(context, oldWidgetIds, newWidgetIds)
-        if(context==null){
+        if(context==null || oldWidgetIds == null || newWidgetIds == null || oldWidgetIds.size != newWidgetIds.size){
             return
         }
-        for(index in 0..oldWidgetIds!!.size){
-            AppSettings.copyData(context,newWidgetIds!![index],oldWidgetIds[index])
+        for(index in 0 until oldWidgetIds.size){
+            AppSettings.copyData(context,newWidgetIds[index],oldWidgetIds[index])
         }
     }
 

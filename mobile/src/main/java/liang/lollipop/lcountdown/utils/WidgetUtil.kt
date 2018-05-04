@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import android.widget.RemoteViews
 import liang.lollipop.lcountdown.widget.CountdownWidget
 import liang.lollipop.lcountdown.activity.MainActivity
@@ -38,11 +39,19 @@ object WidgetUtil {
         views.setTextViewText(R.id.hourView,bean.hours)
         views.setTextViewText(R.id.timeView,bean.time)
         views.setTextViewText(R.id.signView,widgetBean.signValue)
+        views.setViewVisibility(R.id.timeView,if(widgetBean.noTime){ View.GONE }else{ View.VISIBLE })
 
+        //创建点击意图
         val intent = Intent(context, MainActivity::class.java)
+        //携带参数：小部件ID
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,widgetBean.widgetId)
+        //携带参数：是否是小部件显示模式
         intent.putExtra(CountdownWidget.WIDGET_SHOW,1)
+        //创建一个延时意图，意图目标为打开页面(getActivity)，
+        //getActivity(上下文,请求ID，意图内容，刷新模式)
+        //请求ID重复会导致延时意图被覆盖，刷新模式表示覆盖的方式
         val pendingIntent = PendingIntent.getActivity(context, widgetBean.widgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        //为小部件设置点击事件
         views.setOnClickPendingIntent(R.id.widgetGroup, pendingIntent)
 
         appWidgetManager.updateAppWidget(widgetBean.widgetId, views)

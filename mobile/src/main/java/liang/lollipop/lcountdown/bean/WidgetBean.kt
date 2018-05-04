@@ -14,6 +14,8 @@ class WidgetBean : BaseBean() {
 
     var widgetStyle = WidgetStyle.LIGHT
 
+    var noTime = false
+
     fun parseStyle(value: Int){
         widgetStyle = when(value){
 

@@ -2,17 +2,21 @@ package liang.lollipop.lcountdown.utils
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import liang.lollipop.lcountdown.bean.WidgetBean
 
+/**
+ * 小部件的数据库操作类
+ */
 class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(context,DB_NAME,null, VERSION)  {
 
     companion object {
 
         private const val DB_NAME = "WidgetDatabase"
-        private const val VERSION = 1
+        private const val VERSION = 2
 
         fun read(context: Context): SqlDB {
             return SqlDB(WidgetDBUtil(context), false)
@@ -22,6 +26,14 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             return SqlDB(WidgetDBUtil(context), true)
         }
 
+        fun Boolean.b2i(): Int{
+            return if(this){1}else{0}
+        }
+
+        fun Int.i2b(): Boolean{
+            return this > 0
+        }
+
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -29,6 +41,63 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+
+        when(oldVersion){
+
+            1 -> if(newVersion == 2){
+
+                val oldSql = " select " +
+                        " ${WidgetTable.ID} , " +
+                        " ${WidgetTable.END_TIME} , " +
+                        " ${WidgetTable.NAME} , " +
+                        " ${WidgetTable.STYLE} , " +
+                        " ${WidgetTable.SIGN_VALUE} , " +
+                        " ${WidgetTable.WIDGET_INDEX} " +
+                        " from ${WidgetTable.TABLE} ;"
+
+                val sql = db?:writableDatabase
+
+                val allData = ArrayList<WidgetBean>()
+                val c = sql.rawQuery(oldSql, null)
+                while (c.moveToNext()) {
+                    val bean = WidgetBean()
+                    bean.widgetId = c.getInt(c.getColumnIndex(WidgetTable.ID))
+                    bean.countdownName = c.getString(c.getColumnIndex(WidgetTable.NAME))
+                    bean.signValue = c.getString(c.getColumnIndex(WidgetTable.SIGN_VALUE))
+                    bean.endTime = c.getLong(c.getColumnIndex(WidgetTable.END_TIME))
+                    bean.index = c.getInt(c.getColumnIndex(WidgetTable.WIDGET_INDEX))
+                    bean.parseStyle(c.getInt(c.getColumnIndex(WidgetTable.STYLE)))
+                    allData.add(bean)
+                }
+                c.close()
+
+                sql.execSQL(WidgetTable.DROP_TABLE)
+                sql.execSQL(WidgetTable.CREATE_TABLE)
+
+                sql.beginTransaction()
+                try {
+                    val values = ContentValues()
+                    for (value in allData) {
+                        values.clear()
+                        values.put(WidgetTable.ID, value.widgetId)
+                        values.put(WidgetTable.NAME, value.countdownName)
+                        values.put(WidgetTable.END_TIME, value.endTime)
+                        values.put(WidgetTable.STYLE, value.widgetStyle.value)
+                        values.put(WidgetTable.SIGN_VALUE, value.signValue)
+                        values.put(WidgetTable.WIDGET_INDEX, value.index)
+                        values.put(WidgetTable.NO_TIME, value.noTime.b2i())
+                        sql.insert(WidgetTable.TABLE, "", values)
+                    }
+                    sql.setTransactionSuccessful()
+                } catch (e: Exception) {
+                    Log.e("addAll", e.message)
+                } finally {
+                    sql.endTransaction()
+                }
+
+                }
+
+        }
 
     }
 
@@ -42,13 +111,16 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
         const val SIGN_VALUE = "SIGN_VALUE"
         const val WIDGET_INDEX = "WIDGET_INDEX"
 
+        const val NO_TIME = "NO_TIME"
+
         const val SELECT_ALL_SQL = " select " +
                 " $ID , " +
                 " $END_TIME , " +
                 " $NAME , " +
                 " $STYLE , " +
                 " $SIGN_VALUE , " +
-                " $WIDGET_INDEX " +
+                " $WIDGET_INDEX , " +
+                " $NO_TIME " +
                 " from $TABLE order by $WIDGET_INDEX ;"
 
         const val SELECT_ONE_SQL = " select " +
@@ -57,7 +129,8 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
                 " $NAME , " +
                 " $STYLE , " +
                 " $SIGN_VALUE , " +
-                " $WIDGET_INDEX " +
+                " $WIDGET_INDEX , " +
+                " $NO_TIME " +
                 " from $TABLE WHERE $ID = ? ;"
 
         const val CREATE_TABLE = "create table $TABLE ( " +
@@ -66,9 +139,11 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
                 " $END_TIME INTEGER , " +
                 " $STYLE INTEGER , " +
                 " $SIGN_VALUE VARCHAR , " +
-                " $WIDGET_INDEX INTEGER " +
+                " $WIDGET_INDEX INTEGER , " +
+                " $NO_TIME INTEGER " +
                 " );"
 
+        const val DROP_TABLE = " DROP TABLE $TABLE "
     }
 
     class SqlDB constructor(private var wordDatabaseHelper: WidgetDBUtil?, isWritable: Boolean) {
@@ -88,12 +163,7 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             val c = sql.rawQuery(WidgetTable.SELECT_ALL_SQL, null)
             while (c.moveToNext()) {
                 val bean = WidgetBean()
-                bean.widgetId = c.getInt(c.getColumnIndex(WidgetTable.ID))
-                bean.countdownName = c.getString(c.getColumnIndex(WidgetTable.NAME))
-                bean.signValue = c.getString(c.getColumnIndex(WidgetTable.SIGN_VALUE))
-                bean.endTime = c.getLong(c.getColumnIndex(WidgetTable.END_TIME))
-                bean.index = c.getInt(c.getColumnIndex(WidgetTable.WIDGET_INDEX))
-                bean.parseStyle(c.getInt(c.getColumnIndex(WidgetTable.STYLE)))
+                bean.putData(c)
                 list.add(bean)
             }
             c.close()
@@ -118,12 +188,7 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             val sql = getSqLiteDatabase()
             val c = sql.rawQuery(WidgetTable.SELECT_ONE_SQL, arrayOf("${bean.widgetId}"))
             if (c.moveToNext()) {
-                bean.widgetId = c.getInt(c.getColumnIndex(WidgetTable.ID))
-                bean.countdownName = c.getString(c.getColumnIndex(WidgetTable.NAME))
-                bean.endTime = c.getLong(c.getColumnIndex(WidgetTable.END_TIME))
-                bean.signValue = c.getString(c.getColumnIndex(WidgetTable.SIGN_VALUE))
-                bean.index = c.getInt(c.getColumnIndex(WidgetTable.WIDGET_INDEX))
-                bean.parseStyle(c.getInt(c.getColumnIndex(WidgetTable.STYLE)))
+                bean.putData(c)
             }
             c.close()
 
@@ -143,13 +208,7 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
         fun add(bean: WidgetBean): SqlDB{
             val sql = getSqLiteDatabase()
             val values = ContentValues()
-            values.clear()
-            values.put(WidgetTable.ID, bean.widgetId)
-            values.put(WidgetTable.NAME, bean.countdownName)
-            values.put(WidgetTable.END_TIME, bean.endTime)
-            values.put(WidgetTable.STYLE, bean.widgetStyle.value)
-            values.put(WidgetTable.SIGN_VALUE, bean.signValue)
-            values.put(WidgetTable.WIDGET_INDEX, bean.index)
+            values.putData(bean)
             sql.insert(WidgetTable.TABLE, "", values)
             return this
         }
@@ -182,13 +241,7 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
         fun update(widgetBean: WidgetBean): SqlDB{
             val sql = getSqLiteDatabase()
             val values = ContentValues()
-            values.clear()
-            values.put(WidgetTable.ID, widgetBean.widgetId)
-            values.put(WidgetTable.NAME, widgetBean.countdownName)
-            values.put(WidgetTable.END_TIME, widgetBean.endTime)
-            values.put(WidgetTable.STYLE, widgetBean.widgetStyle.value)
-            values.put(WidgetTable.SIGN_VALUE, widgetBean.signValue)
-            values.put(WidgetTable.WIDGET_INDEX, widgetBean.index)
+            values.putData(widgetBean)
             sql.update(WidgetTable.TABLE, values, " ${WidgetTable.ID} = ? ", arrayOf("${widgetBean.widgetId}"))
             return this
         }
@@ -199,13 +252,7 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             sql.beginTransaction()
             try {
                 for(widgetBean in list){
-                    values.clear()
-                    values.put(WidgetTable.ID, widgetBean.widgetId)
-                    values.put(WidgetTable.NAME, widgetBean.countdownName)
-                    values.put(WidgetTable.END_TIME, widgetBean.endTime)
-                    values.put(WidgetTable.STYLE, widgetBean.widgetStyle.value)
-                    values.put(WidgetTable.SIGN_VALUE, widgetBean.signValue)
-                    values.put(WidgetTable.WIDGET_INDEX, widgetBean.index)
+                    values.putData(widgetBean)
                     sql.update(WidgetTable.TABLE, values, " ${WidgetTable.ID} = ? ", arrayOf("${widgetBean.widgetId}"))
                 }
                 sql.setTransactionSuccessful()
@@ -232,6 +279,29 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             return sqLiteDatabase!!
         }
 
+        private fun ContentValues.putData(widgetBean: WidgetBean){
+            clear()
+            put(WidgetTable.ID, widgetBean.widgetId)
+            put(WidgetTable.NAME, widgetBean.countdownName)
+            put(WidgetTable.END_TIME, widgetBean.endTime)
+            put(WidgetTable.STYLE, widgetBean.widgetStyle.value)
+            put(WidgetTable.SIGN_VALUE, widgetBean.signValue)
+            put(WidgetTable.WIDGET_INDEX, widgetBean.index)
+            put(WidgetTable.NO_TIME, widgetBean.noTime.b2i())
+        }
+
+        private fun WidgetBean.putData(c: Cursor){
+            widgetId = c.getInt(c.getColumnIndex(WidgetTable.ID))
+            countdownName = c.getString(c.getColumnIndex(WidgetTable.NAME))
+            endTime = c.getLong(c.getColumnIndex(WidgetTable.END_TIME))
+            signValue = c.getString(c.getColumnIndex(WidgetTable.SIGN_VALUE))
+            index = c.getInt(c.getColumnIndex(WidgetTable.WIDGET_INDEX))
+            noTime = c.getInt(c.getColumnIndex(WidgetTable.NO_TIME)).i2b()
+            parseStyle(c.getInt(c.getColumnIndex(WidgetTable.STYLE)))
+        }
+
     }
+
+
 
 }

@@ -1,10 +1,39 @@
 <resources>
-    <string name="app_name">倒计时</string>
-    <string name="title_activity_widget_list">倒计时</string>
-    <string name="deleted">已删除</string>
-    <string name="undo">撤回</string>
-    <string name="alert">注意</string>
-    <string name="msg_alert_dream">本应用支持屏幕保护功能。将会在屏幕保护中显示列表中第一项倒计时内容，您可以拖拽来重新排序。同时，你可以在屏幕保护中显示通知信息，但是需要相关权限。</string>
-    <string name="goto_open">前往开启</string>
-    <string name="no_time">不显示时间</string>
+    <string name="app_name">LCountdown</string>
+        
+    <string name="title_activity_widget_list">LCountdown </string>
+        
+    <string name="deleted">deleted</string>
+        
+    <string name="undo">withdraw</string>
+        
+    <string name="alert">Note</string>
+        
+    <string name="msg_alert_dream">This application supports screen saver. The first countdown in the list will be displayed in the screen saver, and you can drag and drop to reorder. At the same time, you can display notification information in the screen saver, but you need relevant permissions.</string>
+        
+    <string name="goto_open">to open</string>
+        
+    <string name="no_time">does not show time</string>
+        
+    <string name="aims_name">target name</string>
+        
+    <string name="sign">signature</string>
+        
+    <string name="end_time">target time</string>
+        
+    <string name="prefix">prefix</string>
+        
+    <string name="left_until">Distance</string>
+        
+    <string name="suffix">suffix</string>
+        
+    <string name="the_end">still</string>
+        
+    <string name="day_unit">Day</string>
+        
+    <string name="day">Day</string>
+        
+    <string name="hour_unit">Hour</string>
+        
+    <string name="hour">Hour</string>
 </resources>

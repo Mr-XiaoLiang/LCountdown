@@ -135,6 +135,50 @@ class MainActivity : BaseActivity(), View.OnClickListener,CompoundButton.OnCheck
 
         noTimeCheckBox.setOnCheckedChangeListener(this)
 
+        prefixNameInputView.addTextChangedListener(object :TextWatcher{
+            override fun afterTextChanged(s: Editable?) {}
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                nameFrontView.text = s?:""
+            }
+
+        })
+
+        suffixNameInputView.addTextChangedListener(object :TextWatcher{
+            override fun afterTextChanged(s: Editable?) {}
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                nameBehindView.text = s?:""
+            }
+
+        })
+
+        dayUnitInputView.addTextChangedListener(object :TextWatcher{
+            override fun afterTextChanged(s: Editable?) {}
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                dayUnitView.text = s?:""
+            }
+
+        })
+
+        hourUnitInputView.addTextChangedListener(object :TextWatcher{
+            override fun afterTextChanged(s: Editable?) {}
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                hourUnitView.text = s?:""
+            }
+
+        })
+
     }
 
     private fun initData(){
@@ -143,6 +187,10 @@ class MainActivity : BaseActivity(), View.OnClickListener,CompoundButton.OnCheck
             widgetBean.countdownName = getString(R.string.app_name)
             widgetBean.widgetStyle = WidgetStyle.LIGHT
             widgetBean.signValue = ""
+            widgetBean.prefixName = getString(R.string.left_until)
+            widgetBean.suffixName = getString(R.string.the_end)
+            widgetBean.dayUnit = getString(R.string.day)
+            widgetBean.hourUnit = getString(R.string.hour)
         }else{
             WidgetDBUtil.read(this).get(widgetBean).close()
         }
@@ -151,6 +199,10 @@ class MainActivity : BaseActivity(), View.OnClickListener,CompoundButton.OnCheck
 
         nameInputView.setText(widgetBean.countdownName)
         signInputView.setText(widgetBean.signValue)
+        prefixNameInputView.setText(widgetBean.prefixName)
+        suffixNameInputView.setText(widgetBean.suffixName)
+        dayUnitInputView.setText(widgetBean.dayUnit)
+        hourUnitInputView.setText(widgetBean.hourUnit)
 
         calendar.timeInMillis = widgetBean.endTime
 
@@ -262,6 +314,10 @@ class MainActivity : BaseActivity(), View.OnClickListener,CompoundButton.OnCheck
         widgetBean.signValue = signInputView.text.toString()
         widgetBean.widgetStyle = widgetStyle
         widgetBean.noTime = noTimeCheckBox.isChecked
+        widgetBean.prefixName = prefixNameInputView.text.toString()
+        widgetBean.suffixName = suffixNameInputView.text.toString()
+        widgetBean.dayUnit = dayUnitInputView.text.toString()
+        widgetBean.hourUnit = hourUnitInputView.text.toString()
 
         if(isCreateModel){
             WidgetDBUtil.write(this).add(widgetBean).close()
@@ -290,7 +346,7 @@ class MainActivity : BaseActivity(), View.OnClickListener,CompoundButton.OnCheck
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
 
-        dateSelectView.text = "${year.formatNumber()}年${month.formatNumber()}月${day.formatNumber()}日"
+        dateSelectView.text = "${year.formatNumber()}-${month.formatNumber()}-${day.formatNumber()}"
         timeSelectView.text = "${hour.formatNumber()} : ${minute.formatNumber()}"
 
         countdown(calendar.timeInMillis)

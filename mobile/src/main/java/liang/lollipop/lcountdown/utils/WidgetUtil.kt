@@ -40,6 +40,10 @@ object WidgetUtil {
         views.setTextViewText(R.id.timeView,bean.time)
         views.setTextViewText(R.id.signView,widgetBean.signValue)
         views.setViewVisibility(R.id.timeView,if(widgetBean.noTime){ View.GONE }else{ View.VISIBLE })
+        views.setTextViewText(R.id.nameFrontView,widgetBean.prefixName)
+        views.setTextViewText(R.id.nameBehindView,widgetBean.suffixName)
+        views.setTextViewText(R.id.dayUnitView,widgetBean.dayUnit)
+        views.setTextViewText(R.id.hourUnitView,widgetBean.hourUnit)
 
         //创建点击意图
         val intent = Intent(context, MainActivity::class.java)

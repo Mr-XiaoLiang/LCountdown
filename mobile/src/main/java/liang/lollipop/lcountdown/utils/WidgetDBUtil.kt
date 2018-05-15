@@ -16,7 +16,7 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
     companion object {
 
         private const val DB_NAME = "WidgetDatabase"
-        private const val VERSION = 2
+        private const val VERSION = 3
 
         fun read(context: Context): SqlDB {
             return SqlDB(WidgetDBUtil(context), false)
@@ -44,58 +44,29 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
 
         when(oldVersion){
 
-            1 -> if(newVersion == 2){
+            1 -> when(newVersion){
 
-                val oldSql = " select " +
-                        " ${WidgetTable.ID} , " +
-                        " ${WidgetTable.END_TIME} , " +
-                        " ${WidgetTable.NAME} , " +
-                        " ${WidgetTable.STYLE} , " +
-                        " ${WidgetTable.SIGN_VALUE} , " +
-                        " ${WidgetTable.WIDGET_INDEX} " +
-                        " from ${WidgetTable.TABLE} ;"
-
-                val sql = db?:writableDatabase
-
-                val allData = ArrayList<WidgetBean>()
-                val c = sql.rawQuery(oldSql, null)
-                while (c.moveToNext()) {
-                    val bean = WidgetBean()
-                    bean.widgetId = c.getInt(c.getColumnIndex(WidgetTable.ID))
-                    bean.countdownName = c.getString(c.getColumnIndex(WidgetTable.NAME))
-                    bean.signValue = c.getString(c.getColumnIndex(WidgetTable.SIGN_VALUE))
-                    bean.endTime = c.getLong(c.getColumnIndex(WidgetTable.END_TIME))
-                    bean.index = c.getInt(c.getColumnIndex(WidgetTable.WIDGET_INDEX))
-                    bean.parseStyle(c.getInt(c.getColumnIndex(WidgetTable.STYLE)))
-                    allData.add(bean)
-                }
-                c.close()
-
-                sql.execSQL(WidgetTable.DROP_TABLE)
-                sql.execSQL(WidgetTable.CREATE_TABLE)
-
-                sql.beginTransaction()
-                try {
-                    val values = ContentValues()
-                    for (value in allData) {
-                        values.clear()
-                        values.put(WidgetTable.ID, value.widgetId)
-                        values.put(WidgetTable.NAME, value.countdownName)
-                        values.put(WidgetTable.END_TIME, value.endTime)
-                        values.put(WidgetTable.STYLE, value.widgetStyle.value)
-                        values.put(WidgetTable.SIGN_VALUE, value.signValue)
-                        values.put(WidgetTable.WIDGET_INDEX, value.index)
-                        values.put(WidgetTable.NO_TIME, value.noTime.b2i())
-                        sql.insert(WidgetTable.TABLE, "", values)
-                    }
-                    sql.setTransactionSuccessful()
-                } catch (e: Exception) {
-                    Log.e("addAll", e.message)
-                } finally {
-                    sql.endTransaction()
+                2 -> {
+                    val sql = "ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.NO_TIME} INTEGER DEFAULT 0"
+                    db?.execSQL(sql)
                 }
 
+                3 -> {
+                    db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.NO_TIME} INTEGER DEFAULT 0")
+                    db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.PREFIX_NAME} VARCHAR DEFAULT ''")
+                    db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.SUFFIX_NAME} VARCHAR DEFAULT ''")
+                    db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.DAY_UNIT} VARCHAR DEFAULT ''")
+                    db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.HOUR_UNIT} VARCHAR DEFAULT ''")
                 }
+
+            }
+
+            2 -> if(newVersion == 3){
+                db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.PREFIX_NAME} VARCHAR DEFAULT ''")
+                db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.SUFFIX_NAME} VARCHAR DEFAULT ''")
+                db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.DAY_UNIT} VARCHAR DEFAULT ''")
+                db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.HOUR_UNIT} VARCHAR DEFAULT ''")
+            }
 
         }
 
@@ -113,6 +84,11 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
 
         const val NO_TIME = "NO_TIME"
 
+        const val PREFIX_NAME = "PREFIX_NAME"
+        const val SUFFIX_NAME = "SUFFIX_NAME"
+        const val DAY_UNIT = "DAY_UNIT"
+        const val HOUR_UNIT = "HOUR_UNIT"
+
         const val SELECT_ALL_SQL = " select " +
                 " $ID , " +
                 " $END_TIME , " +
@@ -120,7 +96,11 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
                 " $STYLE , " +
                 " $SIGN_VALUE , " +
                 " $WIDGET_INDEX , " +
-                " $NO_TIME " +
+                " $NO_TIME , " +
+                " $PREFIX_NAME , " +
+                " $SUFFIX_NAME , " +
+                " $DAY_UNIT , " +
+                " $HOUR_UNIT " +
                 " from $TABLE order by $WIDGET_INDEX ;"
 
         const val SELECT_ONE_SQL = " select " +
@@ -130,7 +110,11 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
                 " $STYLE , " +
                 " $SIGN_VALUE , " +
                 " $WIDGET_INDEX , " +
-                " $NO_TIME " +
+                " $NO_TIME , " +
+                " $PREFIX_NAME , " +
+                " $SUFFIX_NAME , " +
+                " $DAY_UNIT , " +
+                " $HOUR_UNIT " +
                 " from $TABLE WHERE $ID = ? ;"
 
         const val CREATE_TABLE = "create table $TABLE ( " +
@@ -140,7 +124,11 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
                 " $STYLE INTEGER , " +
                 " $SIGN_VALUE VARCHAR , " +
                 " $WIDGET_INDEX INTEGER , " +
-                " $NO_TIME INTEGER " +
+                " $NO_TIME INTEGER , " +
+                " $PREFIX_NAME VARCHAR , " +
+                " $SUFFIX_NAME VARCHAR , " +
+                " $DAY_UNIT VARCHAR , " +
+                " $HOUR_UNIT VARCHAR " +
                 " );"
 
         const val DROP_TABLE = " DROP TABLE $TABLE "
@@ -288,16 +276,24 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             put(WidgetTable.SIGN_VALUE, widgetBean.signValue)
             put(WidgetTable.WIDGET_INDEX, widgetBean.index)
             put(WidgetTable.NO_TIME, widgetBean.noTime.b2i())
+            put(WidgetTable.PREFIX_NAME,widgetBean.prefixName)
+            put(WidgetTable.SUFFIX_NAME,widgetBean.suffixName)
+            put(WidgetTable.DAY_UNIT,widgetBean.dayUnit)
+            put(WidgetTable.HOUR_UNIT,widgetBean.hourUnit)
         }
 
         private fun WidgetBean.putData(c: Cursor){
             widgetId = c.getInt(c.getColumnIndex(WidgetTable.ID))
-            countdownName = c.getString(c.getColumnIndex(WidgetTable.NAME))
+            countdownName = c.getString(c.getColumnIndex(WidgetTable.NAME))?:""
             endTime = c.getLong(c.getColumnIndex(WidgetTable.END_TIME))
-            signValue = c.getString(c.getColumnIndex(WidgetTable.SIGN_VALUE))
+            signValue = c.getString(c.getColumnIndex(WidgetTable.SIGN_VALUE))?:""
             index = c.getInt(c.getColumnIndex(WidgetTable.WIDGET_INDEX))
             noTime = c.getInt(c.getColumnIndex(WidgetTable.NO_TIME)).i2b()
             parseStyle(c.getInt(c.getColumnIndex(WidgetTable.STYLE)))
+            prefixName = c.getString(c.getColumnIndex(WidgetTable.PREFIX_NAME))?:""
+            suffixName = c.getString(c.getColumnIndex(WidgetTable.SUFFIX_NAME))?:""
+            dayUnit = c.getString(c.getColumnIndex(WidgetTable.DAY_UNIT))?:""
+            hourUnit = c.getString(c.getColumnIndex(WidgetTable.HOUR_UNIT))?:""
         }
 
     }

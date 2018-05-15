@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content">
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/nameInputView"
-                    android:hint="目标名"
+                    android:hint="@string/aims_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </android.support.design.widget.TextInputLayout>
@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content">
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/signInputView"
-                    android:hint="签名"
+                    android:hint="@string/sign"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </android.support.design.widget.TextInputLayout>
@@ -77,7 +77,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
-                    android:text="目标时间" />
+                    android:text="@string/end_time" />
                 <Space
                     android:layout_width="10px"
                     android:layout_height="wrap_content"/>
@@ -100,7 +100,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:textColor="#333"
-                    android:text="2018年04月23日"
+                    android:text="2018-04-23"
                     android:layout_marginBottom="10dp"
                     android:background="?attr/selectableItemBackgroundBorderless"/>
 
@@ -175,6 +175,63 @@
                 </LinearLayout>
 
             </HorizontalScrollView>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/prefixNameInputGroup"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/prefixNameInputView"
+                    android:hint="@string/prefix"
+                    android:text="@string/left_until"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/suffixNameInputGroup"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/suffixNameInputView"
+                    android:hint="@string/suffix"
+                    android:text="@string/the_end"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/dayUnitInputGroup"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/dayUnitInputView"
+                    android:hint="@string/day_unit"
+                    android:text="@string/day"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:visibility="gone"
+                android:id="@+id/hourUnitInputGroup"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/hourUnitInputView"
+                    android:hint="@string/hour_unit"
+                    android:text="@string/hour"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
 

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">倒计时</string>
+    <string name="title_activity_widget_list">倒计时</string>
+    <string name="deleted">已删除</string>
+    <string name="undo">撤回</string>
+    <string name="alert">注意</string>
+    <string name="msg_alert_dream">本应用支持屏幕保护功能。将会在屏幕保护中显示列表中第一项倒计时内容，您可以拖拽来重新排序。同时，你可以在屏幕保护中显示通知信息，但是需要相关权限。</string>
+    <string name="goto_open">前往开启</string>
+    <string name="no_time">不显示时间</string>
+    <string name="aims_name">目标名</string>
+    <string name="sign">签名</string>
+    <string name="end_time">目标时间</string>
+    <string name="prefix">前缀</string>
+    <string name="left_until">距离</string>
+    <string name="suffix">后缀</string>
+    <string name="the_end">还剩</string>
+    <string name="day_unit">天</string>
+    <string name="day">天</string>
+    <string name="hour_unit">小时</string>
+    <string name="hour">小时</string>
+</resources>

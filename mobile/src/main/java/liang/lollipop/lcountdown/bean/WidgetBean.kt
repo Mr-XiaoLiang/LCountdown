@@ -2,19 +2,65 @@ package liang.lollipop.lcountdown.bean
 
 import liang.lollipop.lbaselib.base.BaseBean
 
+/**
+ * 小部件的Bean
+ * @author Lollipop
+ */
 class WidgetBean : BaseBean() {
 
+    /**
+     * 序号
+     */
     var index = Integer.MAX_VALUE
 
+    /**
+     * 小部件的ID
+     */
     var widgetId = 0
+    /**
+     * 小部件名称
+     */
     var countdownName = ""
+
+    /**
+     * 倒计时结束时间
+     */
     var endTime = 0L
 
+    /**
+     * 签名内容
+     */
     var signValue = ""
 
+    /**
+     * 小部件样式
+     */
     var widgetStyle = WidgetStyle.LIGHT
 
+    /**
+     * 是否不显示时间
+     */
     var noTime = false
+
+    /**
+     * 前缀名
+     */
+    var prefixName = ""
+
+    /**
+     * 后缀名
+     */
+    var suffixName = ""
+
+    /**
+     * 天的单位
+     */
+    var dayUnit = ""
+
+    /**
+     * 小时的单位
+     */
+    var hourUnit = ""
 
     fun parseStyle(value: Int){
         widgetStyle = when(value){

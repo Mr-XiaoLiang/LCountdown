@@ -35,6 +35,28 @@ object CountdownUtil {
         return bean
     }
 
+    fun timer(startTime: Long): CountdownBean{
+        val now = System.currentTimeMillis()
+        val leftTime =  now - startTime
+        val days = leftTime / ONE_DAY
+        val hours = leftTime % ONE_DAY / ONE_HOUR
+        val minutes = leftTime % ONE_HOUR / ONE_MINUTE
+        val seconds = leftTime % ONE_MINUTE / ONE_SECOND
+
+        val bean = CountdownBean()
+        bean.dayInt = days.toInt()
+        bean.hourInt = hours.toInt()
+        bean.minuteInt = minutes.toInt()
+        bean.secondInt = seconds.toInt()
+        bean.days = days.formatNumber()
+        bean.hours = hours.formatNumber()
+        bean.minutes = minutes.formatNumber()
+        bean.seconds = seconds.formatNumber()
+        bean.time = "${hours.formatNumber()} : ${minutes.formatNumber()}"
+
+        return bean
+    }
+
     private fun Long.formatNumber(): String{
         return when {
             this > 9 -> ""+this

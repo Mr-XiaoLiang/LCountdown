@@ -67,6 +67,8 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
 
     private val handler = SimpleHandler(this)
 
+    private var isTimer = false
+
     companion object {
 
         private const val LOCATION_UPDATE_INTERVAL = 5
@@ -139,7 +141,12 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
         val widgetList = ArrayList<WidgetBean>()
         WidgetDBUtil.read(this).getAll(widgetList).close()
         if(widgetList.isNotEmpty()){
+            isTimer = false
             widgetBean.copy(widgetList[0])
+        }else{
+            isTimer = true
+            widgetBean.endTime = System.currentTimeMillis()
+            widgetBean.countdownName = ""
         }
     }
 
@@ -319,8 +326,8 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
 
     private fun updateCountdown(){
 
-        val countdownBean = CountdownUtil.countdown(widgetBean.endTime)
         val value = StringBuilder()
+        val countdownBean = if(isTimer){CountdownUtil.timer(widgetBean.endTime)}else{CountdownUtil.countdown(widgetBean.endTime)}
         value.append(countdownBean.days)
         value.append(".")
         value.append(countdownBean.hours)
@@ -328,6 +335,7 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
         value.append(countdownBean.minutes)
         value.append(".")
         value.append(countdownBean.seconds)
+
         countdownView.text = value.toString()
 //        countdownView.text = "${countdownBean.days}.${countdownBean.hours}.${countdownBean.minutes}.${countdownBean.seconds}"
         nameView.text = widgetBean.countdownName

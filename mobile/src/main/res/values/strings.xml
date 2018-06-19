@@ -1,39 +1,28 @@
 <resources>
     <string name="app_name">LCountdown</string>
-        
     <string name="title_activity_widget_list">LCountdown </string>
-        
     <string name="deleted">deleted</string>
-        
     <string name="undo">withdraw</string>
-        
     <string name="alert">Note</string>
-        
     <string name="msg_alert_dream">This application supports screen saver. The first countdown in the list will be displayed in the screen saver, and you can drag and drop to reorder. At the same time, you can display notification information in the screen saver, but you need relevant permissions.</string>
-        
     <string name="goto_open">to open</string>
-        
     <string name="no_time">does not show time</string>
-        
     <string name="aims_name">target name</string>
-        
     <string name="sign">signature</string>
-        
     <string name="end_time">target time</string>
-        
     <string name="prefix">prefix</string>
-        
     <string name="left_until">Distance</string>
-        
     <string name="suffix">suffix</string>
-        
     <string name="the_end">still</string>
-        
     <string name="day_unit">Day</string>
-        
     <string name="day">Day</string>
-        
     <string name="hour_unit">Hour</string>
-        
     <string name="hour">Hour</string>
+    <string name="hint_timing">The time has started. You can choose to set the name of this time</string>
+    <string name="timing_name">Timing name</string>
+    <string name="quiet">Quiet</string>
+    <string name="remind">Floating reminder</string>
+    <string name="title_activity_timing_list">历史计时</string>
+    <string name="now">Now</string>
+    <string name="stop_timing">停止计时</string>
 </resources>

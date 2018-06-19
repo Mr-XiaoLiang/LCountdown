@@ -17,4 +17,16 @@ class CountdownBean {
     var minuteInt = 0
     var secondInt = 0
 
+    fun getTimerValue(): String{
+        val value = StringBuilder()
+        value.append(days)
+        value.append(".")
+        value.append(hours)
+        value.append(".")
+        value.append(minutes)
+        value.append(".")
+        value.append(seconds)
+        return value.toString()
+    }
+
 }

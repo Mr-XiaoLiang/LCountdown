@@ -36,14 +36,20 @@ object CountdownUtil {
     }
 
     fun timer(startTime: Long): CountdownBean{
-        val now = System.currentTimeMillis()
-        val leftTime =  now - startTime
+        return timer(startTime,System.currentTimeMillis())
+    }
+
+    fun timer(startTime: Long,endTime: Long): CountdownBean{
+        return timer(CountdownBean(),startTime, endTime)
+    }
+
+    fun timer(bean: CountdownBean,startTime: Long,endTime: Long): CountdownBean{
+        val leftTime =  endTime - startTime
         val days = leftTime / ONE_DAY
         val hours = leftTime % ONE_DAY / ONE_HOUR
         val minutes = leftTime % ONE_HOUR / ONE_MINUTE
         val seconds = leftTime % ONE_MINUTE / ONE_SECOND
 
-        val bean = CountdownBean()
         bean.dayInt = days.toInt()
         bean.hourInt = hours.toInt()
         bean.minuteInt = minutes.toInt()

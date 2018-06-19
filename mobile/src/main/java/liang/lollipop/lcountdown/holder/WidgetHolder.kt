@@ -42,10 +42,10 @@ class WidgetHolder private constructor(itemView: View): BaseHolder<WidgetBean>(i
 
     }
 
-    private val nameView: TextView = itemView.findViewById(R.id.nameView)
-    private val dayView: TextView = itemView.findViewById(R.id.dayView)
-    private val timeView: TextView = itemView.findViewById(R.id.timeView)
-    private val signView: TextView = itemView.findViewById(R.id.signView)
+    private val nameView: TextView = find(R.id.nameView)
+    private val dayView: TextView = find(R.id.dayView)
+    private val timeView: TextView = find(R.id.timeView)
+    private val signView: TextView = find(R.id.signView)
 
     init {
 

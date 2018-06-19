@@ -47,4 +47,8 @@ abstract class BaseHolder<in T:BaseBean>(itemView: View): RecyclerView.ViewHolde
         this.glide = requestManager
     }
 
+    protected fun <T: View> find(id: Int): T{
+        return itemView.findViewById(id)
+    }
+
 }

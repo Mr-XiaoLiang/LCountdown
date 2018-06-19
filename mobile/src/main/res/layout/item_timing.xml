@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:minHeight="80dp"
+    android:elevation="2dp">
+
+    <TextView
+        android:id="@+id/titleIconView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="100dp" />
+
+    <TextView
+        android:id="@+id/timingTitleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="我的第一个计时"
+        android:textColor="#555"
+        android:textSize="16sp"
+        android:visibility="visible"
+        app:layout_constraintLeft_toRightOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginTop="5dp" />
+
+    <TextView
+        android:id="@+id/timeLengthView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="12:34:23.123"
+        android:textColor="#333"
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="@id/timingTitleView"
+        app:layout_constraintTop_toBottomOf="@id/timingTitleView" />
+
+    <ImageView
+        android:id="@+id/startTimeIcon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:src="@drawable/ic_timer_black_24dp"
+        android:tint="#42beb1"
+        app:layout_constraintBottom_toBottomOf="@id/startTimeView"
+        app:layout_constraintLeft_toLeftOf="@id/timingTitleView"
+        app:layout_constraintTop_toTopOf="@id/startTimeView" />
+
+    <TextView
+        android:id="@+id/startTimeView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:text="2018-06-15 12:34:23.123"
+        android:textColor="#666"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toRightOf="@id/startTimeIcon"
+        app:layout_constraintTop_toBottomOf="@id/timeLengthView" />
+
+    <ImageView
+        android:id="@+id/endTimeIcon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:src="@drawable/ic_timer_off_black_24dp"
+        android:tint="#8042be"
+        app:layout_constraintBottom_toBottomOf="@id/endTimeView"
+        app:layout_constraintLeft_toLeftOf="@id/timingTitleView"
+        app:layout_constraintTop_toTopOf="@id/endTimeView" />
+
+    <TextView
+        android:id="@+id/endTimeView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:text="2018-06-15 12:34:23.123"
+        android:textColor="#666"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/endTimeIcon"
+        app:layout_constraintTop_toBottomOf="@id/startTimeView" />
+
+    <Button
+        android:id="@+id/stopBtn"
+        style="@style/Widget.AppCompat.Light.ActionButton.Overflow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp"
+        android:text="@string/stop_timing"
+        android:textColor="#29a0b7"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <ImageView
+        android:id="@+id/headColorView"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:minHeight="100dp"
+        android:src="#0F00"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+</android.support.constraint.ConstraintLayout>

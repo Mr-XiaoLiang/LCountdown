@@ -24,5 +24,6 @@
     <string name="remind">Floating reminder</string>
     <string name="title_activity_timing_list">历史计时</string>
     <string name="now">Now</string>
-    <string name="stop_timing">停止计时</string>
+    <string name="stop_timing">Stop timing</string>
+    <string name="quick_timing">Quick timing</string>
 </resources>

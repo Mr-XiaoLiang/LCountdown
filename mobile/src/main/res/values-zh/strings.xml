@@ -25,4 +25,5 @@
     <string name="remind">悬浮提醒</string>
     <string name="now">现在</string>
     <string name="stop_timing">停止计时</string>
+    <string name="quick_timing">快速计时</string>
 </resources>

@@ -15,6 +15,7 @@ import liang.lollipop.lcountdown.bean.CountdownBean
 import liang.lollipop.lcountdown.bean.TimingBean
 import liang.lollipop.lcountdown.drawable.LinearGradientDrawable
 import liang.lollipop.lcountdown.utils.CountdownUtil
+import org.jetbrains.anko.textColor
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -38,7 +39,7 @@ class TimingHolder(itemView: View): BaseHolder<TimingBean>(itemView) {
     private val headColorDrawable = LinearGradientDrawable()
 
     //停止按钮
-    private val stopBtn: Button = find(R.id.stopBtn)
+    val stopBtn: Button = find(R.id.stopBtn)
 
     private var lastBean: TimingBean? = null
 
@@ -96,9 +97,11 @@ class TimingHolder(itemView: View): BaseHolder<TimingBean>(itemView) {
             if(TextUtils.isEmpty(it)){
                 ""
             }else{
-                it.substring(0,1)
+                it.substring(0,1).toUpperCase()
             }
         }
+        titleIconView.textColor = bean.invertedColor
+
         timingTitleView.text = bean.name
         timingTitleView.visibility = if(TextUtils.isEmpty(bean.name)){View.GONE}else{View.VISIBLE}
 

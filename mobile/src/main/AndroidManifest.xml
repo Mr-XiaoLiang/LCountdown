@@ -40,6 +40,26 @@
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
 
+        <receiver android:name=".widget.QuickTimingWidget"
+            android:label="@string/quick_timing">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/quick_timing_widget_provider_info" />
+        </receiver>
+
+        <receiver android:name=".widget.TimingListWidget"
+            android:label="@string/title_activity_timing_list">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/timing_list_widget_provider_info" />
+        </receiver>
+
         <service
             android:name=".service.CountdownService"
             android:enabled="true"
@@ -89,16 +109,19 @@
 
         <activity
             android:name=".activity.QuickTimingActivity"
-            android:theme="@style/AppTheme.Transparent">
-
+            android:theme="@style/AppTheme.Transparent"
+            android:launchMode="singleInstance">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activity.TimingListActivity"
             android:label="@string/title_activity_timing_list"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleInstance">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

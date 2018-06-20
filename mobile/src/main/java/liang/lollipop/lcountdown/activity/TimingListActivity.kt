@@ -3,9 +3,11 @@ package liang.lollipop.lcountdown.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.BaseTransientBottomBar
 import android.support.design.widget.Snackbar
 import android.support.v4.util.Pair
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.View
 import kotlinx.android.synthetic.main.activity_timing_list.*
 import kotlinx.android.synthetic.main.content_timing_list.*
@@ -13,9 +15,11 @@ import liang.lollipop.lbaselib.base.BaseActivity
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.adapter.TimingListAdapter
 import liang.lollipop.lcountdown.bean.TimingBean
+import liang.lollipop.lcountdown.holder.TimingHolder
 import liang.lollipop.lcountdown.utils.TimingUtil
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+
 
 /**
  * 计时列表的Activity
@@ -70,7 +74,30 @@ class TimingListActivity : BaseActivity(){
         super.onSwiped(adapterPosition)
         val bean = dataList.removeAt(adapterPosition)
         adapter.notifyItemRemoved(adapterPosition)
-        timingUtil.deleteTiming(bean.id)
+
+        Snackbar.make(recyclerView,R.string.deleted,Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo) {
+                    dataList.add(adapterPosition,bean)
+                    adapter.notifyItemInserted(adapterPosition)
+                }
+                .addCallback(OnSwipedHelper(timingUtil,bean)).show()
+    }
+
+    private class OnSwipedHelper(
+            private val timingUtil: TimingUtil,
+            private val bean: TimingBean): BaseTransientBottomBar.BaseCallback<Snackbar>() {
+
+        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+            super.onDismissed(transientBottomBar, event)
+
+            if(event != BaseTransientBottomBar.BaseCallback.DISMISS_EVENT_ACTION){
+
+                timingUtil.deleteTiming(bean.id)
+
+            }
+
+        }
+
     }
 
     override fun onClick(v: View?) {
@@ -79,7 +106,6 @@ class TimingListActivity : BaseActivity(){
         when(v){
 
             quickTimingBtn -> {
-
                 startActivityForResult(
                         Intent(this,QuickTimingActivity::class.java),
                         REQUEST_NEW_TIMING,
@@ -143,6 +169,23 @@ class TimingListActivity : BaseActivity(){
         super.onResume()
 
         onRefresh()
+
+    }
+
+    override fun onItemViewClick(holder: RecyclerView.ViewHolder?, v: View) {
+        super.onItemViewClick(holder, v)
+
+        if(holder == null){
+            return
+        }
+
+        if(holder is TimingHolder && holder.stopBtn == v){
+
+            val bean = dataList[holder.adapterPosition]
+            timingUtil.stopTiming(bean.id).selectOne(bean)
+            adapter.notifyItemChanged(holder.adapterPosition)
+
+        }
 
     }
 

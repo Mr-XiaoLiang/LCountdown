@@ -25,7 +25,6 @@ class TimingListWidget: AppWidgetProvider() {
         for(widgetId in appWidgetIds){
 
             val views = RemoteViews(context.packageName, R.layout.widget_timing_list)
-
             //创建点击意图
             val intent = Intent(context, TimingListActivity::class.java)
             //创建一个延时意图，意图目标为打开页面(getActivity)，

@@ -26,4 +26,17 @@
     <string name="now">Now</string>
     <string name="stop_timing">Stop timing</string>
     <string name="quick_timing">Quick timing</string>
+    <string name="prefix_font_size">Prefix font size %1$d SP</string>
+    <string name="name_font_size">Name font size %1$d SP</string>
+    <string name="suffix_font_size">Suffix font size %1$d SP</string>
+    <string name="day_font_size">Day font size %1$d SP</string>
+    <string name="day_unit_font_size">Day unit font size %1$d SP</string>
+    <string name="hour_font_size">Hour font size %1$d SP</string>
+    <string name="hour_unit_font_size">Hour unit font size %1$d SP</string>
+    <string name="time_font_size">Time font size %1$d SP</string>
+    <string name="sign_font_size">Sign font size %1$d SP</string>
+    <string name="new_way_of_operation">New way of operation</string>
+    <string name="new_way_of_operation_info">Due to too many preferences, the previous list was too complicated to display. Therefore, the preferences are divided into three groups and displayed in pages. You can swipe left and right to switch between different preferences. After entering this page, you can swipe down to hide your preferences at any time, or you can pull up at any time to call up preferences. Preferences can be previewed instantly, but only if you click the confirmation button.</string>
+    <string name="got_it">Got it</string>
+    <string name="do_not_show_again">Not show again</string>
 </resources>

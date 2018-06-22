@@ -62,6 +62,51 @@ class WidgetBean : BaseBean() {
      */
     var hourUnit = ""
 
+    /**
+     * 前缀名的字体大小
+     */
+    var prefixFontSize = 16
+
+    /**
+     * 倒计时名的字体大小
+     */
+    var nameFontSize = 24
+
+    /**
+     * 后缀名字体大小
+     */
+    var suffixFontSize = 16
+
+    /**
+     * 天的字体大小
+     */
+    var dayFontSize = 34
+
+    /**
+     * 天的单位的字体大小
+     */
+    var dayUnitFontSize = 16
+
+    /**
+     * 小时的字体大小
+     */
+    var hourFontSize = 32
+
+    /**
+     * 小时的单位的字体大小
+     */
+    var hourUnitFontSize = 12
+
+    /**
+     * 时间的字体大小
+     */
+    var timeFontSize = 18
+
+    /**
+     * 签名的字体大小
+     */
+    var signFontSize = 12
+
     fun parseStyle(value: Int){
         widgetStyle = when(value){
 
@@ -76,12 +121,28 @@ class WidgetBean : BaseBean() {
     }
 
     fun copy(new: WidgetBean){
+
         this.index = new.index
         this.widgetId = new.widgetId
         this.countdownName = new.countdownName
         this.endTime = new.endTime
         this.signValue = new.signValue
         this.widgetStyle = new.widgetStyle
+        this.noTime = new.noTime
+        this.prefixName = new.prefixName
+        this.suffixName = new.suffixName
+        this.dayUnit = new.dayUnit
+        this.hourUnit = new.hourUnit
+        this.prefixFontSize = new.prefixFontSize
+        this.nameFontSize = new.nameFontSize
+        this.suffixFontSize = new.suffixFontSize
+        this.dayFontSize = new.dayFontSize
+        this.dayUnitFontSize = new.dayUnitFontSize
+        this.hourFontSize = new.hourFontSize
+        this.hourUnitFontSize = new.hourUnitFontSize
+        this.timeFontSize = new.timeFontSize
+        this.signFontSize = new.signFontSize
+
     }
 
 }

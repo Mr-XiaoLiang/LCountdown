@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
 import liang.lollipop.lcountdown.widget.CountdownWidget
@@ -39,11 +40,24 @@ object WidgetUtil {
         views.setTextViewText(R.id.hourView,bean.hours)
         views.setTextViewText(R.id.timeView,bean.time)
         views.setTextViewText(R.id.signView,widgetBean.signValue)
+
         views.setViewVisibility(R.id.timeView,if(widgetBean.noTime){ View.GONE }else{ View.VISIBLE })
+
         views.setTextViewText(R.id.nameFrontView,widgetBean.prefixName)
         views.setTextViewText(R.id.nameBehindView,widgetBean.suffixName)
         views.setTextViewText(R.id.dayUnitView,widgetBean.dayUnit)
         views.setTextViewText(R.id.hourUnitView,widgetBean.hourUnit)
+
+        views.setTextViewTextSize(R.id.nameFrontView,TypedValue.COMPLEX_UNIT_SP,widgetBean.prefixFontSize.toFloat())
+        views.setTextViewTextSize(R.id.nameView,TypedValue.COMPLEX_UNIT_SP,widgetBean.nameFontSize.toFloat())
+        views.setTextViewTextSize(R.id.nameBehindView,TypedValue.COMPLEX_UNIT_SP,widgetBean.suffixFontSize.toFloat())
+        views.setTextViewTextSize(R.id.dayView,TypedValue.COMPLEX_UNIT_SP,widgetBean.dayFontSize.toFloat())
+        views.setTextViewTextSize(R.id.dayUnitView,TypedValue.COMPLEX_UNIT_SP,widgetBean.dayUnitFontSize.toFloat())
+        views.setTextViewTextSize(R.id.hourView,TypedValue.COMPLEX_UNIT_SP,widgetBean.hourFontSize.toFloat())
+        views.setTextViewTextSize(R.id.hourUnitView,TypedValue.COMPLEX_UNIT_SP,widgetBean.hourUnitFontSize.toFloat())
+        views.setTextViewTextSize(R.id.timeView,TypedValue.COMPLEX_UNIT_SP,widgetBean.timeFontSize.toFloat())
+        views.setTextViewTextSize(R.id.signView,TypedValue.COMPLEX_UNIT_SP,widgetBean.signFontSize.toFloat())
+
 
         //创建点击意图
         val intent = Intent(context, MainActivity::class.java)
@@ -90,7 +104,7 @@ object WidgetUtil {
 
         WidgetDBUtil.read(context).getAllId(idList).close()
 
-        return IntArray(idList.size,{ it -> idList[it] })
+        return IntArray(idList.size) { it -> idList[it] }
 
     }
 

@@ -1,39 +1,43 @@
 package liang.lollipop.lcountdown.activity
 
 import android.app.Activity
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Message
 import android.support.design.widget.BottomSheetBehavior
-import android.text.Editable
-import android.text.TextWatcher
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v7.app.AlertDialog
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import android.widget.TextView
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.widget_countdown.*
 import liang.lollipop.lbaselib.base.BaseActivity
+import liang.lollipop.lbaselib.base.BaseFragment
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.bean.WidgetBean
 import liang.lollipop.lcountdown.bean.WidgetStyle
-import liang.lollipop.lcountdown.drawable.StyleSelectedForeDrawable
+import liang.lollipop.lcountdown.fragment.CountdownFontSizeFragment
+import liang.lollipop.lcountdown.fragment.CountdownInfoFragment
+import liang.lollipop.lcountdown.fragment.CountdownUnitFragment
 import liang.lollipop.lcountdown.utils.CountdownUtil
 import liang.lollipop.lcountdown.utils.WidgetDBUtil
 import liang.lollipop.lcountdown.utils.WidgetUtil
 import liang.lollipop.lcountdown.widget.CountdownWidget
-import java.util.*
 
 /**
  * 小部件的参数设置Activity
  * @author Lollipop
  */
-class MainActivity : BaseActivity(), View.OnClickListener,CompoundButton.OnCheckedChangeListener{
+class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
+    CountdownUnitFragment.Callback,CountdownFontSizeFragment.Callback{
+
 
     companion object {
 
@@ -45,16 +49,15 @@ class MainActivity : BaseActivity(), View.OnClickListener,CompoundButton.OnCheck
 
     private var widgetBean = WidgetBean()
 
-    private var widgetStyle = WidgetStyle.LIGHT
-
-    private val calendar = Calendar.getInstance()
-
     private var isCreateModel = false
 
-    private lateinit var style1BtnBG: StyleSelectedForeDrawable
-    private lateinit var style2BtnBG: StyleSelectedForeDrawable
-    private lateinit var style3BtnBG: StyleSelectedForeDrawable
-    private lateinit var style4BtnBG: StyleSelectedForeDrawable
+    private val countdownInfoFragment = CountdownInfoFragment()
+
+    private val countdownUnitFragment = CountdownUnitFragment()
+
+    private val countdownFontSizeFragment = CountdownFontSizeFragment()
+
+    private val fragments = arrayOf(countdownInfoFragment,countdownUnitFragment,countdownFontSizeFragment)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,43 +81,7 @@ class MainActivity : BaseActivity(), View.OnClickListener,CompoundButton.OnCheck
             updateBtn.hide()
         }
 
-        nameInputView.addTextChangedListener(object :TextWatcher{
-            override fun afterTextChanged(s: Editable?) {}
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                nameView.text = s
-            }
-        })
-
-        signInputView.addTextChangedListener(object :TextWatcher{
-            override fun afterTextChanged(s: Editable?) {}
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                signView.text = s
-            }
-        })
-
-        dateSelectView.setOnClickListener(this)
-        timeSelectView.setOnClickListener(this)
         updateBtn.setOnClickListener(this)
-
-        style1BtnBG = StyleSelectedForeDrawable(this)
-        style2BtnBG = StyleSelectedForeDrawable(this)
-        style3BtnBG = StyleSelectedForeDrawable(this, R.drawable.bg_black)
-        style4BtnBG = StyleSelectedForeDrawable(this, R.drawable.bg_white)
-
-        style1Btn.setOnClickListener(this)
-        style1Btn.background = style1BtnBG
-        style2Btn.setOnClickListener(this)
-        style2Btn.background = style2BtnBG
-        style3Btn.setOnClickListener(this)
-        style3Btn.background = style3BtnBG
-        style4Btn.setOnClickListener(this)
-        style4Btn.background = style4BtnBG
 
         val bottomSheetBehavior = BottomSheetBehavior.from(sheetGroup)
         bottomSheetBehavior.setBottomSheetCallback(object :BottomSheetBehavior.BottomSheetCallback(){
@@ -133,52 +100,27 @@ class MainActivity : BaseActivity(), View.OnClickListener,CompoundButton.OnCheck
 
         })
 
-        noTimeCheckBox.setOnCheckedChangeListener(this)
+        viewPager.adapter = Adapter(supportFragmentManager,fragments)
+        viewPager.adapter?.notifyDataSetChanged()
 
-        prefixNameInputView.addTextChangedListener(object :TextWatcher{
-            override fun afterTextChanged(s: Editable?) {}
+        if(CountdownUtil.isShowNewVersionHint(this,"MainActivity")){
+            AlertDialog.Builder(this).apply {
+                setTitle(R.string.new_way_of_operation)
+                setMessage(R.string.new_way_of_operation_info)
+                setPositiveButton(R.string.got_it){ dialog, _ ->
+                    dialog.dismiss()
+                }
+                setNeutralButton(R.string.do_not_show_again){ dialog, _ ->
+                    CountdownUtil.newVersionHintShown(this@MainActivity,"MainActivity")
+                    dialog.dismiss()
+                }
+            }.show()
+        }
+    }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                nameFrontView.text = s?:""
-            }
-
-        })
-
-        suffixNameInputView.addTextChangedListener(object :TextWatcher{
-            override fun afterTextChanged(s: Editable?) {}
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                nameBehindView.text = s?:""
-            }
-
-        })
-
-        dayUnitInputView.addTextChangedListener(object :TextWatcher{
-            override fun afterTextChanged(s: Editable?) {}
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                dayUnitView.text = s?:""
-            }
-
-        })
-
-        hourUnitInputView.addTextChangedListener(object :TextWatcher{
-            override fun afterTextChanged(s: Editable?) {}
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                hourUnitView.text = s?:""
-            }
-
-        })
-
+    override fun onResumeFragments() {
+        super.onResumeFragments()
+        viewPager.requestLayout()
     }
 
     private fun initData(){
@@ -195,96 +137,40 @@ class MainActivity : BaseActivity(), View.OnClickListener,CompoundButton.OnCheck
             WidgetDBUtil.read(this).get(widgetBean).close()
         }
 
-        widgetStyle = widgetBean.widgetStyle
+        onNameInfoChange(widgetBean.countdownName)
+        onSignInfoChange(widgetBean.signValue)
+        onTimeTypeChange(widgetBean.noTime)
+        onTimeInfoChange(widgetBean.endTime)
+        onStyleInfoChange(widgetBean.widgetStyle)
 
-        nameInputView.setText(widgetBean.countdownName)
-        signInputView.setText(widgetBean.signValue)
-        prefixNameInputView.setText(widgetBean.prefixName)
-        suffixNameInputView.setText(widgetBean.suffixName)
-        dayUnitInputView.setText(widgetBean.dayUnit)
-        hourUnitInputView.setText(widgetBean.hourUnit)
+        onPrefixNameChange(widgetBean.prefixName)
+        onSuffixNameChange(widgetBean.suffixName)
+        onDayUnitChange(widgetBean.dayUnit)
+        onHourUnitChange(widgetBean.hourUnit)
 
-        calendar.timeInMillis = widgetBean.endTime
+        onPrefixFontSizeChange(widgetBean.prefixFontSize)
+        onNameFontSizeChange(widgetBean.nameFontSize)
+        onSuffixFontSizeChange(widgetBean.suffixFontSize)
+        onDayFontSizeChange(widgetBean.dayFontSize)
+        onDayUnitFontSizeChange(widgetBean.dayUnitFontSize)
+        onHourFontSizeChange(widgetBean.hourFontSize)
+        onHourUnitFontSizeChange(widgetBean.hourUnitFontSize)
+        onTimeFontSizeChange(widgetBean.timeFontSize)
+        onSignFontSizeChange(widgetBean.signFontSize)
 
-        noTimeCheckBox.isChecked = widgetBean.noTime
+        countdownInfoFragment.reset(widgetBean)
+        countdownUnitFragment.reset(widgetBean)
+        countdownFontSizeFragment.reset(widgetBean)
 
-        onEndTimeChange()
-
-        onStyleChange()
     }
-
-
 
     override fun onClick(v: View?) {
 
         when(v){
 
-            dateSelectView -> {
-
-                val yearIn = calendar.get(Calendar.YEAR)
-                val monthIn = calendar.get(Calendar.MONTH)
-                val day = calendar.get(Calendar.DAY_OF_MONTH)
-                DatePickerDialog(this, DatePickerDialog.OnDateSetListener {
-                    _, year, month, dayOfMonth ->
-                    calendar.set(Calendar.YEAR,year)
-
-                    calendar.set(Calendar.MONTH,month)
-
-                    calendar.set(Calendar.DAY_OF_MONTH,dayOfMonth)
-
-                    onEndTimeChange()
-                },yearIn,monthIn,day).show()
-
-            }
-
-            timeSelectView -> {
-
-                val hourIn = calendar.get(Calendar.HOUR_OF_DAY)
-                val minuteIn = calendar.get(Calendar.MINUTE)
-                TimePickerDialog(this, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-
-                    calendar.set(Calendar.HOUR_OF_DAY,hourOfDay)
-
-                    calendar.set(Calendar.MINUTE,minute)
-
-                    onEndTimeChange()
-
-                },hourIn,minuteIn,false).show()
-
-            }
 
             updateBtn -> {
                 updateWidget()
-            }
-
-            style1Btn -> {
-                onStyleChange(WidgetStyle.LIGHT)
-            }
-
-            style2Btn -> {
-                onStyleChange(WidgetStyle.DARK)
-            }
-
-            style3Btn -> {
-                onStyleChange(WidgetStyle.BLACK)
-            }
-
-            style4Btn -> {
-                onStyleChange(WidgetStyle.WHITE)
-            }
-
-        }
-
-    }
-
-    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-
-        when(buttonView){
-
-            noTimeCheckBox -> {
-
-                timeView.visibility = if(isChecked){View.GONE}else{View.VISIBLE}
-
             }
 
         }
@@ -297,7 +183,7 @@ class MainActivity : BaseActivity(), View.OnClickListener,CompoundButton.OnCheck
 
             WHAT_UPDATE -> {
 
-                countdown(calendar.timeInMillis)
+                countdown(widgetBean.endTime)
 
                 handler.sendEmptyMessageDelayed(WHAT_UPDATE, DELAYED)
 
@@ -308,16 +194,6 @@ class MainActivity : BaseActivity(), View.OnClickListener,CompoundButton.OnCheck
     }
 
     private fun updateWidget(){
-
-        widgetBean.countdownName = nameInputView.text.toString()
-        widgetBean.endTime = calendar.timeInMillis
-        widgetBean.signValue = signInputView.text.toString()
-        widgetBean.widgetStyle = widgetStyle
-        widgetBean.noTime = noTimeCheckBox.isChecked
-        widgetBean.prefixName = prefixNameInputView.text.toString()
-        widgetBean.suffixName = suffixNameInputView.text.toString()
-        widgetBean.dayUnit = dayUnitInputView.text.toString()
-        widgetBean.hourUnit = hourUnitInputView.text.toString()
 
         if(isCreateModel){
             WidgetDBUtil.write(this).add(widgetBean).close()
@@ -338,35 +214,11 @@ class MainActivity : BaseActivity(), View.OnClickListener,CompoundButton.OnCheck
 
     }
 
-    private fun onEndTimeChange(){
-
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)+1
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        val minute = calendar.get(Calendar.MINUTE)
-
-        dateSelectView.text = "${year.formatNumber()}-${month.formatNumber()}-${day.formatNumber()}"
-        timeSelectView.text = "${hour.formatNumber()} : ${minute.formatNumber()}"
-
-        countdown(calendar.timeInMillis)
-
-    }
-
     private fun countdown(endTime: Long){
         val bean = CountdownUtil.countdown(endTime)
         dayView.text = bean.days
         hourView.text = bean.hours
         timeView.text = bean.time
-    }
-
-    private fun Int.formatNumber(): String{
-        return when {
-            this > 9 -> ""+this
-            this < -9 -> "-"+Math.abs(this)
-            this < 0 -> "-0"+Math.abs(this)
-            else -> "0"+this
-        }
     }
 
     override fun onStop() {
@@ -380,40 +232,28 @@ class MainActivity : BaseActivity(), View.OnClickListener,CompoundButton.OnCheck
         handler.sendEmptyMessageDelayed(WHAT_UPDATE,delayed)
     }
 
-    private fun onStyleChange(style: WidgetStyle){
-        widgetStyle = style
-        onStyleChange()
+    override fun onNameInfoChange(name: CharSequence) {
+        widgetBean.countdownName = name.toString()
+        nameView.text = name
     }
 
-    private fun onStyleChange(){
-        style1BtnBG.isShow(false)
-        style2BtnBG.isShow(false)
-        style3BtnBG.isShow(false)
-        style4BtnBG.isShow(false)
+    override fun onSignInfoChange(sign: CharSequence) {
+        widgetBean.signValue = sign.toString()
+        signView.text = sign
+    }
 
-        var isDark = false
+    override fun onTimeTypeChange(noTime: Boolean) {
+        widgetBean.noTime = noTime
+        timeView.visibility = if(noTime){View.GONE}else{View.VISIBLE}
+    }
 
-        when(widgetStyle){
+    override fun onTimeInfoChange(time: Long) {
+        widgetBean.endTime = time
+        countdown(time)
+    }
 
-            WidgetStyle.LIGHT -> {
-                style1BtnBG.isShow(true)
-            }
-
-            WidgetStyle.DARK -> {
-                style2BtnBG.isShow(true)
-                isDark = true
-            }
-
-            WidgetStyle.BLACK -> {
-                style3BtnBG.isShow(true)
-            }
-
-            WidgetStyle.WHITE -> {
-                style4BtnBG.isShow(true)
-                isDark = true
-            }
-
-        }
+    override fun onStyleInfoChange(style: WidgetStyle) {
+        val isDark = ( style == WidgetStyle.WHITE || style == WidgetStyle.DARK )
 
         val textColor = if(isDark){ 0xFF333333.toInt() }else{ Color.WHITE }
         val bgColor = if(isDark){ Color.WHITE }else{ Color.BLACK }
@@ -421,6 +261,71 @@ class MainActivity : BaseActivity(), View.OnClickListener,CompoundButton.OnCheck
         contentGroup.setBackgroundColor(bgColor)
 
         changeTextViewColor(widgetFrame,textColor)
+    }
+
+    override fun onPrefixNameChange(name: CharSequence) {
+        widgetBean.prefixName = name.toString()
+        nameFrontView.text = name
+    }
+
+    override fun onSuffixNameChange(name: CharSequence) {
+        widgetBean.suffixName = name.toString()
+        nameBehindView.text = name
+    }
+
+    override fun onDayUnitChange(name: CharSequence) {
+        widgetBean.dayUnit = name.toString()
+        dayUnitView.text = name
+    }
+
+    override fun onHourUnitChange(name: CharSequence) {
+        widgetBean.hourUnit = name.toString()
+        hourUnitView.text = name
+    }
+
+    override fun onPrefixFontSizeChange(sizeDip: Int) {
+        widgetBean.prefixFontSize = sizeDip
+        nameFrontView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
+    }
+
+    override fun onNameFontSizeChange(sizeDip: Int) {
+        widgetBean.nameFontSize = sizeDip
+        nameView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
+    }
+
+    override fun onSuffixFontSizeChange(sizeDip: Int) {
+        widgetBean.suffixFontSize = sizeDip
+        nameBehindView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
+    }
+
+    override fun onDayFontSizeChange(sizeDip: Int) {
+        widgetBean.dayFontSize = sizeDip
+        dayView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
+    }
+
+    override fun onDayUnitFontSizeChange(sizeDip: Int) {
+        widgetBean.dayUnitFontSize = sizeDip
+        dayUnitView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
+    }
+
+    override fun onHourFontSizeChange(sizeDip: Int) {
+        widgetBean.hourFontSize = sizeDip
+        hourView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
+    }
+
+    override fun onHourUnitFontSizeChange(sizeDip: Int) {
+        widgetBean.hourUnitFontSize = sizeDip
+        hourUnitView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
+    }
+
+    override fun onTimeFontSizeChange(sizeDip: Int) {
+        widgetBean.timeFontSize = sizeDip
+        timeView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
+    }
+
+    override fun onSignFontSizeChange(sizeDip: Int) {
+        widgetBean.signFontSize = sizeDip
+        signView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
     }
 
     private fun changeTextViewColor(viewGroup:ViewGroup, color: Int){
@@ -437,6 +342,20 @@ class MainActivity : BaseActivity(), View.OnClickListener,CompoundButton.OnCheck
             }
 
         }
+    }
+
+    private class Adapter(fragmentManager: FragmentManager,
+                          private val fragments: Array<BaseFragment>)
+        : FragmentStatePagerAdapter(fragmentManager){
+
+        override fun getItem(position: Int): Fragment {
+            return fragments[position]
+        }
+
+        override fun getCount(): Int {
+            return fragments.size
+        }
+
     }
 
 }

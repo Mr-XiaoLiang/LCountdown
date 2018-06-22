@@ -16,7 +16,7 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
     companion object {
 
         private const val DB_NAME = "WidgetDatabase"
-        private const val VERSION = 3
+        private const val VERSION = 4
 
         fun read(context: Context): SqlDB {
             return SqlDB(WidgetDBUtil(context), false)
@@ -44,33 +44,42 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
 
         when(oldVersion){
 
-            1 -> when(newVersion){
+            1 -> {
 
-                2 -> {
-                    val sql = "ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.NO_TIME} INTEGER DEFAULT 0"
-                    db?.execSQL(sql)
-                }
+                db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.NO_TIME} INTEGER DEFAULT 0")
 
-                3 -> {
-                    db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.NO_TIME} INTEGER DEFAULT 0")
-                    db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.PREFIX_NAME} VARCHAR DEFAULT ''")
-                    db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.SUFFIX_NAME} VARCHAR DEFAULT ''")
-                    db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.DAY_UNIT} VARCHAR DEFAULT ''")
-                    db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.HOUR_UNIT} VARCHAR DEFAULT ''")
-                }
-
+                onUpgrade(db,oldVersion+1,newVersion)
             }
 
-            2 -> if(newVersion == 3){
+            2 -> {
+
                 db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.PREFIX_NAME} VARCHAR DEFAULT ''")
                 db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.SUFFIX_NAME} VARCHAR DEFAULT ''")
                 db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.DAY_UNIT} VARCHAR DEFAULT ''")
                 db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.HOUR_UNIT} VARCHAR DEFAULT ''")
+
+                onUpgrade(db,oldVersion+1,newVersion)
+            }
+
+            3 -> {
+
+                db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.PREFIX_FONT_SIZE} VARCHAR DEFAULT 16")
+                db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.NAME_FONT_SIZE} VARCHAR DEFAULT 24")
+                db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.SUFFIX_FONT_SIZE} VARCHAR DEFAULT 16")
+                db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.DAY_FONT_SIZE} VARCHAR DEFAULT 34")
+                db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.DAY_UNIT_FONT_SIZE} VARCHAR DEFAULT 16")
+                db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.HOUR_FONT_SIZE} VARCHAR DEFAULT 32")
+                db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.HOUR_UNIT_FONT_SIZE} VARCHAR DEFAULT 12")
+                db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.TIME_FONT_SIZE} VARCHAR DEFAULT 18")
+                db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.SIGN_FONT_SIZE} VARCHAR DEFAULT 12")
+
             }
 
         }
 
     }
+
+
 
     private object WidgetTable{
 
@@ -89,6 +98,16 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
         const val DAY_UNIT = "DAY_UNIT"
         const val HOUR_UNIT = "HOUR_UNIT"
 
+        const val PREFIX_FONT_SIZE = "PREFIX_FONT_SIZE"
+        const val NAME_FONT_SIZE = "NAME_FONT_SIZE"
+        const val SUFFIX_FONT_SIZE = "SUFFIX_FONT_SIZE"
+        const val DAY_FONT_SIZE = "DAY_FONT_SIZE"
+        const val DAY_UNIT_FONT_SIZE = "DAY_UNIT_FONT_SIZE"
+        const val HOUR_FONT_SIZE = "HOUR_FONT_SIZE"
+        const val HOUR_UNIT_FONT_SIZE = "HOUR_UNIT_FONT_SIZE"
+        const val TIME_FONT_SIZE = "TIME_FONT_SIZE"
+        const val SIGN_FONT_SIZE = "SIGN_FONT_SIZE"
+
         const val SELECT_ALL_SQL = " select " +
                 " $ID , " +
                 " $END_TIME , " +
@@ -96,11 +115,23 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
                 " $STYLE , " +
                 " $SIGN_VALUE , " +
                 " $WIDGET_INDEX , " +
+
                 " $NO_TIME , " +
+
                 " $PREFIX_NAME , " +
                 " $SUFFIX_NAME , " +
                 " $DAY_UNIT , " +
-                " $HOUR_UNIT " +
+                " $HOUR_UNIT , " +
+
+                " $PREFIX_FONT_SIZE , " +
+                " $NAME_FONT_SIZE , " +
+                " $SUFFIX_FONT_SIZE , " +
+                " $DAY_FONT_SIZE , " +
+                " $DAY_UNIT_FONT_SIZE , " +
+                " $HOUR_FONT_SIZE , " +
+                " $HOUR_UNIT_FONT_SIZE , " +
+                " $TIME_FONT_SIZE , " +
+                " $SIGN_FONT_SIZE " +
                 " from $TABLE order by $WIDGET_INDEX ;"
 
         const val SELECT_ONE_SQL = " select " +
@@ -110,11 +141,23 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
                 " $STYLE , " +
                 " $SIGN_VALUE , " +
                 " $WIDGET_INDEX , " +
+
                 " $NO_TIME , " +
+
                 " $PREFIX_NAME , " +
                 " $SUFFIX_NAME , " +
                 " $DAY_UNIT , " +
-                " $HOUR_UNIT " +
+                " $HOUR_UNIT , " +
+
+                " $PREFIX_FONT_SIZE , " +
+                " $NAME_FONT_SIZE , " +
+                " $SUFFIX_FONT_SIZE , " +
+                " $DAY_FONT_SIZE , " +
+                " $DAY_UNIT_FONT_SIZE , " +
+                " $HOUR_FONT_SIZE , " +
+                " $HOUR_UNIT_FONT_SIZE , " +
+                " $TIME_FONT_SIZE , " +
+                " $SIGN_FONT_SIZE " +
                 " from $TABLE WHERE $ID = ? ;"
 
         const val CREATE_TABLE = "create table $TABLE ( " +
@@ -124,14 +167,24 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
                 " $STYLE INTEGER , " +
                 " $SIGN_VALUE VARCHAR , " +
                 " $WIDGET_INDEX INTEGER , " +
+
                 " $NO_TIME INTEGER , " +
+
                 " $PREFIX_NAME VARCHAR , " +
                 " $SUFFIX_NAME VARCHAR , " +
                 " $DAY_UNIT VARCHAR , " +
-                " $HOUR_UNIT VARCHAR " +
-                " );"
+                " $HOUR_UNIT VARCHAR , " +
 
-        const val DROP_TABLE = " DROP TABLE $TABLE "
+                " $PREFIX_FONT_SIZE INTEGER , " +
+                " $NAME_FONT_SIZE INTEGER , " +
+                " $SUFFIX_FONT_SIZE INTEGER , " +
+                " $DAY_FONT_SIZE INTEGER , " +
+                " $DAY_UNIT_FONT_SIZE INTEGER , " +
+                " $HOUR_FONT_SIZE INTEGER , " +
+                " $HOUR_UNIT_FONT_SIZE INTEGER , " +
+                " $TIME_FONT_SIZE INTEGER , " +
+                " $SIGN_FONT_SIZE INTEGER " +
+                " );"
     }
 
     class SqlDB constructor(private var wordDatabaseHelper: WidgetDBUtil?, isWritable: Boolean) {
@@ -275,11 +328,23 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             put(WidgetTable.STYLE, widgetBean.widgetStyle.value)
             put(WidgetTable.SIGN_VALUE, widgetBean.signValue)
             put(WidgetTable.WIDGET_INDEX, widgetBean.index)
+
             put(WidgetTable.NO_TIME, widgetBean.noTime.b2i())
+
             put(WidgetTable.PREFIX_NAME,widgetBean.prefixName)
             put(WidgetTable.SUFFIX_NAME,widgetBean.suffixName)
             put(WidgetTable.DAY_UNIT,widgetBean.dayUnit)
             put(WidgetTable.HOUR_UNIT,widgetBean.hourUnit)
+
+            put(WidgetTable.PREFIX_FONT_SIZE,widgetBean.prefixFontSize)
+            put(WidgetTable.NAME_FONT_SIZE,widgetBean.nameFontSize)
+            put(WidgetTable.SUFFIX_FONT_SIZE,widgetBean.suffixFontSize)
+            put(WidgetTable.DAY_FONT_SIZE,widgetBean.dayFontSize)
+            put(WidgetTable.DAY_UNIT_FONT_SIZE,widgetBean.dayUnitFontSize)
+            put(WidgetTable.HOUR_FONT_SIZE,widgetBean.hourFontSize)
+            put(WidgetTable.HOUR_UNIT_FONT_SIZE,widgetBean.hourUnitFontSize)
+            put(WidgetTable.TIME_FONT_SIZE,widgetBean.timeFontSize)
+            put(WidgetTable.SIGN_FONT_SIZE,widgetBean.signFontSize)
         }
 
         private fun WidgetBean.putData(c: Cursor){
@@ -288,12 +353,24 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             endTime = c.getLong(c.getColumnIndex(WidgetTable.END_TIME))
             signValue = c.getString(c.getColumnIndex(WidgetTable.SIGN_VALUE))?:""
             index = c.getInt(c.getColumnIndex(WidgetTable.WIDGET_INDEX))
+
             noTime = c.getInt(c.getColumnIndex(WidgetTable.NO_TIME)).i2b()
+
             parseStyle(c.getInt(c.getColumnIndex(WidgetTable.STYLE)))
             prefixName = c.getString(c.getColumnIndex(WidgetTable.PREFIX_NAME))?:""
             suffixName = c.getString(c.getColumnIndex(WidgetTable.SUFFIX_NAME))?:""
             dayUnit = c.getString(c.getColumnIndex(WidgetTable.DAY_UNIT))?:""
             hourUnit = c.getString(c.getColumnIndex(WidgetTable.HOUR_UNIT))?:""
+
+            prefixFontSize = c.getInt(c.getColumnIndex(WidgetTable.PREFIX_FONT_SIZE))
+            nameFontSize = c.getInt(c.getColumnIndex(WidgetTable.NAME_FONT_SIZE))
+            suffixFontSize = c.getInt(c.getColumnIndex(WidgetTable.SUFFIX_FONT_SIZE))
+            dayFontSize = c.getInt(c.getColumnIndex(WidgetTable.DAY_FONT_SIZE))
+            dayUnitFontSize = c.getInt(c.getColumnIndex(WidgetTable.DAY_UNIT_FONT_SIZE))
+            hourFontSize = c.getInt(c.getColumnIndex(WidgetTable.HOUR_FONT_SIZE))
+            hourUnitFontSize = c.getInt(c.getColumnIndex(WidgetTable.HOUR_UNIT_FONT_SIZE))
+            timeFontSize = c.getInt(c.getColumnIndex(WidgetTable.TIME_FONT_SIZE))
+            signFontSize = c.getInt(c.getColumnIndex(WidgetTable.SIGN_FONT_SIZE))
         }
 
     }

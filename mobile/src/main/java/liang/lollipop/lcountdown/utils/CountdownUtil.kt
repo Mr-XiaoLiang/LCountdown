@@ -1,6 +1,8 @@
 package liang.lollipop.lcountdown.utils
 
 import liang.lollipop.lcountdown.bean.CountdownBean
+import android.content.Context
+
 
 /**
  * 倒计时工具类
@@ -12,6 +14,8 @@ object CountdownUtil {
     private const val ONE_MINUTE = ONE_SECOND * 60
     private const val ONE_HOUR = ONE_MINUTE * 60
     private const val ONE_DAY = ONE_HOUR * 24
+
+    private const val NEW_VERSION_HINT = "NEW_VERSION_HINT"
 
     fun countdown(endTime: Long): CountdownBean {
         val now = System.currentTimeMillis()
@@ -70,6 +74,30 @@ object CountdownUtil {
             this < 0 -> "-0"+Math.abs(this)
             else -> "0"+this
         }
+    }
+
+    fun isShowNewVersionHint(context: Context,tag: String): Boolean{
+        val thisVersion = getAppVersionName(context)
+
+        val lastVersion = SharedPreferencesUtils[context, NEW_VERSION_HINT + tag, ""] ?:""
+
+        return thisVersion != lastVersion
+    }
+
+    fun newVersionHintShown(context: Context,tag: String){
+        val thisVersion = getAppVersionName(context)
+
+        SharedPreferencesUtils.put(context, NEW_VERSION_HINT + tag, thisVersion)
+    }
+
+    private fun getAppVersionName(context: Context): String {
+        try {
+            val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+            return packageInfo.versionName?:""
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return ""
     }
 
 }

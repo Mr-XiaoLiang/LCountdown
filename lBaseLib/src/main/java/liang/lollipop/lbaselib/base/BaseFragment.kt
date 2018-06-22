@@ -56,7 +56,7 @@ open class BaseFragment:Fragment(),
         findRootView(view)
     }
 
-    override fun onClick(v: View) {
+    override fun onClick(v: View?) {
 
     }
 

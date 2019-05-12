@@ -66,8 +66,12 @@ open class BaseFragment:Fragment(),
     override fun onRefresh() {
     }
 
-    fun getTitle(): String {
+    open fun getTitle(): String {
         return ""
+    }
+
+    open fun getTitleId(): Int {
+        return 0
     }
 
     protected fun getTouchHelper(recyclerView: RecyclerView): LItemTouchHelper {

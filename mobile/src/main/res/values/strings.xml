@@ -42,4 +42,7 @@
     <string name="do_not_show_again">Not show again</string>
     <string name="floating_notif_title">LCountdown</string>
     <string name="floating_notif_msg">Countdown suspended windows are at your service</string>
+    <string name="title_base_fragment">Base</string>
+    <string name="title_info_fragment">Info</string>
+    <string name="title_size_fragment">Font</string>
 </resources>

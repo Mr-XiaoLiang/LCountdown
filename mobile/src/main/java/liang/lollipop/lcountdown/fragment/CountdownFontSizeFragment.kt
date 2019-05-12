@@ -23,8 +23,13 @@ class CountdownFontSizeFragment: BaseFragment(),SeekBar.OnSeekBarChangeListener 
 
     private var isReady = false
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_countdown_font_size,container,false)
+    }
+
+    override fun getTitleId(): Int {
+        return R.string.title_size_fragment
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

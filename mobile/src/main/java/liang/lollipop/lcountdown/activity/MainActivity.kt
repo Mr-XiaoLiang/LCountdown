@@ -2,6 +2,7 @@ package liang.lollipop.lcountdown.activity
 
 import android.app.Activity
 import android.appwidget.AppWidgetManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v7.app.AlertDialog
+import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
@@ -105,7 +107,8 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
             }
         }
 
-        viewPager.adapter = Adapter(supportFragmentManager,fragments)
+        viewPager.adapter = Adapter(supportFragmentManager,fragments, this)
+        tabLayout.setupWithViewPager(viewPager)
         viewPager.adapter?.notifyDataSetChanged()
 
         if(CountdownUtil.isShowNewVersionHint(this,"MainActivity")){
@@ -359,7 +362,8 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
     }
 
     private class Adapter(fragmentManager: FragmentManager,
-                          private val fragments: Array<BaseFragment>)
+                          private val fragments: Array<BaseFragment>,
+                          private val context: Context)
         : FragmentStatePagerAdapter(fragmentManager){
 
         override fun getItem(position: Int): Fragment {
@@ -368,6 +372,18 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
 
         override fun getCount(): Int {
             return fragments.size
+        }
+
+        override fun getPageTitle(position: Int): CharSequence? {
+            val title = fragments[position].getTitle()
+            if (!TextUtils.isEmpty(title)) {
+                return title
+            }
+            val titleId = fragments[position].getTitleId()
+            if (titleId != 0) {
+                return context.getString(titleId)
+            }
+            return ""
         }
 
     }

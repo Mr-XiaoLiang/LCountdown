@@ -39,6 +39,10 @@ class CountdownInfoFragment: BaseFragment(), CompoundButton.OnCheckedChangeListe
 
     private var isReady = false
 
+    override fun getTitleId(): Int {
+        return R.string.title_base_fragment
+    }
+
     companion object {
 
         private const val ARG_NAME = "ARG_NAME"

@@ -24,6 +24,10 @@ class CountdownUnitFragment: BaseFragment() {
 
     private var isReady = false
 
+    override fun getTitleId(): Int {
+        return R.string.title_info_fragment
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_countdown_unit,container,false)
     }

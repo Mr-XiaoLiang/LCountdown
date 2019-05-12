@@ -46,6 +46,7 @@ class CountdownInfoFragment: BaseFragment(), CompoundButton.OnCheckedChangeListe
         private const val ARG_TIME = "ARG_TIME"
         private const val ARG_NO_TIME = "ARG_NO_TIME"
         private const val ARG_STYLE = "ARG_STYLE"
+        private const val ARG_NO_COUNTDOWN = "ARG_NO_COUNTDOWN"
 
     }
 
@@ -58,6 +59,7 @@ class CountdownInfoFragment: BaseFragment(), CompoundButton.OnCheckedChangeListe
             putLong(ARG_TIME,widgetBean.endTime)
             putBoolean(ARG_NO_TIME,widgetBean.noTime)
             putInt(ARG_STYLE,widgetBean.widgetStyle.value)
+            putBoolean(ARG_NO_COUNTDOWN,widgetBean.noCountdown)
 
         }
 
@@ -80,9 +82,10 @@ class CountdownInfoFragment: BaseFragment(), CompoundButton.OnCheckedChangeListe
             onEndTimeChange()
 
             noTimeCheckBox.isChecked = it.getBoolean(ARG_NO_TIME,false)
+            timingTypeCheckBox.isChecked = it.getBoolean(ARG_NO_COUNTDOWN,false)
 
-            onStyleChange(it.getInt(ARG_STYLE,WidgetStyle.BLACK.value).let {
-                when(it){
+            onStyleChange(it.getInt(ARG_STYLE,WidgetStyle.BLACK.value).let { style ->
+                when(style){
                     WidgetStyle.DARK.value -> WidgetStyle.DARK
                     WidgetStyle.LIGHT.value -> WidgetStyle.LIGHT
                     WidgetStyle.WHITE.value -> WidgetStyle.WHITE
@@ -147,6 +150,7 @@ class CountdownInfoFragment: BaseFragment(), CompoundButton.OnCheckedChangeListe
         style4Btn.background = style4BtnBG
 
         noTimeCheckBox.setOnCheckedChangeListener(this)
+        timingTypeCheckBox.setOnCheckedChangeListener(this)
 
         isReady = true
 
@@ -165,6 +169,12 @@ class CountdownInfoFragment: BaseFragment(), CompoundButton.OnCheckedChangeListe
             noTimeCheckBox -> {
 
                 callback.onTimeTypeChange(isChecked)
+
+            }
+
+            timingTypeCheckBox -> {
+
+                callback.onTimingTypeChange(isChecked)
 
             }
 
@@ -250,7 +260,7 @@ class CountdownInfoFragment: BaseFragment(), CompoundButton.OnCheckedChangeListe
             this > 9 -> ""+this
             this < -9 -> "-"+Math.abs(this)
             this < 0 -> "-0"+Math.abs(this)
-            else -> "0"+this
+            else -> "0$this"
         }
     }
 
@@ -295,6 +305,8 @@ class CountdownInfoFragment: BaseFragment(), CompoundButton.OnCheckedChangeListe
         fun onTimeInfoChange(time: Long)
 
         fun onStyleInfoChange(style: WidgetStyle)
+
+        fun onTimingTypeChange(noCountdown: Boolean)
 
     }
 

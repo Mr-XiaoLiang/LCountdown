@@ -2,12 +2,15 @@ package liang.lollipop.lcountdown.activity
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.view.View
 import kotlinx.android.synthetic.main.activity_quick_timing.*
 import liang.lollipop.lbaselib.base.BaseActivity
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.bean.TimingBean
+import liang.lollipop.lcountdown.service.FloatingService
 import liang.lollipop.lcountdown.utils.TimingUtil
 
 /**
@@ -58,13 +61,22 @@ class QuickTimingActivity : BaseActivity() {
 
             remindBtn -> {
 
-                //TODO
+                startFloating()
                 quietBtn.callOnClick()
 
             }
 
         }
 
+    }
+
+    private fun startFloating(){
+        val floatingIntent = Intent(this,FloatingService::class.java)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            startForegroundService(floatingIntent)
+        }else{
+            startService(floatingIntent)
+        }
     }
 
     private fun saveTiming(){

@@ -5,6 +5,8 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
@@ -19,45 +21,17 @@ object WidgetUtil {
 
     const val UPDATE_TIME = 1000L * 60
 
-    fun update(context: Context, bean: CountdownBean, widgetBean: WidgetBean, appWidgetManager: AppWidgetManager){
+    fun update(context: Context, widgetBean: WidgetBean, appWidgetManager: AppWidgetManager){
 
-        val layoutId = when(widgetBean.widgetStyle){
-
-            WidgetStyle.LIGHT -> R.layout.widget_countdown
-
-            WidgetStyle.DARK -> R.layout.widget_countdown_dark
-
-            WidgetStyle.BLACK -> R.layout.widget_countdown_black
-
-            WidgetStyle.WHITE -> R.layout.widget_countdown_white
-
-        }
+        val layoutId = R.layout.widget_countdown
 
         val views = RemoteViews(context.packageName, layoutId)
 
-        views.setTextViewText(R.id.nameView,widgetBean.countdownName)
-        views.setTextViewText(R.id.dayView,bean.days)
-        views.setTextViewText(R.id.hourView,bean.hours)
-        views.setTextViewText(R.id.timeView,bean.time)
-        views.setTextViewText(R.id.signView,widgetBean.signValue)
+        views.updateColors(widgetBean.widgetStyle)
 
-        views.setViewVisibility(R.id.timeView,if(widgetBean.noTime){ View.GONE }else{ View.VISIBLE })
+        views.updateValues(widgetBean.getTimerInfo(), widgetBean)
 
-        views.setTextViewText(R.id.nameFrontView,widgetBean.prefixName)
-        views.setTextViewText(R.id.nameBehindView,widgetBean.suffixName)
-        views.setTextViewText(R.id.dayUnitView,widgetBean.dayUnit)
-        views.setTextViewText(R.id.hourUnitView,widgetBean.hourUnit)
-
-        views.setTextViewTextSize(R.id.nameFrontView,TypedValue.COMPLEX_UNIT_SP,widgetBean.prefixFontSize.toFloat())
-        views.setTextViewTextSize(R.id.nameView,TypedValue.COMPLEX_UNIT_SP,widgetBean.nameFontSize.toFloat())
-        views.setTextViewTextSize(R.id.nameBehindView,TypedValue.COMPLEX_UNIT_SP,widgetBean.suffixFontSize.toFloat())
-        views.setTextViewTextSize(R.id.dayView,TypedValue.COMPLEX_UNIT_SP,widgetBean.dayFontSize.toFloat())
-        views.setTextViewTextSize(R.id.dayUnitView,TypedValue.COMPLEX_UNIT_SP,widgetBean.dayUnitFontSize.toFloat())
-        views.setTextViewTextSize(R.id.hourView,TypedValue.COMPLEX_UNIT_SP,widgetBean.hourFontSize.toFloat())
-        views.setTextViewTextSize(R.id.hourUnitView,TypedValue.COMPLEX_UNIT_SP,widgetBean.hourUnitFontSize.toFloat())
-        views.setTextViewTextSize(R.id.timeView,TypedValue.COMPLEX_UNIT_SP,widgetBean.timeFontSize.toFloat())
-        views.setTextViewTextSize(R.id.signView,TypedValue.COMPLEX_UNIT_SP,widgetBean.signFontSize.toFloat())
-
+        views.updateTextSize(widgetBean)
 
         //创建点击意图
         val intent = Intent(context, MainActivity::class.java)
@@ -74,6 +48,67 @@ object WidgetUtil {
 
         appWidgetManager.updateAppWidget(widgetBean.widgetId, views)
 
+    }
+
+    private fun RemoteViews.updateColors(style: WidgetStyle) {
+        log("RemoteViews.updateColors: $style")
+        val textColor: Int
+        val background: Int
+        when (style) {
+            WidgetStyle.LIGHT -> {
+                textColor = Color.WHITE
+                background = 0
+            }
+            WidgetStyle.DARK -> {
+                textColor = Color.BLACK
+                background = 0
+            }
+            WidgetStyle.WHITE -> {
+                textColor = Color.BLACK
+                background = R.drawable.bg_white
+            }
+            WidgetStyle.BLACK -> {
+                textColor = Color.WHITE
+                background = R.drawable.bg_black
+            }
+        }
+        setTextColor(R.id.nameFrontView, textColor)
+        setTextColor(R.id.nameView,textColor)
+        setTextColor(R.id.nameBehindView,textColor)
+        setTextColor(R.id.dayView,textColor)
+        setTextColor(R.id.dayUnitView,textColor)
+        setTextColor(R.id.hourView,textColor)
+        setTextColor(R.id.hourUnitView,textColor)
+        setTextColor(R.id.timeView,textColor)
+        setTextColor(R.id.signView,textColor)
+        setInt(R.id.widgetGroup, "setBackgroundResource", background)
+    }
+
+    private fun RemoteViews.updateValues(bean: CountdownBean, widgetBean: WidgetBean) {
+        setTextViewText(R.id.nameView,widgetBean.countdownName)
+        setTextViewText(R.id.dayView,bean.days)
+        setTextViewText(R.id.hourView,bean.hours)
+        setTextViewText(R.id.timeView,bean.time)
+        setTextViewText(R.id.signView,widgetBean.signValue)
+
+        setViewVisibility(R.id.timeView,if(widgetBean.noTime){ View.GONE }else{ View.VISIBLE })
+
+        setTextViewText(R.id.nameFrontView,widgetBean.prefixName)
+        setTextViewText(R.id.nameBehindView,widgetBean.suffixName)
+        setTextViewText(R.id.dayUnitView,widgetBean.dayUnit)
+        setTextViewText(R.id.hourUnitView,widgetBean.hourUnit)
+    }
+
+    private fun RemoteViews.updateTextSize(widgetBean: WidgetBean) {
+        setTextViewTextSize(R.id.nameFrontView,TypedValue.COMPLEX_UNIT_SP,widgetBean.prefixFontSize.toFloat())
+        setTextViewTextSize(R.id.nameView,TypedValue.COMPLEX_UNIT_SP,widgetBean.nameFontSize.toFloat())
+        setTextViewTextSize(R.id.nameBehindView,TypedValue.COMPLEX_UNIT_SP,widgetBean.suffixFontSize.toFloat())
+        setTextViewTextSize(R.id.dayView,TypedValue.COMPLEX_UNIT_SP,widgetBean.dayFontSize.toFloat())
+        setTextViewTextSize(R.id.dayUnitView,TypedValue.COMPLEX_UNIT_SP,widgetBean.dayUnitFontSize.toFloat())
+        setTextViewTextSize(R.id.hourView,TypedValue.COMPLEX_UNIT_SP,widgetBean.hourFontSize.toFloat())
+        setTextViewTextSize(R.id.hourUnitView,TypedValue.COMPLEX_UNIT_SP,widgetBean.hourUnitFontSize.toFloat())
+        setTextViewTextSize(R.id.timeView,TypedValue.COMPLEX_UNIT_SP,widgetBean.timeFontSize.toFloat())
+        setTextViewTextSize(R.id.signView,TypedValue.COMPLEX_UNIT_SP,widgetBean.signFontSize.toFloat())
     }
 
     fun alarmUpdate(context: Context){
@@ -115,6 +150,10 @@ object WidgetUtil {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,getIdArray(context))
         context.sendBroadcast(intent)
 
+    }
+
+    fun log(value: String) {
+        Log.d("Lollipop", "WidgetUtil: $value")
     }
 
 }

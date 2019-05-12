@@ -15,6 +15,7 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_widget_list.*
 import kotlinx.android.synthetic.main.content_widget_list.*
 import liang.lollipop.lbaselib.base.BaseActivity
+import liang.lollipop.lbaselib.util.SimpleRecyclerViewHelper
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.adapter.WidgetListAdapter
 import liang.lollipop.lcountdown.bean.WidgetBean
@@ -83,21 +84,31 @@ class WidgetListActivity : BaseActivity(),SwipeRefreshLayout.OnRefreshListener {
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
-        val helper = getTouchHelper(recyclerView)
-        helper.setCanDrag(true)
-        helper.setCanSwipe(false)
+        val helper = SimpleRecyclerViewHelper.create<WidgetBean>().apply {
+            recyclerView = this@WidgetListActivity.recyclerView
+
+            dataList = this@WidgetListActivity.widgetList
+
+            undoValue = getString(R.string.undo)
+
+            deleteValue = getString(R.string.deleted)
+
+            callback = object :SimpleRecyclerViewHelper.SimpleCallback<WidgetBean>(){
+                override fun onMove(src: WidgetBean, target: WidgetBean, srcPosition: Int, targetPosition: Int): Boolean {
+                    isChangeManual = true
+                    return true
+                }
+            }
+        }.buildToTouchHelper().apply {
+            setStateChangedListener(this@WidgetListActivity)
+            setCanDrag(true)
+            setCanSwipe(false)
+        }
         adapter = WidgetListAdapter(widgetList,layoutInflater,helper)
         recyclerView.adapter = adapter
 
         adapter.notifyDataSetChanged()
 
-    }
-
-    override fun onMove(srcPosition: Int, targetPosition: Int): Boolean {
-        Collections.swap(widgetList, srcPosition, targetPosition)
-        adapter.notifyItemMoved(srcPosition, targetPosition)
-        isChangeManual = true
-        return true
     }
 
     override fun onItemTouchStateChanged(viewHolder: RecyclerView.ViewHolder?, status: Int) {

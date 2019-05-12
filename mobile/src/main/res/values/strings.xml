@@ -1,12 +1,13 @@
 <resources>
     <string name="app_name">LCountdown</string>
-    <string name="title_activity_widget_list">LCountdown </string>
+    <string name="title_activity_widget_list">Countdown list</string>
     <string name="deleted">deleted</string>
-    <string name="undo">withdraw</string>
+    <string name="undo">undo</string>
     <string name="alert">Note</string>
     <string name="msg_alert_dream">This application supports screen saver. The first countdown in the list will be displayed in the screen saver, and you can drag and drop to reorder. At the same time, you can display notification information in the screen saver, but you need relevant permissions.</string>
     <string name="goto_open">to open</string>
     <string name="no_time">does not show time</string>
+    <string name="no_countdown">Not counting down</string>
     <string name="aims_name">target name</string>
     <string name="sign">signature</string>
     <string name="end_time">target time</string>
@@ -20,9 +21,9 @@
     <string name="hour">Hour</string>
     <string name="hint_timing">The time has started. You can choose to set the name of this time</string>
     <string name="timing_name">Timing name</string>
-    <string name="quiet">Quiet</string>
+    <string name="quiet">Quiet start</string>
     <string name="remind">Floating reminder</string>
-    <string name="title_activity_timing_list">历史计时</string>
+    <string name="title_activity_timing_list">Timer</string>
     <string name="now">Now</string>
     <string name="stop_timing">Stop timing</string>
     <string name="quick_timing">Quick timing</string>
@@ -39,4 +40,6 @@
     <string name="new_way_of_operation_info">Due to too many preferences, the previous list was too complicated to display. Therefore, the preferences are divided into three groups and displayed in pages. You can swipe left and right to switch between different preferences. After entering this page, you can swipe down to hide your preferences at any time, or you can pull up at any time to call up preferences. Preferences can be previewed instantly, but only if you click the confirmation button.</string>
     <string name="got_it">Got it</string>
     <string name="do_not_show_again">Not show again</string>
+    <string name="floating_notif_title">LCountdown</string>
+    <string name="floating_notif_msg">Countdown suspended windows are at your service</string>
 </resources>

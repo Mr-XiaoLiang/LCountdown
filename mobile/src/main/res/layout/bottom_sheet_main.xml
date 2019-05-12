@@ -14,9 +14,18 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <Space
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize" />
+            android:layout_height="?android:attr/actionBarSize" >
+            <ImageView
+                android:id="@+id/sheetBtn"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:src="@drawable/ic_keyboard_arrow_up_white_24dp"
+                android:layout_gravity="center"
+                android:tint="#EEE"
+                android:scaleType="center"/>
+        </FrameLayout>
 
         <liang.lollipop.lcountdown.view.WrapHeightViewPager
             android:id="@+id/viewPager"

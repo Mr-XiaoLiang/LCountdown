@@ -5,10 +5,7 @@
 
         <shape android:shape="rectangle">
 
-            <corners android:radius="5dp"/>
-
-            <stroke android:color="#868686"
-                android:width="2dp" />
+            <corners android:radius="@dimen/sheet_card_radius"/>
 
             <solid android:color="#EEE"/>
 

@@ -13,14 +13,13 @@
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
         app:cardElevation="3dp"
-        app:cardCornerRadius="5dp"
-        app:cardBackgroundColor="#868686">
+        app:cardCornerRadius="@dimen/sheet_card_radius"
+        app:cardBackgroundColor="#EEE">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/bg_group_block"
             android:padding="5dp">
 
             <android.support.design.widget.TextInputLayout
@@ -70,6 +69,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/no_time"/>
+                <Space
+                    android:layout_width="10px"
+                    android:layout_height="wrap_content"/>
+                <CheckBox
+                    android:textSize="12sp"
+                    android:id="@+id/timingTypeCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_countdown"/>
             </LinearLayout>
 
             <LinearLayout

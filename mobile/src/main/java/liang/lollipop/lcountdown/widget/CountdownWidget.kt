@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import liang.lollipop.lcountdown.bean.WidgetBean
 import liang.lollipop.lcountdown.utils.AppSettings
-import liang.lollipop.lcountdown.utils.CountdownUtil
 import liang.lollipop.lcountdown.utils.WidgetDBUtil
 import liang.lollipop.lcountdown.utils.WidgetUtil
 
@@ -33,8 +32,7 @@ class CountdownWidget: AppWidgetProvider() {
         for(weightId in appWidgetIds){
             widget.widgetId = weightId
             dbUtil.get(widget)
-            val countdownBean = CountdownUtil.countdown(widget.endTime)
-            WidgetUtil.update(context,countdownBean,widget,appWidgetManager)
+            WidgetUtil.update(context,widget,appWidgetManager)
         }
 
         dbUtil.close()

@@ -1,6 +1,7 @@
 package liang.lollipop.lcountdown.bean
 
 import liang.lollipop.lbaselib.base.BaseBean
+import liang.lollipop.lcountdown.utils.CountdownUtil
 
 /**
  * 小部件的Bean
@@ -106,6 +107,22 @@ class WidgetBean : BaseBean() {
      * 签名的字体大小
      */
     var signFontSize = 12
+
+    /**
+     * 不使用倒计时的形式
+     */
+    var noCountdown = false
+
+    /**
+     * 获取符合要求的时间结果
+     */
+    fun getTimerInfo(): CountdownBean {
+        return if (noCountdown) {
+            CountdownUtil.timer(endTime)
+        } else {
+            CountdownUtil.countdown(endTime)
+        }
+    }
 
     fun parseStyle(value: Int){
         widgetStyle = when(value){

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="liang.lollipop.lcountdown">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <permission
         android:name="liang.lollipop.lcountdown.countdownService"
@@ -10,20 +12,19 @@
         android:protectionLevel="normal" />
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:excludeFromRecents="true"
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-
-                <!-- <action android:name="android.intent.action.MAIN"/> -->
-                <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -40,26 +41,6 @@
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
 
-        <receiver android:name=".widget.QuickTimingWidget"
-            android:label="@string/quick_timing">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/quick_timing_widget_provider_info" />
-        </receiver>
-
-        <receiver android:name=".widget.TimingListWidget"
-            android:label="@string/title_activity_timing_list">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/timing_list_widget_provider_info" />
-        </receiver>
-
         <service
             android:name=".service.CountdownService"
             android:enabled="true"
@@ -74,10 +55,10 @@
         <activity
             android:name=".activity.WidgetListActivity"
             android:label="@string/title_activity_widget_list"
+            android:excludeFromRecents="true"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
@@ -108,26 +89,36 @@
         </service>
 
         <activity
+            android:excludeFromRecents="true"
             android:name=".activity.QuickTimingActivity"
             android:theme="@style/AppTheme.Transparent"
             android:launchMode="singleInstance">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
+            android:excludeFromRecents="true"
             android:name=".activity.TimingListActivity"
             android:label="@string/title_activity_timing_list"
             android:theme="@style/AppTheme.NoActionBar"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
+
+        <service android:name=".service.FloatingService"
+            android:enabled="true"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:process="liang.lollipop.lcountdown.dream"
+            android:permission="liang.lollipop.lcountdown.FLOATING_SERVICE" />
+
     </application>
 
 </manifest>

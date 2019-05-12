@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">倒计时</string>
-    <string name="title_activity_widget_list">倒计时</string>
+    <string name="title_activity_widget_list">倒计时列表</string>
     <string name="deleted">已删除</string>
     <string name="undo">撤回</string>
     <string name="alert">注意</string>
     <string name="msg_alert_dream">本应用支持屏幕保护功能。将会在屏幕保护中显示列表中第一项倒计时内容，您可以拖拽来重新排序。同时，你可以在屏幕保护中显示通知信息，但是需要相关权限。</string>
     <string name="goto_open">前往开启</string>
     <string name="no_time">不显示时间</string>
+    <string name="no_countdown">正向计时</string>
     <string name="aims_name">目标名</string>
     <string name="sign">签名</string>
     <string name="end_time">目标时间</string>
@@ -21,8 +22,9 @@
     <string name="hour">小时</string>
     <string name="hint_timing">计时已开始，您可以选择设置本次计时的名字</string>
     <string name="timing_name">计时名</string>
-    <string name="quiet">静默模式</string>
+    <string name="quiet">静默开始</string>
     <string name="remind">悬浮提醒</string>
+    <string name="title_activity_timing_list">计时器</string>
     <string name="now">现在</string>
     <string name="stop_timing">停止计时</string>
     <string name="quick_timing">快速计时</string>
@@ -39,4 +41,6 @@
     <string name="new_way_of_operation_info">由于偏好设置项过多，以前的列表展示过于繁杂。因此将偏好设置分为三组，以分页的形式展示出来。您可以左右滑动，切换不同的偏好设置项。进入此页面后，你可以随时向下滑动隐藏偏好设置，也可以随时向上拉起，唤出偏好设置。偏好设置即时可以预览，但是只有当您点击确认按钮之后才会生效。</string>
     <string name="got_it">知道了</string>
     <string name="do_not_show_again">不再显示</string>
+    <string name="floating_notif_title">倒计时</string>
+    <string name="floating_notif_msg">倒计时悬浮窗正在为您服务中</string>
 </resources>

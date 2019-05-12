@@ -12,10 +12,10 @@ class SimpleHandler():Handler() {
 
     private var callback: HandlerCallback? = null
 
-    override fun handleMessage(msg: Message) {
+    override fun handleMessage(msg: Message?) {
         super.handleMessage(msg)
-        if (callback != null) {
-            callback!!.onHandler(msg)
+        if (msg != null) {
+            callback?.onHandler(msg)
         }
     }
 

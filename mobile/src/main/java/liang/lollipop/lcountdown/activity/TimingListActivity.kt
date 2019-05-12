@@ -8,6 +8,8 @@ import android.support.design.widget.Snackbar
 import android.support.v4.util.Pair
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.activity_timing_list.*
 import kotlinx.android.synthetic.main.content_timing_list.*
@@ -66,6 +68,21 @@ class TimingListActivity : BaseActivity(){
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menuList -> {
+                startActivity(Intent(this, WidgetListActivity::class.java))
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onRefresh() {
         getData()
     }
@@ -104,14 +121,12 @@ class TimingListActivity : BaseActivity(){
         super.onClick(v)
 
         when(v){
-
             quickTimingBtn -> {
                 startActivityForResult(
                         Intent(this,QuickTimingActivity::class.java),
                         REQUEST_NEW_TIMING,
                         Pair.create(v,QuickTimingActivity.REMIND_BTN_TRANSITION),
                         Pair.create(assistBtn,QuickTimingActivity.QUIET_BTN_TRANSITION))
-
             }
 
         }

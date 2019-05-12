@@ -16,7 +16,7 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
     companion object {
 
         private const val DB_NAME = "WidgetDatabase"
-        private const val VERSION = 4
+        private const val VERSION = 5
 
         fun read(context: Context): SqlDB {
             return SqlDB(WidgetDBUtil(context), false)
@@ -73,6 +73,11 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
                 db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.TIME_FONT_SIZE} VARCHAR DEFAULT 18")
                 db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.SIGN_FONT_SIZE} VARCHAR DEFAULT 12")
 
+                onUpgrade(db,oldVersion+1,newVersion)
+            }
+
+            4 -> {
+                db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.NOT_COUNTDOWN} INTEGER DEFAULT 0")
             }
 
         }
@@ -108,6 +113,8 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
         const val TIME_FONT_SIZE = "TIME_FONT_SIZE"
         const val SIGN_FONT_SIZE = "SIGN_FONT_SIZE"
 
+        const val NOT_COUNTDOWN = "NOT_COUNTDOWN"
+
         const val SELECT_ALL_SQL = " select " +
                 " $ID , " +
                 " $END_TIME , " +
@@ -131,7 +138,9 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
                 " $HOUR_FONT_SIZE , " +
                 " $HOUR_UNIT_FONT_SIZE , " +
                 " $TIME_FONT_SIZE , " +
-                " $SIGN_FONT_SIZE " +
+                " $SIGN_FONT_SIZE , " +
+
+                " $NOT_COUNTDOWN " +
                 " from $TABLE order by $WIDGET_INDEX ;"
 
         const val SELECT_ONE_SQL = " select " +
@@ -157,7 +166,9 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
                 " $HOUR_FONT_SIZE , " +
                 " $HOUR_UNIT_FONT_SIZE , " +
                 " $TIME_FONT_SIZE , " +
-                " $SIGN_FONT_SIZE " +
+                " $SIGN_FONT_SIZE , " +
+
+                " $NOT_COUNTDOWN " +
                 " from $TABLE WHERE $ID = ? ;"
 
         const val CREATE_TABLE = "create table $TABLE ( " +
@@ -183,7 +194,8 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
                 " $HOUR_FONT_SIZE INTEGER , " +
                 " $HOUR_UNIT_FONT_SIZE INTEGER , " +
                 " $TIME_FONT_SIZE INTEGER , " +
-                " $SIGN_FONT_SIZE INTEGER " +
+                " $SIGN_FONT_SIZE INTEGER , " +
+                " $NOT_COUNTDOWN INTEGER " +
                 " );"
     }
 
@@ -345,6 +357,8 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             put(WidgetTable.HOUR_UNIT_FONT_SIZE,widgetBean.hourUnitFontSize)
             put(WidgetTable.TIME_FONT_SIZE,widgetBean.timeFontSize)
             put(WidgetTable.SIGN_FONT_SIZE,widgetBean.signFontSize)
+
+            put(WidgetTable.NOT_COUNTDOWN, widgetBean.noCountdown.b2i())
         }
 
         private fun WidgetBean.putData(c: Cursor){
@@ -371,6 +385,8 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             hourUnitFontSize = c.getInt(c.getColumnIndex(WidgetTable.HOUR_UNIT_FONT_SIZE))
             timeFontSize = c.getInt(c.getColumnIndex(WidgetTable.TIME_FONT_SIZE))
             signFontSize = c.getInt(c.getColumnIndex(WidgetTable.SIGN_FONT_SIZE))
+
+            noCountdown = c.getInt(c.getColumnIndex(WidgetTable.NOT_COUNTDOWN)).i2b()
         }
 
     }

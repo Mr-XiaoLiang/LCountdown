@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="quick_timer"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher_quick_round"
+        android:shortcutShortLabel="@string/quick_timing"
+        android:shortcutLongLabel="@string/quick_timing">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="liang.lollipop.lcountdown"
+            android:targetClass="liang.lollipop.lcountdown.activity.QuickTimingActivity" />
+        <categories android:name="android.shortcut.conversation"/>
+    </shortcut>
+    <shortcut
+        android:shortcutId="weight_list"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher_list_round"
+        android:shortcutShortLabel="@string/title_activity_widget_list"
+        android:shortcutLongLabel="@string/title_activity_widget_list">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="liang.lollipop.lcountdown"
+            android:targetClass="liang.lollipop.lcountdown.activity.WidgetListActivity" />
+        <categories android:name="android.shortcut.conversation"/>
+    </shortcut>
+</shortcuts>

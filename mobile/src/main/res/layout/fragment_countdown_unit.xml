@@ -13,15 +13,14 @@
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
         app:cardElevation="3dp"
-        app:cardCornerRadius="5dp"
-        app:cardBackgroundColor="#868686">
+        app:cardCornerRadius="@dimen/sheet_card_radius"
+        app:cardBackgroundColor="#EEE">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="5dp"
-            android:background="@drawable/bg_group_block">
+            android:padding="5dp">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/prefixNameInputGroup"

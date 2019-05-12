@@ -38,7 +38,6 @@ import liang.lollipop.lcountdown.widget.CountdownWidget
 class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
     CountdownUnitFragment.Callback,CountdownFontSizeFragment.Callback{
 
-
     companion object {
 
         private const val WHAT_UPDATE = 99
@@ -68,20 +67,12 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         WidgetUtil.alarmUpdate(this)
     }
 
+    private var sheetState = BottomSheetBehavior.STATE_COLLAPSED
+
     private fun initView(){
         widgetBean.widgetId = intent.getIntExtra(
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID)
-
-        isCreateModel = intent.getIntExtra(CountdownWidget.WIDGET_SHOW,0) < 1
-        if(isCreateModel){
-            val bottomSheetBehavior = BottomSheetBehavior.from(sheetGroup)
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        }else{
-            updateBtn.hide()
-        }
-
-        updateBtn.setOnClickListener(this)
 
         val bottomSheetBehavior = BottomSheetBehavior.from(sheetGroup)
         bottomSheetBehavior.setBottomSheetCallback(object :BottomSheetBehavior.BottomSheetCallback(){
@@ -89,16 +80,30 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-
-                if(newState == BottomSheetBehavior.STATE_EXPANDED){
-                    updateBtn.show()
-                }else{
-                    updateBtn.hide()
-                }
-
+                sheetState = newState
+                updateButton(newState)
             }
 
         })
+
+        isCreateModel = intent.getIntExtra(CountdownWidget.WIDGET_SHOW,0) < 1
+        if(isCreateModel){
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }else{
+            updateButton(BottomSheetBehavior.STATE_COLLAPSED)
+        }
+
+        updateBtn.setOnClickListener{
+            updateWidget()
+        }
+
+        sheetBtn.setOnClickListener {
+            if(sheetState == BottomSheetBehavior.STATE_EXPANDED){
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            }else{
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
 
         viewPager.adapter = Adapter(supportFragmentManager,fragments)
         viewPager.adapter?.notifyDataSetChanged()
@@ -115,6 +120,22 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
                     dialog.dismiss()
                 }
             }.show()
+        }
+    }
+
+    private fun updateButton(newState: Int) {
+        if(newState == BottomSheetBehavior.STATE_EXPANDED){
+            updateBtn.show()
+            sheetBtn.animate().let {
+                it.cancel()
+                it.rotation(180F).start()
+            }
+        }else{
+            updateBtn.hide()
+            sheetBtn.animate().let {
+                it.cancel()
+                it.rotation(0F).start()
+            }
         }
     }
 
@@ -164,26 +185,13 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
 
     }
 
-    override fun onClick(v: View?) {
-
-        when(v){
-
-
-            updateBtn -> {
-                updateWidget()
-            }
-
-        }
-
-    }
-
     override fun onHandler(message: Message) {
 
         when(message.what){
 
             WHAT_UPDATE -> {
 
-                countdown(widgetBean.endTime)
+                countdown()
 
                 handler.sendEmptyMessageDelayed(WHAT_UPDATE, DELAYED)
 
@@ -203,8 +211,7 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
 
         val appWidgetManager = AppWidgetManager.getInstance(this)
 
-        val countdownBean = CountdownUtil.countdown(widgetBean.endTime)
-        WidgetUtil.update(this,countdownBean,widgetBean,appWidgetManager)
+        WidgetUtil.update(this,widgetBean,appWidgetManager)
 
         val resultValue = Intent()
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetBean.widgetId)
@@ -214,8 +221,8 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
 
     }
 
-    private fun countdown(endTime: Long){
-        val bean = CountdownUtil.countdown(endTime)
+    private fun countdown(){
+        val bean = widgetBean.getTimerInfo()
         dayView.text = bean.days
         hourView.text = bean.hours
         timeView.text = bean.time
@@ -249,7 +256,12 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
 
     override fun onTimeInfoChange(time: Long) {
         widgetBean.endTime = time
-        countdown(time)
+        countdown()
+    }
+
+    override fun onTimingTypeChange(noCountdown: Boolean) {
+        widgetBean.noCountdown = noCountdown
+        countdown()
     }
 
     override fun onStyleInfoChange(style: WidgetStyle) {
@@ -261,6 +273,8 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         contentGroup.setBackgroundColor(bgColor)
 
         changeTextViewColor(widgetFrame,textColor)
+
+        widgetBean.widgetStyle = style
     }
 
     override fun onPrefixNameChange(name: CharSequence) {

@@ -326,7 +326,7 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
 
     private fun updateCountdown(){
 
-        val countdownBean = if(isTimer){CountdownUtil.timer(widgetBean.endTime)}else{CountdownUtil.countdown(widgetBean.endTime)}
+        val countdownBean = if(isTimer){CountdownUtil.timer(widgetBean.endTime)}else{widgetBean.getTimerInfo()}
 
         countdownView.text = countdownBean.getTimerValue()
 //        countdownView.text = "${countdownBean.days}.${countdownBean.hours}.${countdownBean.minutes}.${countdownBean.seconds}"

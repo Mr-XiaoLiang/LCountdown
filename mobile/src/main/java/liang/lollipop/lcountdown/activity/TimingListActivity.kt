@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.design.widget.BaseTransientBottomBar
 import android.support.design.widget.Snackbar
 import android.support.v4.util.Pair
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
@@ -14,10 +15,12 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_timing_list.*
 import kotlinx.android.synthetic.main.content_timing_list.*
 import liang.lollipop.lbaselib.base.BaseActivity
+import liang.lollipop.lcountdown.LApplication
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.adapter.TimingListAdapter
 import liang.lollipop.lcountdown.bean.TimingBean
 import liang.lollipop.lcountdown.holder.TimingHolder
+import liang.lollipop.lcountdown.utils.LogHelper
 import liang.lollipop.lcountdown.utils.TimingUtil
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -77,6 +80,25 @@ class TimingListActivity : BaseActivity(){
         when (item.itemId) {
             R.id.menuList -> {
                 startActivity(Intent(this, WidgetListActivity::class.java))
+                return true
+            }
+            R.id.clearLog -> {
+                val file = (application as LApplication).logDir
+                val size = file.let {
+                    if (it.exists() && it.isDirectory && it.canRead()) {
+                        it.listFiles().size
+                    } else {
+                        0
+                    }
+                }
+                AlertDialog.Builder(this)
+                        .setMessage(String.format(
+                                        getString(R.string.clear_log_message), size))
+                        .setNegativeButton(R.string.clear_log_enter) { dialog, _ ->
+                            LogHelper.clearLog((application as LApplication).logDir)
+                            Snackbar.make(recyclerView, R.string.clear_log_end, Snackbar.LENGTH_SHORT).show()
+                            dialog.dismiss()
+                        }.show()
                 return true
             }
         }

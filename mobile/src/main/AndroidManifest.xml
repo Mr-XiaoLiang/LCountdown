@@ -12,6 +12,7 @@
         android:protectionLevel="normal" />
 
     <application
+        android:name=".LApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -20,8 +21,8 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:excludeFromRecents="true"
             android:name=".activity.MainActivity"
+            android:excludeFromRecents="true"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -54,8 +55,8 @@
 
         <activity
             android:name=".activity.WidgetListActivity"
-            android:label="@string/title_activity_widget_list"
             android:excludeFromRecents="true"
+            android:label="@string/title_activity_widget_list"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -89,36 +90,58 @@
         </service>
 
         <activity
-            android:excludeFromRecents="true"
             android:name=".activity.QuickTimingActivity"
-            android:theme="@style/AppTheme.Transparent"
-            android:launchMode="singleInstance">
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme.Transparent">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:excludeFromRecents="true"
             android:name=".activity.TimingListActivity"
+            android:excludeFromRecents="true"
             android:label="@string/title_activity_timing_list"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleInstance">
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            <meta-data android:name="android.app.shortcuts"
+
+            <meta-data
+                android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
 
-        <service android:name=".service.FloatingService"
+        <service
+            android:name=".service.FloatingService"
             android:enabled="true"
             android:exported="true"
             android:label="@string/app_name"
-            android:process="liang.lollipop.lcountdown.dream"
-            android:permission="liang.lollipop.lcountdown.FLOATING_SERVICE" />
+            android:permission="liang.lollipop.lcountdown.FLOATING_SERVICE"
+            android:process="liang.lollipop.lcountdown.dream" />
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+        <activity
+            android:name=".activity.CrashActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:excludeFromRecents="true">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -1,11 +1,11 @@
 package liang.lollipop.lbaselib.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Environment
 import android.os.Looper
-import android.text.TextUtils
 import android.util.Log
 import java.io.*
 import java.text.SimpleDateFormat
@@ -26,13 +26,19 @@ class CrashHandler private constructor(): Thread.UncaughtExceptionHandler {
             return Inner.crashHandler
         }
 
-        fun init(context: Context,logDir:String): CrashHandler {
-            return get().apply { initSelf(context,logDir) }
+        fun init(context: Context,logDir: File? = null, listener: ((File?) -> Unit)? = null): CrashHandler {
+            return get().apply {
+                initSelf(context,logDir)
+                if (listener != null) {
+                    crashListener = OnCrashListenerImpl(listener)
+                }
+            }
         }
 
     }
 
     private object Inner{
+        @SuppressLint("StaticFieldLeak")
         val crashHandler = CrashHandler()
     }
 
@@ -45,11 +51,13 @@ class CrashHandler private constructor(): Thread.UncaughtExceptionHandler {
     //用于格式化日期,作为日志文件名的一部分
     private val formatter = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.CHINESE)
     //默认在根目录文件夹
-    private var logDir:String = Environment.getExternalStorageDirectory().absolutePath
+    private var logDir:File = Environment.getExternalStorageDirectory()
 
-    fun initSelf(context: Context,logDir:String){
+    private var crashListener: OnCrashListener? = null
+
+    fun initSelf(context: Context,logDir:File? = null){
         this.context = context
-        if(!TextUtils.isEmpty(logDir)){
+        if (logDir != null) {
             this.logDir = logDir
         }
         this.defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
@@ -75,14 +83,14 @@ class CrashHandler private constructor(): Thread.UncaughtExceptionHandler {
         }
     }
 
-    private fun outputTextFile(value: String): String {
+    private fun outputTextFile(value: String): File? {
         return outputTextFile(value, formatter.format(Date()))
     }
 
-    private fun outputTextFile(value: String, name: String): String {
+    private fun outputTextFile(value: String, name: String): File? {
         return try {
-            val file = File(logDir,name + ".txt")
-            val path = File(logDir)
+            val file = File(logDir, "$name.txt")
+            val path = logDir
             if (!path.exists()) {
                 path.mkdirs()
             }
@@ -91,9 +99,9 @@ class CrashHandler private constructor(): Thread.UncaughtExceptionHandler {
             writer.write(value)
             writer.flush()
             writer.close()//记得关闭
-            file.absolutePath
+            file
         } catch (e: Exception) {
-            ""
+            null
         }
     }
 
@@ -109,7 +117,6 @@ class CrashHandler private constructor(): Thread.UncaughtExceptionHandler {
         }
         //保存日志文件
         saveCrashInfo2File(context, ex)
-        //使用Toast来显示异常信息
         object : Thread() {
             override fun run() {
                 Looper.prepare()
@@ -159,12 +166,12 @@ class CrashHandler private constructor(): Thread.UncaughtExceptionHandler {
      * @param ex
      * @return 返回文件名称, 便于将文件传送到服务器
      */
-    private fun saveCrashInfo2File(context: Context, ex: Throwable): String {
+    private fun saveCrashInfo2File(context: Context, ex: Throwable): File? {
 
         val stringBuffer = StringBuffer()
         val deviceInfo = collectDeviceInfo(context)
         for ((key, value) in deviceInfo) {
-            stringBuffer.append(key + "=" + value + "\n")
+            stringBuffer.append("$key=$value\n")
         }
 
         val writer = StringWriter()
@@ -179,6 +186,16 @@ class CrashHandler private constructor(): Thread.UncaughtExceptionHandler {
         val result = writer.toString()
         stringBuffer.append(result)
         return outputTextFile(stringBuffer.toString())
+    }
+
+    private class OnCrashListenerImpl(private val listener: (File?) -> Unit): OnCrashListener {
+        override fun onCrash(logFile: File?) {
+            listener(logFile)
+        }
+    }
+
+    interface OnCrashListener {
+        fun onCrash(logFile: File?)
     }
 
 }

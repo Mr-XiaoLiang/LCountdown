@@ -6,4 +6,8 @@
         android:title="@string/title_activity_widget_list"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/clearLog"
+        android:title="@string/clear_log"
+        app:showAsAction="never"/>
+
 </menu>

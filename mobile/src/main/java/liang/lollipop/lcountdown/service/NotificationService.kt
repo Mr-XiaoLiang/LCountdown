@@ -2,6 +2,7 @@ package liang.lollipop.lcountdown.service
 
 import android.app.Notification
 import android.content.Intent
+import android.os.Bundle
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 
@@ -25,14 +26,14 @@ class NotificationService: NotificationListenerService() {
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         super.onNotificationPosted(sbn)
-        val notification = sbn.notification
+        val notification = sbn.notification?:return
         if (notification.flags and Notification.FLAG_ONGOING_EVENT == Notification.FLAG_ONGOING_EVENT){
             return
         }
-        val bundle = notification.extras
-        bundle.putString(ARG_PKG, sbn.packageName)
+        val notifyInfo = notification.extras?:return
         val intent = Intent(ACTION_LOLLIPOP_NOTIFICATION_POSTED)
-        intent.putExtras(bundle)
+        intent.putExtra(ARG_ICON, notifyInfo.getInt(ARG_ICON))
+        intent.putExtra(ARG_PKG, sbn.packageName)
         sendBroadcast(intent)
     }
 

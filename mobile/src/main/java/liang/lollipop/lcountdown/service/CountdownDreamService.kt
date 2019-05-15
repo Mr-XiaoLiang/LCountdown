@@ -2,15 +2,18 @@ package liang.lollipop.lcountdown.service
 
 import android.animation.Animator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Message
 import android.service.dreams.DreamService
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -54,20 +57,36 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
 
     private val random = Random()
 
-    private val hiddenAnimator = ValueAnimator()
-    private val showAnimator = ValueAnimator()
+    private val hiddenAnimator = ValueAnimator().apply {
+        interpolator = DecelerateInterpolator()
+        duration = HIDDEN_DURATION
+        addUpdateListener(this@CountdownDreamService)
+        addListener(this@CountdownDreamService)
+        setFloatValues(1F, 0F)
+    }
+    private val showAnimator = ValueAnimator().apply {
+        interpolator = DecelerateInterpolator()
+        duration = SHOW_DURATION
+        addUpdateListener(this@CountdownDreamService)
+        addListener(this@CountdownDreamService)
+        setFloatValues(0F, 1F)
+    }
 
     private val widgetBean = WidgetBean()
 
-    private val iconBeanList = java.util.ArrayList<IconBean>()
-    private val shownHolders = java.util.ArrayList<IconHolder>()
-    private val waitHolders = java.util.ArrayList<IconHolder>()
+    private val iconBeanList = ArrayList<IconBean>()
+    private val shownHolders = ArrayList<IconHolder>()
+    private val waitHolders = ArrayList<IconHolder>()
 
     private val dreamBroadcastReceiver = DreamBroadcastReceiver()
 
     private val handler = SimpleHandler(this)
 
     private var isTimer = false
+
+    private var batteryHelper: BatteryHelper? = null
+
+    private var lastAnimationTime = -1
 
     companion object {
 
@@ -88,7 +107,7 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
         when(message.what){
 
             WHAT_COUNTDOWN -> {
-                updateCountdown()
+                updateInfo()
                 handler.sendEmptyMessageDelayed(WHAT_COUNTDOWN, COUNTDOWN_DURATION)
             }
 
@@ -102,10 +121,12 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
         isInteractive = false
         // Hide system UI
         isFullscreen = true
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_IMMERSIVE or
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         // Set the dream layout
         setContentView(R.layout.dream_root)
         initView()
-        initAnimator()
         initData()
     }
 
@@ -121,20 +142,10 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
         nameView = findViewById(R.id.nameView)
         iconGroup = findViewById(R.id.iconsGroup)
 
-    }
+        countdownView.typeface = Typeface.createFromAsset(assets, "fonts/time_font.otf")
+        timeView.typeface = Typeface.createFromAsset(assets, "fonts/ttf_liquid_crystal.ttf")
+        batteryView.typeface = Typeface.createFromAsset(assets, "fonts/ttf_liquid_crystal.ttf")
 
-    private fun initAnimator(){
-        hiddenAnimator.interpolator = DecelerateInterpolator()
-        hiddenAnimator.duration = HIDDEN_DURATION
-        hiddenAnimator.addUpdateListener(this)
-        hiddenAnimator.addListener(this)
-        hiddenAnimator.setFloatValues(1F, 0F)
-
-        showAnimator.interpolator = DecelerateInterpolator()
-        showAnimator.duration = SHOW_DURATION
-        showAnimator.addUpdateListener(this)
-        showAnimator.addListener(this)
-        showAnimator.setFloatValues(0F, 1F)
     }
 
     private fun initData(){
@@ -148,6 +159,11 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
             widgetBean.endTime = System.currentTimeMillis()
             widgetBean.countdownName = ""
         }
+        for (holder in shownHolders) {
+            holder.remove()
+        }
+        waitHolders.addAll(shownHolders)
+        shownHolders.clear()
     }
 
     override fun onAnimationUpdate(animation: ValueAnimator?) {
@@ -179,8 +195,7 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
         super.onDreamingStarted()
         initData()
         registerReceiver()
-        updateTime()
-        updateCountdown()
+        updateInfo()
         showAnimator.start()
         handler.sendEmptyMessage(WHAT_COUNTDOWN)
     }
@@ -190,6 +205,12 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
         unregisterReceiver()
         cancelAnimator()
         handler.removeMessages(WHAT_COUNTDOWN)
+    }
+
+    private fun updateInfo() {
+        updateTime()
+        updateCountdown()
+        updateBattery()
     }
 
     private fun cancelAnimator() {
@@ -205,31 +226,44 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
         dreamBody.translationY = y.toFloat()
     }
 
+    private fun getBattery(): Int {
+        if (batteryHelper == null) {
+            batteryHelper = BatteryHelper(this)
+        }
+        return batteryHelper?.capacity?:-1
+    }
+
+    private class BatteryHelper(context: Context) {
+        private val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+
+        /**
+         * 电量的百分比
+         * 0~100
+         */
+        val capacity: Int
+            get() {
+                // 当前电量百分比
+                return batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+            }
+
+    }
+
     private inner class DreamBroadcastReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
-                //时间变化
-                Intent.ACTION_TIME_CHANGED, Intent.ACTION_TIME_TICK -> {
-                    updateTime()
-                    updateCountdown()
-                }
-                //电量变化
-                Intent.ACTION_BATTERY_CHANGED -> updateBattery(intent)
-                 //充电完毕
-                Intent.ACTION_BATTERY_OKAY -> {
-                    batteryView.text = "100%"
-                }
-                //添加通知
+                // 添加通知
                 NotificationService.ACTION_LOLLIPOP_NOTIFICATION_POSTED -> addIcon(intent.extras)
-            //删除通知
+                // 删除通知
                 NotificationService.ACTION_LOLLIPOP_NOTIFICATION_REMOVED -> removeIcon(intent.extras)
             }
         }
     }
 
-    private fun addIcon(bundle: Bundle){
-
+    private fun addIcon(bundle: Bundle?){
+        if (bundle == null) {
+            return
+        }
         TaskUtils.addUITask(object :TaskUtils.UICallback<IconBean,Bundle>{
             override fun onSuccess(result: IconBean) {
 
@@ -277,8 +311,10 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
 
     }
 
-    private fun removeIcon(bundle: Bundle){
-
+    private fun removeIcon(bundle: Bundle?){
+        if (bundle == null) {
+            return
+        }
         TaskUtils.addUITask(object : TaskUtils.UICallback<ArrayList<IconHolder>,Bundle>{
             override fun onSuccess(result: ArrayList<IconHolder>) {
 
@@ -311,6 +347,7 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
 
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateTime() {
         calendar.timeInMillis = System.currentTimeMillis()
         val hour = calendar.get(Calendar.HOUR_OF_DAY).formatNumber()
@@ -319,29 +356,32 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
 
         timeView.text = "$hour:$minutes"
 
-        if (minutesInt % LOCATION_UPDATE_INTERVAL == 0) {
+        if (minutesInt % LOCATION_UPDATE_INTERVAL == 0 && minutesInt != lastAnimationTime) {
+            lastAnimationTime = minutesInt
             hiddenAnimator.start()
         }
     }
 
     private fun updateCountdown(){
 
-        val countdownBean = if(isTimer){CountdownUtil.timer(widgetBean.endTime)}else{widgetBean.getTimerInfo()}
+        val countdownBean = if(isTimer){
+            CountdownUtil.timer(widgetBean.endTime)
+        }else{
+            widgetBean.getTimerInfo()
+        }
 
         countdownView.text = countdownBean.getTimerValue()
-//        countdownView.text = "${countdownBean.days}.${countdownBean.hours}.${countdownBean.minutes}.${countdownBean.seconds}"
         nameView.text = widgetBean.countdownName
 
     }
 
-    private fun updateBattery(intent: Intent){
-        //当前剩余电量
-        val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
-        //电量最大值
-        val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 1)
-        //电量百分比
-        val batteryPct = (level / scale.toFloat() * 100).toInt()
-        batteryView.text = "$batteryPct%"
+    private fun updateBattery(){
+        val value = getBattery()
+        batteryView.text = if (value < 0) {
+            ""
+        } else {
+            "$value%"
+        }
     }
 
     private fun Int.formatNumber(): String = if(this < 10){ "0"+this }else{ ""+this }
@@ -350,15 +390,16 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
         val intentFilter = IntentFilter()
         intentFilter.addAction(NotificationService.ACTION_LOLLIPOP_NOTIFICATION_POSTED)
         intentFilter.addAction(NotificationService.ACTION_LOLLIPOP_NOTIFICATION_REMOVED)
-        intentFilter.addAction(Intent.ACTION_TIME_CHANGED)
-        intentFilter.addAction(Intent.ACTION_TIME_TICK)
-        intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED)
-        intentFilter.addAction(Intent.ACTION_BATTERY_OKAY)
         registerReceiver(dreamBroadcastReceiver, intentFilter)
     }
 
     private fun unregisterReceiver() {
         unregisterReceiver(dreamBroadcastReceiver)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        batteryHelper = null
     }
 
 }

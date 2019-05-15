@@ -159,7 +159,7 @@ class WidgetBean : BaseBean() {
         this.hourUnitFontSize = new.hourUnitFontSize
         this.timeFontSize = new.timeFontSize
         this.signFontSize = new.signFontSize
-
+        this.noCountdown = new.noCountdown
     }
 
 }

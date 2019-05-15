@@ -13,6 +13,7 @@ import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Message
 import android.service.dreams.DreamService
+import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -77,6 +78,7 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
     private val iconBeanList = ArrayList<IconBean>()
     private val shownHolders = ArrayList<IconHolder>()
     private val waitHolders = ArrayList<IconHolder>()
+    private val packageNames = ArrayList<String>()
 
     private val dreamBroadcastReceiver = DreamBroadcastReceiver()
 
@@ -261,7 +263,11 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
     }
 
     private fun addIcon(bundle: Bundle?){
-        if (bundle == null) {
+        val pkgName = bundle?.getString(NotificationService.ARG_PKG, "")?:return
+        if (TextUtils.isEmpty(pkgName)) {
+            return
+        }
+        if (packageNames.indexOf(pkgName) >= 0) {
             return
         }
         TaskUtils.addUITask(object :TaskUtils.UICallback<IconBean,Bundle>{
@@ -284,27 +290,13 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
             }
 
             override fun onBackground(args: Bundle?): IconBean {
-
-                var isShown = false
-                val pkgName = args?.getString(NotificationService.ARG_PKG, "")?:""
-                for (bean in iconBeanList) {
-                    if (bean.pkgName == pkgName) {
-                        isShown = true
-                        break
-                    }
+                val iconId = args?.getInt(NotificationService.ARG_ICON, 0)?:0
+                if(iconId == 0){
+                    throw RuntimeException("iconId == 0")
                 }
-
-                if(!isShown){
-                    val iconId = args?.getInt(NotificationService.ARG_ICON, 0)?:0
-                    if(iconId == 0){
-                        throw RuntimeException("iconId == 0")
-                    }
-                    val pkgContext = createPackageContext(pkgName, Context.CONTEXT_IGNORE_SECURITY)
-                    val icon = TintUtil.tintDrawable(pkgContext,iconId).setColor(ICON_COLOR).mutate().tint()
-                    return IconBean(pkgName,icon)
-                }else{
-                    throw RuntimeException("is Shown")
-                }
+                val pkgContext = createPackageContext(pkgName, Context.CONTEXT_IGNORE_SECURITY)
+                val icon = TintUtil.tintDrawable(pkgContext,iconId).setColor(ICON_COLOR).mutate().tint()
+                return IconBean(pkgName,icon)
             }
 
         },bundle)
@@ -312,39 +304,16 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
     }
 
     private fun removeIcon(bundle: Bundle?){
-        if (bundle == null) {
-            return
+        val pkgName = bundle?.getString(NotificationService.ARG_PKG, "")?:return
+        val holderIterator = shownHolders.iterator()
+        while (holderIterator.hasNext()) {
+            val holder = holderIterator.next()
+            if (holder.bean != null && pkgName == holder.bean?.pkgName) {
+                waitHolders.add(holder)
+                holder.remove()
+                holderIterator.remove()
+            }
         }
-        TaskUtils.addUITask(object : TaskUtils.UICallback<ArrayList<IconHolder>,Bundle>{
-            override fun onSuccess(result: ArrayList<IconHolder>) {
-
-                for (holder in result) {
-                    holder.remove()
-                }
-
-            }
-
-            override fun onError(e: Exception, code: Int, msg: String) {
-                e.printStackTrace()
-            }
-
-            override fun onBackground(args: Bundle?): ArrayList<IconHolder> {
-
-                val pkgName = args?.getString(NotificationService.ARG_PKG, "")?:""
-                val holderIterator = shownHolders.iterator()
-                val holders = ArrayList<IconHolder>()
-                while (holderIterator.hasNext()) {
-                    val holder = holderIterator.next()
-                    if (holder.bean != null && pkgName == holder.bean?.pkgName) {
-                        waitHolders.add(holder)
-                        holders.add(holder)
-                        holderIterator.remove()
-                    }
-                }
-                return holders
-            }
-        }, bundle)
-
     }
 
     @SuppressLint("SetTextI18n")

@@ -270,6 +270,7 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
         if (packageNames.indexOf(pkgName) >= 0) {
             return
         }
+        packageNames.add(pkgName)
         TaskUtils.addUITask(object :TaskUtils.UICallback<IconBean,Bundle>{
             override fun onSuccess(result: IconBean) {
 
@@ -306,6 +307,7 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
     private fun removeIcon(bundle: Bundle?){
         val pkgName = bundle?.getString(NotificationService.ARG_PKG, "")?:return
         val holderIterator = shownHolders.iterator()
+        packageNames.remove(pkgName)
         while (holderIterator.hasNext()) {
             val holder = holderIterator.next()
             if (holder.bean != null && pkgName == holder.bean?.pkgName) {

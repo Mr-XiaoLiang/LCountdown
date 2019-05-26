@@ -36,10 +36,17 @@
             app:tabGravity="center"
             android:layout_marginStart="10dp"/>
 
-        <liang.lollipop.lcountdown.view.WrapHeightViewPager
-            android:id="@+id/viewPager"
+        <android.support.v7.widget.CardView
+            android:id="@+id/viewPagerGroup"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="#EFEFEF"
+            app:cardCornerRadius="@dimen/sheet_card_radius">
+            <liang.lollipop.lcountdown.view.WrapHeightViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </android.support.v7.widget.CardView>
 
     </LinearLayout>
 
@@ -48,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:fabSize="normal"
-        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:src="@drawable/ic_done_white_24dp"

@@ -88,17 +88,6 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
 
         })
 
-        isCreateModel = intent.getIntExtra(CountdownWidget.WIDGET_SHOW,0) < 1
-        if(isCreateModel){
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        }else{
-            updateButton(BottomSheetBehavior.STATE_COLLAPSED)
-        }
-
-        updateBtn.setOnClickListener{
-            updateWidget()
-        }
-
         sheetBtn.setOnClickListener {
             if(sheetState == BottomSheetBehavior.STATE_EXPANDED){
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -107,9 +96,23 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
             }
         }
 
+        updateBtn.setOnClickListener{
+            updateWidget()
+        }
+
+        viewPager.offscreenPageLimit = 2
         viewPager.adapter = Adapter(supportFragmentManager,fragments, this)
         tabLayout.setupWithViewPager(viewPager)
         viewPager.adapter?.notifyDataSetChanged()
+
+        isCreateModel = intent.getIntExtra(CountdownWidget.WIDGET_SHOW,0) < 1
+        if(isCreateModel){
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }else{
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+        sheetState = bottomSheetBehavior.state
+        updateButton(sheetState)
 
         if(CountdownUtil.isShowNewVersionHint(this,"MainActivity")){
             AlertDialog.Builder(this).apply {

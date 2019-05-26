@@ -4,169 +4,155 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v7.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        app:cardElevation="3dp"
-        app:cardCornerRadius="@dimen/sheet_card_radius"
-        app:cardBackgroundColor="#EEE">
+        android:orientation="vertical"
+        android:padding="5dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/prefixFontSizeView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="5dp">
+            android:textSize="12sp"
+            android:text="@string/prefix_font_size"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"/>
 
-            <TextView
-                android:id="@+id/prefixFontSizeView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:text="@string/prefix_font_size"
-                android:paddingLeft="10dp"
-                android:paddingTop="5dp"/>
+        <SeekBar
+            android:id="@+id/prefixFontSizeBar"
+            android:max="50"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-            <SeekBar
-                android:id="@+id/prefixFontSizeBar"
-                android:max="50"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/nameFontSizeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="@string/name_font_size"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"/>
 
-            <TextView
-                android:id="@+id/nameFontSizeView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:text="@string/name_font_size"
-                android:paddingLeft="10dp"
-                android:paddingTop="10dp"/>
+        <SeekBar
+            android:id="@+id/nameFontSizeBar"
+            android:max="50"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-            <SeekBar
-                android:id="@+id/nameFontSizeBar"
-                android:max="50"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/suffixFontSizeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="@string/suffix_font_size"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"/>
 
-            <TextView
-                android:id="@+id/suffixFontSizeView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:text="@string/suffix_font_size"
-                android:paddingLeft="10dp"
-                android:paddingTop="10dp"/>
+        <SeekBar
+            android:id="@+id/suffixFontSizeBar"
+            android:max="50"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-            <SeekBar
-                android:id="@+id/suffixFontSizeBar"
-                android:max="50"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/dayFontSizeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="@string/day_font_size"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"/>
 
-            <TextView
-                android:id="@+id/dayFontSizeView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:text="@string/day_font_size"
-                android:paddingLeft="10dp"
-                android:paddingTop="5dp"/>
+        <SeekBar
+            android:id="@+id/dayFontSizeBar"
+            android:max="50"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-            <SeekBar
-                android:id="@+id/dayFontSizeBar"
-                android:max="50"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/dayUnitFontSizeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="@string/day_unit_font_size"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"/>
 
-            <TextView
-                android:id="@+id/dayUnitFontSizeView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:text="@string/day_unit_font_size"
-                android:paddingLeft="10dp"
-                android:paddingTop="10dp"/>
+        <SeekBar
+            android:id="@+id/dayUnitFontSizeBar"
+            android:max="50"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-            <SeekBar
-                android:id="@+id/dayUnitFontSizeBar"
-                android:max="50"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/hourFontSizeView"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="@string/hour_font_size"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"/>
 
-            <TextView
-                android:id="@+id/hourFontSizeView"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:text="@string/hour_font_size"
-                android:paddingLeft="10dp"
-                android:paddingTop="10dp"/>
+        <SeekBar
+            android:visibility="gone"
+            android:id="@+id/hourFontSizeBar"
+            android:max="50"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-            <SeekBar
-                android:visibility="gone"
-                android:id="@+id/hourFontSizeBar"
-                android:max="50"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/hourUnitFontSizeView"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="@string/hour_unit_font_size"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"/>
 
-            <TextView
-                android:id="@+id/hourUnitFontSizeView"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:text="@string/hour_unit_font_size"
-                android:paddingLeft="10dp"
-                android:paddingTop="5dp"/>
+        <SeekBar
+            android:visibility="gone"
+            android:id="@+id/hourUnitFontSizeBar"
+            android:max="50"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-            <SeekBar
-                android:visibility="gone"
-                android:id="@+id/hourUnitFontSizeBar"
-                android:max="50"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/timeFontSizeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="@string/time_font_size"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"/>
 
-            <TextView
-                android:id="@+id/timeFontSizeView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:text="@string/time_font_size"
-                android:paddingLeft="10dp"
-                android:paddingTop="10dp"/>
+        <SeekBar
+            android:id="@+id/timeFontSizeBar"
+            android:max="50"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-            <SeekBar
-                android:id="@+id/timeFontSizeBar"
-                android:max="50"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/signFontSizeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="@string/sign_font_size"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"/>
 
-            <TextView
-                android:id="@+id/signFontSizeView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:text="@string/sign_font_size"
-                android:paddingLeft="10dp"
-                android:paddingTop="10dp"/>
+        <SeekBar
+            android:id="@+id/signFontSizeBar"
+            android:max="50"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-            <SeekBar
-                android:id="@+id/signFontSizeBar"
-                android:max="50"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
-
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
+    </LinearLayout>
 
 </FrameLayout>

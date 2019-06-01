@@ -90,6 +90,8 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
 
     private var lastAnimationTime = -1
 
+    private var isDestroy = false
+
     companion object {
 
         private const val LOCATION_UPDATE_INTERVAL = 5
@@ -119,6 +121,7 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
+        isDestroy = false
         // Exit dream upon user touch
         isInteractive = false
         // Hide system UI
@@ -130,6 +133,13 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
         setContentView(R.layout.dream_root)
         initView()
         initData()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        isDestroy = true
+        cancelAnimator()
+        handler.removeMessages(WHAT_COUNTDOWN)
     }
 
     private fun initView(){
@@ -200,16 +210,21 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
         updateInfo()
         showAnimator.start()
         handler.sendEmptyMessage(WHAT_COUNTDOWN)
+        isDestroy = false
     }
 
     override fun onDreamingStopped() {
         super.onDreamingStopped()
+        isDestroy = true
         unregisterReceiver()
         cancelAnimator()
         handler.removeMessages(WHAT_COUNTDOWN)
     }
 
     private fun updateInfo() {
+        if (isDestroy) {
+            return
+        }
         updateTime()
         updateCountdown()
         updateBattery()
@@ -222,6 +237,9 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
 
     //重新调整位置
     private fun layoutAgain() {
+        if (isDestroy) {
+            return
+        }
         val x = Math.abs(random.nextInt(dreamRoot.width - dreamBody.width))
         val y = Math.abs(random.nextInt(dreamRoot.height - dreamBody.height))
         dreamBody.translationX = x.toFloat()
@@ -253,6 +271,9 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
     private inner class DreamBroadcastReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
+            if (isDestroy) {
+                return
+            }
             when (intent.action) {
                 // 添加通知
                 NotificationService.ACTION_LOLLIPOP_NOTIFICATION_POSTED -> addIcon(intent.extras)
@@ -283,7 +304,6 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
                 holder.addTo(iconGroup)
                 holder.onBind(result)
                 shownHolders.add(holder)
-
             }
 
             override fun onError(e: Exception, code: Int, msg: String) {
@@ -334,7 +354,6 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
     }
 
     private fun updateCountdown(){
-
         val countdownBean = if(isTimer){
             CountdownUtil.timer(widgetBean.endTime)
         }else{
@@ -355,7 +374,7 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
         }
     }
 
-    private fun Int.formatNumber(): String = if(this < 10){ "0"+this }else{ ""+this }
+    private fun Int.formatNumber(): String = if(this < 10){ "0$this" }else{ ""+this }
 
     private fun registerReceiver() {
         val intentFilter = IntentFilter()

@@ -8,9 +8,9 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import java.util.*
 
 /**
@@ -31,90 +31,90 @@ object PermissionsUtil {
      * 日历权限
      * （日历读写权限）
      */
-    val CALENDAR = Manifest.permission_group.CALENDAR
+    const val CALENDAR = Manifest.permission_group.CALENDAR
 
-    val READ_CALENDAR = Manifest.permission.READ_CALENDAR
-    val WRITE_CALENDAR = Manifest.permission.WRITE_CALENDAR
+    const val READ_CALENDAR = Manifest.permission.READ_CALENDAR
+    const val WRITE_CALENDAR = Manifest.permission.WRITE_CALENDAR
     //写入设置权限
-    val WRITE_SETTINGS = Manifest.permission.WRITE_SETTINGS
+    const val WRITE_SETTINGS = Manifest.permission.WRITE_SETTINGS
 
     /**
      * 相机使用权限
      * （相机相关，包括闪光灯）
      */
-    val CAMERA = Manifest.permission_group.CAMERA
+    const val CAMERA = Manifest.permission_group.CAMERA
 
-    val CAMERA_ = Manifest.permission.CAMERA
+    const val CAMERA_ = Manifest.permission.CAMERA
 
     /**
      * 通讯录权限
      * （读写联系人，获取账户）
      */
-    val CONTACTS = Manifest.permission_group.CONTACTS
+    const val CONTACTS = Manifest.permission_group.CONTACTS
 
-    val WRITE_CONTACTS = Manifest.permission.WRITE_CONTACTS
-    val GET_ACCOUNTS = Manifest.permission.GET_ACCOUNTS
-    val READ_CONTACTS = Manifest.permission.READ_CONTACTS
+    const val WRITE_CONTACTS = Manifest.permission.WRITE_CONTACTS
+    const val GET_ACCOUNTS = Manifest.permission.GET_ACCOUNTS
+    const val READ_CONTACTS = Manifest.permission.READ_CONTACTS
 
 
     /**
      * 位置权限
      */
-    val LOCATION = Manifest.permission_group.LOCATION
+    const val LOCATION = Manifest.permission_group.LOCATION
 
-    val ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
-    val ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION
+    const val ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
+    const val ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION
 
 
     /**
      * 麦克风权限
      */
-    val MICROPHONE = Manifest.permission_group.MICROPHONE
+    const val MICROPHONE = Manifest.permission_group.MICROPHONE
 
-    val RECORD_AUDIO = Manifest.permission.RECORD_AUDIO
+    const val RECORD_AUDIO = Manifest.permission.RECORD_AUDIO
 
     /**
      * 获取手机状态
      * （读取手机状态等）
      */
-    val PHONE = Manifest.permission_group.PHONE
+    const val PHONE = Manifest.permission_group.PHONE
 
-    val READ_CALL_LOG = Manifest.permission.READ_CALL_LOG
-    val READ_PHONE_STATE = Manifest.permission.READ_PHONE_STATE
-    val CALL_PHONE = Manifest.permission.CALL_PHONE
-    val WRITE_CALL_LOG = Manifest.permission.WRITE_CALL_LOG
-    val USE_SIP = Manifest.permission.USE_SIP
-    val PROCESS_OUTGOING_CALLS = Manifest.permission.PROCESS_OUTGOING_CALLS
-    val ADD_VOICEMAIL = Manifest.permission.ADD_VOICEMAIL
+    const val READ_CALL_LOG = Manifest.permission.READ_CALL_LOG
+    const val READ_PHONE_STATE = Manifest.permission.READ_PHONE_STATE
+    const val CALL_PHONE = Manifest.permission.CALL_PHONE
+    const val WRITE_CALL_LOG = Manifest.permission.WRITE_CALL_LOG
+    const val USE_SIP = Manifest.permission.USE_SIP
+    const val PROCESS_OUTGOING_CALLS = Manifest.permission.PROCESS_OUTGOING_CALLS
+    const val ADD_VOICEMAIL = Manifest.permission.ADD_VOICEMAIL
 
     /**
      * 传感器
      */
-    val SENSORS = Manifest.permission_group.SENSORS
+    const val SENSORS = Manifest.permission_group.SENSORS
 
-    val BODY_SENSORS = Manifest.permission.BODY_SENSORS
+    const val BODY_SENSORS = Manifest.permission.BODY_SENSORS
 
 
     /**
      * 短信权限
      * (读发短信)
      */
-    val SMS = Manifest.permission_group.SMS
+    const val SMS = Manifest.permission_group.SMS
 
-    val READ_SMS = Manifest.permission.READ_SMS
-    val RECEIVE_WAP_PUSH = Manifest.permission.RECEIVE_WAP_PUSH
-    val RECEIVE_MMS = Manifest.permission.RECEIVE_MMS
-    val RECEIVE_SMS = Manifest.permission.RECEIVE_SMS
-    val SEND_SMS = Manifest.permission.SEND_SMS
+    const val READ_SMS = Manifest.permission.READ_SMS
+    const val RECEIVE_WAP_PUSH = Manifest.permission.RECEIVE_WAP_PUSH
+    const val RECEIVE_MMS = Manifest.permission.RECEIVE_MMS
+    const val RECEIVE_SMS = Manifest.permission.RECEIVE_SMS
+    const val SEND_SMS = Manifest.permission.SEND_SMS
 
     /**
      * 储存权限
      * (文件的读取和写入)
      */
-    val STORAGE = Manifest.permission_group.STORAGE
+    const val STORAGE = Manifest.permission_group.STORAGE
 
-    val READ_EXTERNAL_STORAGE = Manifest.permission.READ_EXTERNAL_STORAGE
-    val WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE
+    const val READ_EXTERNAL_STORAGE = Manifest.permission.READ_EXTERNAL_STORAGE
+    const val WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE
 
     /**
      * 获取权限集中需要申请权限的列表
@@ -184,13 +184,13 @@ object PermissionsUtil {
     fun popPermissionsDialog(context: Context, msg: String,title:String,yesBtn:String,noBtn:String) {
         AlertDialog.Builder(context).setTitle(title)
                 .setMessage(msg)
-                .setPositiveButton(yesBtn, { dialog, _ ->
+                .setPositiveButton(yesBtn) { dialog, _ ->
                     startAppSettings(context)
                     dialog.dismiss()
-                })
-                .setNegativeButton(noBtn, { dialog, _ ->
+                }
+                .setNegativeButton(noBtn) { dialog, _ ->
                     dialog.dismiss()
-                })
+                }
                 .show()
 
     }

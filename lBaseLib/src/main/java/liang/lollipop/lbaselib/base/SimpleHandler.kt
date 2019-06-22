@@ -31,5 +31,4 @@ class SimpleHandler():Handler() {
         fun onHandler(message: Message)
     }
 
-
 }

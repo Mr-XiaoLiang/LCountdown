@@ -61,6 +61,7 @@ class WidgetBean : BaseBean() {
     /**
      * 小时的单位
      */
+    @Deprecated("Not used")
     var hourUnit = ""
 
     /**
@@ -91,11 +92,13 @@ class WidgetBean : BaseBean() {
     /**
      * 小时的字体大小
      */
+    @Deprecated("Not used")
     var hourFontSize = 32
 
     /**
      * 小时的单位的字体大小
      */
+    @Deprecated("Not used")
     var hourUnitFontSize = 12
 
     /**
@@ -114,13 +117,20 @@ class WidgetBean : BaseBean() {
     var noCountdown = false
 
     /**
+     * 按天倒计时
+     * 如果为 true，那么表示倒计时只计算
+     * 小时以下的倒计时，忽略日期
+     */
+    var inOneDay = false
+
+    /**
      * 获取符合要求的时间结果
      */
     fun getTimerInfo(): CountdownBean {
         return if (noCountdown) {
-            CountdownUtil.timer(endTime)
+            CountdownUtil.timer(endTime, inOneDay)
         } else {
-            CountdownUtil.countdown(endTime)
+            CountdownUtil.countdown(endTime, inOneDay)
         }
     }
 
@@ -138,7 +148,6 @@ class WidgetBean : BaseBean() {
     }
 
     fun copy(new: WidgetBean){
-
         this.index = new.index
         this.widgetId = new.widgetId
         this.countdownName = new.countdownName
@@ -149,7 +158,6 @@ class WidgetBean : BaseBean() {
         this.prefixName = new.prefixName
         this.suffixName = new.suffixName
         this.dayUnit = new.dayUnit
-        this.hourUnit = new.hourUnit
         this.prefixFontSize = new.prefixFontSize
         this.nameFontSize = new.nameFontSize
         this.suffixFontSize = new.suffixFontSize
@@ -160,6 +168,7 @@ class WidgetBean : BaseBean() {
         this.timeFontSize = new.timeFontSize
         this.signFontSize = new.signFontSize
         this.noCountdown = new.noCountdown
+        this.inOneDay = new.inOneDay
     }
 
 }

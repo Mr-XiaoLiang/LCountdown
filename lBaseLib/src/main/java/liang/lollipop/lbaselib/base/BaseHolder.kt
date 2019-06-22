@@ -1,9 +1,8 @@
 package liang.lollipop.lbaselib.base
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
 import android.view.View
-import com.bumptech.glide.RequestManager
+import androidx.recyclerview.widget.RecyclerView
 import liang.lollipop.lbaselib.util.LItemTouchHelper
 
 /**
@@ -17,7 +16,6 @@ abstract class BaseHolder<in T:BaseBean>(itemView: View): RecyclerView.ViewHolde
     protected var canSwipe = false
     protected var canMove = false
     protected val context:Context = itemView.context
-    protected var glide: RequestManager? = null
 
     init {
         itemView.setOnClickListener(this)
@@ -41,10 +39,6 @@ abstract class BaseHolder<in T:BaseBean>(itemView: View): RecyclerView.ViewHolde
 
     fun setTouchHelper(helper:LItemTouchHelper){
         touch = helper
-    }
-
-    fun withGlide(requestManager: RequestManager){
-        this.glide = requestManager
     }
 
     protected fun <T: View> find(id: Int): T{

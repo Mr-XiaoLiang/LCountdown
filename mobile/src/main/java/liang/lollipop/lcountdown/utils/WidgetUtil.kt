@@ -21,6 +21,8 @@ object WidgetUtil {
 
     const val UPDATE_TIME = 1000L * 60
 
+    val TEXT_VIEW_ID = arrayOf(R.id.nameFrontView, R.id.nameView, R.id.nameBehindView, R.id.dayView, R.id.dayUnitView, R.id.timeView, R.id.signView)
+
     fun update(context: Context, widgetBean: WidgetBean, appWidgetManager: AppWidgetManager){
 
         val layoutId = R.layout.widget_countdown
@@ -50,44 +52,56 @@ object WidgetUtil {
 
     }
 
-    private fun RemoteViews.updateColors(style: WidgetStyle) {
-        log("RemoteViews.updateColors: $style")
-        val textColor: Int
-        val background: Int
-        when (style) {
+    fun getTextColor(style: WidgetStyle): Int {
+        return when (style) {
             WidgetStyle.LIGHT -> {
-                textColor = Color.WHITE
-                background = 0
+                Color.WHITE
             }
             WidgetStyle.DARK -> {
-                textColor = Color.BLACK
-                background = 0
+                Color.BLACK
             }
             WidgetStyle.WHITE -> {
-                textColor = Color.BLACK
-                background = R.drawable.bg_white
+                Color.BLACK
             }
             WidgetStyle.BLACK -> {
-                textColor = Color.WHITE
-                background = R.drawable.bg_black
+                Color.WHITE
             }
         }
-        setTextColor(R.id.nameFrontView, textColor)
-        setTextColor(R.id.nameView,textColor)
-        setTextColor(R.id.nameBehindView,textColor)
-        setTextColor(R.id.dayView,textColor)
-        setTextColor(R.id.dayUnitView,textColor)
-        setTextColor(R.id.hourView,textColor)
-        setTextColor(R.id.hourUnitView,textColor)
-        setTextColor(R.id.timeView,textColor)
-        setTextColor(R.id.signView,textColor)
+    }
+
+    fun getBackgroundResource(style: WidgetStyle): Int {
+        return when (style) {
+            WidgetStyle.LIGHT, WidgetStyle.DARK -> {
+                0
+            }
+            WidgetStyle.WHITE -> {
+                R.drawable.bg_white
+            }
+            WidgetStyle.BLACK -> {
+                R.drawable.bg_black
+            }
+        }
+    }
+
+    fun updateTextColorByStyle(style: WidgetStyle, run: (Int, Int) -> Unit) {
+        val textColor = getTextColor(style)
+        TEXT_VIEW_ID.forEach { id ->
+            run(id, textColor)
+        }
+    }
+
+    private fun RemoteViews.updateColors(style: WidgetStyle) {
+        log("RemoteViews.updateColors: $style")
+        updateTextColorByStyle(style) {id, color ->
+            setTextColor(id, color)
+        }
+        val background = getBackgroundResource(style)
         setInt(R.id.widgetGroup, "setBackgroundResource", background)
     }
 
     private fun RemoteViews.updateValues(bean: CountdownBean, widgetBean: WidgetBean) {
         setTextViewText(R.id.nameView,widgetBean.countdownName)
         setTextViewText(R.id.dayView,bean.days)
-        setTextViewText(R.id.hourView,bean.hours)
         setTextViewText(R.id.timeView,bean.time)
         setTextViewText(R.id.signView,widgetBean.signValue)
 
@@ -96,7 +110,6 @@ object WidgetUtil {
         setTextViewText(R.id.nameFrontView,widgetBean.prefixName)
         setTextViewText(R.id.nameBehindView,widgetBean.suffixName)
         setTextViewText(R.id.dayUnitView,widgetBean.dayUnit)
-        setTextViewText(R.id.hourUnitView,widgetBean.hourUnit)
     }
 
     private fun RemoteViews.updateTextSize(widgetBean: WidgetBean) {
@@ -105,10 +118,9 @@ object WidgetUtil {
         setTextViewTextSize(R.id.nameBehindView,TypedValue.COMPLEX_UNIT_SP,widgetBean.suffixFontSize.toFloat())
         setTextViewTextSize(R.id.dayView,TypedValue.COMPLEX_UNIT_SP,widgetBean.dayFontSize.toFloat())
         setTextViewTextSize(R.id.dayUnitView,TypedValue.COMPLEX_UNIT_SP,widgetBean.dayUnitFontSize.toFloat())
-        setTextViewTextSize(R.id.hourView,TypedValue.COMPLEX_UNIT_SP,widgetBean.hourFontSize.toFloat())
-        setTextViewTextSize(R.id.hourUnitView,TypedValue.COMPLEX_UNIT_SP,widgetBean.hourUnitFontSize.toFloat())
         setTextViewTextSize(R.id.timeView,TypedValue.COMPLEX_UNIT_SP,widgetBean.timeFontSize.toFloat())
         setTextViewTextSize(R.id.signView,TypedValue.COMPLEX_UNIT_SP,widgetBean.signFontSize.toFloat())
+        setViewVisibility(R.id.dayGroup, if (widgetBean.inOneDay) { View.GONE } else { View.VISIBLE })
     }
 
     fun alarmUpdate(context: Context){
@@ -139,7 +151,7 @@ object WidgetUtil {
 
         WidgetDBUtil.read(context).getAllId(idList).close()
 
-        return IntArray(idList.size) { it -> idList[it] }
+        return IntArray(idList.size) { idList[it] }
 
     }
 
@@ -152,7 +164,7 @@ object WidgetUtil {
 
     }
 
-    fun log(value: String) {
+    private fun log(value: String) {
         Log.d("Lollipop", "WidgetUtil: $value")
     }
 

@@ -5,24 +5,20 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.support.annotation.ColorRes
-import android.support.v4.app.ActivityOptionsCompat
-import android.support.v4.app.Fragment
-import android.support.v4.util.Pair
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
+import androidx.core.app.ActivityOptionsCompat
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import liang.lollipop.lbaselib.util.LItemTouchCallback
 import liang.lollipop.lbaselib.util.LItemTouchHelper
+import androidx.core.util.Pair
 
 /**
  * Created by lollipop on 2018/1/2.
  * @author Fragment的基础类
  */
-open class BaseFragment:Fragment(),
+open class BaseFragment: Fragment(),
         SimpleHandler.HandlerCallback,
         SwipeRefreshLayout.OnRefreshListener,
         View.OnClickListener,
@@ -33,9 +29,6 @@ open class BaseFragment:Fragment(),
 
     protected var handler: Handler = SimpleHandler(this)
     protected var rootView: View? = null
-
-    /**Glide图片加载库*/
-    protected lateinit var glide: RequestManager
 
     companion object {
 
@@ -48,7 +41,6 @@ open class BaseFragment:Fragment(),
     private fun findRootView(view: View) {
         //获取根节点View，用于弹出SnackBar
         rootView = view
-        glide = Glide.with(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

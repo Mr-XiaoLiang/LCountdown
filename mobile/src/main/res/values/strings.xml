@@ -12,17 +12,14 @@
     <string name="sign">signature</string>
     <string name="end_time">target time</string>
     <string name="prefix">prefix</string>
-    <string name="left_until">Distance</string>
+    <string name="left_until">difference</string>
     <string name="suffix">suffix</string>
     <string name="the_end">still</string>
     <string name="day_unit">Day</string>
     <string name="day">Day</string>
-    <string name="hour_unit">Hour</string>
-    <string name="hour">Hour</string>
     <string name="hint_timing">The time has started. You can choose to set the name of this time</string>
     <string name="timing_name">Timing name</string>
-    <string name="quiet">Quiet start</string>
-    <string name="remind">Floating reminder</string>
+    <string name="quiet">Start</string>
     <string name="title_activity_timing_list">Timer</string>
     <string name="now">Now</string>
     <string name="stop_timing">Stop timing</string>
@@ -59,4 +56,5 @@
     <string name="clear_log_message"> found %1$d logs, are you sure you want to delete them all? </string>
     <string name="clear_log_enter">delete</string>
     <string name="clear_log_end">deleted</string>
+    <string name="in_one_day">One-day</string>
 </resources>

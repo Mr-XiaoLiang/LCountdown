@@ -1,5 +1,6 @@
 package liang.lollipop.lcountdown.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Context
@@ -7,31 +8,36 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Message
-import android.support.design.widget.BottomSheetBehavior
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
-import android.support.v7.app.AlertDialog
 import android.text.TextUtils
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.widget_countdown.*
 import liang.lollipop.lbaselib.base.BaseActivity
-import liang.lollipop.lbaselib.base.BaseFragment
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.bean.WidgetBean
 import liang.lollipop.lcountdown.bean.WidgetStyle
 import liang.lollipop.lcountdown.fragment.CountdownFontSizeFragment
 import liang.lollipop.lcountdown.fragment.CountdownInfoFragment
 import liang.lollipop.lcountdown.fragment.CountdownUnitFragment
+import liang.lollipop.lcountdown.fragment.LTabFragment
 import liang.lollipop.lcountdown.utils.CountdownUtil
 import liang.lollipop.lcountdown.utils.WidgetDBUtil
 import liang.lollipop.lcountdown.utils.WidgetUtil
 import liang.lollipop.lcountdown.widget.CountdownWidget
+import liang.lollipop.ltabview.LTabHelper
+import liang.lollipop.ltabview.LTabView
 
 /**
  * 小部件的参数设置Activity
@@ -58,7 +64,7 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
 
     private val countdownFontSizeFragment = CountdownFontSizeFragment()
 
-    private val fragments = arrayOf(countdownInfoFragment,countdownUnitFragment,countdownFontSizeFragment)
+    private val fragments: Array<LTabFragment> = arrayOf(countdownInfoFragment,countdownUnitFragment,countdownFontSizeFragment)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,8 +108,49 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
 
         viewPager.offscreenPageLimit = 2
         viewPager.adapter = Adapter(supportFragmentManager,fragments, this)
-        tabLayout.setupWithViewPager(viewPager)
+        LTabHelper.withExpandItem(tabLayout).let { build ->
+            val tabUnselectedColor = ContextCompat.getColor(this@MainActivity, R.color.tabUnselectedColor)
+            fragments.forEach { fragment ->
+                val selectedColor = if (fragment.getSelectedColorId() == 0) {
+                    fragment.getSelectedColor()
+                } else {
+                    ContextCompat.getColor(this@MainActivity, fragment.getSelectedColorId())
+                }
+                var title = fragment.getTitle()
+                if (TextUtils.isEmpty(title) && fragment.getTitleId() != 0) {
+                    title = getString(fragment.getTitleId())
+                }
+                var icon = fragment.getIcon()
+                if (icon == null) {
+                    icon = getDrawable(fragment.getIconId())
+                }
+                if (icon != null) {
+                    build.addItem {
+                        this.text = title
+                        this.icon = icon
+                        this.selectedIconColor = selectedColor
+                        this.unselectedIconColor = tabUnselectedColor
+                        this.textColor = selectedColor
+                        this.expandColor = selectedColor.and(0x60FFFFFF)
+                    }
+                }
+            }
+            build.setupWithViewPager(viewPager)
+        }
+        tabLayout.style = LTabView.Style.Start
         viewPager.adapter?.notifyDataSetChanged()
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(state: Int) {
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                Log.d("Lollipop", "position: $position, positionOffset: $positionOffset")
+            }
+
+            override fun onPageSelected(position: Int) {
+            }
+
+        })
 
         isCreateModel = intent.getIntExtra(CountdownWidget.WIDGET_SHOW,0) < 1
         if(isCreateModel){
@@ -159,7 +206,6 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
             widgetBean.prefixName = getString(R.string.left_until)
             widgetBean.suffixName = getString(R.string.the_end)
             widgetBean.dayUnit = getString(R.string.day)
-            widgetBean.hourUnit = getString(R.string.hour)
         }else{
             WidgetDBUtil.read(this).get(widgetBean).close()
         }
@@ -173,15 +219,12 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         onPrefixNameChange(widgetBean.prefixName)
         onSuffixNameChange(widgetBean.suffixName)
         onDayUnitChange(widgetBean.dayUnit)
-        onHourUnitChange(widgetBean.hourUnit)
 
         onPrefixFontSizeChange(widgetBean.prefixFontSize)
         onNameFontSizeChange(widgetBean.nameFontSize)
         onSuffixFontSizeChange(widgetBean.suffixFontSize)
         onDayFontSizeChange(widgetBean.dayFontSize)
         onDayUnitFontSizeChange(widgetBean.dayUnitFontSize)
-        onHourFontSizeChange(widgetBean.hourFontSize)
-        onHourUnitFontSizeChange(widgetBean.hourUnitFontSize)
         onTimeFontSizeChange(widgetBean.timeFontSize)
         onSignFontSizeChange(widgetBean.signFontSize)
 
@@ -230,8 +273,12 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
     private fun countdown(){
         val bean = widgetBean.getTimerInfo()
         dayView.text = bean.days
-        hourView.text = bean.hours
         timeView.text = bean.time
+        if (widgetBean.inOneDay && dayGroup.visibility != View.GONE) {
+            dayGroup.visibility = View.GONE
+        } else if (!widgetBean.inOneDay && dayGroup.visibility != View.VISIBLE) {
+            dayGroup.visibility = View.VISIBLE
+        }
     }
 
     override fun onStop() {
@@ -270,6 +317,11 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         countdown()
     }
 
+    override fun onOneDayTypeChange(oneDay: Boolean) {
+        widgetBean.inOneDay = oneDay
+        countdown()
+    }
+
     override fun onStyleInfoChange(style: WidgetStyle) {
         val isDark = ( style == WidgetStyle.WHITE || style == WidgetStyle.DARK )
 
@@ -298,11 +350,6 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         dayUnitView.text = name
     }
 
-    override fun onHourUnitChange(name: CharSequence) {
-        widgetBean.hourUnit = name.toString()
-        hourUnitView.text = name
-    }
-
     override fun onPrefixFontSizeChange(sizeDip: Int) {
         widgetBean.prefixFontSize = sizeDip
         nameFrontView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
@@ -326,16 +373,6 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
     override fun onDayUnitFontSizeChange(sizeDip: Int) {
         widgetBean.dayUnitFontSize = sizeDip
         dayUnitView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
-    }
-
-    override fun onHourFontSizeChange(sizeDip: Int) {
-        widgetBean.hourFontSize = sizeDip
-        hourView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
-    }
-
-    override fun onHourUnitFontSizeChange(sizeDip: Int) {
-        widgetBean.hourUnitFontSize = sizeDip
-        hourUnitView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
     }
 
     override fun onTimeFontSizeChange(sizeDip: Int) {
@@ -364,10 +401,11 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         }
     }
 
+    @SuppressLint("WrongConstant")
     private class Adapter(fragmentManager: FragmentManager,
-                          private val fragments: Array<BaseFragment>,
+                          private val fragments: Array<LTabFragment>,
                           private val context: Context)
-        : FragmentStatePagerAdapter(fragmentManager){
+        : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT){
 
         override fun getItem(position: Int): Fragment {
             return fragments[position]

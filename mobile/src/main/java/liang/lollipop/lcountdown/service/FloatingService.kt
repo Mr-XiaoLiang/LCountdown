@@ -13,14 +13,13 @@ import android.graphics.PixelFormat
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
-import android.support.annotation.RequiresApi
-import android.support.v4.app.NotificationCompat
-import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import liang.lollipop.lcountdown.R
-import liang.lollipop.lcountdown.activity.MainActivity
 import org.jetbrains.anko.windowManager
 
 /**

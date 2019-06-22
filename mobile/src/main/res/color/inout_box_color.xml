@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:color="@android:color/darker_gray" android:state_enabled="false"/>
+
+    <item android:color="@color/inputHintTextColor" android:state_enabled="true" android:state_focused="false"/>
+
+    <item android:color="@color/inputHintColor" android:state_hovered="true"/>
+
+    <item android:color="@color/inputHintColor" android:state_focused="true"/>
+
+</selector>

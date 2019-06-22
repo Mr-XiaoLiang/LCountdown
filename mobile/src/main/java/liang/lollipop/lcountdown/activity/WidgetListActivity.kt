@@ -4,14 +4,14 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
 import android.os.Message
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.android.synthetic.main.activity_widget_list.*
 import kotlinx.android.synthetic.main.content_widget_list.*
 import liang.lollipop.lbaselib.base.BaseActivity
@@ -28,7 +28,7 @@ import java.util.*
  * 小部件的集合列表
  * @author Lollipop
  */
-class WidgetListActivity : BaseActivity(),SwipeRefreshLayout.OnRefreshListener {
+class WidgetListActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
 
     companion object {
 
@@ -83,16 +83,11 @@ class WidgetListActivity : BaseActivity(),SwipeRefreshLayout.OnRefreshListener {
         refreshLayout.setOnRefreshListener(this)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
         val helper = SimpleRecyclerViewHelper.create<WidgetBean>().apply {
             recyclerView = this@WidgetListActivity.recyclerView
-
             dataList = this@WidgetListActivity.widgetList
-
             undoValue = getString(R.string.undo)
-
             deleteValue = getString(R.string.deleted)
-
             callback = object :SimpleRecyclerViewHelper.SimpleCallback<WidgetBean>(){
                 override fun onMove(src: WidgetBean, target: WidgetBean, srcPosition: Int, targetPosition: Int): Boolean {
                     isChangeManual = true

@@ -24,7 +24,7 @@ import java.util.*
  *
  * 倒计时信息的Fragment
  */
-class CountdownInfoFragment: BaseFragment(), CompoundButton.OnCheckedChangeListener {
+class CountdownInfoFragment: LTabFragment(), CompoundButton.OnCheckedChangeListener {
 
     private lateinit var callback: Callback
 
@@ -43,6 +43,14 @@ class CountdownInfoFragment: BaseFragment(), CompoundButton.OnCheckedChangeListe
         return R.string.title_base_fragment
     }
 
+    override fun getIconId(): Int {
+        return R.drawable.ic_mode_edit_black_24dp
+    }
+
+    override fun getSelectedColorId(): Int {
+        return R.color.baseTabSelected
+    }
+
     companion object {
 
         private const val ARG_NAME = "ARG_NAME"
@@ -51,6 +59,7 @@ class CountdownInfoFragment: BaseFragment(), CompoundButton.OnCheckedChangeListe
         private const val ARG_NO_TIME = "ARG_NO_TIME"
         private const val ARG_STYLE = "ARG_STYLE"
         private const val ARG_NO_COUNTDOWN = "ARG_NO_COUNTDOWN"
+        private const val ARG_ONE_DAY = "ARG_ONE_DAY"
 
     }
 
@@ -64,6 +73,7 @@ class CountdownInfoFragment: BaseFragment(), CompoundButton.OnCheckedChangeListe
             putBoolean(ARG_NO_TIME,widgetBean.noTime)
             putInt(ARG_STYLE,widgetBean.widgetStyle.value)
             putBoolean(ARG_NO_COUNTDOWN,widgetBean.noCountdown)
+            putBoolean(ARG_ONE_DAY,widgetBean.inOneDay)
 
         }
 
@@ -87,6 +97,7 @@ class CountdownInfoFragment: BaseFragment(), CompoundButton.OnCheckedChangeListe
 
             noTimeCheckBox.isChecked = it.getBoolean(ARG_NO_TIME,false)
             timingTypeCheckBox.isChecked = it.getBoolean(ARG_NO_COUNTDOWN,false)
+            oneDayCheckBox.isChecked = it.getBoolean(ARG_ONE_DAY,false)
 
             onStyleChange(it.getInt(ARG_STYLE,WidgetStyle.BLACK.value).let { style ->
                 when(style){
@@ -105,7 +116,7 @@ class CountdownInfoFragment: BaseFragment(), CompoundButton.OnCheckedChangeListe
         return inflater.inflate(R.layout.fragment_countdown_info,container,false)
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if(context is Callback){
             callback = context
@@ -155,6 +166,7 @@ class CountdownInfoFragment: BaseFragment(), CompoundButton.OnCheckedChangeListe
 
         noTimeCheckBox.setOnCheckedChangeListener(this)
         timingTypeCheckBox.setOnCheckedChangeListener(this)
+        oneDayCheckBox.setOnCheckedChangeListener(this)
 
         isReady = true
 
@@ -182,6 +194,13 @@ class CountdownInfoFragment: BaseFragment(), CompoundButton.OnCheckedChangeListe
 
             }
 
+            oneDayCheckBox -> {
+
+                dateSelectView.isEnabled = !isChecked
+                callback.onOneDayTypeChange(isChecked)
+
+            }
+
         }
 
     }
@@ -195,7 +214,7 @@ class CountdownInfoFragment: BaseFragment(), CompoundButton.OnCheckedChangeListe
                 val yearIn = calendar.get(Calendar.YEAR)
                 val monthIn = calendar.get(Calendar.MONTH)
                 val day = calendar.get(Calendar.DAY_OF_MONTH)
-                DatePickerDialog(context, DatePickerDialog.OnDateSetListener {
+                DatePickerDialog(context!!, DatePickerDialog.OnDateSetListener {
                     _, year, month, dayOfMonth ->
                     calendar.set(Calendar.YEAR,year)
 
@@ -311,6 +330,8 @@ class CountdownInfoFragment: BaseFragment(), CompoundButton.OnCheckedChangeListe
         fun onStyleInfoChange(style: WidgetStyle)
 
         fun onTimingTypeChange(noCountdown: Boolean)
+
+        fun onOneDayTypeChange(oneDay: Boolean)
 
     }
 

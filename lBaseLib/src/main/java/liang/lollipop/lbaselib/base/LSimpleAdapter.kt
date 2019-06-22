@@ -1,6 +1,6 @@
 package liang.lollipop.lbaselib.base
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * Created by lollipop on 2018/1/2.

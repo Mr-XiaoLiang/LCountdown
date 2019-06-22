@@ -1,6 +1,6 @@
 package liang.lollipop.lbaselib.util
 
-import android.support.design.widget.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout
 
 /**
  * Created by lollipop on 2018/1/2.

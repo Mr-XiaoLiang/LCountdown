@@ -1,12 +1,29 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:listDivider">@drawable/divider_widget_list</item>
+        <item name="android:windowBackground">@color/colorPrimary</item>
+    </style>
+
+    <style name="drakInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/inout_box_color</item>
+        <item name="hintTextColor">@color/inputHintColor</item>
+        <item name="counterTextColor">@color/inputHintTextColor</item>
+        <item name="android:textColorHint">@color/inputHintTextColor</item>
+        <item name="colorAccent">@color/inputHintColor</item>
+        <item name="colorPrimary">@color/inputHintColor</item>
+        <item name="colorControlNormal">@color/inputHintColor</item>
+        <item name="colorControlActivated">@color/inputHintColor</item>
+        <item name="colorControlHighlight">@color/inputHintColor</item>
+        <item name="android:colorControlNormal">@color/inputHintColor</item>
+        <item name="android:colorControlActivated">@color/inputHintColor</item>
+        <item name="android:colorControlHighlight">@color/inputHintColor</item>
+        <item name="android:textColor">@color/inputHintColor</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
@@ -31,7 +48,6 @@
         <item name="android:layout_marginRight">0dp</item>
         <item name="android:layout_marginTop">0dp</item>
         <item name="android:layout_marginBottom">0dp</item>
-        <item name="cardCornerRadius">@dimen/sheet_card_radius</item>
     </style>
 
 </resources>

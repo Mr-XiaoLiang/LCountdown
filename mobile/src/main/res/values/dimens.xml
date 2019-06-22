@@ -1,4 +1,6 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="sheet_card_radius">5dp</dimen>
+
+    <dimen name="tab_min_size">28dp</dimen>
 </resources>

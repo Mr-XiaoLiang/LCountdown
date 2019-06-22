@@ -18,12 +18,9 @@
     <string name="the_end">还剩</string>
     <string name="day_unit">天</string>
     <string name="day">天</string>
-    <string name="hour_unit">小时</string>
-    <string name="hour">小时</string>
     <string name="hint_timing">计时已开始，您可以选择设置本次计时的名字</string>
     <string name="timing_name">计时名</string>
-    <string name="quiet">静默开始</string>
-    <string name="remind">悬浮提醒</string>
+    <string name="quiet">开始</string>
     <string name="title_activity_timing_list">计时器</string>
     <string name="now">现在</string>
     <string name="stop_timing">停止计时</string>
@@ -60,4 +57,5 @@
     <string name="clear_log_message">找到了%1$d个日志，确定要全部删除吗？</string>
     <string name="clear_log_enter">删除</string>
     <string name="clear_log_end">已删除</string>
+    <string name="in_one_day">单日计时</string>
 </resources>

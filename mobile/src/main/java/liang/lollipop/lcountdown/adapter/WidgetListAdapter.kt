@@ -13,14 +13,10 @@ class WidgetListAdapter(data:ArrayList<WidgetBean>,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WidgetHolder {
 
-        return WidgetHolder.newInstance(layoutInflater,parent,viewType).apply {
+        return WidgetHolder.newInstance(layoutInflater,parent).apply {
             setTouchHelper(helper)
         }
 
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return data[position].widgetStyle.value
     }
 
 }

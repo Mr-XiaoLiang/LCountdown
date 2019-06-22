@@ -14,7 +14,6 @@ import android.os.Bundle
 import android.os.Message
 import android.service.dreams.DreamService
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -31,6 +30,7 @@ import liang.lollipop.lcountdown.utils.CountdownUtil
 import liang.lollipop.lcountdown.utils.WidgetDBUtil
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.abs
 
 /**
  * 倒计时的睡眠服务
@@ -240,8 +240,8 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
         if (isDestroy) {
             return
         }
-        val x = Math.abs(random.nextInt(dreamRoot.width - dreamBody.width))
-        val y = Math.abs(random.nextInt(dreamRoot.height - dreamBody.height))
+        val x = abs(random.nextInt(dreamRoot.width - dreamBody.width))
+        val y = abs(random.nextInt(dreamRoot.height - dreamBody.height))
         dreamBody.translationX = x.toFloat()
         dreamBody.translationY = y.toFloat()
     }

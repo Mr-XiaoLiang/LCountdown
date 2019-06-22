@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     app:layout_behavior="@string/bottom_sheet_behavior"
     app:behavior_hideable="true"
     app:behavior_peekHeight="?android:attr/actionBarSize"
@@ -16,47 +15,52 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize" >
+            android:layout_height="?android:attr/actionBarSize">
+
             <ImageView
                 android:id="@+id/sheetBtn"
                 android:layout_width="?attr/actionBarSize"
                 android:layout_height="?attr/actionBarSize"
-                android:src="@drawable/ic_keyboard_arrow_up_white_24dp"
                 android:layout_gravity="center"
-                android:tint="#EEE"
-                android:scaleType="center"/>
+                android:scaleType="center"
+                android:src="@drawable/ic_keyboard_arrow_up_white_24dp"
+                android:tint="@color/bottomSheetCard" />
         </FrameLayout>
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:tabTextColor="@android:color/darker_gray"
-            app:tabSelectedTextColor="@android:color/darker_gray"
-            app:tabGravity="center"
-            android:layout_marginStart="10dp"/>
-
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/viewPagerGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="#EFEFEF"
+            app:cardBackgroundColor="@color/bottomSheetCard"
             app:cardCornerRadius="@dimen/sheet_card_radius">
-            <liang.lollipop.lcountdown.view.WrapHeightViewPager
-                android:id="@+id/viewPager"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </android.support.v7.widget.CardView>
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <liang.lollipop.ltabview.LTabView
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"/>
+                <liang.lollipop.lcountdown.view.WrapHeightViewPager
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/updateBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:fabSize="normal"
         android:layout_marginEnd="10dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="24dp"
         android:layout_marginBottom="5dp"
         android:src="@drawable/ic_done_white_24dp"
         app:layout_constraintRight_toRightOf="parent"

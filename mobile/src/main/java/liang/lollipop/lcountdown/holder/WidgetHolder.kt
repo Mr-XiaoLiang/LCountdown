@@ -1,39 +1,28 @@
 package liang.lollipop.lcountdown.holder
 
-import android.content.Context
-import android.util.TypedValue
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.TextView
 import liang.lollipop.lbaselib.base.BaseHolder
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.bean.WidgetBean
 import liang.lollipop.lcountdown.bean.WidgetStyle
 import liang.lollipop.lcountdown.utils.CountdownUtil
+import liang.lollipop.lcountdown.utils.WidgetUtil
+import org.jetbrains.anko.textColor
 
 class WidgetHolder private constructor(itemView: View): BaseHolder<WidgetBean>(itemView) {
 
     companion object {
 
-        fun newInstance(layoutInflater: LayoutInflater,viewGroup: ViewGroup, style: Int): WidgetHolder{
-            val layoutId = when(style){
-
-                WidgetStyle.WHITE.value -> R.layout.widget_countdown_white
-
-                WidgetStyle.BLACK.value -> R.layout.widget_countdown_black
-
-                WidgetStyle.DARK.value -> R.layout.widget_countdown_dark
-
-                else -> R.layout.widget_countdown
-
-            }
+        fun newInstance(layoutInflater: LayoutInflater,viewGroup: ViewGroup): WidgetHolder{
+            val layoutId = R.layout.widget_countdown
             return create(layoutInflater,viewGroup,layoutId)
         }
 
         private fun create(layoutInflater: LayoutInflater,viewGroup: ViewGroup, layoutId: Int): WidgetHolder{
-
             val group = layoutInflater.inflate(R.layout.item_widget_group,viewGroup,false)
             layoutInflater.inflate(layoutId,group.findViewById(R.id.widgetItemGroup),true)
             return WidgetHolder(group)
@@ -62,6 +51,32 @@ class WidgetHolder private constructor(itemView: View): BaseHolder<WidgetBean>(i
         timeView.text = countdownBean.time
         signView.text = bean.signValue
 
+        WidgetUtil.updateTextColorByStyle(bean.widgetStyle) { id, color ->
+            setTextColor(id, color)
+        }
+        val background = when (bean.widgetStyle) {
+            WidgetStyle.DARK -> {
+                find<View>(R.id.widgetItemGroup).setBackgroundColor(Color.WHITE)
+                0
+            }
+            WidgetStyle.WHITE -> {
+                find<View>(R.id.widgetItemGroup).setBackgroundColor(Color.BLACK)
+                R.drawable.bg_white
+            }
+            WidgetStyle.LIGHT -> {
+                find<View>(R.id.widgetItemGroup).setBackgroundColor(Color.BLACK)
+                0
+            }
+            WidgetStyle.BLACK -> {
+                find<View>(R.id.widgetItemGroup).setBackgroundColor(Color.WHITE)
+                R.drawable.bg_black
+            }
+        }
+        find<View>(R.id.widgetGroup).setBackgroundResource(background)
+    }
+
+    private fun setTextColor(id: Int, color: Int) {
+        find<TextView>(id).textColor = color
     }
 
 }

@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import kotlinx.android.synthetic.main.fragment_countdown_font_size.*
-import liang.lollipop.lbaselib.base.BaseFragment
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.bean.WidgetBean
 
@@ -17,7 +16,7 @@ import liang.lollipop.lcountdown.bean.WidgetBean
  *
  * 字体大小设置的Fragment
  */
-class CountdownFontSizeFragment: BaseFragment(),SeekBar.OnSeekBarChangeListener {
+class CountdownFontSizeFragment: LTabFragment(),SeekBar.OnSeekBarChangeListener {
 
     private lateinit var callback: Callback
 
@@ -32,6 +31,14 @@ class CountdownFontSizeFragment: BaseFragment(),SeekBar.OnSeekBarChangeListener 
         return R.string.title_size_fragment
     }
 
+    override fun getIconId(): Int {
+        return R.drawable.ic_format_size_black_24dp
+    }
+
+    override fun getSelectedColorId(): Int {
+        return R.color.fontTabSelected
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prefixFontSizeBar.setOnSeekBarChangeListener(this)
@@ -39,8 +46,6 @@ class CountdownFontSizeFragment: BaseFragment(),SeekBar.OnSeekBarChangeListener 
         suffixFontSizeBar.setOnSeekBarChangeListener(this)
         dayFontSizeBar.setOnSeekBarChangeListener(this)
         dayUnitFontSizeBar.setOnSeekBarChangeListener(this)
-        hourFontSizeBar.setOnSeekBarChangeListener(this)
-        hourUnitFontSizeBar.setOnSeekBarChangeListener(this)
         timeFontSizeBar.setOnSeekBarChangeListener(this)
         signFontSizeBar.setOnSeekBarChangeListener(this)
         isReady = true
@@ -52,7 +57,7 @@ class CountdownFontSizeFragment: BaseFragment(),SeekBar.OnSeekBarChangeListener 
         isReady = false
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if(context is Callback){
             callback = context
@@ -68,8 +73,6 @@ class CountdownFontSizeFragment: BaseFragment(),SeekBar.OnSeekBarChangeListener 
         private const val ARG_SUFFIX_FONT_SIZE = "ARG_SUFFIX_FONT_SIZE"
         private const val ARG_DAY_FONT_SIZE = "ARG_DAY_FONT_SIZE"
         private const val ARG_DAY_UNIT_FONT_SIZE = "ARG_DAY_UNIT_FONT_SIZE"
-        private const val ARG_HOUR_FONT_SIZE = "ARG_HOUR_FONT_SIZE"
-        private const val ARG_HOUR_UNIT_FONT_SIZE = "ARG_HOUR_UNIT_FONT_SIZE"
         private const val ARG_TIME_FONT_SIZE = "ARG_TIME_FONT_SIZE"
         private const val ARG_SIGN_FONT_SIZE = "ARG_SIGN_FONT_SIZE"
 
@@ -84,8 +87,6 @@ class CountdownFontSizeFragment: BaseFragment(),SeekBar.OnSeekBarChangeListener 
             putInt(ARG_SUFFIX_FONT_SIZE,widgetBean.suffixFontSize)
             putInt(ARG_DAY_FONT_SIZE,widgetBean.dayFontSize)
             putInt(ARG_DAY_UNIT_FONT_SIZE,widgetBean.dayUnitFontSize)
-            putInt(ARG_HOUR_FONT_SIZE,widgetBean.hourFontSize)
-            putInt(ARG_HOUR_UNIT_FONT_SIZE,widgetBean.hourUnitFontSize)
             putInt(ARG_TIME_FONT_SIZE,widgetBean.timeFontSize)
             putInt(ARG_SIGN_FONT_SIZE,widgetBean.signFontSize)
 
@@ -107,8 +108,6 @@ class CountdownFontSizeFragment: BaseFragment(),SeekBar.OnSeekBarChangeListener 
             suffixFontSizeBar.progress = getInt(ARG_SUFFIX_FONT_SIZE,0)
             dayFontSizeBar.progress = getInt(ARG_DAY_FONT_SIZE,0)
             dayUnitFontSizeBar.progress = getInt(ARG_DAY_UNIT_FONT_SIZE,0)
-            hourFontSizeBar.progress = getInt(ARG_HOUR_FONT_SIZE,0)
-            hourUnitFontSizeBar.progress = getInt(ARG_HOUR_UNIT_FONT_SIZE,0)
             timeFontSizeBar.progress = getInt(ARG_TIME_FONT_SIZE,0)
             signFontSizeBar.progress = getInt(ARG_SIGN_FONT_SIZE,0)
 
@@ -117,8 +116,6 @@ class CountdownFontSizeFragment: BaseFragment(),SeekBar.OnSeekBarChangeListener 
             suffixFontSizeBar.callProgressChanged()
             dayFontSizeBar.callProgressChanged()
             dayUnitFontSizeBar.callProgressChanged()
-            hourFontSizeBar.callProgressChanged()
-            hourUnitFontSizeBar.callProgressChanged()
             timeFontSizeBar.callProgressChanged()
             signFontSizeBar.callProgressChanged()
         }
@@ -156,16 +153,6 @@ class CountdownFontSizeFragment: BaseFragment(),SeekBar.OnSeekBarChangeListener 
             dayUnitFontSizeBar -> {
                 dayUnitFontSizeView.text = String.format(getString(R.string.day_unit_font_size),progress)
                 callback.onDayUnitFontSizeChange(progress)
-            }
-
-            hourFontSizeBar -> {
-                hourFontSizeView.text = String.format(getString(R.string.hour_font_size),progress)
-                callback.onHourFontSizeChange(progress)
-            }
-
-            hourUnitFontSizeBar -> {
-                hourUnitFontSizeView.text = String.format(getString(R.string.hour_unit_font_size),progress)
-                callback.onHourUnitFontSizeChange(progress)
             }
 
             timeFontSizeBar -> {
@@ -212,16 +199,6 @@ class CountdownFontSizeFragment: BaseFragment(),SeekBar.OnSeekBarChangeListener 
          * 天的单位的字体大小
          */
         fun onDayUnitFontSizeChange(sizeDip: Int)
-
-        /**
-         * 小时的字体大小
-         */
-        fun onHourFontSizeChange(sizeDip: Int)
-
-        /**
-         * 小时的单位的字体大小
-         */
-        fun onHourUnitFontSizeChange(sizeDip: Int)
 
         /**
          * 时间的字体大小

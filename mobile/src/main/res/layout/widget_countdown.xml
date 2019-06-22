@@ -47,6 +47,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/dayGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -65,23 +66,6 @@
                 android:gravity="center"
                 android:text="@string/day"
                 android:textSize="16sp"
-                android:textColor="@android:color/white"/>
-            <TextView
-                android:visibility="gone"
-                android:id="@+id/hourView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="32sp"
-                android:textColor="@android:color/white"/>
-            <TextView
-                android:id="@+id/hourUnitView"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/hour"
-                android:textSize="12sp"
                 android:textColor="@android:color/white"/>
         </LinearLayout>
 

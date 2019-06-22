@@ -7,26 +7,23 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.support.annotation.LayoutRes
-import android.support.design.widget.AppBarLayout
-import android.support.v4.app.ActivityOptionsCompat
-import android.support.v4.util.Pair
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
+import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityOptionsCompat
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.appbar.AppBarLayout
 import liang.lollipop.lbaselib.util.AppBarStateChangeListener
 import liang.lollipop.lbaselib.util.LItemTouchCallback
 import liang.lollipop.lbaselib.util.LItemTouchHelper
 import liang.lollipop.lbaselib.util.PermissionsUtil
 import java.util.*
+import androidx.core.util.Pair
 
 /**
  * Created by lollipop on 2018/1/2.
@@ -41,7 +38,6 @@ open class BaseActivity: AppCompatActivity(),
         View.OnClickListener,
         AppBarStateChangeListener.OnAppBarStateChangeListener{
 
-
     /**是否显示返回按钮*/
     protected var isShowBack = true
     /**Handler*/
@@ -52,12 +48,9 @@ open class BaseActivity: AppCompatActivity(),
     protected var rootView: View? = null
     /**自动隐藏系统UI*/
     protected var autoHintSystemUI = true
-    /**图片加载库*/
-    protected lateinit var glide:RequestManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        glide = Glide.with(this)
     }
 
     companion object {
@@ -161,9 +154,6 @@ open class BaseActivity: AppCompatActivity(),
     override fun onRefresh() {
     }
 
-    override fun onItemTouchStateChanged(viewHolder: RecyclerView.ViewHolder?, status: Int) {
-    }
-
     override fun onClick(v: View?) {
     }
 
@@ -175,6 +165,9 @@ open class BaseActivity: AppCompatActivity(),
     }
 
     override fun onItemViewClick(holder: RecyclerView.ViewHolder?, v: View) {
+    }
+
+    override fun onItemTouchStateChanged(viewHolder: RecyclerView.ViewHolder?, status: Int) {
     }
 
     override fun onAppBarStateChangeed(appBarLayout: AppBarLayout, state: Int) {

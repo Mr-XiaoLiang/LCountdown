@@ -1,9 +1,9 @@
 package liang.lollipop.lbaselib.util
 
-import android.support.design.widget.BaseTransientBottomBar
-import android.support.design.widget.Snackbar
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
 /**
@@ -14,7 +14,7 @@ import java.util.*
  */
 class SimpleRecyclerViewHelper<E>(option: HelperBuilder<E>): LItemTouchCallback.OnItemTouchCallbackListener{
 
-    private lateinit var adapter:RecyclerView.Adapter<*>
+    private lateinit var adapter: RecyclerView.Adapter<*>
 
     private val deleteValue = option.deleteValue
 
@@ -83,7 +83,7 @@ class SimpleRecyclerViewHelper<E>(option: HelperBuilder<E>): LItemTouchCallback.
     override fun onSwiped(adapterPosition: Int) {
 
         if(!this::adapter.isInitialized){
-            adapter = recyclerView.adapter
+            adapter = recyclerView.adapter as RecyclerView.Adapter<*>
         }
 
         val bean = when (dataList) {
@@ -108,7 +108,7 @@ class SimpleRecyclerViewHelper<E>(option: HelperBuilder<E>): LItemTouchCallback.
     override fun onMove(srcPosition: Int, targetPosition: Int): Boolean {
 
         if(!this::adapter.isInitialized){
-            adapter = recyclerView.adapter
+            adapter = recyclerView.adapter as RecyclerView.Adapter<*>
         }
 
         val srcBean = when (dataList) {
@@ -140,7 +140,7 @@ class SimpleRecyclerViewHelper<E>(option: HelperBuilder<E>): LItemTouchCallback.
         override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
             super.onDismissed(transientBottomBar, event)
 
-            if(event != BaseTransientBottomBar.BaseCallback.DISMISS_EVENT_ACTION){
+            if(event != DISMISS_EVENT_ACTION){
 
                 callback.onSwiped(bean)
 

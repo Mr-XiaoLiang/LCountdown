@@ -1,8 +1,8 @@
 package liang.lollipop.lbaselib.util
 
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.View
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import liang.lollipop.lbaselib.base.BaseHolder
 
 /**
@@ -12,7 +12,7 @@ import liang.lollipop.lbaselib.base.BaseHolder
  * 以及点击事件
  *
  */
-class LItemTouchHelper(private val callback:LItemTouchCallback):ItemTouchHelper(callback) {
+class LItemTouchHelper(private val callback:LItemTouchCallback): ItemTouchHelper(callback) {
 
     companion object {
 

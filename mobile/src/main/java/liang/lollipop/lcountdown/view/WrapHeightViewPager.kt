@@ -1,10 +1,9 @@
 package liang.lollipop.lcountdown.view
 
 import android.content.Context
-import android.support.v4.view.PagerAdapter
-import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.view.View
+import androidx.viewpager.widget.ViewPager
 
 /**
  * @date: 2018/6/21 17:50
@@ -25,17 +24,17 @@ class WrapHeightViewPager(context: Context, attr: AttributeSet?) : ViewPager(con
             for (i in 0 until childCount) {
                 val child = getChildAt(i)
                 child.measure(widthMeasureSpec,
-                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                        MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED))
                 val h = child.measuredHeight
                 if (h > height)
                 //采用最大的view的高度。
                     height = h
             }
-            newHeightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height,
-                    View.MeasureSpec.EXACTLY)
+            newHeightMeasureSpec = MeasureSpec.makeMeasureSpec(height,
+                    MeasureSpec.EXACTLY)
         }else{
-            newHeightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0,
-                                View.MeasureSpec.UNSPECIFIED)
+            newHeightMeasureSpec = MeasureSpec.makeMeasureSpec(0,
+                                MeasureSpec.UNSPECIFIED)
         }
 
         super.onMeasure(widthMeasureSpec, newHeightMeasureSpec)

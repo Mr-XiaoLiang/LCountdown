@@ -10,62 +10,57 @@
         android:orientation="vertical"
         android:padding="5dp">
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/prefixNameInputGroup"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <android.support.design.widget.TextInputEditText
+            android:layout_height="wrap_content"
+            app:counterEnabled="true"
+            style="@style/drakInputLayoutStyle">
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/prefixNameInputView"
                 android:hint="@string/prefix"
                 android:text="@string/left_until"
+                style="@style/drakInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/suffixNameInputGroup"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <android.support.design.widget.TextInputEditText
+            android:layout_height="wrap_content"
+            app:counterEnabled="true"
+            style="@style/drakInputLayoutStyle">
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/suffixNameInputView"
                 android:hint="@string/suffix"
                 android:text="@string/the_end"
+                style="@style/drakInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/dayUnitInputGroup"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <android.support.design.widget.TextInputEditText
+            android:layout_height="wrap_content"
+            app:counterEnabled="true"
+            style="@style/drakInputLayoutStyle">
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/dayUnitInputView"
                 android:hint="@string/day_unit"
                 android:text="@string/day"
+                style="@style/drakInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-            android:visibility="gone"
-            android:id="@+id/hourUnitInputGroup"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/hourUnitInputView"
-                android:hint="@string/hour_unit"
-                android:text="@string/hour"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 
 </FrameLayout>

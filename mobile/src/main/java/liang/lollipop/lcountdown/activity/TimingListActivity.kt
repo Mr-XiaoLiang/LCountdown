@@ -3,15 +3,13 @@ package liang.lollipop.lcountdown.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.BaseTransientBottomBar
-import android.support.design.widget.Snackbar
-import android.support.v4.util.Pair
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_timing_list.*
 import kotlinx.android.synthetic.main.content_timing_list.*
 import liang.lollipop.lbaselib.base.BaseActivity
@@ -24,6 +22,8 @@ import liang.lollipop.lcountdown.utils.LogHelper
 import liang.lollipop.lcountdown.utils.TimingUtil
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import androidx.core.util.Pair
+import androidx.recyclerview.widget.RecyclerView
 
 
 /**
@@ -61,7 +61,7 @@ class TimingListActivity : BaseActivity(){
         refreshLayout.setOnRefreshListener(this)
         refreshLayout.setColorSchemeResources(R.color.colorPrimary,R.color.colorAccent)
 
-        recyclerView.layoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
+        recyclerView.layoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
         val helper = getTouchHelper(recyclerView)
         helper.setCanSwipe(true)
         adapter = TimingListAdapter(dataList,layoutInflater,helper)
@@ -129,7 +129,7 @@ class TimingListActivity : BaseActivity(){
         override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
             super.onDismissed(transientBottomBar, event)
 
-            if(event != BaseTransientBottomBar.BaseCallback.DISMISS_EVENT_ACTION){
+            if(event != DISMISS_EVENT_ACTION){
 
                 timingUtil.deleteTiming(bean.id)
 
@@ -147,8 +147,7 @@ class TimingListActivity : BaseActivity(){
                 startActivityForResult(
                         Intent(this,QuickTimingActivity::class.java),
                         REQUEST_NEW_TIMING,
-                        Pair.create(v,QuickTimingActivity.REMIND_BTN_TRANSITION),
-                        Pair.create(assistBtn,QuickTimingActivity.QUIET_BTN_TRANSITION))
+                        Pair.create(v,QuickTimingActivity.QUIET_BTN_TRANSITION))
             }
 
         }

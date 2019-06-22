@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white"
+    android:background="@color/bottomSheetCard"
     android:minHeight="80dp"
     android:elevation="2dp">
 
@@ -13,12 +13,13 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="50sp"
+        android:text="w"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/guideline"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="我的第一个计时"
-        android:textColor="#555"
+        android:textColor="#B8B8B8"
         android:textSize="16sp"
         android:visibility="visible"
         app:layout_constraintLeft_toRightOf="@id/guideline"
@@ -44,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="12:34:23.123"
-        android:textColor="#333"
+        android:textColor="#B8B8B8"
         android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="@id/timingTitleView"
         app:layout_constraintTop_toBottomOf="@id/timingTitleView" />
@@ -66,7 +67,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
         android:text="2018-06-15 12:34:23.123"
-        android:textColor="#666"
+        android:textColor="#999999"
         android:textSize="12sp"
         app:layout_constraintLeft_toRightOf="@id/startTimeIcon"
         app:layout_constraintTop_toBottomOf="@id/timeLengthView" />
@@ -89,21 +90,21 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
         android:text="2018-06-15 12:34:23.123"
-        android:textColor="#666"
+        android:textColor="#999999"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/endTimeIcon"
         app:layout_constraintTop_toBottomOf="@id/startTimeView" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/stopBtn"
-        style="@style/Widget.AppCompat.Light.ActionButton.Overflow"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
         android:text="@string/stop_timing"
-        android:textColor="#29a0b7"
+        android:textColor="@color/btn_text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
@@ -118,4 +119,4 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

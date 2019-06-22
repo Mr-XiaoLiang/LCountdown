@@ -2,6 +2,7 @@ package liang.lollipop.lcountdown.utils
 
 import liang.lollipop.lcountdown.bean.CountdownBean
 import android.content.Context
+import kotlin.math.abs
 
 
 /**
@@ -17,42 +18,43 @@ object CountdownUtil {
 
     private const val NEW_VERSION_HINT = "NEW_VERSION_HINT"
 
-    fun countdown(endTime: Long): CountdownBean {
+    private val Long.days: Long
+        get() {
+            return this / ONE_DAY
+        }
+
+    private val Long.hours: Long
+        get() {
+            return this % ONE_DAY / ONE_HOUR
+        }
+    private val Long.minutes: Long
+        get() {
+        return this % ONE_HOUR / ONE_MINUTE
+        }
+    private val Long.seconds: Long
+        get() {
+            return this % ONE_MINUTE / ONE_SECOND
+        }
+
+    fun countdown(endTime: Long, isInOneDay: Boolean = false): CountdownBean {
         val now = System.currentTimeMillis()
-        val leftTime = endTime - now
-        val days = leftTime / ONE_DAY
-        val hours = leftTime % ONE_DAY / ONE_HOUR
-        val minutes = leftTime % ONE_HOUR / ONE_MINUTE
-        val seconds = leftTime % ONE_MINUTE / ONE_SECOND
-
-        val bean = CountdownBean()
-        bean.dayInt = days.toInt()
-        bean.hourInt = hours.toInt()
-        bean.minuteInt = minutes.toInt()
-        bean.secondInt = seconds.toInt()
-        bean.days = days.formatNumber()
-        bean.hours = hours.formatNumber()
-        bean.minutes = minutes.formatNumber()
-        bean.seconds = seconds.formatNumber()
-        bean.time = "${hours.formatNumber()} : ${minutes.formatNumber()}"
-
-        return bean
+        return timer(CountdownBean(), now, endTime, isInOneDay)
     }
 
-    fun timer(startTime: Long): CountdownBean{
-        return timer(startTime,System.currentTimeMillis())
+    fun timer(startTime: Long, isInOneDay: Boolean = false): CountdownBean{
+        return timer(CountdownBean(), startTime, System.currentTimeMillis(), isInOneDay)
     }
 
-    fun timer(startTime: Long,endTime: Long): CountdownBean{
-        return timer(CountdownBean(),startTime, endTime)
-    }
-
-    fun timer(bean: CountdownBean,startTime: Long,endTime: Long): CountdownBean{
-        val leftTime =  endTime - startTime
-        val days = leftTime / ONE_DAY
-        val hours = leftTime % ONE_DAY / ONE_HOUR
-        val minutes = leftTime % ONE_HOUR / ONE_MINUTE
-        val seconds = leftTime % ONE_MINUTE / ONE_SECOND
+    fun timer(bean: CountdownBean,startTime: Long,endTime: Long, isInOneDay: Boolean = false): CountdownBean{
+        val leftTime =  if (isInOneDay) {
+            (endTime % ONE_DAY) - (startTime % ONE_DAY)
+        } else {
+            endTime - startTime
+        }
+        val days = leftTime.days
+        val hours = leftTime.hours
+        val minutes = leftTime.minutes
+        val seconds = leftTime .seconds
 
         bean.dayInt = days.toInt()
         bean.hourInt = hours.toInt()
@@ -70,9 +72,9 @@ object CountdownUtil {
     private fun Long.formatNumber(): String{
         return when {
             this > 9 -> ""+this
-            this < -9 -> "-"+Math.abs(this)
-            this < 0 -> "-0"+Math.abs(this)
-            else -> "0"+this
+            this < -9 -> "-"+ abs(this)
+            this < 0 -> "-0"+ abs(this)
+            else -> "0$this"
         }
     }
 

@@ -1,8 +1,12 @@
 package liang.lollipop.lcountdown.activity
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_crash.*
 import liang.lollipop.lbaselib.base.BaseActivity
 import liang.lollipop.lcountdown.LApplication
@@ -10,7 +14,7 @@ import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.utils.LogHelper
 import liang.lollipop.lcountdown.utils.MailUtil
 import java.io.File
-import java.lang.StringBuilder
+
 
 /**
  * @author Lollipop
@@ -40,7 +44,7 @@ class CrashActivity : BaseActivity() {
         setToolbar(toolbar)
         errorView.movementMethod = ScrollingMovementMethod.getInstance()
         sendMailBtn.setOnClickListener {
-            MailUtil.to("lollipop8555@gmail.com") {
+            MailUtil.to(getString(R.string.lollipop_email)) {
                 subject = getString(R.string.log_mail_title)
                 content = getString(R.string.log_mail_centent)
                 chooserTitle = getString(R.string.mail_chooser_title)
@@ -51,6 +55,15 @@ class CrashActivity : BaseActivity() {
                 }
                 file = logFile
             }.send(this)
+        }
+        copyAddress.setOnClickListener {
+            //获取剪贴板管理器：
+            val cm = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            // 创建普通字符型ClipData
+            val clipData = ClipData.newPlainText("email", getString(R.string.lollipop_email))
+            // 将ClipData内容放到系统剪贴板里。
+            cm.primaryClip = clipData
+            Snackbar.make(mailAddress,R.string.copy_completed,Snackbar.LENGTH_LONG).show()
         }
     }
 

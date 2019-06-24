@@ -1,6 +1,7 @@
 package liang.lollipop.lcountdown.holder
 
 import android.graphics.Color
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,6 @@ import liang.lollipop.lcountdown.bean.WidgetBean
 import liang.lollipop.lcountdown.bean.WidgetStyle
 import liang.lollipop.lcountdown.utils.CountdownUtil
 import liang.lollipop.lcountdown.utils.WidgetUtil
-import org.jetbrains.anko.textColor
 
 class WidgetHolder private constructor(itemView: View): BaseHolder<WidgetBean>(itemView) {
 
@@ -31,11 +31,6 @@ class WidgetHolder private constructor(itemView: View): BaseHolder<WidgetBean>(i
 
     }
 
-    private val nameView: TextView = find(R.id.nameView)
-    private val dayView: TextView = find(R.id.dayView)
-    private val timeView: TextView = find(R.id.timeView)
-    private val signView: TextView = find(R.id.signView)
-
     init {
 
         canMove = true
@@ -45,11 +40,24 @@ class WidgetHolder private constructor(itemView: View): BaseHolder<WidgetBean>(i
 
     override fun onBind(bean: WidgetBean) {
 
-        nameView.text = bean.countdownName
         val countdownBean = CountdownUtil.countdown(bean.endTime)
-        dayView.text = countdownBean.days
-        timeView.text = countdownBean.time
-        signView.text = bean.signValue
+        setTextViewText(R.id.nameView,bean.countdownName)
+        setTextViewText(R.id.dayView,countdownBean.days)
+        setTextViewText(R.id.timeView,countdownBean.time)
+        setTextViewText(R.id.signView,bean.signValue)
+        find<View>(R.id.timeView).visibility = if(bean.noTime){ View.GONE }else{ View.VISIBLE }
+        setTextViewText(R.id.nameFrontView,bean.prefixName)
+        setTextViewText(R.id.nameBehindView,bean.suffixName)
+        setTextViewText(R.id.dayUnitView,bean.dayUnit)
+
+        setTextViewTextSize(R.id.nameFrontView,TypedValue.COMPLEX_UNIT_SP,bean.prefixFontSize.toFloat())
+        setTextViewTextSize(R.id.nameView,TypedValue.COMPLEX_UNIT_SP,bean.nameFontSize.toFloat())
+        setTextViewTextSize(R.id.nameBehindView,TypedValue.COMPLEX_UNIT_SP,bean.suffixFontSize.toFloat())
+        setTextViewTextSize(R.id.dayView,TypedValue.COMPLEX_UNIT_SP,bean.dayFontSize.toFloat())
+        setTextViewTextSize(R.id.dayUnitView,TypedValue.COMPLEX_UNIT_SP,bean.dayUnitFontSize.toFloat())
+        setTextViewTextSize(R.id.timeView,TypedValue.COMPLEX_UNIT_SP,bean.timeFontSize.toFloat())
+        setTextViewTextSize(R.id.signView,TypedValue.COMPLEX_UNIT_SP,bean.signFontSize.toFloat())
+        find<View>(R.id.dayGroup).visibility = if (bean.inOneDay) { View.GONE } else { View.VISIBLE }
 
         WidgetUtil.updateTextColorByStyle(bean.widgetStyle) { id, color ->
             setTextColor(id, color)
@@ -75,8 +83,16 @@ class WidgetHolder private constructor(itemView: View): BaseHolder<WidgetBean>(i
         find<View>(R.id.widgetGroup).setBackgroundResource(background)
     }
 
+    private fun setTextViewText(id: Int, value: String) {
+        find<TextView>(id).text = value
+    }
+
     private fun setTextColor(id: Int, color: Int) {
-        find<TextView>(id).textColor = color
+        find<TextView>(id).setTextColor(color)
+    }
+
+    private fun setTextViewTextSize(id: Int, unit: Int, size: Float) {
+        find<TextView>(id).setTextSize(unit, size)
     }
 
 }

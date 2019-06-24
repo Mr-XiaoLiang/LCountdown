@@ -16,7 +16,7 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
     companion object {
 
         private const val DB_NAME = "WidgetDatabase"
-        private const val VERSION = 5
+        private const val VERSION = 6
 
         fun read(context: Context): SqlDB {
             return SqlDB(WidgetDBUtil(context), false)
@@ -26,11 +26,11 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             return SqlDB(WidgetDBUtil(context), true)
         }
 
-        fun Boolean.b2i(): Int{
+        fun Boolean.b2i(): Int {
             return if(this){1}else{0}
         }
 
-        fun Int.i2b(): Boolean{
+        fun Int.i2b(): Boolean {
             return this > 0
         }
 

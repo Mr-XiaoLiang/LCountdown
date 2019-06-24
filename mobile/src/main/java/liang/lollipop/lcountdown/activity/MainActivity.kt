@@ -14,7 +14,6 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -32,7 +31,6 @@ import liang.lollipop.lcountdown.fragment.CountdownFontSizeFragment
 import liang.lollipop.lcountdown.fragment.CountdownInfoFragment
 import liang.lollipop.lcountdown.fragment.CountdownUnitFragment
 import liang.lollipop.lcountdown.fragment.LTabFragment
-import liang.lollipop.lcountdown.utils.CountdownUtil
 import liang.lollipop.lcountdown.utils.WidgetDBUtil
 import liang.lollipop.lcountdown.utils.WidgetUtil
 import liang.lollipop.lcountdown.widget.CountdownWidget
@@ -160,20 +158,6 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         }
         sheetState = bottomSheetBehavior.state
         updateButton(sheetState)
-
-        if(CountdownUtil.isShowNewVersionHint(this,"MainActivity")){
-            AlertDialog.Builder(this).apply {
-                setTitle(R.string.new_way_of_operation)
-                setMessage(R.string.new_way_of_operation_info)
-                setPositiveButton(R.string.got_it){ dialog, _ ->
-                    dialog.dismiss()
-                }
-                setNeutralButton(R.string.do_not_show_again){ dialog, _ ->
-                    CountdownUtil.newVersionHintShown(this@MainActivity,"MainActivity")
-                    dialog.dismiss()
-                }
-            }.show()
-        }
     }
 
     private fun updateButton(newState: Int) {

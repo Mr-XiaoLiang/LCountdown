@@ -1,8 +1,5 @@
 package liang.lollipop.ltabview.builder
 
-import android.graphics.drawable.Drawable
-import android.view.View
-import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import liang.lollipop.ltabview.LTabView
 

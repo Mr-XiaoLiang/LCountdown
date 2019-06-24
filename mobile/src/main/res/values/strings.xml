@@ -33,8 +33,6 @@
     <string name="hour_unit_font_size">Hour unit font size %1$d SP</string>
     <string name="time_font_size">Time font size %1$d SP</string>
     <string name="sign_font_size">Sign font size %1$d SP</string>
-    <string name="new_way_of_operation">New way of operation</string>
-    <string name="new_way_of_operation_info">Due to too many preferences, the previous list was too complicated to display. Therefore, the preferences are divided into three groups and displayed in pages. You can swipe left and right to switch between different preferences. After entering this page, you can swipe down to hide your preferences at any time, or you can pull up at any time to call up preferences. Preferences can be previewed instantly, but only if you click the confirmation button.</string>
     <string name="got_it">Got it</string>
     <string name="do_not_show_again">Not show again</string>
     <string name="floating_notif_title">LCountdown</string>
@@ -57,4 +55,8 @@
     <string name="clear_log_enter">delete</string>
     <string name="clear_log_end">deleted</string>
     <string name="in_one_day">One-day</string>
+
+    <string name="lollipop_email" translatable="false">lollipop8555@gmail.com</string>
+    <string name="copy">copy</string>
+    <string name="copy_completed">Copy completed</string>
 </resources>

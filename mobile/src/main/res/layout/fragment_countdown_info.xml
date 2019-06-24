@@ -58,21 +58,19 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/dateSelectView"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    style="@style/textButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
-                    android:text="2018-04-23"
-                    android:textColor="@color/btn_text_color"/>
+                    android:text="2018-04-23"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/timeSelectView"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    style="@style/textButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
-                    android:text="23:45"
-                    android:textColor="#29a0b7"/>
+                    android:text="23:45"/>
 
             </LinearLayout>
 

@@ -98,13 +98,12 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/stopBtn"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
+        style="@style/textButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:layout_marginEnd="5dp"
         android:text="@string/stop_timing"
-        android:textColor="@color/btn_text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 

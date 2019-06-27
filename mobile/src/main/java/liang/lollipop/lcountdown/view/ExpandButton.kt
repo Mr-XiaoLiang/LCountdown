@@ -13,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import liang.lollipop.lcountdown.R
 import org.jetbrains.anko.internals.AnkoInternals
 import kotlin.math.max
@@ -481,10 +480,6 @@ class ExpandButton(context: Context, attr: AttributeSet? = null,
     private class PressedImageView(context: Context, attr: AttributeSet? = null,
                                    defStyleAttr: Int = 0, defStyleRes: Int = 0):
             ImageView(context, attr, defStyleAttr, defStyleRes) {
-
-        constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
-        constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-        constructor(context: Context) : this(context, null)
 
         private var pressedListener: ((Boolean) -> Unit)? = null
 

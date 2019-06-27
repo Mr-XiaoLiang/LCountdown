@@ -27,10 +27,7 @@ import liang.lollipop.lbaselib.base.BaseActivity
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.bean.WidgetBean
 import liang.lollipop.lcountdown.bean.WidgetStyle
-import liang.lollipop.lcountdown.fragment.CountdownFontSizeFragment
-import liang.lollipop.lcountdown.fragment.CountdownInfoFragment
-import liang.lollipop.lcountdown.fragment.CountdownUnitFragment
-import liang.lollipop.lcountdown.fragment.LTabFragment
+import liang.lollipop.lcountdown.fragment.*
 import liang.lollipop.lcountdown.utils.WidgetDBUtil
 import liang.lollipop.lcountdown.utils.WidgetUtil
 import liang.lollipop.lcountdown.widget.CountdownWidget
@@ -62,7 +59,11 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
 
     private val countdownFontSizeFragment = CountdownFontSizeFragment()
 
-    private val fragments: Array<LTabFragment> = arrayOf(countdownInfoFragment,countdownUnitFragment,countdownFontSizeFragment)
+    private val countdownLocationFragment = CountdownLocationFragment()
+
+    private val fragments: Array<LTabFragment> = arrayOf(
+            countdownInfoFragment,countdownUnitFragment,
+            countdownFontSizeFragment, countdownLocationFragment)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,7 +105,7 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
             updateWidget()
         }
 
-        viewPager.offscreenPageLimit = 2
+        viewPager.offscreenPageLimit = fragments.size
         viewPager.adapter = Adapter(supportFragmentManager,fragments, this)
         LTabHelper.withExpandItem(tabLayout).let { build ->
             val tabUnselectedColor = ContextCompat.getColor(this@MainActivity, R.color.tabUnselectedColor)

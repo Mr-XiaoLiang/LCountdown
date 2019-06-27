@@ -2,6 +2,7 @@ package liang.lollipop.lcountdown.view
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 import androidx.viewpager.widget.ViewPager
 
@@ -38,6 +39,14 @@ class WrapHeightViewPager(context: Context, attr: AttributeSet?) : ViewPager(con
         }
 
         super.onMeasure(widthMeasureSpec, newHeightMeasureSpec)
+    }
+
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        return false
+    }
+
+    override fun setCurrentItem(item: Int) {
+        setCurrentItem(item, true)
     }
 
 }

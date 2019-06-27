@@ -41,6 +41,7 @@
     <string name="title_base_fragment">基本</string>
     <string name="title_info_fragment">描述</string>
     <string name="title_size_fragment">字体</string>
+    <string name="title_loca_fragment">位置</string>
     <string name="title_crash">:( 崩溃了</string>
     <string name="crash_alert">非常抱歉，发生了不可挽回的错误。\n你可以选择点击右下角发送错误日志给开发者。协助他修复这个问题。</string>
     <string name="log_not_found">未正常接收到崩溃日志信息，自动检索本地最新的日志。请确定崩溃时间。</string>

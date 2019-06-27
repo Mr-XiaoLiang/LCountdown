@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -147,6 +148,10 @@ object TintUtil {
         fun tint(): Drawable{
             DrawableCompat.setTintList(drawable, colors)
             return drawable
+        }
+
+        fun into(imageView: ImageView) {
+            imageView.setImageDrawable(tint())
         }
 
     }

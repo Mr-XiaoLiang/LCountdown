@@ -40,6 +40,7 @@
     <string name="title_base_fragment">Base</string>
     <string name="title_info_fragment">Info</string>
     <string name="title_size_fragment">Font</string>
+    <string name="title_loca_fragment">Location</string>
     <string name="title_crash">:( Sorry</string>
     <string name="crash_alert">I am very sorry that an irreparable error has occurred. \nYou can choose to click the bottom right corner to send an error log to the developer. Help him fix this problem.</string>
     <string name="log_not_found">The crash log information is not received normally, and the latest local log is automatically retrieved. Please determine the time of the crash.</string>

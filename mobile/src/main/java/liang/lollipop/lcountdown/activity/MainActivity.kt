@@ -1,5 +1,7 @@
 package liang.lollipop.lcountdown.activity
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.appwidget.AppWidgetManager
@@ -19,7 +21,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.widget_countdown.*
@@ -62,7 +63,7 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
     private val countdownLocationFragment = CountdownLocationFragment()
 
     private val fragments: Array<LTabFragment> = arrayOf(
-            countdownInfoFragment,countdownUnitFragment,
+            countdownInfoFragment, countdownUnitFragment,
             countdownFontSizeFragment, countdownLocationFragment)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,31 +75,19 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         WidgetUtil.alarmUpdate(this)
     }
 
-    private var sheetState = BottomSheetBehavior.STATE_COLLAPSED
+    private lateinit var sheetHelper: BottomSheelHelper
 
     private fun initView(){
         widgetBean.widgetId = intent.getIntExtra(
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID)
 
-        val bottomSheetBehavior = BottomSheetBehavior.from(sheetGroup)
-        bottomSheetBehavior.setBottomSheetCallback(object :BottomSheetBehavior.BottomSheetCallback(){
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                sheetState = newState
-                updateButton(newState)
-            }
-
-        })
-
+        sheetHelper = BottomSheelHelper(sheetGroup, resources.getDimension(R.dimen.peekHeight))
+        sheetHelper.onStateChange {
+            updateButton(it)
+        }
         sheetBtn.setOnClickListener {
-            if(sheetState == BottomSheetBehavior.STATE_EXPANDED){
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            }else{
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-            }
+            sheetHelper.reverse()
         }
 
         updateBtn.setOnClickListener{
@@ -153,22 +142,20 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
 
         isCreateModel = intent.getIntExtra(CountdownWidget.WIDGET_SHOW,0) < 1
         if(isCreateModel){
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            sheetHelper.expand(false)
         }else{
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            sheetHelper.close(false)
         }
-        sheetState = bottomSheetBehavior.state
-        updateButton(sheetState)
     }
 
-    private fun updateButton(newState: Int) {
-        if(newState == BottomSheetBehavior.STATE_EXPANDED){
+    private fun updateButton(newState: BottomSheelHelper.State) {
+        if (BottomSheelHelper.State.EXPANDED == newState) {
             updateBtn.show()
             sheetBtn.animate().let {
                 it.cancel()
                 it.rotation(180F).start()
             }
-        }else{
+        } else {
             updateBtn.hide()
             sheetBtn.animate().let {
                 it.cancel()
@@ -220,23 +207,15 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
     }
 
     override fun onHandler(message: Message) {
-
         when(message.what){
-
             WHAT_UPDATE -> {
-
                 countdown()
-
                 handler.sendEmptyMessageDelayed(WHAT_UPDATE, DELAYED)
-
             }
-
         }
-
     }
 
     private fun updateWidget(){
-
         if(isCreateModel){
             WidgetDBUtil.write(this).add(widgetBean).close()
         }else{
@@ -252,7 +231,6 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         setResult(Activity.RESULT_OK, resultValue)
 
         finish()
-
     }
 
     private fun countdown(){
@@ -269,6 +247,7 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
     override fun onStop() {
         super.onStop()
         handler.removeMessages(WHAT_UPDATE)
+        sheetHelper.end()
     }
 
     override fun onStart() {
@@ -314,9 +293,7 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         val bgColor = if(isDark){ Color.WHITE }else{ Color.BLACK }
 
         contentGroup.setBackgroundColor(bgColor)
-
         changeTextViewColor(widgetFrame,textColor)
-
         widgetBean.widgetStyle = style
     }
 
@@ -412,6 +389,126 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
             return ""
         }
 
+    }
+
+    private class BottomSheelHelper(private val sheetView: View, private val peekHeight: Float):
+            ValueAnimator.AnimatorUpdateListener,
+            Animator.AnimatorListener{
+
+        private val valueAnimator = ValueAnimator().apply {
+            addUpdateListener(this@BottomSheelHelper)
+            addListener(this@BottomSheelHelper)
+        }
+
+        companion object {
+            private const val MIN = 0F
+            private const val MAX = 1F
+            private const val DURATION = 300L
+        }
+
+        enum class State {
+            NOTHING,
+            EXPANDED,
+            COLLAPSED,
+            SCROLLING
+        }
+
+        private var progress = 0F
+        var state = State.NOTHING
+            private set
+        private var isOpen = false
+
+        private var stateListener: ((State) -> Unit)? = null
+
+        fun onStateChange(listener: (State) -> Unit) {
+            this.stateListener = listener
+        }
+
+        private fun changeState(s: State) {
+            if (s != state) {
+                state = s
+                stateListener?.invoke(s)
+            }
+        }
+
+        fun close(isAnimator: Boolean = true) {
+            isOpen = false
+            post {
+                if (!isAnimator) {
+                    changeState(State.COLLAPSED)
+                    onProgressChange(MIN)
+                } else {
+                    changeState(State.SCROLLING)
+                    valueAnimator.cancel()
+                    valueAnimator.setFloatValues(progress, MIN)
+                    valueAnimator.duration = ((progress - MIN) / (MAX - MIN) * DURATION).toLong()
+                    valueAnimator.start()
+                }
+            }
+        }
+
+        fun expand(isAnimator: Boolean = true) {
+            isOpen = true
+            post {
+                if (!isAnimator) {
+                    changeState(State.EXPANDED)
+                    onProgressChange(MAX)
+                } else {
+                    changeState(State.SCROLLING)
+                    valueAnimator.cancel()
+                    valueAnimator.setFloatValues(progress, MAX)
+                    valueAnimator.duration = ((MAX - progress) / (MAX - MIN) * DURATION).toLong()
+                    valueAnimator.start()
+                }
+            }
+        }
+
+        fun reverse(isAnimator: Boolean = true) {
+            if (isOpen) {
+                close(isAnimator)
+            } else {
+                expand(isAnimator)
+            }
+        }
+
+        fun end() {
+            if (valueAnimator.isRunning) {
+                valueAnimator.end()
+            }
+        }
+
+        private fun post(run: () -> Unit) {
+            sheetView.post(run)
+        }
+
+        private fun onProgressChange(value: Float) {
+            progress = value
+            val offsetMax = sheetView.height - peekHeight
+            sheetView.translationY = offsetMax * (1 - value)
+        }
+
+        override fun onAnimationUpdate(animation: ValueAnimator?) {
+            if (animation == valueAnimator) {
+                onProgressChange(animation.animatedValue as Float)
+            }
+        }
+
+        override fun onAnimationRepeat(animation: Animator?) {  }
+
+        override fun onAnimationEnd(animation: Animator?) {
+            if (animation == valueAnimator) {
+                changeState(if (isOpen) {State.EXPANDED} else {State.COLLAPSED})
+            }
+        }
+
+        override fun onAnimationCancel(animation: Animator?) {
+        }
+
+        override fun onAnimationStart(animation: Animator?) {
+            if (animation == valueAnimator) {
+                changeState(State.SCROLLING)
+            }
+        }
     }
 
 }

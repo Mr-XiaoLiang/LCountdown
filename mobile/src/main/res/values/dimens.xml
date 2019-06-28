@@ -3,4 +3,6 @@
     <dimen name="sheet_card_radius">5dp</dimen>
 
     <dimen name="tab_min_size">28dp</dimen>
+
+    <dimen name="peekHeight">48dp</dimen>
 </resources>

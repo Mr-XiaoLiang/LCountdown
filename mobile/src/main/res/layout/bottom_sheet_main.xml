@@ -3,10 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:layout_behavior="@string/bottom_sheet_behavior"
-    app:behavior_hideable="true"
-    app:behavior_peekHeight="?android:attr/actionBarSize"
-    android:id="@+id/sheetGroup">
+    android:id="@+id/sheetGroup"
+    android:layout_gravity="bottom">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +13,7 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize">
+            android:layout_height="@dimen/peekHeight">
 
             <ImageView
                 android:id="@+id/sheetBtn"
@@ -48,7 +46,7 @@
                 <liang.lollipop.lcountdown.view.WrapHeightViewPager
                     android:id="@+id/viewPager"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="300dp"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

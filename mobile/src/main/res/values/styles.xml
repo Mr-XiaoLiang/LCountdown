@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:listDivider">@drawable/divider_widget_list</item>
         <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="android:navigationBarColor">@android:color/black</item>
     </style>
 
     <style name="drakInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">

@@ -11,6 +11,29 @@
         <item name="android:navigationBarColor">@android:color/black</item>
     </style>
 
+    <style name="expandBtn">
+        <item name="iconSize">24dp</item>
+        <item name="iconColor">@android:color/white</item>
+        <item name="textColor">@android:color/white</item>
+        <item name="corner">5dp</item>
+        <item name="textSize">16sp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="interval">40dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <style name="grid9Btn" >
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:tint">@android:color/white</item>
+        <item name="android:src">@drawable/grid_button</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+    </style>
+
     <style name="drakInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">@color/inout_box_color</item>
         <item name="hintTextColor">@color/inputHintColor</item>

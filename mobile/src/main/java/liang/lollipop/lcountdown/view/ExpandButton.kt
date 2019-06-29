@@ -23,8 +23,8 @@ import kotlin.math.min
  * @author: lollipop
  * 可以在手指放上去的时候展开的按钮
  */
-class ExpandButton(context: Context, attr: AttributeSet? = null,
-                   defStyleAttr: Int = 0, defStyleRes: Int = 0): ViewGroup(context, attr, defStyleAttr, defStyleRes),
+open class ExpandButton(context: Context, attr: AttributeSet?,
+                   defStyleAttr: Int, defStyleRes: Int): ViewGroup(context, attr, defStyleAttr, defStyleRes),
         ValueAnimator.AnimatorUpdateListener{
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
@@ -37,9 +37,9 @@ class ExpandButton(context: Context, attr: AttributeSet? = null,
 
         private const val MAX_ANIMATOR_PROGRESS = 1F
         private const val MIN_ANIMATOR_PROGRESS = 0F
-        private const val DEF_ANIMATOR_DURATION = 300L
+        private const val DEF_ANIMATOR_DURATION = 150L
 
-        private const val DELAY_EXPAND = 300L
+        private const val DELAY_EXPAND = DEF_ANIMATOR_DURATION
     }
 
     /**
@@ -228,6 +228,11 @@ class ExpandButton(context: Context, attr: AttributeSet? = null,
      */
     var beakOnExpand = true
 
+    /**
+     * 展开状态监听器
+     */
+    var onExpendListener: OnExpendListener? = null
+
     init {
         addView(iconView)
         addView(nameView)
@@ -354,24 +359,29 @@ class ExpandButton(context: Context, attr: AttributeSet? = null,
         parent.touchDelegate = TouchDelegate(bounds, view)
     }
 
-    private fun expand() {
-        log("expand animatorProgress: $animatorProgress")
+    fun expand() {
         isExpand = true
+        onExpendListener?.onExpend(this, isExpand)
         startAnimator(((MAX_ANIMATOR_PROGRESS - animatorProgress) *
                 1F / (MAX_ANIMATOR_PROGRESS - MIN_ANIMATOR_PROGRESS) * animatorDuration).toLong(),
                 MAX_ANIMATOR_PROGRESS)
     }
 
-    private fun collapse() {
+    fun collapse(isAnimator: Boolean = true) {
         if (!isExpand) {
             removeCallbacks(expandRunnable)
             return
         }
         isExpand = false
-        log("collapse animatorProgress: $animatorProgress")
-        startAnimator(((animatorProgress - MIN_ANIMATOR_PROGRESS) *
-                1F / (MAX_ANIMATOR_PROGRESS - MIN_ANIMATOR_PROGRESS) * animatorDuration).toLong(),
-                MIN_ANIMATOR_PROGRESS)
+        onExpendListener?.onExpend(this, isExpand)
+        if (isAnimator) {
+            startAnimator(((animatorProgress - MIN_ANIMATOR_PROGRESS) *
+                    1F / (MAX_ANIMATOR_PROGRESS - MIN_ANIMATOR_PROGRESS) * animatorDuration).toLong(),
+                    MIN_ANIMATOR_PROGRESS)
+        } else {
+            valueAnimator.cancel()
+            onProgressChange(MIN_ANIMATOR_PROGRESS)
+        }
     }
 
     private fun startAnimator(duration: Long, endValue: Float) {
@@ -432,6 +442,10 @@ class ExpandButton(context: Context, attr: AttributeSet? = null,
         super.onDetachedFromWindow()
         valueAnimator.cancel()
         removeCallbacks(expandRunnable)
+    }
+
+    interface OnExpendListener {
+        fun onExpend(button: ExpandButton, isOpen: Boolean)
     }
 
     private class ExpandBackground: Drawable() {

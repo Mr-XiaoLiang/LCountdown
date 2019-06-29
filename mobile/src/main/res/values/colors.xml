@@ -15,4 +15,7 @@
     <color name="inputHintColor">#CCCCCC</color>
     <color name="inputHintTextColor">#80CCCCCC</color>
 
+    <color name="expandBtnSelect">#df9fb4</color>
+    <color name="expandBtnDefault">#525252</color>
+
 </resources>

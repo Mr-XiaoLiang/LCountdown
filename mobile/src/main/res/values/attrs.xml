@@ -18,4 +18,15 @@
         <attr name="corner" format="dimension"/>
     </declare-styleable>
 
+    <declare-styleable name="ExpandButtonGroup">
+        <attr name="selectedColor" format="color"/>
+        <attr name="defaultColor" format="color"/>
+        <attr name="textMaxLines" format="integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="TextIconExpandButton">
+        <attr name="iconTextSize" format="dimension"/>
+        <attr name="iconText" format="string"/>
+    </declare-styleable>
+
 </resources>

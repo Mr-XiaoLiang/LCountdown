@@ -60,4 +60,12 @@
 
     <string name="copy">复制</string>
     <string name="copy_completed">复制完成</string>
+
+    <string name="loca_mode_title">标题</string>
+    <string name="loca_mode_prefix">前缀</string>
+    <string name="loca_mode_suffix">后缀</string>
+    <string name="loca_mode_days">天数</string>
+    <string name="loca_mode_day_unit">单位</string>
+    <string name="loca_mode_time">时间</string>
+    <string name="loca_mode_sign">签名</string>
 </resources>

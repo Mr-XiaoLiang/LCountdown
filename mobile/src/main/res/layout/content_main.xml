@@ -17,8 +17,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="150dp"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content">
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
 
         <include layout="@layout/widget_countdown"/>
 

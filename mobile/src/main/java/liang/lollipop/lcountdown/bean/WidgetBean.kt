@@ -1,7 +1,10 @@
 package liang.lollipop.lcountdown.bean
 
+import android.text.TextUtils
+import android.view.Gravity
 import liang.lollipop.lbaselib.base.BaseBean
 import liang.lollipop.lcountdown.utils.CountdownUtil
+import org.json.JSONObject
 
 /**
  * 小部件的Bean
@@ -124,6 +127,41 @@ class WidgetBean : BaseBean() {
     var inOneDay = false
 
     /**
+     * 名称的位置
+     */
+    val nameLocation = Location()
+
+    /**
+     * 前缀的位置
+     */
+    val prefixLocation = Location()
+
+    /**
+     * 后缀的位置
+     */
+    val suffixLocation = Location()
+
+    /**
+     * 天数的位置
+     */
+    val daysLocation = Location()
+
+    /**
+     * 单位的位置
+     */
+    val unitLocation = Location()
+
+    /**
+     * 时间的位置
+     */
+    val timeLocation = Location()
+
+    /**
+     * 签名的位置
+     */
+    val inscriptionLocation = Location()
+
+    /**
      * 获取符合要求的时间结果
      */
     fun getTimerInfo(): CountdownBean {
@@ -169,6 +207,91 @@ class WidgetBean : BaseBean() {
         this.signFontSize = new.signFontSize
         this.noCountdown = new.noCountdown
         this.inOneDay = new.inOneDay
+        this.nameLocation.copy(new.nameLocation)
+        this.prefixLocation.copy(new.prefixLocation)
+        this.suffixLocation.copy(new.suffixLocation)
+        this.daysLocation.copy(new.daysLocation)
+        this.unitLocation.copy(new.unitLocation)
+        this.timeLocation.copy(new.timeLocation)
+        this.inscriptionLocation.copy(new.inscriptionLocation)
+    }
+
+    fun parseLocation(json: String?) {
+        if (TextUtils.isEmpty(json)) {
+            val empty = JSONObject()
+            nameLocation.parse(empty)
+            prefixLocation.parse(empty)
+            suffixLocation.parse(empty)
+            daysLocation.parse(empty)
+            unitLocation.parse(empty)
+            timeLocation.parse(empty)
+            inscriptionLocation.parse(empty)
+            return
+        }
+        val obj = JSONObject(json)
+        obj.optJSONObject("nameLocation")?.let {
+            nameLocation.parse(it)
+        }
+        obj.optJSONObject("prefixLocation")?.let {
+            prefixLocation.parse(it)
+        }
+        obj.optJSONObject("suffixLocation")?.let {
+            suffixLocation.parse(it)
+        }
+        obj.optJSONObject("daysLocation")?.let {
+            daysLocation.parse(it)
+        }
+        obj.optJSONObject("unitLocation")?.let {
+            unitLocation.parse(it)
+        }
+        obj.optJSONObject("timeLocation")?.let {
+            timeLocation.parse(it)
+        }
+        obj.optJSONObject("inscriptionLocation")?.let {
+            inscriptionLocation.parse(it)
+        }
+    }
+
+    fun serializationLocation(): String {
+        val obj = JSONObject()
+        obj.put("nameLocation", nameLocation.serialization())
+        obj.put("prefixLocation", prefixLocation.serialization())
+        obj.put("suffixLocation", suffixLocation.serialization())
+        obj.put("daysLocation", daysLocation.serialization())
+        obj.put("unitLocation", unitLocation.serialization())
+        obj.put("timeLocation", timeLocation.serialization())
+        obj.put("inscriptionLocation", inscriptionLocation.serialization())
+        return obj.toString()
+    }
+
+    class Location {
+        var gravity = Gravity.NO_GRAVITY
+        var verticalMargin = 0F
+        var horizontalMargin = 0F
+
+        fun copy(new: Location) {
+            this.gravity = new.gravity
+            this.verticalMargin = new.verticalMargin
+            this.horizontalMargin = new.horizontalMargin
+        }
+
+        override fun toString(): String {
+            return serialization().toString()
+        }
+
+        fun parse(obj: JSONObject) {
+            gravity = obj.optInt("gravity", Gravity.NO_GRAVITY)
+            verticalMargin = obj.optDouble("verticalMargin", 0.0).toFloat()
+            horizontalMargin = obj.optDouble("horizontalMargin", 0.0).toFloat()
+        }
+
+        fun serialization(): JSONObject {
+            val obj = JSONObject()
+            obj.put("gravity", gravity)
+            obj.put("verticalMargin", verticalMargin)
+            obj.put("horizontalMargin", horizontalMargin)
+            return obj
+        }
     }
 
 }

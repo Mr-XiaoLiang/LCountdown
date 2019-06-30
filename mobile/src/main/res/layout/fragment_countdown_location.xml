@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="300dp"
     android:orientation="vertical">
@@ -35,75 +36,83 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="0px"
-        app:layout_constraintRight_toLeftOf="@id/verticalSeekBar"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_height="match_parent"
-        android:clipChildren="false">
+        android:clipChildren="false"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/verticalSeekBar"
+        tools:layout_editor_absoluteY="-101dp">
 
         <liang.lollipop.lcountdown.view.ExpandButtonGroup
+            android:id="@+id/expandBtnGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left"
             android:orientation="vertical"
-            app:selectedColor="@color/expandBtnSelect"
+            android:paddingBottom="30dp"
             app:defaultColor="@color/expandBtnDefault"
-            android:id="@+id/expandBtnGroup"
-            android:paddingBottom="30dp">
+            app:selectedColor="@color/expandBtnSelect">
 
             <liang.lollipop.lcountdown.view.TextIconExpandButton
-                android:id="@+id/dateModeBtn"
+                android:id="@+id/titleModeBtn"
                 style="@style/expandBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:text="@string/app_name"
-                app:iconTextSize="24dp"/>
+                app:iconTextSize="24dp"
+                app:text="@string/loca_mode_title" />
 
             <liang.lollipop.lcountdown.view.TextIconExpandButton
+                android:id="@+id/prefixModeBtn"
                 style="@style/expandBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:icon="@drawable/ic_delete_black_24dp"
-                app:text="@string/app_name" />
+                app:text="@string/loca_mode_prefix" />
 
             <liang.lollipop.lcountdown.view.TextIconExpandButton
+                android:id="@+id/suffixModeBtn"
                 style="@style/expandBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:btnColor="@color/baseTabSelected"
                 app:icon="@drawable/ic_delete_black_24dp"
-                app:text="@string/app_name" />
+                app:text="@string/loca_mode_suffix" />
 
             <liang.lollipop.lcountdown.view.TextIconExpandButton
+                android:id="@+id/daysModeBtn"
                 style="@style/expandBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:btnColor="@color/baseTabSelected"
                 app:icon="@drawable/ic_delete_black_24dp"
-                app:text="@string/app_name" />
+                app:text="@string/loca_mode_days" />
 
             <liang.lollipop.lcountdown.view.TextIconExpandButton
+                android:id="@+id/unitModeBtn"
                 style="@style/expandBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:btnColor="@color/baseTabSelected"
                 app:icon="@drawable/ic_delete_black_24dp"
-                app:text="@string/app_name" />
+                app:text="@string/loca_mode_day_unit" />
 
             <liang.lollipop.lcountdown.view.TextIconExpandButton
+                android:id="@+id/timeModeBtn"
                 style="@style/expandBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:btnColor="@color/baseTabSelected"
                 app:icon="@drawable/ic_delete_black_24dp"
-                app:text="@string/app_name" />
+                app:text="@string/loca_mode_time" />
 
             <liang.lollipop.lcountdown.view.TextIconExpandButton
+                android:id="@+id/signModeBtn"
                 style="@style/expandBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:btnColor="@color/baseTabSelected"
                 app:icon="@drawable/ic_delete_black_24dp"
-                app:text="@string/app_name" />
+                app:text="@string/loca_mode_sign" />
 
         </liang.lollipop.lcountdown.view.ExpandButtonGroup>
 
@@ -112,12 +121,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0px"
         android:layout_height="0px"
-        app:layout_constraintBottom_toBottomOf="@id/panelBottom"
+        app:layout_constraintBottom_toTopOf="@id/horizontalSeekBar"
         app:layout_constraintLeft_toLeftOf="@id/panelLeft"
         app:layout_constraintRight_toLeftOf="@id/verticalSeekBar"
-        app:layout_constraintTop_toBottomOf="@id/horizontalSeekBar"
+        app:layout_constraintTop_toTopOf="@id/panelTop"
         android:background="@drawable/bg_box_outline"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginRight="10dp"
         android:id="@+id/gridGroup">
 
@@ -250,8 +259,13 @@
         android:layout_height="30dp"
         app:layout_constraintLeft_toLeftOf="@id/gridGroup"
         app:layout_constraintRight_toRightOf="@id/gridGroup"
-        app:layout_constraintTop_toTopOf="@id/panelTop"
-        android:background="#f00"
+        app:layout_constraintTop_toBottomOf="@id/gridGroup"
+        app:layout_constraintBottom_toBottomOf="@id/panelBottom"
+        app:barColor="@color/inputHintColor"
+        app:selectedBarColor="@color/colorAccent"
+        app:min="-50"
+        app:max="50"
+        app:progress="0"
         android:id="@+id/horizontalSeekBar"/>
 
     <liang.lollipop.lcountdown.view.AutoSeekBar
@@ -260,7 +274,26 @@
         app:layout_constraintBottom_toBottomOf="@id/gridGroup"
         app:layout_constraintRight_toRightOf="@id/panelRight"
         app:layout_constraintTop_toTopOf="@id/gridGroup"
-        android:background="#f00"
-        android:id="@+id/verticalSeekBar"/>
+        android:id="@+id/verticalSeekBar"
+        app:barColor="@color/inputHintColor"
+        app:selectedBarColor="@color/colorAccent"
+        app:min="-50"
+        app:max="50"
+        app:progress="0"/>
+
+    <TextView
+        android:visibility="invisible"
+        android:id="@+id/floatText"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toTopOf="@id/gridGroup"
+        app:layout_constraintBottom_toBottomOf="@id/gridGroup"
+        app:layout_constraintLeft_toLeftOf="@id/gridGroup"
+        app:layout_constraintRight_toRightOf="@id/gridGroup"
+        android:background="@drawable/bg_float_text"
+        android:gravity="center"
+        android:text="30"
+        android:textSize="30sp"
+        android:textColor="@android:color/white"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

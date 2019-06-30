@@ -1,14 +1,20 @@
 package liang.lollipop.lcountdown.fragment
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterViewAnimator
-import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_countdown_location.*
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.bean.WidgetBean
 import liang.lollipop.lcountdown.utils.CheckedButtonHelper
+import liang.lollipop.lcountdown.view.AutoSeekBar
+import liang.lollipop.lcountdown.view.CheckImageView
+import liang.lollipop.lcountdown.view.ExpandButton
+import kotlin.math.abs
 
 /**
  * @date: 2019-06-26 23:15
@@ -28,13 +34,34 @@ class CountdownLocationFragment: LTabFragment() {
         return R.color.locaTabSelected
     }
 
+    private var onLocationChangeListener: OnLocationChangeListener? = null
+
+    private var locationInfoProvider: LocationInfoProvider? = null
+
+    private var isReady = false
+
+    private var selectedTarget = Target.Nothing
+
+    private var targetGravity = Gravity.NO_GRAVITY
+
+    private val emptyInfo = WidgetBean.Location()
+
+    private var checkedButtonHelper: CheckedButtonHelper? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_countdown_location,container,false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
+    }
+
+    private fun initView() {
+        isReady = true
         expandBtnGroup.onSelectedBtnChange {
+            onTargetChange(it)
+            onLocationChange()
         }
         expandBtnGroup.onExpandStateChange { _, isOpen ->
             if (isOpen) {
@@ -47,8 +74,39 @@ class CountdownLocationFragment: LTabFragment() {
                 showView(verticalSeekBar)
             }
         }
-        CheckedButtonHelper.bind(gridGroup).onChecked { checkImageView, b ->
+        checkedButtonHelper = CheckedButtonHelper.bind(gridGroup)
+        checkedButtonHelper?.onChecked { checkImageView, _ ->
+            onGravityChange(checkImageView)
+            onLocationChange()
         }
+        val seekBarTouchListener = object: AutoSeekBar.OnTouchStateChangeListener {
+            override fun onTouchStateChange(view: AutoSeekBar, isTouch: Boolean) {
+                if (floatText.visibility != View.VISIBLE) {
+                    floatText.alpha = 0F
+                    floatText.scaleX = 0F
+                    floatText.scaleY = 0F
+                    floatText.visibility = View.VISIBLE
+                }
+                val anim = floatText.animate()
+                anim.cancel()
+                if (isTouch) {
+                    anim.alpha(1F).scaleX(1F).scaleY(1F).start()
+                } else if (!verticalSeekBar.isPressed && !horizontalSeekBar.isPressed) {
+                    anim.alpha(0F).scaleX(0F).scaleY(0F).start()
+                }
+            }
+        }
+        val seekBarChangeListener = object: AutoSeekBar.OnProgressChangeListener {
+            @SuppressLint("SetTextI18n")
+            override fun onProgressChange(view: AutoSeekBar, progress: Float) {
+                floatText.text = "${abs(horizontalSeekBar.progress).format()}\n${abs(verticalSeekBar.progress).format()}"
+                onLocationChange()
+            }
+        }
+        verticalSeekBar.onTouchStateChangeListener = seekBarTouchListener
+        horizontalSeekBar.onTouchStateChangeListener = seekBarTouchListener
+        verticalSeekBar.onProgressChangeListener = seekBarChangeListener
+        horizontalSeekBar.onProgressChangeListener = seekBarChangeListener
     }
 
     private fun hideView(view: View) {
@@ -69,12 +127,132 @@ class CountdownLocationFragment: LTabFragment() {
         }
     }
 
+    private fun Float.format(): String {
+        return this.toInt().toString()
+    }
+
     override fun onStop() {
         super.onStop()
         expandBtnGroup.closeAll()
         showView(gridGroup, false)
         showView(horizontalSeekBar, false)
         showView(verticalSeekBar, false)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnLocationChangeListener) {
+            onLocationChangeListener = context
+        }
+        if (context is LocationInfoProvider) {
+            locationInfoProvider = context
+        }
+    }
+
+    @SuppressLint("RtlHardcoded")
+    private fun setCheckedByGravity(value: Int) {
+        val btn = when (value) {
+            (Gravity.LEFT and Gravity.TOP) -> leftTopGrid
+            (Gravity.CENTER and Gravity.TOP) -> centerTopGrid
+            (Gravity.RIGHT and Gravity.TOP) -> rightTopGrid
+            (Gravity.LEFT and Gravity.CENTER) -> leftMiddleGrid
+            (Gravity.CENTER) -> centerMiddleGrid
+            (Gravity.RIGHT and Gravity.CENTER) -> rightMiddleGrid
+            (Gravity.LEFT and Gravity.BOTTOM) -> leftBottomGrid
+            (Gravity.BOTTOM and Gravity.CENTER) -> centerBottomGrid
+            (Gravity.RIGHT and Gravity.BOTTOM) -> rightBottomGrid
+            else -> null
+        }
+        checkedButtonHelper?.setChecked(btn, isChecked = true, cellListener = false)
+    }
+
+    @SuppressLint("RtlHardcoded")
+    private fun onGravityChange(checkImageView: CheckImageView?) {
+        targetGravity = when(checkImageView) {
+            leftTopGrid -> {
+                Gravity.LEFT and Gravity.TOP
+            }
+            centerTopGrid -> {
+                Gravity.CENTER and Gravity.TOP
+            }
+            rightTopGrid -> {
+                Gravity.RIGHT and Gravity.TOP
+            }
+            leftMiddleGrid -> {
+                Gravity.LEFT and Gravity.CENTER
+            }
+            centerMiddleGrid -> {
+                Gravity.CENTER
+            }
+            rightMiddleGrid -> {
+                Gravity.RIGHT and Gravity.CENTER
+            }
+            leftBottomGrid -> {
+                Gravity.LEFT and Gravity.BOTTOM
+            }
+            centerBottomGrid -> {
+                Gravity.BOTTOM and Gravity.CENTER
+            }
+            rightBottomGrid -> {
+                Gravity.RIGHT and Gravity.BOTTOM
+            }
+            else -> {
+                Gravity.NO_GRAVITY
+            }
+        }
+        verticalSeekBar.setProgress(0F, false)
+        horizontalSeekBar.setProgress(0F, false)
+    }
+
+    private fun onTargetChange(view: ExpandButton) {
+        selectedTarget = when (view) {
+            titleModeBtn -> Target.Name
+            prefixModeBtn -> Target.Prefix
+            suffixModeBtn -> Target.Suffix
+            daysModeBtn -> Target.Days
+            unitModeBtn -> Target.Unit
+            timeModeBtn -> Target.Time
+            signModeBtn -> Target.Inscription
+            else -> Target.Nothing
+        }
+        val info = locationInfoProvider?.getLocationInfo(selectedTarget)?:emptyInfo
+        setCheckedByGravity(info.gravity)
+        verticalSeekBar.setProgress(info.verticalMargin, false)
+        horizontalSeekBar.setProgress(info.horizontalMargin, false)
+    }
+
+
+    private fun onLocationChange() {
+        onLocationChangeListener?.onLocationChange(
+                selectedTarget, targetGravity,
+                verticalSeekBar.progress, horizontalSeekBar.progress)
+    }
+
+    interface OnLocationChangeListener {
+        fun onLocationChange(target: Target, gravity: Int, verticalMargin: Float, horizontalMargin: Float)
+    }
+
+    interface LocationInfoProvider {
+        fun getLocationInfo(target: Target): WidgetBean.Location
+    }
+
+    enum class Target(val value: Int) {
+        /** 什么也没有 **/
+        Nothing(-1),
+        /** 名称 **/
+        Name(0),
+        /** 名称前缀 **/
+        Prefix(1),
+        /** 名称后缀 **/
+        Suffix(2),
+        /** 天数 **/
+        Days(3),
+        /** 天数的单位 **/
+        Unit(4),
+        /** 时间 **/
+        Time(5),
+        /** 签名 **/
+        Inscription(6)
     }
 
 }

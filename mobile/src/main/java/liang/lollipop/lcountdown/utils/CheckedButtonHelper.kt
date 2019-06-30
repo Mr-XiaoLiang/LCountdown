@@ -35,6 +35,10 @@ class CheckedButtonHelper private constructor(private val parent: ViewGroup): Ch
     }
 
     override fun onCheckedChange(view: CheckImageView, isChecked: Boolean) {
+        setChecked(view, isChecked, true)
+    }
+
+    fun setChecked(view: CheckImageView?, isChecked: Boolean, cellListener: Boolean) {
         val count = parent.childCount
         for (i in 0 until count) {
             val it = parent.getChildAt(i)
@@ -42,10 +46,13 @@ class CheckedButtonHelper private constructor(private val parent: ViewGroup): Ch
                 it.setChecked(checked = false, callListener = false)
             }
         }
-        if (!isChecked) {
-            checkChangeListener?.invoke(null, false)
-        } else {
-            checkChangeListener?.invoke(view, true)
+        view?.setChecked(checked = isChecked, callListener = false)
+        if (cellListener) {
+            if (!isChecked) {
+                checkChangeListener?.invoke(null, false)
+            } else {
+                checkChangeListener?.invoke(view, true)
+            }
         }
     }
 

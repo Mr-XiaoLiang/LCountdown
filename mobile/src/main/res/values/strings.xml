@@ -60,4 +60,12 @@
     <string name="lollipop_email" translatable="false">lollipop8555@gmail.com</string>
     <string name="copy">copy</string>
     <string name="copy_completed">Copy completed</string>
+
+    <string name="loca_mode_title">Name</string>
+    <string name="loca_mode_prefix">Prefix</string>
+    <string name="loca_mode_suffix">Suffix</string>
+    <string name="loca_mode_days">Days</string>
+    <string name="loca_mode_day_unit">Unit</string>
+    <string name="loca_mode_time">Time</string>
+    <string name="loca_mode_sign">Inscription</string>
 </resources>

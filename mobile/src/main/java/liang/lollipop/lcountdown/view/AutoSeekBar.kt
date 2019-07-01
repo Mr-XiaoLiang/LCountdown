@@ -263,6 +263,14 @@ class AutoSeekBar(context: Context, attr: AttributeSet?,
         seekBarDrawable.setBounds(left, top, right, bottom)
     }
 
+    override fun invalidateDrawable(drawable: Drawable) {
+        super.invalidateDrawable(drawable)
+        if (drawable == seekBarDrawable) {
+            invalidate()
+            invalidateOutline()
+        }
+    }
+
     private class SeekBarDrawable : Drawable() {
 
         private val paint = Paint().apply {

@@ -15,6 +15,8 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -34,14 +36,15 @@ import liang.lollipop.lcountdown.utils.WidgetUtil
 import liang.lollipop.lcountdown.widget.CountdownWidget
 import liang.lollipop.ltabview.LTabHelper
 import liang.lollipop.ltabview.LTabView
+import kotlin.math.abs
 
 /**
  * 小部件的参数设置Activity
  * @author Lollipop
  */
 class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
-    CountdownUnitFragment.Callback,CountdownFontSizeFragment.Callback{
-
+        CountdownUnitFragment.Callback,CountdownFontSizeFragment.Callback,
+        CountdownLocationFragment.OnLocationChangeListener, CountdownLocationFragment.LocationInfoProvider {
     companion object {
 
         private const val WHAT_UPDATE = 99
@@ -76,6 +79,8 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
     }
 
     private lateinit var sheetHelper: BottomSheelHelper
+
+    private var selectedView: View? = null
 
     private fun initView(){
         widgetBean.widgetId = intent.getIntExtra(
@@ -347,6 +352,84 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         signView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
     }
 
+    override fun onLocationChange(target: CountdownLocationFragment.Target, gravity: Int,
+                                  verticalMargin: Float, horizontalMargin: Float) {
+        getLocationInfo(target)?.let {
+            it.gravity = gravity
+            it.verticalMargin = verticalMargin
+            it.horizontalMargin = horizontalMargin
+        }
+        val view = when (target) {
+            CountdownLocationFragment.Target.Name -> nameGroup
+            CountdownLocationFragment.Target.Prefix -> nameFrontView
+            CountdownLocationFragment.Target.Suffix -> nameBehindView
+            CountdownLocationFragment.Target.Days -> dayGroup
+            CountdownLocationFragment.Target.Unit -> dayUnitView
+            CountdownLocationFragment.Target.Time -> timeView
+            CountdownLocationFragment.Target.Inscription -> signView
+            else -> null
+        }
+        if (selectedView != view) {
+            selectedView?.background = null
+            selectedView = view
+        }
+        selectedView?.apply {
+            setBackgroundResource(R.drawable.border_selected)
+            val vertical = dp(abs(verticalMargin)).toInt()
+            val horizontal = dp(abs(horizontalMargin)).toInt()
+            val lp = layoutParams
+            if (lp is FrameLayout.LayoutParams) {
+                lp.gravity = gravity
+                if (verticalMargin < 0) {
+                    lp.topMargin = 0
+                    lp.bottomMargin = vertical
+                } else {
+                    lp.topMargin = vertical
+                    lp.bottomMargin = 0
+                }
+                if (horizontalMargin < 0) {
+                    lp.leftMargin = 0
+                    lp.rightMargin = horizontal
+                } else {
+                    lp.leftMargin = horizontal
+                    lp.rightMargin = 0
+                }
+                layoutParams = lp
+            } else if (lp is LinearLayout.LayoutParams) {
+                lp.gravity = gravity
+                if (verticalMargin < 0) {
+                    lp.topMargin = 0
+                    lp.bottomMargin = vertical
+                } else {
+                    lp.topMargin = vertical
+                    lp.bottomMargin = 0
+                }
+                if (horizontalMargin < 0) {
+                    lp.leftMargin = 0
+                    lp.rightMargin = horizontal
+                } else {
+                    lp.leftMargin = horizontal
+                    lp.rightMargin = 0
+                }
+                layoutParams = lp
+            }
+
+        }
+    }
+
+    override fun getLocationInfo(target: CountdownLocationFragment.Target): WidgetBean.Location? {
+        return when (target) {
+            CountdownLocationFragment.Target.Name -> widgetBean.nameLocation
+            CountdownLocationFragment.Target.Prefix -> widgetBean.prefixLocation
+            CountdownLocationFragment.Target.Suffix -> widgetBean.suffixLocation
+            CountdownLocationFragment.Target.Days -> widgetBean.daysLocation
+            CountdownLocationFragment.Target.Unit -> widgetBean.unitLocation
+            CountdownLocationFragment.Target.Time -> widgetBean.timeLocation
+            CountdownLocationFragment.Target.Inscription -> widgetBean.inscriptionLocation
+            else -> null
+        }
+    }
+
     private fun changeTextViewColor(viewGroup:ViewGroup, color: Int){
         for(index in 0 until viewGroup.childCount){
 
@@ -361,6 +444,10 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
             }
 
         }
+    }
+
+    private fun dp(value: Float): Float {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, resources.displayMetrics)
     }
 
     @SuppressLint("WrongConstant")

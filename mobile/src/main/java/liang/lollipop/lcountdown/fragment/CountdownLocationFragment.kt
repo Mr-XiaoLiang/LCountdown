@@ -3,6 +3,7 @@ package liang.lollipop.lcountdown.fragment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -151,16 +152,17 @@ class CountdownLocationFragment: LTabFragment() {
 
     @SuppressLint("RtlHardcoded")
     private fun setCheckedByGravity(value: Int) {
+        this.targetGravity = value
         val btn = when (value) {
-            (Gravity.LEFT and Gravity.TOP) -> leftTopGrid
-            (Gravity.CENTER and Gravity.TOP) -> centerTopGrid
-            (Gravity.RIGHT and Gravity.TOP) -> rightTopGrid
-            (Gravity.LEFT and Gravity.CENTER) -> leftMiddleGrid
+            (Gravity.LEFT or Gravity.TOP) -> leftTopGrid
+            (Gravity.CENTER or Gravity.TOP) -> centerTopGrid
+            (Gravity.RIGHT or Gravity.TOP) -> rightTopGrid
+            (Gravity.LEFT or Gravity.CENTER) -> leftMiddleGrid
             (Gravity.CENTER) -> centerMiddleGrid
-            (Gravity.RIGHT and Gravity.CENTER) -> rightMiddleGrid
-            (Gravity.LEFT and Gravity.BOTTOM) -> leftBottomGrid
-            (Gravity.BOTTOM and Gravity.CENTER) -> centerBottomGrid
-            (Gravity.RIGHT and Gravity.BOTTOM) -> rightBottomGrid
+            (Gravity.RIGHT or Gravity.CENTER) -> rightMiddleGrid
+            (Gravity.LEFT or Gravity.BOTTOM) -> leftBottomGrid
+            (Gravity.BOTTOM or Gravity.CENTER) -> centerBottomGrid
+            (Gravity.RIGHT or Gravity.BOTTOM) -> rightBottomGrid
             else -> null
         }
         checkedButtonHelper?.setChecked(btn, isChecked = true, cellListener = false)
@@ -170,31 +172,31 @@ class CountdownLocationFragment: LTabFragment() {
     private fun onGravityChange(checkImageView: CheckImageView?) {
         targetGravity = when(checkImageView) {
             leftTopGrid -> {
-                Gravity.LEFT and Gravity.TOP
+                Gravity.LEFT or Gravity.TOP
             }
             centerTopGrid -> {
-                Gravity.CENTER and Gravity.TOP
+                Gravity.CENTER or Gravity.TOP
             }
             rightTopGrid -> {
-                Gravity.RIGHT and Gravity.TOP
+                Gravity.RIGHT or Gravity.TOP
             }
             leftMiddleGrid -> {
-                Gravity.LEFT and Gravity.CENTER
+                Gravity.LEFT or Gravity.CENTER
             }
             centerMiddleGrid -> {
                 Gravity.CENTER
             }
             rightMiddleGrid -> {
-                Gravity.RIGHT and Gravity.CENTER
+                Gravity.RIGHT or Gravity.CENTER
             }
             leftBottomGrid -> {
-                Gravity.LEFT and Gravity.BOTTOM
+                Gravity.LEFT or Gravity.BOTTOM
             }
             centerBottomGrid -> {
-                Gravity.BOTTOM and Gravity.CENTER
+                Gravity.BOTTOM or Gravity.CENTER
             }
             rightBottomGrid -> {
-                Gravity.RIGHT and Gravity.BOTTOM
+                Gravity.RIGHT or Gravity.BOTTOM
             }
             else -> {
                 Gravity.NO_GRAVITY
@@ -218,9 +220,9 @@ class CountdownLocationFragment: LTabFragment() {
         val info = locationInfoProvider?.getLocationInfo(selectedTarget)?:emptyInfo
         setCheckedByGravity(info.gravity)
         verticalSeekBar.setProgress(info.verticalMargin, false)
+        Log.d("Lollipop", "info.verticalMargin: ${info.verticalMargin}, verticalSeekBar: ${verticalSeekBar.progress}")
         horizontalSeekBar.setProgress(info.horizontalMargin, false)
     }
-
 
     private fun onLocationChange() {
         onLocationChangeListener?.onLocationChange(
@@ -233,7 +235,7 @@ class CountdownLocationFragment: LTabFragment() {
     }
 
     interface LocationInfoProvider {
-        fun getLocationInfo(target: Target): WidgetBean.Location
+        fun getLocationInfo(target: Target): WidgetBean.Location?
     }
 
     enum class Target(val value: Int) {

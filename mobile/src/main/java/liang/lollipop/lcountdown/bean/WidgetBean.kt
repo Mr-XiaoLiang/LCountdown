@@ -264,10 +264,9 @@ class WidgetBean : BaseBean() {
         return obj.toString()
     }
 
-    class Location {
-        var gravity = Gravity.NO_GRAVITY
-        var verticalMargin = 0F
-        var horizontalMargin = 0F
+    class Location(var gravity: Int = Gravity.NO_GRAVITY,
+                   var verticalMargin: Float = 0F,
+                   var horizontalMargin: Float = 0F) {
 
         fun copy(new: Location) {
             this.gravity = new.gravity

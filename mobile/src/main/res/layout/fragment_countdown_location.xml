@@ -263,8 +263,8 @@
         app:layout_constraintBottom_toBottomOf="@id/panelBottom"
         app:barColor="@color/inputHintColor"
         app:selectedBarColor="@color/colorAccent"
-        app:min="-50"
-        app:max="50"
+        app:min="@integer/min_location_offset"
+        app:max="@integer/max_location_offset"
         app:progress="0"
         android:id="@+id/horizontalSeekBar"/>
 
@@ -277,8 +277,8 @@
         android:id="@+id/verticalSeekBar"
         app:barColor="@color/inputHintColor"
         app:selectedBarColor="@color/colorAccent"
-        app:min="-50"
-        app:max="50"
+        app:min="@integer/min_location_offset"
+        app:max="@integer/max_location_offset"
         app:progress="0"/>
 
     <TextView

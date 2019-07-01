@@ -101,6 +101,7 @@ class ExpandButtonGroup(context: Context, attr: AttributeSet?,
     }
 
     private fun onBtnClick(btn: ExpandButton? = null) {
+        selectedIndex = NOTHING
         if (btn != null) {
             val index = indexOfChild(btn)
             if (index != selectedIndex) {

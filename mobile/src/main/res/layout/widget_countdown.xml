@@ -7,6 +7,7 @@
     android:id="@+id/widgetGroup">
 
     <LinearLayout
+        android:id="@+id/nameGroup"
         android:layout_gravity="center"
         android:layout_marginBottom="30dp"
         android:layout_width="wrap_content"

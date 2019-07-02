@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.fragment_countdown_location.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.bean.WidgetBean
 import liang.lollipop.lcountdown.utils.CheckedButtonHelper
+import liang.lollipop.lcountdown.utils.WidgetUtil
 import liang.lollipop.lcountdown.view.AutoSeekBar
 import liang.lollipop.lcountdown.view.CheckImageView
 import liang.lollipop.lcountdown.view.ExpandButton
@@ -41,7 +42,7 @@ class CountdownLocationFragment: LTabFragment() {
 
     private var isReady = false
 
-    private var selectedTarget = Target.Nothing
+    private var selectedTarget = WidgetUtil.Target.Nothing
 
     private var targetGravity = Gravity.NO_GRAVITY
 
@@ -208,14 +209,14 @@ class CountdownLocationFragment: LTabFragment() {
 
     private fun onTargetChange(view: ExpandButton) {
         selectedTarget = when (view) {
-            titleModeBtn -> Target.Name
-            prefixModeBtn -> Target.Prefix
-            suffixModeBtn -> Target.Suffix
-            daysModeBtn -> Target.Days
-            unitModeBtn -> Target.Unit
-            timeModeBtn -> Target.Time
-            signModeBtn -> Target.Inscription
-            else -> Target.Nothing
+            titleModeBtn -> WidgetUtil.Target.Name
+            prefixModeBtn -> WidgetUtil.Target.Prefix
+            suffixModeBtn -> WidgetUtil.Target.Suffix
+            daysModeBtn -> WidgetUtil.Target.Days
+            unitModeBtn -> WidgetUtil.Target.Unit
+            timeModeBtn -> WidgetUtil.Target.Time
+            signModeBtn -> WidgetUtil.Target.Inscription
+            else -> WidgetUtil.Target.Nothing
         }
         val info = locationInfoProvider?.getLocationInfo(selectedTarget)?:emptyInfo
         setCheckedByGravity(info.gravity)
@@ -230,31 +231,16 @@ class CountdownLocationFragment: LTabFragment() {
                 verticalSeekBar.progress, horizontalSeekBar.progress)
     }
 
+    fun requestFocus() {
+        onLocationChange()
+    }
+
     interface OnLocationChangeListener {
-        fun onLocationChange(target: Target, gravity: Int, verticalMargin: Float, horizontalMargin: Float)
+        fun onLocationChange(target: WidgetUtil.Target, gravity: Int, verticalMargin: Float, horizontalMargin: Float)
     }
 
     interface LocationInfoProvider {
-        fun getLocationInfo(target: Target): WidgetBean.Location?
-    }
-
-    enum class Target(val value: Int) {
-        /** 什么也没有 **/
-        Nothing(-1),
-        /** 名称 **/
-        Name(0),
-        /** 名称前缀 **/
-        Prefix(1),
-        /** 名称后缀 **/
-        Suffix(2),
-        /** 天数 **/
-        Days(3),
-        /** 天数的单位 **/
-        Unit(4),
-        /** 时间 **/
-        Time(5),
-        /** 签名 **/
-        Inscription(6)
+        fun getLocationInfo(target: WidgetUtil.Target): WidgetBean.Location?
     }
 
 }

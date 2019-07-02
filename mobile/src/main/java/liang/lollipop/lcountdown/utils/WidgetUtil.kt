@@ -5,9 +5,11 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.Color
 import android.util.Log
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
 import android.widget.RemoteViews
 import liang.lollipop.lcountdown.widget.CountdownWidget
@@ -16,12 +18,13 @@ import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.bean.CountdownBean
 import liang.lollipop.lcountdown.bean.WidgetBean
 import liang.lollipop.lcountdown.bean.WidgetStyle
+import kotlin.math.abs
 
 object WidgetUtil {
 
     const val UPDATE_TIME = 1000L * 60
 
-    val TEXT_VIEW_ID = arrayOf(R.id.nameFrontView, R.id.nameView, R.id.nameBehindView, R.id.dayView, R.id.dayUnitView, R.id.timeView, R.id.signView)
+    private val TEXT_VIEW_ID = arrayOf(R.id.nameFrontView, R.id.nameView, R.id.nameBehindView, R.id.dayView, R.id.dayUnitView, R.id.timeView, R.id.signView)
 
     fun update(context: Context, widgetBean: WidgetBean, appWidgetManager: AppWidgetManager){
 
@@ -34,6 +37,8 @@ object WidgetUtil {
         views.updateValues(widgetBean.getTimerInfo(), widgetBean)
 
         views.updateTextSize(widgetBean)
+
+        views.updateLocation(widgetBean, context.resources)
 
         //创建点击意图
         val intent = Intent(context, MainActivity::class.java)
@@ -52,7 +57,7 @@ object WidgetUtil {
 
     }
 
-    fun getTextColor(style: WidgetStyle): Int {
+    private fun getTextColor(style: WidgetStyle): Int {
         return when (style) {
             WidgetStyle.LIGHT -> {
                 Color.WHITE
@@ -69,7 +74,7 @@ object WidgetUtil {
         }
     }
 
-    fun getBackgroundResource(style: WidgetStyle): Int {
+    private fun getBackgroundResource(style: WidgetStyle): Int {
         return when (style) {
             WidgetStyle.LIGHT, WidgetStyle.DARK -> {
                 0
@@ -123,6 +128,110 @@ object WidgetUtil {
         setViewVisibility(R.id.dayGroup, if (widgetBean.inOneDay) { View.GONE } else { View.VISIBLE })
     }
 
+    private fun RemoteViews.updateLocation(widgetBean: WidgetBean, resources: Resources) {
+        WidgetUtil.Target.forEach { target ->
+            val locationGroup = when (target) {
+                WidgetUtil.Target.Name -> R.id.nameLocationGroup
+                WidgetUtil.Target.Prefix -> R.id.prefixLocationGroup
+                WidgetUtil.Target.Suffix -> R.id.suffixLocationGroup
+                WidgetUtil.Target.Days -> R.id.dayLocationGroup
+                WidgetUtil.Target.Unit -> R.id.unitLocationGroup
+                WidgetUtil.Target.Time -> R.id.timeLocationGroup
+                WidgetUtil.Target.Inscription -> R.id.signLocationGroup
+                else -> null
+            }
+            locationGroup?.let { groupId ->
+                val location = getLocationInfo(widgetBean, target)?: WidgetBean.EMPTY_LOCATION
+                if (location.gravity == Gravity.NO_GRAVITY) {
+                    resetLocation(widgetBean, target, resources)
+                }
+                val verticalMargin = location.verticalMargin
+                val horizontalMargin = location.horizontalMargin
+                val gravity = location.gravity
+                val vertical = resources.dp(abs(verticalMargin)).toInt()
+                val horizontal = resources.dp(abs(horizontalMargin)).toInt()
+                val l: Int
+                val t: Int
+                val r: Int
+                val b: Int
+                if (verticalMargin < 0) {
+                    t = 0
+                    b = vertical
+                } else {
+                    t = vertical
+                    b = 0
+                }
+                if (horizontalMargin < 0) {
+                    l = 0
+                    r = horizontal
+                } else {
+                    l = horizontal
+                    r = 0
+                }
+                setViewPadding(groupId, l, t, r, b)
+                setInt(groupId, "setGravity", gravity)
+            }
+        }
+    }
+
+    fun getLocationInfo(widgetBean: WidgetBean, target: Target): WidgetBean.Location? {
+        return when (target) {
+            WidgetUtil.Target.Name -> widgetBean.nameLocation
+            WidgetUtil.Target.Prefix -> widgetBean.prefixLocation
+            WidgetUtil.Target.Suffix -> widgetBean.suffixLocation
+            WidgetUtil.Target.Days -> widgetBean.daysLocation
+            WidgetUtil.Target.Unit -> widgetBean.unitLocation
+            WidgetUtil.Target.Time -> widgetBean.timeLocation
+            WidgetUtil.Target.Inscription -> widgetBean.inscriptionLocation
+            else -> null
+        }
+    }
+
+    private fun Resources.dp(float: Float): Float {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, float, displayMetrics)
+    }
+
+    fun resetLocation(widgetBean: WidgetBean, target: Target, resources: Resources) {
+        when (target) {
+            WidgetUtil.Target.Name -> widgetBean.nameLocation.apply{
+                gravity = resources.getInteger(R.integer.def_name_gravity)
+                verticalMargin = resources.getInteger(R.integer.def_name_vertical_margin).toFloat()
+                horizontalMargin = resources.getInteger(R.integer.def_name_horizontal_margin).toFloat()
+            }
+            WidgetUtil.Target.Prefix -> widgetBean.prefixLocation.apply{
+                gravity = resources.getInteger(R.integer.def_prefix_gravity)
+                verticalMargin = resources.getInteger(R.integer.def_prefix_vertical_margin).toFloat()
+                horizontalMargin = resources.getInteger(R.integer.def_prefix_horizontal_margin).toFloat()
+            }
+            WidgetUtil.Target.Suffix -> widgetBean.suffixLocation.apply{
+                gravity = resources.getInteger(R.integer.def_suffix_gravity)
+                verticalMargin = resources.getInteger(R.integer.def_suffix_vertical_margin).toFloat()
+                horizontalMargin = resources.getInteger(R.integer.def_suffix_horizontal_margin).toFloat()
+            }
+            WidgetUtil.Target.Days -> widgetBean.daysLocation.apply{
+                gravity = resources.getInteger(R.integer.def_days_gravity)
+                verticalMargin = resources.getInteger(R.integer.def_days_vertical_margin).toFloat()
+                horizontalMargin = resources.getInteger(R.integer.def_days_horizontal_margin).toFloat()
+            }
+            WidgetUtil.Target.Unit -> widgetBean.unitLocation.apply{
+                gravity = resources.getInteger(R.integer.def_unit_gravity)
+                verticalMargin = resources.getInteger(R.integer.def_unit_vertical_margin).toFloat()
+                horizontalMargin = resources.getInteger(R.integer.def_unit_horizontal_margin).toFloat()
+            }
+            WidgetUtil.Target.Time -> widgetBean.timeLocation.apply{
+                gravity = resources.getInteger(R.integer.def_time_gravity)
+                verticalMargin = resources.getInteger(R.integer.def_time_vertical_margin).toFloat()
+                horizontalMargin = resources.getInteger(R.integer.def_time_horizontal_margin).toFloat()
+            }
+            WidgetUtil.Target.Inscription -> widgetBean.inscriptionLocation.apply{
+                gravity = resources.getInteger(R.integer.def_inscription_gravity)
+                verticalMargin = resources.getInteger(R.integer.def_inscription_vertical_margin).toFloat()
+                horizontalMargin = resources.getInteger(R.integer.def_inscription_horizontal_margin).toFloat()
+            }
+            else -> {}
+        }
+    }
+
     fun alarmUpdate(context: Context){
 
         val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -166,6 +275,34 @@ object WidgetUtil {
 
     private fun log(value: String) {
         Log.d("Lollipop", "WidgetUtil: $value")
+    }
+
+    enum class Target(val value: Int) {
+        /** 什么也没有 **/
+        Nothing(-1),
+        /** 名称 **/
+        Name(0),
+        /** 名称前缀 **/
+        Prefix(1),
+        /** 名称后缀 **/
+        Suffix(2),
+        /** 天数 **/
+        Days(3),
+        /** 天数的单位 **/
+        Unit(4),
+        /** 时间 **/
+        Time(5),
+        /** 签名 **/
+        Inscription(6);
+
+        companion object {
+            private val allTypes = arrayListOf(Name, Prefix, Suffix, Days, Unit, Time, Inscription)
+
+            fun forEach(run: (Target) -> kotlin.Unit) {
+                allTypes.forEach(run)
+            }
+
+        }
     }
 
 }

@@ -16,7 +16,7 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
     companion object {
 
         private const val DB_NAME = "WidgetDatabase"
-        private const val VERSION = 6
+        private const val VERSION = 7
 
         fun read(context: Context): SqlDB {
             return SqlDB(WidgetDBUtil(context), false)
@@ -77,6 +77,10 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
                 db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.IN_ONE_DAY} INTEGER DEFAULT 0")
             }
 
+            6 -> {
+                db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.LOCATION_INFO} VARCHAR DEFAULT ''")
+            }
+
         }
 
         onUpgrade(db,oldVersion+1,newVersion)
@@ -122,6 +126,9 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
         // V6
         const val IN_ONE_DAY = "IN_ONE_DAY"
 
+        // V7
+        const val LOCATION_INFO = "LOCATION_INFO"
+
         const val ALL = (
                 " $ID , " +
                 " $END_TIME , " +
@@ -149,7 +156,9 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
 
                 " $NOT_COUNTDOWN , " +
 
-                " $IN_ONE_DAY ")
+                " $IN_ONE_DAY , " +
+
+                " $LOCATION_INFO ")
 
         const val SELECT_ALL_SQL = " select $ALL from $TABLE order by $WIDGET_INDEX ;"
 
@@ -180,7 +189,8 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
                 " $TIME_FONT_SIZE INTEGER , " +
                 " $SIGN_FONT_SIZE INTEGER , " +
                 " $NOT_COUNTDOWN INTEGER , " +
-                " $IN_ONE_DAY INTEGER " +
+                " $IN_ONE_DAY INTEGER , " +
+                " $LOCATION_INFO VARCHAR " +
                 " );"
     }
 
@@ -250,31 +260,6 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             sql.insert(WidgetTable.TABLE, "", values)
             return this
         }
-
-//        fun addAll(list: ArrayList<WidgetBean>): SqlDB {
-//            deleteAll()
-//            val sql = getSqLiteDatabase()
-//            sql.beginTransaction()
-//            try {
-//                val values = ContentValues()
-//                for (value in list) {
-//                    values.clear()
-//                    values.put(WidgetTable.ID, value.widgetId)
-//                    values.put(WidgetTable.NAME, value.countdownName)
-//                    values.put(WidgetTable.END_TIME, value.endTime)
-//                    values.put(WidgetTable.STYLE, value.widgetStyle.value)
-//                    values.put(WidgetTable.SIGN_VALUE, value.signValue)
-//                    values.put(WidgetTable.WIDGET_INDEX, value.index)
-//                    sql.insert(WidgetTable.TABLE, "", values)
-//                }
-//                sql.setTransactionSuccessful()
-//            } catch (e: Exception) {
-//                Log.e("addAll", e.message)
-//            } finally {
-//                sql.endTransaction()
-//            }
-//            return this
-//        }
 
         fun update(widgetBean: WidgetBean): SqlDB{
             val sql = getSqLiteDatabase()
@@ -346,6 +331,8 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             put(WidgetTable.NOT_COUNTDOWN, widgetBean.noCountdown.b2i())
 
             put(WidgetTable.IN_ONE_DAY, widgetBean.inOneDay.b2i())
+
+            put(WidgetTable.LOCATION_INFO, widgetBean.locations)
         }
 
         private fun WidgetBean.putData(c: Cursor){
@@ -376,6 +363,8 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             noCountdown = c.getInt(c.getColumnIndex(WidgetTable.NOT_COUNTDOWN)).i2b()
 
             inOneDay = c.getInt(c.getColumnIndex(WidgetTable.IN_ONE_DAY)).i2b()
+
+            locations = c.getString(c.getColumnIndex(WidgetTable.LOCATION_INFO))?:""
         }
 
     }

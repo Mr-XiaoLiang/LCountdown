@@ -12,6 +12,10 @@ import org.json.JSONObject
  */
 class WidgetBean : BaseBean() {
 
+    companion object {
+        val EMPTY_LOCATION = Location()
+    }
+
     /**
      * 序号
      */
@@ -162,6 +166,17 @@ class WidgetBean : BaseBean() {
     val inscriptionLocation = Location()
 
     /**
+     * 位置信息的序列化
+     */
+    var locations: String
+        set(value) {
+            parseLocation(value)
+        }
+        get() {
+            return serializationLocation()
+        }
+
+    /**
      * 获取符合要求的时间结果
      */
     fun getTimerInfo(): CountdownBean {
@@ -216,7 +231,7 @@ class WidgetBean : BaseBean() {
         this.inscriptionLocation.copy(new.inscriptionLocation)
     }
 
-    fun parseLocation(json: String?) {
+    private fun parseLocation(json: String?) {
         if (TextUtils.isEmpty(json)) {
             val empty = JSONObject()
             nameLocation.parse(empty)
@@ -252,7 +267,7 @@ class WidgetBean : BaseBean() {
         }
     }
 
-    fun serializationLocation(): String {
+    private fun serializationLocation(): String {
         val obj = JSONObject()
         obj.put("nameLocation", nameLocation.serialization())
         obj.put("prefixLocation", prefixLocation.serialization())

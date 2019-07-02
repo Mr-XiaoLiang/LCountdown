@@ -5,4 +5,5 @@
     <dimen name="tab_min_size">28dp</dimen>
 
     <dimen name="peekHeight">48dp</dimen>
+
 </resources>

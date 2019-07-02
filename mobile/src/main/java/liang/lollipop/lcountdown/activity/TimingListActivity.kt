@@ -7,7 +7,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.core.util.Pair
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_timing_list.*
@@ -22,8 +24,6 @@ import liang.lollipop.lcountdown.utils.LogHelper
 import liang.lollipop.lcountdown.utils.TimingUtil
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
-import androidx.core.util.Pair
-import androidx.recyclerview.widget.RecyclerView
 
 
 /**

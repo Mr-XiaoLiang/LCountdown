@@ -2,4 +2,33 @@
 <resources>
     <integer name="max_location_offset">100</integer>
     <integer name="min_location_offset">-100</integer>
+
+    <integer name="def_name_gravity">17</integer>
+    <integer name="def_prefix_gravity">81</integer>
+    <integer name="def_suffix_gravity">81</integer>
+    <integer name="def_days_gravity">17</integer>
+    <integer name="def_unit_gravity">81</integer>
+    <integer name="def_time_gravity">17</integer>
+    <integer name="def_inscription_gravity">85</integer>
+
+    <integer name="def_name_vertical_margin">-50</integer>
+    <integer name="def_name_horizontal_margin">0</integer>
+
+    <integer name="def_prefix_vertical_margin">0</integer>
+    <integer name="def_prefix_horizontal_margin">0</integer>
+
+    <integer name="def_suffix_vertical_margin">0</integer>
+    <integer name="def_suffix_horizontal_margin">0</integer>
+
+    <integer name="def_days_vertical_margin">0</integer>
+    <integer name="def_days_horizontal_margin">0</integer>
+
+    <integer name="def_unit_vertical_margin">0</integer>
+    <integer name="def_unit_horizontal_margin">0</integer>
+
+    <integer name="def_time_vertical_margin">50</integer>
+    <integer name="def_time_horizontal_margin">0</integer>
+
+    <integer name="def_inscription_vertical_margin">0</integer>
+    <integer name="def_inscription_horizontal_margin">0</integer>
 </resources>

@@ -13,10 +13,9 @@ import android.os.Message
 import android.text.TextUtils
 import android.util.Log
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -101,7 +100,8 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
 
         viewPager.offscreenPageLimit = fragments.size
         viewPager.adapter = Adapter(supportFragmentManager,fragments, this)
-        LTabHelper.withExpandItem(tabLayout).let { build ->
+        val tabViewBuilder = LTabHelper.withExpandItem(tabLayout)
+        tabViewBuilder.let { build ->
             val tabUnselectedColor = ContextCompat.getColor(this@MainActivity, R.color.tabUnselectedColor)
             fragments.forEach { fragment ->
                 val selectedColor = if (fragment.getSelectedColorId() == 0) {
@@ -130,20 +130,11 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
             }
             build.setupWithViewPager(viewPager)
         }
+        tabViewBuilder.onSelected { index ->
+            changeViewFocus(index == fragments.indexOf(countdownLocationFragment))
+        }
         tabLayout.style = LTabView.Style.Start
         viewPager.adapter?.notifyDataSetChanged()
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
-            override fun onPageScrollStateChanged(state: Int) {
-            }
-
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                Log.d("Lollipop", "position: $position, positionOffset: $positionOffset")
-            }
-
-            override fun onPageSelected(position: Int) {
-            }
-
-        })
 
         isCreateModel = intent.getIntExtra(CountdownWidget.WIDGET_SHOW,0) < 1
         if(isCreateModel){
@@ -160,12 +151,14 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
                 it.cancel()
                 it.rotation(180F).start()
             }
+            changeViewFocus(viewPager.currentItem == fragments.indexOf(countdownLocationFragment))
         } else {
             updateBtn.hide()
             sheetBtn.animate().let {
                 it.cancel()
                 it.rotation(0F).start()
             }
+            changeViewFocus(false)
         }
     }
 
@@ -208,6 +201,16 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         countdownInfoFragment.reset(widgetBean)
         countdownUnitFragment.reset(widgetBean)
         countdownFontSizeFragment.reset(widgetBean)
+
+        if (isCreateModel) {
+            WidgetUtil.Target.forEach {
+                resetViewLocation(it, false)
+            }
+        } else {
+            WidgetUtil.Target.forEach {
+                updateViewLocation(it, false)
+            }
+        }
 
     }
 
@@ -352,82 +355,89 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         signView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
     }
 
-    override fun onLocationChange(target: CountdownLocationFragment.Target, gravity: Int,
+    override fun onLocationChange(target: WidgetUtil.Target, gravity: Int,
                                   verticalMargin: Float, horizontalMargin: Float) {
-        getLocationInfo(target)?.let {
-            it.gravity = gravity
-            it.verticalMargin = verticalMargin
-            it.horizontalMargin = horizontalMargin
+
+        if (gravity == Gravity.NO_GRAVITY) {
+            resetViewLocation(target)
+        } else {
+            getLocationInfo(target)?.let {
+                it.gravity = gravity
+                it.verticalMargin = verticalMargin
+                it.horizontalMargin = horizontalMargin
+            }
+            updateViewLocation(target)
         }
+    }
+
+    override fun getLocationInfo(target: WidgetUtil.Target): WidgetBean.Location? {
+        return WidgetUtil.getLocationInfo(widgetBean, target)
+    }
+
+    private fun updateViewLocation(target: WidgetUtil.Target, isShowBorder: Boolean = true) {
         val view = when (target) {
-            CountdownLocationFragment.Target.Name -> nameGroup
-            CountdownLocationFragment.Target.Prefix -> nameFrontView
-            CountdownLocationFragment.Target.Suffix -> nameBehindView
-            CountdownLocationFragment.Target.Days -> dayGroup
-            CountdownLocationFragment.Target.Unit -> dayUnitView
-            CountdownLocationFragment.Target.Time -> timeView
-            CountdownLocationFragment.Target.Inscription -> signView
+            WidgetUtil.Target.Name -> nameGroup
+            WidgetUtil.Target.Prefix -> nameFrontView
+            WidgetUtil.Target.Suffix -> nameBehindView
+            WidgetUtil.Target.Days -> dayGroup
+            WidgetUtil.Target.Unit -> dayUnitView
+            WidgetUtil.Target.Time -> timeView
+            WidgetUtil.Target.Inscription -> signView
+            else -> null
+        }
+        val locationGroup = when (target) {
+            WidgetUtil.Target.Name -> nameLocationGroup
+            WidgetUtil.Target.Prefix -> prefixLocationGroup
+            WidgetUtil.Target.Suffix -> suffixLocationGroup
+            WidgetUtil.Target.Days -> dayLocationGroup
+            WidgetUtil.Target.Unit -> unitLocationGroup
+            WidgetUtil.Target.Time -> timeLocationGroup
+            WidgetUtil.Target.Inscription -> signLocationGroup
             else -> null
         }
         if (selectedView != view) {
             selectedView?.background = null
             selectedView = view
         }
-        selectedView?.apply {
-            setBackgroundResource(R.drawable.border_selected)
-            val vertical = dp(abs(verticalMargin)).toInt()
-            val horizontal = dp(abs(horizontalMargin)).toInt()
-            val lp = layoutParams
-            if (lp is FrameLayout.LayoutParams) {
-                lp.gravity = gravity
-                if (verticalMargin < 0) {
-                    lp.topMargin = 0
-                    lp.bottomMargin = vertical
-                } else {
-                    lp.topMargin = vertical
-                    lp.bottomMargin = 0
-                }
-                if (horizontalMargin < 0) {
-                    lp.leftMargin = 0
-                    lp.rightMargin = horizontal
-                } else {
-                    lp.leftMargin = horizontal
-                    lp.rightMargin = 0
-                }
-                layoutParams = lp
-            } else if (lp is LinearLayout.LayoutParams) {
-                lp.gravity = gravity
-                if (verticalMargin < 0) {
-                    lp.topMargin = 0
-                    lp.bottomMargin = vertical
-                } else {
-                    lp.topMargin = vertical
-                    lp.bottomMargin = 0
-                }
-                if (horizontalMargin < 0) {
-                    lp.leftMargin = 0
-                    lp.rightMargin = horizontal
-                } else {
-                    lp.leftMargin = horizontal
-                    lp.rightMargin = 0
-                }
-                layoutParams = lp
+        if (isShowBorder) {
+            selectedView?.setBackgroundResource(R.drawable.border_selected)
+        }
+        val location = getLocationInfo(target)?: WidgetBean.EMPTY_LOCATION
+        if (location.gravity == Gravity.NO_GRAVITY) {
+            WidgetUtil.resetLocation(widgetBean, target, resources)
+        }
+        val verticalMargin = location.verticalMargin
+        val horizontalMargin = location.horizontalMargin
+        val gravity = location.gravity
+        val vertical = dp(abs(verticalMargin)).toInt()
+        val horizontal = dp(abs(horizontalMargin)).toInt()
+        locationGroup?.apply {
+            this.gravity = gravity
+            val l: Int
+            val t: Int
+            val r: Int
+            val b: Int
+            if (verticalMargin < 0) {
+                t = 0
+                b = vertical
+            } else {
+                t = vertical
+                b = 0
             }
-
+            if (horizontalMargin < 0) {
+                l = 0
+                r = horizontal
+            } else {
+                l = horizontal
+                r = 0
+            }
+            setPadding(l, t, r, b)
         }
     }
 
-    override fun getLocationInfo(target: CountdownLocationFragment.Target): WidgetBean.Location? {
-        return when (target) {
-            CountdownLocationFragment.Target.Name -> widgetBean.nameLocation
-            CountdownLocationFragment.Target.Prefix -> widgetBean.prefixLocation
-            CountdownLocationFragment.Target.Suffix -> widgetBean.suffixLocation
-            CountdownLocationFragment.Target.Days -> widgetBean.daysLocation
-            CountdownLocationFragment.Target.Unit -> widgetBean.unitLocation
-            CountdownLocationFragment.Target.Time -> widgetBean.timeLocation
-            CountdownLocationFragment.Target.Inscription -> widgetBean.inscriptionLocation
-            else -> null
-        }
+    private fun resetViewLocation(target: WidgetUtil.Target, isShowBorder: Boolean = true) {
+        WidgetUtil.resetLocation(widgetBean, target, resources)
+        updateViewLocation(target, isShowBorder)
     }
 
     private fun changeTextViewColor(viewGroup:ViewGroup, color: Int){
@@ -443,6 +453,14 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
                 continue
             }
 
+        }
+    }
+
+    private fun changeViewFocus(isSelected: Boolean) {
+        if (isSelected) {
+            countdownLocationFragment.requestFocus()
+        } else {
+            onLocationChange(WidgetUtil.Target.Nothing, 1, 0F, 0F)
         }
     }
 

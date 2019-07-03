@@ -20,10 +20,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:counterEnabled="true"
+            android:hint="@string/prefix"
             style="@style/drakInputLayoutStyle">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/prefixNameInputView"
-                android:hint="@string/prefix"
                 android:text="@string/left_until"
                 style="@style/drakInputLayoutStyle"
                 android:layout_width="match_parent"
@@ -37,10 +37,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:counterEnabled="true"
+            android:hint="@string/suffix"
             style="@style/drakInputLayoutStyle">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/suffixNameInputView"
-                android:hint="@string/suffix"
                 android:text="@string/the_end"
                 style="@style/drakInputLayoutStyle"
                 android:layout_width="match_parent"
@@ -54,10 +54,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:counterEnabled="true"
+            android:hint="@string/day_unit"
             style="@style/drakInputLayoutStyle">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/dayUnitInputView"
-                android:hint="@string/day_unit"
                 android:text="@string/day"
                 style="@style/drakInputLayoutStyle"
                 android:layout_width="match_parent"

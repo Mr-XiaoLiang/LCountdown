@@ -47,7 +47,7 @@ object CountdownUtil {
 
     fun timer(bean: CountdownBean,startTime: Long,endTime: Long, isInOneDay: Boolean = false): CountdownBean{
         val leftTime =  if (isInOneDay) {
-            (endTime % ONE_DAY) - (startTime % ONE_DAY)
+            ((endTime % ONE_DAY) - (startTime % ONE_DAY) + ONE_DAY) % ONE_DAY
         } else {
             endTime - startTime
         }

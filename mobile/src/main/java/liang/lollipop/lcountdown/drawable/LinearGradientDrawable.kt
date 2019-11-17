@@ -17,8 +17,8 @@ class LinearGradientDrawable(private var orientation: Orientation = Orientation.
         isDither = true
     }
 
-    override fun draw(canvas: Canvas?) {
-        canvas?.drawRect(bounds,paint)
+    override fun draw(canvas: Canvas) {
+        canvas.drawRect(bounds ,paint)
     }
 
     override fun setAlpha(alpha: Int) {

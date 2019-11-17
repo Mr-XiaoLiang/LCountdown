@@ -9,6 +9,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/lBaseLib" />
+            <option value="$PROJECT_DIR$/ltabview" />
             <option value="$PROJECT_DIR$/mobile" />
           </set>
         </option>

@@ -62,7 +62,7 @@ class CrashActivity : BaseActivity() {
             // 创建普通字符型ClipData
             val clipData = ClipData.newPlainText("email", getString(R.string.lollipop_email))
             // 将ClipData内容放到系统剪贴板里。
-            cm.primaryClip = clipData
+            cm.setPrimaryClip(clipData)
             Snackbar.make(mailAddress,R.string.copy_completed,Snackbar.LENGTH_LONG).show()
         }
     }

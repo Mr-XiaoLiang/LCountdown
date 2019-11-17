@@ -156,7 +156,7 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
 
         countdownView.typeface = Typeface.createFromAsset(assets, "fonts/time_font.otf")
         timeView.typeface = Typeface.createFromAsset(assets, "fonts/ttf_liquid_crystal.ttf")
-        batteryView.typeface = Typeface.createFromAsset(assets, "fonts/ttf_liquid_crystal.ttf")
+        batteryView.typeface = Typeface.createFromAsset(assets, "fonts/time_font.otf")
 
     }
 
@@ -345,7 +345,7 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
         val minutesInt = calendar.get(Calendar.MINUTE)
         val minutes = calendar.get(Calendar.MINUTE).formatNumber()
 
-        timeView.text = "$hour:$minutes"
+        timeView.text = "$hour $minutes"
 
         if (minutesInt % LOCATION_UPDATE_INTERVAL == 0 && minutesInt != lastAnimationTime) {
             lastAnimationTime = minutesInt

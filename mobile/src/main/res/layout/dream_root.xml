@@ -41,9 +41,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="23:23"
+                android:text="23 23"
+                android:background="@drawable/bg_clock"
                 android:textColor="@android:color/white"
-                android:textSize="28sp" />
+                android:textSize="28sp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"/>
 
             <Space
                 android:layout_width="10dp"

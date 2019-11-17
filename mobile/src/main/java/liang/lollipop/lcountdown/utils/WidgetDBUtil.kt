@@ -11,7 +11,7 @@ import liang.lollipop.lcountdown.bean.WidgetBean
 /**
  * 小部件的数据库操作类
  */
-class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(context,DB_NAME,null, VERSION)  {
+class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(context,DB_NAME,null, VERSION) {
 
     companion object {
 

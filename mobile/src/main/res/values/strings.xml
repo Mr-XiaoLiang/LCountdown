@@ -68,4 +68,5 @@
     <string name="loca_mode_day_unit">Unit</string>
     <string name="loca_mode_time">Time</string>
     <string name="loca_mode_sign">Inscription</string>
+    <string name="title_color_fragment">Color</string>
 </resources>

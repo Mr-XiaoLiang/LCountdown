@@ -64,9 +64,11 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
 
     private val countdownLocationFragment = CountdownLocationFragment()
 
+    private val countdownColorFragment = CountdownColorFragment()
+
     private val fragments: Array<LTabFragment> = arrayOf(
             countdownInfoFragment, countdownUnitFragment,
-            countdownFontSizeFragment, countdownLocationFragment)
+            countdownFontSizeFragment, countdownLocationFragment, countdownColorFragment)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

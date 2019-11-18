@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/panelLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="84dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/panelRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="10dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/panelTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="10dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/panelBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="30dp" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/panelRight"
+        tools:layout_editor_absoluteY="-101dp">
+
+        <liang.lollipop.lcountdown.view.ExpandButtonGroup
+            android:id="@+id/expandBtnGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:orientation="vertical"
+            android:paddingBottom="30dp"
+            app:defaultColor="@color/expandBtnDefault"
+            app:selectedColor="@color/expandBtnSelect">
+
+            <liang.lollipop.lcountdown.view.TextIconExpandButton
+                android:id="@+id/titleModeBtn"
+                style="@style/expandBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:iconTextSize="24dp"
+                app:text="@string/loca_mode_title" />
+
+            <liang.lollipop.lcountdown.view.TextIconExpandButton
+                android:id="@+id/prefixModeBtn"
+                style="@style/expandBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_delete_black_24dp"
+                app:text="@string/loca_mode_prefix" />
+
+            <liang.lollipop.lcountdown.view.TextIconExpandButton
+                android:id="@+id/suffixModeBtn"
+                style="@style/expandBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:btnColor="@color/baseTabSelected"
+                app:icon="@drawable/ic_delete_black_24dp"
+                app:text="@string/loca_mode_suffix" />
+
+            <liang.lollipop.lcountdown.view.TextIconExpandButton
+                android:id="@+id/daysModeBtn"
+                style="@style/expandBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:btnColor="@color/baseTabSelected"
+                app:icon="@drawable/ic_delete_black_24dp"
+                app:text="@string/loca_mode_days" />
+
+            <liang.lollipop.lcountdown.view.TextIconExpandButton
+                android:id="@+id/unitModeBtn"
+                style="@style/expandBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:btnColor="@color/baseTabSelected"
+                app:icon="@drawable/ic_delete_black_24dp"
+                app:text="@string/loca_mode_day_unit" />
+
+            <liang.lollipop.lcountdown.view.TextIconExpandButton
+                android:id="@+id/timeModeBtn"
+                style="@style/expandBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:btnColor="@color/baseTabSelected"
+                app:icon="@drawable/ic_delete_black_24dp"
+                app:text="@string/loca_mode_time" />
+
+            <liang.lollipop.lcountdown.view.TextIconExpandButton
+                android:id="@+id/signModeBtn"
+                style="@style/expandBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:btnColor="@color/baseTabSelected"
+                app:icon="@drawable/ic_delete_black_24dp"
+                app:text="@string/loca_mode_sign" />
+
+        </liang.lollipop.lcountdown.view.ExpandButtonGroup>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <liang.lollipop.lcountdown.view.HuePaletteView
+        android:id="@+id/huePalette"
+        android:layout_width="30dp"
+        android:layout_height="0px"
+        app:layout_constraintTop_toTopOf="@id/panelTop"
+        app:layout_constraintRight_toRightOf="@id/panelRight"
+        app:layout_constraintBottom_toBottomOf="@id/panelBottom"/>
+
+    <liang.lollipop.lcountdown.view.TransparencyPaletteView
+        android:id="@+id/transparencyPalette"
+        android:layout_width="0px"
+        android:layout_height="30dp"
+        app:layout_constraintTop_toTopOf="@id/panelTop"
+        app:layout_constraintLeft_toLeftOf="@id/panelLeft"
+        app:layout_constraintRight_toLeftOf="@id/huePalette"
+        android:layout_marginRight="10dp"/>
+
+    <liang.lollipop.lcountdown.view.SatValPaletteView
+        android:id="@+id/satValPalette"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        app:layout_constraintTop_toBottomOf="@id/transparencyPalette"
+        app:layout_constraintLeft_toLeftOf="@id/panelLeft"
+        app:layout_constraintRight_toRightOf="@id/transparencyPalette"
+        app:layout_constraintBottom_toTopOf="@id/panelBottom"
+        android:layout_marginTop="10dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

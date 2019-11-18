@@ -33,7 +33,7 @@ class CountdownLocationFragment: LTabFragment() {
     }
 
     override fun getSelectedColorId(): Int {
-        return R.color.locaTabSelected
+        return R.color.localTabSelected
     }
 
     private var onLocationChangeListener: OnLocationChangeListener? = null

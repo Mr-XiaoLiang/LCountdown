@@ -16,7 +16,7 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
     companion object {
 
         private const val DB_NAME = "WidgetDatabase"
-        private const val VERSION = 7
+        private const val VERSION = 8
 
         fun read(context: Context): SqlDB {
             return SqlDB(WidgetDBUtil(context), false)
@@ -80,7 +80,9 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             6 -> {
                 db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.LOCATION_INFO} VARCHAR DEFAULT ''")
             }
-
+            7 -> {
+                db?.execSQL("ALTER TABLE ${WidgetTable.TABLE} ADD ${WidgetTable.COLOR_INFO} VARCHAR DEFAULT ''")
+            }
         }
 
         onUpgrade(db,oldVersion+1,newVersion)
@@ -129,6 +131,9 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
         // V7
         const val LOCATION_INFO = "LOCATION_INFO"
 
+        // V8
+        const val COLOR_INFO = "COLOR_INFO"
+
         const val ALL = (
                 " $ID , " +
                 " $END_TIME , " +
@@ -158,7 +163,9 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
 
                 " $IN_ONE_DAY , " +
 
-                " $LOCATION_INFO ")
+                " $LOCATION_INFO , " +
+
+                " $COLOR_INFO")
 
         const val SELECT_ALL_SQL = " select $ALL from $TABLE order by $WIDGET_INDEX ;"
 
@@ -190,7 +197,8 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
                 " $SIGN_FONT_SIZE INTEGER , " +
                 " $NOT_COUNTDOWN INTEGER , " +
                 " $IN_ONE_DAY INTEGER , " +
-                " $LOCATION_INFO VARCHAR " +
+                " $LOCATION_INFO VARCHAR , " +
+                " $COLOR_INFO VARCHAR " +
                 " );"
     }
 
@@ -333,6 +341,8 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             put(WidgetTable.IN_ONE_DAY, widgetBean.inOneDay.b2i())
 
             put(WidgetTable.LOCATION_INFO, widgetBean.locations)
+
+            put(WidgetTable.COLOR_INFO, widgetBean.colors)
         }
 
         private fun WidgetBean.putData(c: Cursor){
@@ -365,6 +375,8 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             inOneDay = c.getInt(c.getColumnIndex(WidgetTable.IN_ONE_DAY)).i2b()
 
             locations = c.getString(c.getColumnIndex(WidgetTable.LOCATION_INFO))?:""
+
+            colors = c.getString(c.getColumnIndex(WidgetTable.COLOR_INFO))?:""
         }
 
     }

@@ -1,5 +1,6 @@
 package liang.lollipop.lcountdown.bean
 
+import android.graphics.Color
 import android.text.TextUtils
 import android.view.Gravity
 import liang.lollipop.lbaselib.base.BaseBean
@@ -166,6 +167,41 @@ class WidgetBean : BaseBean() {
     val inscriptionLocation = Location()
 
     /**
+     * 名称的颜色
+     */
+    var nameColor = Color.WHITE
+
+    /**
+     * 前缀的颜色
+     */
+    var prefixColor = Color.WHITE
+
+    /**
+     * 后缀的颜色
+     */
+    var suffixColor = Color.WHITE
+
+    /**
+     * 天数的颜色
+     */
+    var daysColor = Color.WHITE
+
+    /**
+     * 单位的颜色
+     */
+    var unitColor = Color.WHITE
+
+    /**
+     * 时间的颜色
+     */
+    var timeColor = Color.WHITE
+
+    /**
+     * 签名的颜色
+     */
+    var inscriptionColor = Color.WHITE
+
+    /**
      * 位置信息的序列化
      */
     var locations: String
@@ -174,6 +210,17 @@ class WidgetBean : BaseBean() {
         }
         get() {
             return serializationLocation()
+        }
+
+    /**
+     * 颜色信息的序列化
+     */
+    var colors: String
+        set(value) {
+            parseColor(value)
+        }
+        get() {
+            return serializationColor()
         }
 
     /**
@@ -229,6 +276,14 @@ class WidgetBean : BaseBean() {
         this.unitLocation.copy(new.unitLocation)
         this.timeLocation.copy(new.timeLocation)
         this.inscriptionLocation.copy(new.inscriptionLocation)
+
+        this.nameColor = new.nameColor
+        this.prefixColor = new.prefixColor
+        this.suffixColor = new.suffixColor
+        this.daysColor = new.daysColor
+        this.unitColor = new.unitColor
+        this.timeColor = new.timeColor
+        this.inscriptionColor = new.inscriptionColor
     }
 
     private fun parseLocation(json: String?) {
@@ -243,7 +298,7 @@ class WidgetBean : BaseBean() {
             inscriptionLocation.parse(empty)
             return
         }
-        val obj = JSONObject(json)
+        val obj = optObj(json)
         obj.optJSONObject("nameLocation")?.let {
             nameLocation.parse(it)
         }
@@ -269,14 +324,48 @@ class WidgetBean : BaseBean() {
 
     private fun serializationLocation(): String {
         val obj = JSONObject()
-        obj.put("nameLocation", nameLocation.serialization())
-        obj.put("prefixLocation", prefixLocation.serialization())
-        obj.put("suffixLocation", suffixLocation.serialization())
-        obj.put("daysLocation", daysLocation.serialization())
-        obj.put("unitLocation", unitLocation.serialization())
-        obj.put("timeLocation", timeLocation.serialization())
+        obj.put("nameLocation",        nameLocation.serialization())
+        obj.put("prefixLocation",      prefixLocation.serialization())
+        obj.put("suffixLocation",      suffixLocation.serialization())
+        obj.put("daysLocation",        daysLocation.serialization())
+        obj.put("unitLocation",        unitLocation.serialization())
+        obj.put("timeLocation",        timeLocation.serialization())
         obj.put("inscriptionLocation", inscriptionLocation.serialization())
         return obj.toString()
+    }
+
+    private fun parseColor(json: String?) {
+        val obj = optObj(json)
+        this.nameColor        = obj.optInt("nameColor",        Color.WHITE)
+        this.prefixColor      = obj.optInt("prefixColor",      Color.WHITE)
+        this.suffixColor      = obj.optInt("suffixColor",      Color.WHITE)
+        this.daysColor        = obj.optInt("daysColor",        Color.WHITE)
+        this.unitColor        = obj.optInt("unitColor",        Color.WHITE)
+        this.timeColor        = obj.optInt("timeColor",        Color.WHITE)
+        this.inscriptionColor = obj.optInt("inscriptionColor", Color.WHITE)
+    }
+
+    private fun serializationColor(): String {
+        val obj = JSONObject()
+        obj.put("nameColor",        nameColor)
+        obj.put("prefixColor",      prefixColor)
+        obj.put("suffixColor",      suffixColor)
+        obj.put("daysColor",        daysColor)
+        obj.put("unitColor",        unitColor)
+        obj.put("timeColor",        timeColor)
+        obj.put("inscriptionColor", inscriptionColor)
+        return obj.toString()
+    }
+
+    private fun optObj(json: String?): JSONObject {
+        if (TextUtils.isEmpty(json)) {
+            return JSONObject()
+        }
+        return try {
+            JSONObject(json!!)
+        } catch (e: Exception) {
+            JSONObject()
+        }
     }
 
     class Location(var gravity: Int = Gravity.NO_GRAVITY,

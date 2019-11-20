@@ -59,7 +59,7 @@ class WidgetHolder private constructor(itemView: View): BaseHolder<WidgetBean>(i
         setTextViewTextSize(R.id.signView,TypedValue.COMPLEX_UNIT_SP,bean.signFontSize.toFloat())
         find<View>(R.id.dayGroup).visibility = if (bean.inOneDay) { View.GONE } else { View.VISIBLE }
 
-        WidgetUtil.updateTextColorByStyle(bean.widgetStyle) { id, color ->
+        WidgetUtil.updateTextColor(bean) { id, color ->
             setTextColor(id, color)
         }
         val background = when (bean.widgetStyle) {

@@ -18,11 +18,15 @@ class HuePaletteView(context: Context, attrs: AttributeSet?, defStyleAttr:Int):
     constructor(context: Context, attrs: AttributeSet?):this(context,attrs,0)
     constructor(context: Context):this(context,null)
 
-    var hueCallback: HueCallback? = null
+    private var hueCallback: ((hue: Int, isUser: Boolean) -> Unit)? = null
     private val hueDrawable = HuePaletteDrawable()
 
     init {
         setImageDrawable(hueDrawable)
+    }
+
+    fun onHueChange(run: (hue: Int, isUser: Boolean) -> Unit) {
+        hueCallback = run
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -35,7 +39,7 @@ class HuePaletteView(context: Context, attrs: AttributeSet?, defStyleAttr:Int):
 
             MotionEvent.ACTION_DOWN,MotionEvent.ACTION_MOVE,MotionEvent.ACTION_UP -> {
                 val hue = hueDrawable.selectTo(event.y)
-                hueCallback?.onHueSelect(hue)
+                hueCallback?.invoke(hue, true)
                 true
             }
 
@@ -46,13 +50,15 @@ class HuePaletteView(context: Context, attrs: AttributeSet?, defStyleAttr:Int):
         }
     }
 
-    fun parser(hue: Float){
-        hueDrawable.parser(hue)
-        hueCallback?.onHueSelect(hue.toInt())
+    fun parser(color: Int) {
+        val hsv = FloatArray(3)
+        Color.colorToHSV(color, hsv)
+        parser(hsv[0])
     }
 
-    interface HueCallback{
-        fun onHueSelect(hue:Int)
+    fun parser(hue: Float) {
+        hueDrawable.parser(hue)
+        hueCallback?.invoke(hue.toInt(), false)
     }
 
     class HuePaletteDrawable: Drawable() {

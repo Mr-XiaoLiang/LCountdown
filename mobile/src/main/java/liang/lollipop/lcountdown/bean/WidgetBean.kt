@@ -336,13 +336,18 @@ class WidgetBean : BaseBean() {
 
     private fun parseColor(json: String?) {
         val obj = optObj(json)
-        this.nameColor        = obj.optInt("nameColor",        Color.WHITE)
-        this.prefixColor      = obj.optInt("prefixColor",      Color.WHITE)
-        this.suffixColor      = obj.optInt("suffixColor",      Color.WHITE)
-        this.daysColor        = obj.optInt("daysColor",        Color.WHITE)
-        this.unitColor        = obj.optInt("unitColor",        Color.WHITE)
-        this.timeColor        = obj.optInt("timeColor",        Color.WHITE)
-        this.inscriptionColor = obj.optInt("inscriptionColor", Color.WHITE)
+        val defColor = if (widgetStyle == WidgetStyle.BLACK || widgetStyle == WidgetStyle.LIGHT) {
+            Color.WHITE
+        } else {
+            Color.BLACK
+        }
+        this.nameColor        = obj.optInt("nameColor",        defColor)
+        this.prefixColor      = obj.optInt("prefixColor",      defColor)
+        this.suffixColor      = obj.optInt("suffixColor",      defColor)
+        this.daysColor        = obj.optInt("daysColor",        defColor)
+        this.unitColor        = obj.optInt("unitColor",        defColor)
+        this.timeColor        = obj.optInt("timeColor",        defColor)
+        this.inscriptionColor = obj.optInt("inscriptionColor", defColor)
     }
 
     private fun serializationColor(): String {

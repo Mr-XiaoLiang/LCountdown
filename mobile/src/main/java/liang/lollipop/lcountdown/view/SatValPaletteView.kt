@@ -21,7 +21,7 @@ class SatValPaletteView(context: Context, attrs: AttributeSet?, defStyleAttr: In
     constructor(context: Context) : this(context, null)
 
     private val satValPaletteDrawable = SatValPaletteDrawable()
-    var hsvCallback: HSVCallback? = null
+    private var hsvCallback: ((hsv: FloatArray, color: Int, isUser: Boolean) -> Unit)? = null
 
     init {
         setImageDrawable(satValPaletteDrawable)
@@ -30,6 +30,10 @@ class SatValPaletteView(context: Context, attrs: AttributeSet?, defStyleAttr: In
                 TypedValue.COMPLEX_UNIT_DIP, 3F, context.resources.displayMetrics
             )
         )
+    }
+
+    fun onHSVChange(run: (hsv: FloatArray, color: Int, isUser: Boolean) -> Unit) {
+        hsvCallback = run
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -42,7 +46,7 @@ class SatValPaletteView(context: Context, attrs: AttributeSet?, defStyleAttr: In
 
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE, MotionEvent.ACTION_UP -> {
                 val hsv = satValPaletteDrawable.selectTo(event.x, event.y)
-                hsvCallback?.onHSVSelect(hsv, Color.HSVToColor(hsv))
+                hsvCallback?.invoke(hsv, Color.HSVToColor(hsv), true)
                 true
             }
 
@@ -53,19 +57,21 @@ class SatValPaletteView(context: Context, attrs: AttributeSet?, defStyleAttr: In
         }
     }
 
-    interface HSVCallback {
-        fun onHSVSelect(hsv: FloatArray, rgb: Int)
+    fun parser(color: Int) {
+        val hsv = FloatArray(3)
+        Color.colorToHSV(color, hsv)
+        parser(hsv[1], hsv[2])
     }
 
     fun parser(satValue: Float, valValue: Float) {
         val hsv = satValPaletteDrawable.parser(satValue, valValue)
-        hsvCallback?.onHSVSelect(hsv, Color.HSVToColor(hsv))
+        hsvCallback?.invoke(hsv, Color.HSVToColor(hsv), false)
     }
 
     fun onHueChange(hue: Float) {
         satValPaletteDrawable.onHueChange(hue)
         val hsv = satValPaletteDrawable.lastSelected()
-        hsvCallback?.onHSVSelect(hsv, Color.HSVToColor(hsv))
+        hsvCallback?.invoke(hsv, Color.HSVToColor(hsv), true)
     }
 
     class SatValPaletteDrawable : Drawable() {

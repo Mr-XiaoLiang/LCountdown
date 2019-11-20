@@ -24,7 +24,8 @@ object WidgetUtil {
 
     const val UPDATE_TIME = 1000L * 60
 
-    private val TEXT_VIEW_ID = arrayOf(R.id.nameFrontView, R.id.nameView, R.id.nameBehindView, R.id.dayView, R.id.dayUnitView, R.id.timeView, R.id.signView)
+    private val TEXT_VIEW_ID = arrayOf(R.id.nameFrontView, R.id.nameView, R.id.nameBehindView,
+            R.id.dayView, R.id.dayUnitView, R.id.timeView, R.id.signView)
 
     fun update(context: Context, widgetBean: WidgetBean, appWidgetManager: AppWidgetManager){
 
@@ -32,7 +33,7 @@ object WidgetUtil {
 
         val views = RemoteViews(context.packageName, layoutId)
 
-        views.updateColors(widgetBean.widgetStyle)
+        views.updateColors(widgetBean)
 
         views.updateValues(widgetBean.getTimerInfo(), widgetBean)
 
@@ -49,7 +50,8 @@ object WidgetUtil {
         //创建一个延时意图，意图目标为打开页面(getActivity)，
         //getActivity(上下文,请求ID，意图内容，刷新模式)
         //请求ID重复会导致延时意图被覆盖，刷新模式表示覆盖的方式
-        val pendingIntent = PendingIntent.getActivity(context, widgetBean.widgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getActivity(context, widgetBean.widgetId,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT)
         //为小部件设置点击事件
         views.setOnClickPendingIntent(R.id.widgetGroup, pendingIntent)
 
@@ -74,6 +76,19 @@ object WidgetUtil {
         }
     }
 
+    private fun getColorById(id: Int, def: Int, bean: WidgetBean): Int {
+        return when(id) {
+            R.id.nameFrontView -> bean.prefixColor
+            R.id.nameView -> bean.nameColor
+            R.id.nameBehindView -> bean.suffixColor
+            R.id.dayView -> bean.daysColor
+            R.id.dayUnitView -> bean.unitColor
+            R.id.timeView -> bean.timeColor
+            R.id.signView -> bean.inscriptionColor
+            else -> def
+        }
+    }
+
     private fun getBackgroundResource(style: WidgetStyle): Int {
         return when (style) {
             WidgetStyle.LIGHT, WidgetStyle.DARK -> {
@@ -88,19 +103,19 @@ object WidgetUtil {
         }
     }
 
-    fun updateTextColorByStyle(style: WidgetStyle, run: (Int, Int) -> Unit) {
-        val textColor = getTextColor(style)
+    fun updateTextColor(bean: WidgetBean, run: (Int, Int) -> Unit) {
+        val defColor = getTextColor(bean.widgetStyle)
         TEXT_VIEW_ID.forEach { id ->
-            run(id, textColor)
+            run(id, getColorById(id, defColor, bean))
         }
     }
 
-    private fun RemoteViews.updateColors(style: WidgetStyle) {
-        log("RemoteViews.updateColors: $style")
-        updateTextColorByStyle(style) {id, color ->
+    private fun RemoteViews.updateColors(bean: WidgetBean) {
+        log("RemoteViews.updateColors: ${bean.widgetStyle}")
+        updateTextColor(bean) { id, color ->
             setTextColor(id, color)
         }
-        val background = getBackgroundResource(style)
+        val background = getBackgroundResource(bean.widgetStyle)
         setInt(R.id.widgetGroup, "setBackgroundResource", background)
     }
 
@@ -129,15 +144,15 @@ object WidgetUtil {
     }
 
     private fun RemoteViews.updateLocation(widgetBean: WidgetBean, resources: Resources) {
-        WidgetUtil.Target.forEach { target ->
+        Target.forEach { target ->
             val locationGroup = when (target) {
-                WidgetUtil.Target.Name -> R.id.nameLocationGroup
-                WidgetUtil.Target.Prefix -> R.id.prefixLocationGroup
-                WidgetUtil.Target.Suffix -> R.id.suffixLocationGroup
-                WidgetUtil.Target.Days -> R.id.dayLocationGroup
-                WidgetUtil.Target.Unit -> R.id.unitLocationGroup
-                WidgetUtil.Target.Time -> R.id.timeLocationGroup
-                WidgetUtil.Target.Inscription -> R.id.signLocationGroup
+                Target.Name -> R.id.nameLocationGroup
+                Target.Prefix -> R.id.prefixLocationGroup
+                Target.Suffix -> R.id.suffixLocationGroup
+                Target.Days -> R.id.dayLocationGroup
+                Target.Unit -> R.id.unitLocationGroup
+                Target.Time -> R.id.timeLocationGroup
+                Target.Inscription -> R.id.signLocationGroup
                 else -> null
             }
             locationGroup?.let { groupId ->
@@ -176,13 +191,13 @@ object WidgetUtil {
 
     fun getLocationInfo(widgetBean: WidgetBean, target: Target): WidgetBean.Location? {
         return when (target) {
-            WidgetUtil.Target.Name -> widgetBean.nameLocation
-            WidgetUtil.Target.Prefix -> widgetBean.prefixLocation
-            WidgetUtil.Target.Suffix -> widgetBean.suffixLocation
-            WidgetUtil.Target.Days -> widgetBean.daysLocation
-            WidgetUtil.Target.Unit -> widgetBean.unitLocation
-            WidgetUtil.Target.Time -> widgetBean.timeLocation
-            WidgetUtil.Target.Inscription -> widgetBean.inscriptionLocation
+            Target.Name -> widgetBean.nameLocation
+            Target.Prefix -> widgetBean.prefixLocation
+            Target.Suffix -> widgetBean.suffixLocation
+            Target.Days -> widgetBean.daysLocation
+            Target.Unit -> widgetBean.unitLocation
+            Target.Time -> widgetBean.timeLocation
+            Target.Inscription -> widgetBean.inscriptionLocation
             else -> null
         }
     }
@@ -193,37 +208,37 @@ object WidgetUtil {
 
     fun resetLocation(widgetBean: WidgetBean, target: Target, resources: Resources) {
         when (target) {
-            WidgetUtil.Target.Name -> widgetBean.nameLocation.apply{
+            Target.Name -> widgetBean.nameLocation.apply{
                 gravity = resources.getInteger(R.integer.def_name_gravity)
                 verticalMargin = resources.getInteger(R.integer.def_name_vertical_margin).toFloat()
                 horizontalMargin = resources.getInteger(R.integer.def_name_horizontal_margin).toFloat()
             }
-            WidgetUtil.Target.Prefix -> widgetBean.prefixLocation.apply{
+            Target.Prefix -> widgetBean.prefixLocation.apply{
                 gravity = resources.getInteger(R.integer.def_prefix_gravity)
                 verticalMargin = resources.getInteger(R.integer.def_prefix_vertical_margin).toFloat()
                 horizontalMargin = resources.getInteger(R.integer.def_prefix_horizontal_margin).toFloat()
             }
-            WidgetUtil.Target.Suffix -> widgetBean.suffixLocation.apply{
+            Target.Suffix -> widgetBean.suffixLocation.apply{
                 gravity = resources.getInteger(R.integer.def_suffix_gravity)
                 verticalMargin = resources.getInteger(R.integer.def_suffix_vertical_margin).toFloat()
                 horizontalMargin = resources.getInteger(R.integer.def_suffix_horizontal_margin).toFloat()
             }
-            WidgetUtil.Target.Days -> widgetBean.daysLocation.apply{
+            Target.Days -> widgetBean.daysLocation.apply{
                 gravity = resources.getInteger(R.integer.def_days_gravity)
                 verticalMargin = resources.getInteger(R.integer.def_days_vertical_margin).toFloat()
                 horizontalMargin = resources.getInteger(R.integer.def_days_horizontal_margin).toFloat()
             }
-            WidgetUtil.Target.Unit -> widgetBean.unitLocation.apply{
+            Target.Unit -> widgetBean.unitLocation.apply{
                 gravity = resources.getInteger(R.integer.def_unit_gravity)
                 verticalMargin = resources.getInteger(R.integer.def_unit_vertical_margin).toFloat()
                 horizontalMargin = resources.getInteger(R.integer.def_unit_horizontal_margin).toFloat()
             }
-            WidgetUtil.Target.Time -> widgetBean.timeLocation.apply{
+            Target.Time -> widgetBean.timeLocation.apply{
                 gravity = resources.getInteger(R.integer.def_time_gravity)
                 verticalMargin = resources.getInteger(R.integer.def_time_vertical_margin).toFloat()
                 horizontalMargin = resources.getInteger(R.integer.def_time_horizontal_margin).toFloat()
             }
-            WidgetUtil.Target.Inscription -> widgetBean.inscriptionLocation.apply{
+            Target.Inscription -> widgetBean.inscriptionLocation.apply{
                 gravity = resources.getInteger(R.integer.def_inscription_gravity)
                 verticalMargin = resources.getInteger(R.integer.def_inscription_vertical_margin).toFloat()
                 horizontalMargin = resources.getInteger(R.integer.def_inscription_horizontal_margin).toFloat()
@@ -296,7 +311,7 @@ object WidgetUtil {
         Inscription(6);
 
         companion object {
-            private val allTypes = arrayListOf(Name, Prefix, Suffix, Days, Unit, Time, Inscription)
+            private val allTypes = arrayOf(Name, Prefix, Suffix, Days, Unit, Time, Inscription)
 
             fun forEach(run: (Target) -> kotlin.Unit) {
                 allTypes.forEach(run)

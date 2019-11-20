@@ -21,7 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.viewpager.widget.ViewPager
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.widget_countdown.*
@@ -35,6 +35,8 @@ import liang.lollipop.lcountdown.utils.WidgetUtil
 import liang.lollipop.lcountdown.widget.CountdownWidget
 import liang.lollipop.ltabview.LTabHelper
 import liang.lollipop.ltabview.LTabView
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import kotlin.math.abs
 
 /**
@@ -43,7 +45,10 @@ import kotlin.math.abs
  */
 class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         CountdownUnitFragment.Callback,CountdownFontSizeFragment.Callback,
-        CountdownLocationFragment.OnLocationChangeListener, CountdownLocationFragment.LocationInfoProvider {
+        CountdownLocationFragment.OnLocationChangeListener,
+        CountdownLocationFragment.LocationInfoProvider,
+        CountdownColorFragment.Callback,
+        CountdownColorFragment.Provider{
     companion object {
 
         private const val WHAT_UPDATE = 99
@@ -170,17 +175,28 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
     }
 
     private fun initData(){
-        if(isCreateModel){
-            widgetBean.endTime = System.currentTimeMillis()
-            widgetBean.countdownName = getString(R.string.app_name)
-            widgetBean.widgetStyle = WidgetStyle.LIGHT
-            widgetBean.signValue = ""
-            widgetBean.prefixName = getString(R.string.left_until)
-            widgetBean.suffixName = getString(R.string.the_end)
-            widgetBean.dayUnit = getString(R.string.day)
-        }else{
-            WidgetDBUtil.read(this).get(widgetBean).close()
+        doAsync {
+            if(isCreateModel){
+                widgetBean.endTime = System.currentTimeMillis()
+                widgetBean.countdownName = getString(R.string.app_name)
+                widgetBean.widgetStyle = WidgetStyle.LIGHT
+                widgetBean.signValue = ""
+                widgetBean.prefixName = getString(R.string.left_until)
+                widgetBean.suffixName = getString(R.string.the_end)
+                widgetBean.dayUnit = getString(R.string.day)
+            }else{
+                WidgetDBUtil.read(this@MainActivity).get(widgetBean).close()
+            }
+            rootGroup.post {
+                syncData()
+            }
         }
+    }
+
+    private fun syncData() {
+        countdownInfoFragment.reset(widgetBean)
+        countdownUnitFragment.reset(widgetBean)
+        countdownFontSizeFragment.reset(widgetBean)
 
         onNameInfoChange(widgetBean.countdownName)
         onSignInfoChange(widgetBean.signValue)
@@ -200,10 +216,6 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         onTimeFontSizeChange(widgetBean.timeFontSize)
         onSignFontSizeChange(widgetBean.signFontSize)
 
-        countdownInfoFragment.reset(widgetBean)
-        countdownUnitFragment.reset(widgetBean)
-        countdownFontSizeFragment.reset(widgetBean)
-
         if (isCreateModel) {
             WidgetUtil.Target.forEach {
                 resetViewLocation(it, false)
@@ -214,6 +226,9 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
             }
         }
 
+        WidgetUtil.Target.forEach {
+            onColorChange(it, getColorByTarget(it))
+        }
     }
 
     override fun onHandler(message: Message) {
@@ -240,7 +255,7 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetBean.widgetId)
         setResult(Activity.RESULT_OK, resultValue)
 
-        finish()
+        onBackPressed()
     }
 
     private fun countdown(){
@@ -434,6 +449,55 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
                 r = 0
             }
             setPadding(l, t, r, b)
+        }
+    }
+
+    override fun onColorChange(target: WidgetUtil.Target, color: Int) {
+        val view: TextView? = when (target) {
+            WidgetUtil.Target.Name -> {
+                widgetBean.nameColor = color
+                nameView
+            }
+            WidgetUtil.Target.Prefix -> {
+                widgetBean.prefixColor = color
+                nameFrontView
+            }
+            WidgetUtil.Target.Suffix -> {
+                widgetBean.suffixColor = color
+                nameBehindView
+            }
+            WidgetUtil.Target.Days -> {
+                widgetBean.daysColor = color
+                dayView
+            }
+            WidgetUtil.Target.Unit -> {
+                widgetBean.unitColor = color
+                dayUnitView
+            }
+            WidgetUtil.Target.Time -> {
+                widgetBean.timeColor = color
+                timeView
+            }
+            WidgetUtil.Target.Inscription -> {
+                widgetBean.inscriptionColor = color
+                signView
+            }
+            else -> null
+        }
+        Log.d("Lollipop", "onColorChange: target=$target, view=$view, color=$color")
+        view?.setTextColor(color)
+    }
+
+    override fun getColorByTarget(target: WidgetUtil.Target): Int {
+        return when (target) {
+            WidgetUtil.Target.Name -> widgetBean.nameColor
+            WidgetUtil.Target.Prefix -> widgetBean.prefixColor
+            WidgetUtil.Target.Suffix -> widgetBean.suffixColor
+            WidgetUtil.Target.Days -> widgetBean.daysColor
+            WidgetUtil.Target.Unit -> widgetBean.unitColor
+            WidgetUtil.Target.Time -> widgetBean.timeColor
+            WidgetUtil.Target.Inscription -> widgetBean.inscriptionColor
+            else -> Color.WHITE
         }
     }
 

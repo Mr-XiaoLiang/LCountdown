@@ -22,11 +22,15 @@ class TransparencyPaletteView(context: Context, attrs: AttributeSet?, defStyleAt
 
     private val transparencyPaletteDrawable = TransparencyPaletteDrawable()
 
-    var transparencyCallback: TransparencyCallback? = null
+    private var transparencyCallback: ((alphaF: Float, alphaI: Int, isUser: Boolean) -> Unit)? = null
 
     init {
         setBackgroundColor(Color.WHITE)
         setImageDrawable(transparencyPaletteDrawable)
+    }
+
+    fun onTransparencyChange(run: (alphaF: Float, alphaI: Int, isUser: Boolean) -> Unit) {
+        transparencyCallback = run
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -34,7 +38,7 @@ class TransparencyPaletteView(context: Context, attrs: AttributeSet?, defStyleAt
         return when(event.action){
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE, MotionEvent.ACTION_UP -> {
                 val alpha = transparencyPaletteDrawable.selectTo(event.x)
-                transparencyCallback?.onTransparencySelect(alpha, (alpha * 255).toInt())
+                transparencyCallback?.invoke(alpha, (alpha * 255).toInt(), true)
                 true
             }
             else -> {
@@ -46,12 +50,9 @@ class TransparencyPaletteView(context: Context, attrs: AttributeSet?, defStyleAt
     fun parser(alpha: Int) {
         val a = min(255, max(0, alpha))
         transparencyPaletteDrawable.parser(a / 255F)
+        transparencyCallback?.invoke((a / 255F), a, false)
     }
 
-
-    interface TransparencyCallback{
-        fun onTransparencySelect(alphaF: Float, alphaI: Int)
-    }
 
     private class TransparencyPaletteDrawable: Drawable() {
 

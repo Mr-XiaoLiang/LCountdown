@@ -27,6 +27,14 @@
         <item name="android:layout_marginTop">10dp</item>
     </style>
 
+    <style name="widgetText">
+        <item name="android:shadowDy">4</item>
+        <item name="android:shadowDx">2</item>
+        <item name="android:shadowColor">#444</item>
+        <item name="android:shadowRadius">5</item>
+        <item name="android:padding">1dp</item>
+    </style>
+
     <style name="grid9Btn" >
         <item name="android:scaleType">centerInside</item>
         <item name="android:tint">@android:color/white</item>

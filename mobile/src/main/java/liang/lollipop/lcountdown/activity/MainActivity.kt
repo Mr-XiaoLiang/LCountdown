@@ -36,7 +36,6 @@ import liang.lollipop.lcountdown.widget.CountdownWidget
 import liang.lollipop.ltabview.LTabHelper
 import liang.lollipop.ltabview.LTabView
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import kotlin.math.abs
 
 /**
@@ -84,7 +83,7 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         WidgetUtil.alarmUpdate(this)
     }
 
-    private lateinit var sheetHelper: BottomSheelHelper
+    private lateinit var sheetHelper: BottomSheetHelper
 
     private var selectedView: View? = null
 
@@ -93,7 +92,7 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID)
 
-        sheetHelper = BottomSheelHelper(sheetGroup, resources.getDimension(R.dimen.peekHeight))
+        sheetHelper = BottomSheetHelper(sheetGroup, widgetFrame, resources.getDimension(R.dimen.peekHeight))
         sheetHelper.onStateChange {
             updateButton(it)
         }
@@ -151,8 +150,8 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         }
     }
 
-    private fun updateButton(newState: BottomSheelHelper.State) {
-        if (BottomSheelHelper.State.EXPANDED == newState) {
+    private fun updateButton(newState: BottomSheetHelper.State) {
+        if (BottomSheetHelper.State.EXPANDED == newState) {
             updateBtn.show()
             sheetBtn.animate().let {
                 it.cancel()
@@ -562,13 +561,15 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
 
     }
 
-    private class BottomSheelHelper(private val sheetView: View, private val peekHeight: Float):
+    private class BottomSheetHelper(private val sheetView: View,
+                                    private val contentView: View,
+                                    private val peekHeight: Float):
             ValueAnimator.AnimatorUpdateListener,
             Animator.AnimatorListener{
 
         private val valueAnimator = ValueAnimator().apply {
-            addUpdateListener(this@BottomSheelHelper)
-            addListener(this@BottomSheelHelper)
+            addUpdateListener(this@BottomSheetHelper)
+            addListener(this@BottomSheetHelper)
         }
 
         companion object {
@@ -656,6 +657,7 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
             progress = value
             val offsetMax = sheetView.height - peekHeight
             sheetView.translationY = offsetMax * (1 - value)
+            contentView.translationY = offsetMax * value * -0.5F
         }
 
         override fun onAnimationUpdate(animation: ValueAnimator?) {

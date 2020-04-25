@@ -111,17 +111,9 @@ class SimpleRecyclerViewHelper<E>(option: HelperBuilder<E>): LItemTouchCallback.
             adapter = recyclerView.adapter as RecyclerView.Adapter<*>
         }
 
-        val srcBean = when (dataList) {
-            is ArrayList -> dataList.removeAt(srcPosition)
-            is LinkedList -> dataList.removeAt(srcPosition)
-            else -> throw RuntimeException("Unknow dataList")
-        }
+        val srcBean =dataList[srcPosition]
 
-        val targetBean = when (dataList) {
-            is ArrayList -> dataList.removeAt(targetPosition)
-            is LinkedList -> dataList.removeAt(targetPosition)
-            else -> throw RuntimeException("Unknow dataList")
-        }
+        val targetBean = dataList[targetPosition]
 
         return if(callback.onMove(srcBean,targetBean,srcPosition,targetPosition)){
             Collections.swap(dataList, srcPosition, targetPosition)

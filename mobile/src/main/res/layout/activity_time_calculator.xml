@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.TimeCalculatorActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="1px"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/center"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2020-04-26\n21:24:01.234"
+            android:gravity="center"
+            android:textColor="#CFFF"
+            android:textSize="36sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/timeJoiner"
+            app:layout_constraintRight_toRightOf="parent"
+            android:id="@+id/startTimeView"
+            app:layout_constraintVertical_chainStyle="packed"
+            android:padding="10dp"/>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/startTimeView"
+            app:layout_constraintBottom_toTopOf="@id/endTimeView"
+            android:id="@+id/timeJoiner"
+            android:src="@drawable/ic_link_black_24dp"
+            android:tint="#AFFF"
+            android:layout_margin="6dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2020-04-26\n21:24:01.234"
+            android:gravity="center"
+            android:textColor="#CFFF"
+            android:textSize="36sp"
+            app:layout_constraintTop_toBottomOf="@id/timeJoiner"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/center"
+            app:layout_constraintRight_toRightOf="parent"
+            android:id="@+id/endTimeView"
+            android:padding="10dp"/>
+
+        <ImageView
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:layout_constraintLeft_toRightOf="@id/startTimeView"
+            app:layout_constraintTop_toTopOf="@id/startTimeView"
+            app:layout_constraintBottom_toBottomOf="@id/startTimeView"
+            android:id="@+id/startTimeCopyBtn"
+            android:src="@drawable/ic_content_copy_black_24dp"
+            android:tint="#AFFF"
+            android:scaleType="centerInside"
+            android:layout_margin="6dp"/>
+
+        <ImageView
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:layout_constraintLeft_toRightOf="@id/endTimeView"
+            app:layout_constraintTop_toTopOf="@id/endTimeView"
+            app:layout_constraintBottom_toBottomOf="@id/endTimeView"
+            android:id="@+id/endTimeCopyBtn"
+            android:src="@drawable/ic_content_copy_black_24dp"
+            android:tint="#AFFF"
+            android:scaleType="centerInside"
+            android:layout_margin="6dp"/>
+
+        <View
+            android:id="@+id/selectedBorder"
+            android:layout_width="0px"
+            android:layout_height="0px"
+            android:background="@drawable/bg_selected_border"
+            app:layout_constraintTop_toTopOf="@id/startTimeView"
+            app:layout_constraintBottom_toBottomOf="@id/startTimeView"
+            app:layout_constraintLeft_toLeftOf="@id/startTimeView"
+            app:layout_constraintRight_toRightOf="@id/startTimeView" />
+
+        <TextView
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:id="@+id/resultView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/center"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:textSize="18sp"
+            android:textColor="#AFFF"
+            android:text="100.00天"
+            android:gravity="end"
+            app:layout_constraintRight_toLeftOf="@id/refreshResultBtn"/>
+
+        <ImageView
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:id="@+id/refreshResultBtn"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_refresh_black_24dp"
+            android:tint="@android:color/white"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/resultView"
+            app:layout_constraintBottom_toBottomOf="@id/resultView"
+            android:scaleType="centerInside"
+            android:layout_marginEnd="10dp"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/inputPanel"
+            app:layout_constraintTop_toBottomOf="@id/resultView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_marginTop="5dp"
+            app:cardBackgroundColor="@color/bottomSheetCard"
+            app:cardCornerRadius="@dimen/sheet_card_radius">
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <include layout="@layout/content_time_calculator"/>
+
+            </androidx.core.widget.NestedScrollView>
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

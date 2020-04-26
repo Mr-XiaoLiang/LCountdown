@@ -21,11 +21,11 @@
             android:layout_height="wrap_content"
             app:counterEnabled="true"
             android:hint="@string/prefix"
-            style="@style/drakInputLayoutStyle">
+            style="@style/darkInputLayoutStyle">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/prefixNameInputView"
                 android:text="@string/left_until"
-                style="@style/drakInputLayoutStyle"
+                style="@style/darkInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -38,11 +38,11 @@
             android:layout_height="wrap_content"
             app:counterEnabled="true"
             android:hint="@string/suffix"
-            style="@style/drakInputLayoutStyle">
+            style="@style/darkInputLayoutStyle">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/suffixNameInputView"
                 android:text="@string/the_end"
-                style="@style/drakInputLayoutStyle"
+                style="@style/darkInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -55,11 +55,11 @@
             android:layout_height="wrap_content"
             app:counterEnabled="true"
             android:hint="@string/day_unit"
-            style="@style/drakInputLayoutStyle">
+            style="@style/darkInputLayoutStyle">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/dayUnitInputView"
                 android:text="@string/day"
-                style="@style/drakInputLayoutStyle"
+                style="@style/darkInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </com.google.android.material.textfield.TextInputLayout>

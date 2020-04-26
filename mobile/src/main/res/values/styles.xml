@@ -42,7 +42,7 @@
         <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
     </style>
 
-    <style name="drakInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="darkInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">@color/inout_box_color</item>
         <item name="hintTextColor">@color/inputHintColor</item>
         <item name="counterTextColor">@color/inputHintTextColor</item>

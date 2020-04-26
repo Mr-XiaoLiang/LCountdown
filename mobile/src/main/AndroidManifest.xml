@@ -20,6 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".activity.TimeCalculatorActivity"></activity>
         <activity
             android:name=".activity.MainActivity"
             android:excludeFromRecents="true"
@@ -136,9 +137,9 @@
 
         <activity
             android:name=".activity.CrashActivity"
+            android:excludeFromRecents="true"
             android:launchMode="singleInstance"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:excludeFromRecents="true">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

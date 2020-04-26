@@ -30,7 +30,7 @@ import org.jetbrains.anko.uiThread
  * 计时列表的Activity
  * @author Lollipop
  */
-class TimingListActivity : BaseActivity(){
+class TimingListActivity : BaseActivity() {
 
     private lateinit var timingUtil: TimingUtil
 
@@ -54,17 +54,17 @@ class TimingListActivity : BaseActivity(){
         initView()
     }
 
-    private fun initView(){
+    private fun initView() {
 
         quickTimingBtn.setOnClickListener(this)
 
         refreshLayout.setOnRefreshListener(this)
-        refreshLayout.setColorSchemeResources(R.color.colorPrimary,R.color.colorAccent)
+        refreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent)
 
-        recyclerView.layoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
+        recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         val helper = getTouchHelper(recyclerView)
         helper.setCanSwipe(true)
-        adapter = TimingListAdapter(dataList,layoutInflater,helper)
+        adapter = TimingListAdapter(dataList, layoutInflater, helper)
         recyclerView.adapter = adapter
 
         adapter.notifyDataSetChanged()
@@ -86,14 +86,14 @@ class TimingListActivity : BaseActivity(){
                 val file = (application as LApplication).logDir
                 val size = file.let {
                     if (it.exists() && it.isDirectory && it.canRead()) {
-                        it.listFiles().size
+                        it.listFiles()?.size?:0
                     } else {
                         0
                     }
                 }
                 AlertDialog.Builder(this)
                         .setMessage(String.format(
-                                        getString(R.string.clear_log_message), size))
+                                getString(R.string.clear_log_message), size))
                         .setNegativeButton(R.string.clear_log_enter) { dialog, _ ->
                             LogHelper.clearLog((application as LApplication).logDir)
                             Snackbar.make(recyclerView, R.string.clear_log_end, Snackbar.LENGTH_SHORT).show()
@@ -114,22 +114,22 @@ class TimingListActivity : BaseActivity(){
         val bean = dataList.removeAt(adapterPosition)
         adapter.notifyItemRemoved(adapterPosition)
 
-        Snackbar.make(recyclerView,R.string.deleted,Snackbar.LENGTH_LONG)
+        Snackbar.make(recyclerView, R.string.deleted, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo) {
-                    dataList.add(adapterPosition,bean)
+                    dataList.add(adapterPosition, bean)
                     adapter.notifyItemInserted(adapterPosition)
                 }
-                .addCallback(OnSwipedHelper(timingUtil,bean)).show()
+                .addCallback(OnSwipedHelper(timingUtil, bean)).show()
     }
 
     private class OnSwipedHelper(
             private val timingUtil: TimingUtil,
-            private val bean: TimingBean): BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            private val bean: TimingBean) : BaseTransientBottomBar.BaseCallback<Snackbar>() {
 
         override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
             super.onDismissed(transientBottomBar, event)
 
-            if(event != DISMISS_EVENT_ACTION){
+            if (event != DISMISS_EVENT_ACTION) {
 
                 timingUtil.deleteTiming(bean.id)
 
@@ -142,19 +142,19 @@ class TimingListActivity : BaseActivity(){
     override fun onClick(v: View?) {
         super.onClick(v)
 
-        when(v){
+        when (v) {
             quickTimingBtn -> {
                 startActivityForResult(
-                        Intent(this,QuickTimingActivity::class.java),
+                        Intent(this, TimeCalculatorActivity::class.java),
                         REQUEST_NEW_TIMING,
-                        Pair.create(v,QuickTimingActivity.QUIET_BTN_TRANSITION))
+                        Pair.create(v, QuickTimingActivity.QUIET_BTN_TRANSITION))
             }
 
         }
 
     }
 
-    private fun getData(){
+    private fun getData() {
 
         doAsync {
 
@@ -166,9 +166,9 @@ class TimingListActivity : BaseActivity(){
                 adapter.notifyDataSetChanged()
                 refreshLayout.isRefreshing = false
 
-                if(dataList.isEmpty()){
+                if (dataList.isEmpty()) {
 
-                    Snackbar.make(recyclerView,"你现在还没有计时项目",Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(recyclerView, "你现在还没有计时项目", Snackbar.LENGTH_LONG).show()
 
                 }
             }
@@ -180,16 +180,16 @@ class TimingListActivity : BaseActivity(){
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        when(requestCode){
+        when (requestCode) {
 
-            REQUEST_NEW_TIMING -> if(resultCode == Activity.RESULT_OK && data != null){
+            REQUEST_NEW_TIMING -> if (resultCode == Activity.RESULT_OK && data != null) {
 
-                val id = data.getIntExtra(QuickTimingActivity.RESULT_TIMING_ID,0)
-                if(id > 0){
+                val id = data.getIntExtra(QuickTimingActivity.RESULT_TIMING_ID, 0)
+                if (id > 0) {
 
                     val bean = TimingBean(id)
                     timingUtil.selectOne(bean)
-                    dataList.add(0,bean)
+                    dataList.add(0, bean)
                     adapter.notifyItemInserted(0)
 //                    recyclerView.smoothScrollToPosition(0)
 
@@ -211,11 +211,11 @@ class TimingListActivity : BaseActivity(){
     override fun onItemViewClick(holder: RecyclerView.ViewHolder?, v: View) {
         super.onItemViewClick(holder, v)
 
-        if(holder == null){
+        if (holder == null) {
             return
         }
 
-        if(holder is TimingHolder && holder.stopBtn == v){
+        if (holder is TimingHolder && holder.stopBtn == v) {
 
             val bean = dataList[holder.adapterPosition]
             timingUtil.stopTiming(bean.id).selectOne(bean)

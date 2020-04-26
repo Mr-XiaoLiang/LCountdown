@@ -8,7 +8,7 @@ import android.os.Message
  * @author Lollipop
  * 简易的Handler实现类
  */
-class SimpleHandler():Handler() {
+class SimpleHandler() : Handler() {
 
     private var callback: HandlerCallback? = null
 
@@ -17,7 +17,7 @@ class SimpleHandler():Handler() {
         callback?.onHandler(msg)
     }
 
-    constructor(callback: HandlerCallback):this() {
+    constructor(callback: HandlerCallback) : this() {
         this.callback = callback
     }
 

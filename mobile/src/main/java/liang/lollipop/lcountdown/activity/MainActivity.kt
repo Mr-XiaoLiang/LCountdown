@@ -42,12 +42,14 @@ import kotlin.math.abs
  * 小部件的参数设置Activity
  * @author Lollipop
  */
-class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
-        CountdownUnitFragment.Callback,CountdownFontSizeFragment.Callback,
+class MainActivity : BaseActivity(),
+        CountdownInfoFragment.Callback,
+        CountdownUnitFragment.Callback,
+        CountdownFontSizeFragment.Callback,
         CountdownLocationFragment.OnLocationChangeListener,
         CountdownLocationFragment.LocationInfoProvider,
         CountdownColorFragment.Callback,
-        CountdownColorFragment.Provider{
+        CountdownColorFragment.Provider {
     companion object {
 
         private const val WHAT_UPDATE = 99
@@ -87,7 +89,7 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
 
     private var selectedView: View? = null
 
-    private fun initView(){
+    private fun initView() {
         widgetBean.widgetId = intent.getIntExtra(
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID)
@@ -100,12 +102,12 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
             sheetHelper.reverse()
         }
 
-        updateBtn.setOnClickListener{
+        updateBtn.setOnClickListener {
             updateWidget()
         }
 
         viewPager.offscreenPageLimit = fragments.size
-        viewPager.adapter = Adapter(supportFragmentManager,fragments, this)
+        viewPager.adapter = Adapter(supportFragmentManager, fragments, this)
         val tabViewBuilder = LTabHelper.withExpandItem(tabLayout)
         tabViewBuilder.let { build ->
             val tabUnselectedColor = ContextCompat.getColor(this@MainActivity, R.color.tabUnselectedColor)
@@ -142,10 +144,10 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         tabLayout.style = LTabView.Style.Start
         viewPager.adapter?.notifyDataSetChanged()
 
-        isCreateModel = intent.getIntExtra(CountdownWidget.WIDGET_SHOW,0) < 1
-        if(isCreateModel){
+        isCreateModel = intent.getIntExtra(CountdownWidget.WIDGET_SHOW, 0) < 1
+        if (isCreateModel) {
             sheetHelper.expand(false)
-        }else{
+        } else {
             sheetHelper.close(false)
         }
     }
@@ -173,9 +175,9 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         viewPager.requestLayout()
     }
 
-    private fun initData(){
+    private fun initData() {
         doAsync {
-            if(isCreateModel){
+            if (isCreateModel) {
                 widgetBean.endTime = System.currentTimeMillis()
                 widgetBean.countdownName = getString(R.string.app_name)
                 widgetBean.widgetStyle = WidgetStyle.LIGHT
@@ -183,7 +185,7 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
                 widgetBean.prefixName = getString(R.string.left_until)
                 widgetBean.suffixName = getString(R.string.the_end)
                 widgetBean.dayUnit = getString(R.string.day)
-            }else{
+            } else {
                 WidgetDBUtil.read(this@MainActivity).get(widgetBean).close()
             }
             rootGroup.post {
@@ -231,7 +233,7 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
     }
 
     override fun onHandler(message: Message) {
-        when(message.what){
+        when (message.what) {
             WHAT_UPDATE -> {
                 countdown()
                 handler.sendEmptyMessageDelayed(WHAT_UPDATE, DELAYED)
@@ -239,16 +241,16 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         }
     }
 
-    private fun updateWidget(){
-        if(isCreateModel){
+    private fun updateWidget() {
+        if (isCreateModel) {
             WidgetDBUtil.write(this).add(widgetBean).close()
-        }else{
+        } else {
             WidgetDBUtil.write(this).update(widgetBean).close()
         }
 
         val appWidgetManager = AppWidgetManager.getInstance(this)
 
-        WidgetUtil.update(this,widgetBean,appWidgetManager)
+        WidgetUtil.update(this, widgetBean, appWidgetManager)
 
         val resultValue = Intent()
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetBean.widgetId)
@@ -257,7 +259,7 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         onBackPressed()
     }
 
-    private fun countdown(){
+    private fun countdown() {
         val bean = widgetBean.getTimerInfo()
         dayView.text = bean.days
         timeView.text = bean.time
@@ -276,8 +278,8 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
 
     override fun onStart() {
         super.onStart()
-        val delayed = ( System.currentTimeMillis() / DELAYED + 1 ) * DELAYED
-        handler.sendEmptyMessageDelayed(WHAT_UPDATE,delayed)
+        val delayed = (System.currentTimeMillis() / DELAYED + 1) * DELAYED
+        handler.sendEmptyMessageDelayed(WHAT_UPDATE, delayed)
     }
 
     override fun onNameInfoChange(name: CharSequence) {
@@ -292,7 +294,11 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
 
     override fun onTimeTypeChange(noTime: Boolean) {
         widgetBean.noTime = noTime
-        timeView.visibility = if(noTime){View.GONE}else{View.VISIBLE}
+        timeView.visibility = if (noTime) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
     }
 
     override fun onTimeInfoChange(time: Long) {
@@ -311,13 +317,21 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
     }
 
     override fun onStyleInfoChange(style: WidgetStyle) {
-        val isDark = ( style == WidgetStyle.WHITE || style == WidgetStyle.DARK )
+        val isDark = (style == WidgetStyle.WHITE || style == WidgetStyle.DARK)
 
-        val textColor = if(isDark){ 0xFF333333.toInt() }else{ Color.WHITE }
-        val bgColor = if(isDark){ Color.WHITE }else{ Color.BLACK }
+        val textColor = if (isDark) {
+            0xFF333333.toInt()
+        } else {
+            Color.WHITE
+        }
+        val bgColor = if (isDark) {
+            Color.WHITE
+        } else {
+            Color.BLACK
+        }
 
         contentGroup.setBackgroundColor(bgColor)
-        changeTextViewColor(widgetFrame,textColor)
+        changeTextViewColor(widgetFrame, textColor)
         widgetBean.widgetStyle = style
     }
 
@@ -338,37 +352,37 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
 
     override fun onPrefixFontSizeChange(sizeDip: Int) {
         widgetBean.prefixFontSize = sizeDip
-        nameFrontView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
+        nameFrontView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeDip.toFloat())
     }
 
     override fun onNameFontSizeChange(sizeDip: Int) {
         widgetBean.nameFontSize = sizeDip
-        nameView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
+        nameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeDip.toFloat())
     }
 
     override fun onSuffixFontSizeChange(sizeDip: Int) {
         widgetBean.suffixFontSize = sizeDip
-        nameBehindView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
+        nameBehindView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeDip.toFloat())
     }
 
     override fun onDayFontSizeChange(sizeDip: Int) {
         widgetBean.dayFontSize = sizeDip
-        dayView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
+        dayView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeDip.toFloat())
     }
 
     override fun onDayUnitFontSizeChange(sizeDip: Int) {
         widgetBean.dayUnitFontSize = sizeDip
-        dayUnitView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
+        dayUnitView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeDip.toFloat())
     }
 
     override fun onTimeFontSizeChange(sizeDip: Int) {
         widgetBean.timeFontSize = sizeDip
-        timeView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
+        timeView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeDip.toFloat())
     }
 
     override fun onSignFontSizeChange(sizeDip: Int) {
         widgetBean.signFontSize = sizeDip
-        signView.setTextSize(TypedValue.COMPLEX_UNIT_SP,sizeDip.toFloat())
+        signView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeDip.toFloat())
     }
 
     override fun onLocationChange(target: WidgetUtil.Target, gravity: Int,
@@ -418,7 +432,7 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         if (isShowBorder) {
             selectedView?.setBackgroundResource(R.drawable.border_selected)
         }
-        val location = getLocationInfo(target)?: WidgetBean.EMPTY_LOCATION
+        val location = getLocationInfo(target) ?: WidgetBean.EMPTY_LOCATION
         if (location.gravity == Gravity.NO_GRAVITY) {
             WidgetUtil.resetLocation(widgetBean, target, resources)
         }
@@ -505,16 +519,16 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
         updateViewLocation(target, isShowBorder)
     }
 
-    private fun changeTextViewColor(viewGroup:ViewGroup, color: Int){
-        for(index in 0 until viewGroup.childCount){
+    private fun changeTextViewColor(viewGroup: ViewGroup, color: Int) {
+        for (index in 0 until viewGroup.childCount) {
 
             val child = viewGroup.getChildAt(index)
 
-            if(child is ViewGroup){
-                changeTextViewColor(child,color)
-            }else if(child is TextView){
+            if (child is ViewGroup) {
+                changeTextViewColor(child, color)
+            } else if (child is TextView) {
                 child.setTextColor(color)
-            }else{
+            } else {
                 continue
             }
 
@@ -537,7 +551,7 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
     private class Adapter(fragmentManager: FragmentManager,
                           private val fragments: Array<LTabFragment>,
                           private val context: Context)
-        : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT){
+        : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
         override fun getItem(position: Int): Fragment {
             return fragments[position]
@@ -563,9 +577,9 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
 
     private class BottomSheetHelper(private val sheetView: View,
                                     private val contentView: View,
-                                    private val peekHeight: Float):
+                                    private val peekHeight: Float) :
             ValueAnimator.AnimatorUpdateListener,
-            Animator.AnimatorListener{
+            Animator.AnimatorListener {
 
         private val valueAnimator = ValueAnimator().apply {
             addUpdateListener(this@BottomSheetHelper)
@@ -666,11 +680,15 @@ class MainActivity : BaseActivity(),CountdownInfoFragment.Callback,
             }
         }
 
-        override fun onAnimationRepeat(animation: Animator?) {  }
+        override fun onAnimationRepeat(animation: Animator?) {}
 
         override fun onAnimationEnd(animation: Animator?) {
             if (animation == valueAnimator) {
-                changeState(if (isOpen) {State.EXPANDED} else {State.COLLAPSED})
+                changeState(if (isOpen) {
+                    State.EXPANDED
+                } else {
+                    State.COLLAPSED
+                })
             }
         }
 

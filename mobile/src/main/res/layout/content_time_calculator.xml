@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:showIn="@layout/activity_time_calculator">
+
+    <ImageView
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:id="@+id/restoreBtn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="10dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_restore_black_24dp"
+        android:tint="@color/colorAccent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/monthInputGroup"
+        app:layout_constraintBottom_toBottomOf="@id/monthInputGroup"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/yearInputGroup"
+        style="@style/darkInputLayoutStyle"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:hint="@string/year"
+        app:layout_constraintHorizontal_weight="4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/monthInputGroup"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/yearInputView"
+            style="@style/darkInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberSigned" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/monthInputGroup"
+        style="@style/darkInputLayoutStyle"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:hint="@string/month"
+        app:layout_constraintHorizontal_weight="4"
+        app:layout_constraintLeft_toRightOf="@id/yearInputGroup"
+        app:layout_constraintRight_toLeftOf="@id/restoreBtn"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/monthInputView"
+            style="@style/darkInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberSigned" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/dayInputGroup"
+        style="@style/darkInputLayoutStyle"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:hint="@string/day"
+        app:layout_constraintHorizontal_weight="4"
+        app:layout_constraintLeft_toLeftOf="@id/yearInputGroup"
+        app:layout_constraintRight_toLeftOf="@id/hourInputGroup"
+        app:layout_constraintTop_toBottomOf="@id/yearInputGroup"
+        android:layout_marginEnd="5dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/dayInputView"
+            style="@style/darkInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberSigned" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/hourInputGroup"
+        style="@style/darkInputLayoutStyle"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:hint="@string/hour"
+        app:layout_constraintHorizontal_weight="4"
+        app:layout_constraintLeft_toRightOf="@id/dayInputGroup"
+        app:layout_constraintRight_toRightOf="@id/restoreBtn"
+        app:layout_constraintTop_toBottomOf="@id/monthInputGroup"
+        android:layout_marginStart="5dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/hourInputView"
+            style="@style/darkInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberSigned" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/minuteInputGroup"
+        style="@style/darkInputLayoutStyle"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:hint="@string/minute"
+        app:layout_constraintHorizontal_weight="4"
+        app:layout_constraintLeft_toLeftOf="@id/dayInputGroup"
+        app:layout_constraintRight_toLeftOf="@id/secondsInputGroup"
+        app:layout_constraintTop_toBottomOf="@id/dayInputGroup">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/minuteInputView"
+
+            style="@style/darkInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberSigned" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/secondsInputGroup"
+        style="@style/darkInputLayoutStyle"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:hint="@string/seconds"
+        app:layout_constraintHorizontal_weight="4"
+        app:layout_constraintLeft_toRightOf="@id/minuteInputGroup"
+        app:layout_constraintRight_toLeftOf="@id/millisecondInputGroup"
+        app:layout_constraintTop_toTopOf="@id/minuteInputGroup">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/secondsInputView"
+            style="@style/darkInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberSigned" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/millisecondInputGroup"
+        style="@style/darkInputLayoutStyle"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:hint="@string/millisecond"
+        app:layout_constraintHorizontal_weight="4"
+        app:layout_constraintLeft_toRightOf="@id/secondsInputGroup"
+        app:layout_constraintRight_toRightOf="@id/hourInputGroup"
+        app:layout_constraintTop_toTopOf="@id/secondsInputGroup">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/millisecondInputView"
+            style="@style/darkInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberSigned" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/minuteInputGroup" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

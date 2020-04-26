@@ -22,10 +22,10 @@
             android:layout_height="wrap_content"
             app:counterEnabled="true"
             android:hint="@string/aims_name"
-            style="@style/drakInputLayoutStyle">
+            style="@style/darkInputLayoutStyle">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/nameInputView"
-                style="@style/drakInputLayoutStyle"
+                style="@style/darkInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -38,10 +38,10 @@
             android:layout_height="wrap_content"
             app:counterEnabled="true"
             android:hint="@string/sign"
-            style="@style/drakInputLayoutStyle">
+            style="@style/darkInputLayoutStyle">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/signInputView"
-                style="@style/drakInputLayoutStyle"
+                style="@style/darkInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </com.google.android.material.textfield.TextInputLayout>

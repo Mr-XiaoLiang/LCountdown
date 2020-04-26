@@ -3,15 +3,20 @@ package liang.lollipop.lcountdown.activity
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
+import android.widget.TextView
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.activity_time_calculator.*
 import kotlinx.android.synthetic.main.content_time_calculator.*
 import liang.lollipop.lbaselib.base.BaseActivity
 import liang.lollipop.lcountdown.R
+import java.lang.Exception
 import java.lang.StringBuilder
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.abs
 
 /**
@@ -77,6 +82,12 @@ class TimeCalculatorActivity : BaseActivity() {
     // 浮点数格式化工具
     private val decimalFormat = DecimalFormat("#,##0.00###")
 
+    // 日历计算器
+    private val calendar = Calendar.getInstance()
+
+    // 时间格式化工具
+    private val simpleDateFormat = SimpleDateFormat("YYYY-MM-dd\nHH:mm:ss.SSS", Locale.getDefault())
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_time_calculator)
@@ -96,6 +107,8 @@ class TimeCalculatorActivity : BaseActivity() {
             })
         }
         restoreBtn.callOnClick()
+        startTimeView.updateTime(startTime)
+        endTimeView.updateTime(endTime)
     }
 
     override fun onClick(v: View?) {
@@ -115,7 +128,7 @@ class TimeCalculatorActivity : BaseActivity() {
             restoreBtn -> {
                 inputLock = true
                 inputViewArray.forEach {
-                    it.setText("0")
+                    it.setText("0.00")
                     it.clearFocus()
                 }
                 inputLock = false
@@ -145,9 +158,47 @@ class TimeCalculatorActivity : BaseActivity() {
         } else  {
             endTime
         }
-
-        // TODO
+        calendar.timeInMillis = targetTime
+        calendar.add(Calendar.YEAR, yearInputView.getInt())
+        calendar.add(Calendar.MONTH, monthInputView.getInt())
+        calendar.add(Calendar.DAY_OF_MONTH, dayInputView.getInt())
+        calendar.add(Calendar.HOUR_OF_DAY, hourInputView.getInt())
+        calendar.add(Calendar.MINUTE, minuteInputView.getInt())
+        calendar.add(Calendar.SECOND, secondsInputView.getInt())
+        calendar.add(Calendar.MILLISECOND, millisecondInputView.getInt())
+        val resultTime = calendar.timeInMillis
+        if (selectedStart) {
+            endTime = resultTime
+        } else  {
+            startTime = resultTime
+        }
+        startTimeView.updateTime(startTime)
+        endTimeView.updateTime(endTime)
         onResultValueChange()
+    }
+
+    private fun TextView.updateTime(time: Long) {
+        this.text = simpleDateFormat.format(Date(time))
+    }
+
+    private fun Int.format(): String {
+        return if (this < 10) {
+            "0$this"
+        } else {
+            this.toString()
+        }
+    }
+
+    private fun TextInputEditText.getInt() : Int {
+        val value = this.text?.toString()?:""
+        if (TextUtils.isEmpty(value)) {
+            return 0
+        }
+        return try {
+            value.toInt()
+        } catch (e: Exception) {
+            0
+        }
     }
 
     private fun onResultValueChange() {
@@ -216,6 +267,24 @@ class TimeCalculatorActivity : BaseActivity() {
         borderAnimator.duration = (BORDER_ANIMATOR_DURATION *
                 abs(targetProgress - selectedBorderProgress)).toLong()
         borderAnimator.start()
+
+        val offset = if (selectedStart) {
+            endTime - startTime
+        } else  {
+            startTime - endTime
+        }
+
+        onInputChange()
+
+        inputLock = true
+        yearInputView.setText(v(offset / ONE_YEAR))
+        monthInputView.setText(v(offset % ONE_YEAR / ONE_MONTH))
+        dayInputView.setText(v(offset % ONE_MONTH / ONE_DAY))
+        hourInputView.setText(v(offset % ONE_DAY / ONE_HOUR))
+        minuteInputView.setText(v(offset % ONE_HOUR / ONE_MINUTE))
+        secondsInputView.setText(v(offset % ONE_MINUTE / ONE_SECONDS))
+        millisecondInputView.setText(v(offset % ONE_SECONDS / ONE_MILLISECOND))
+        inputLock = false
     }
 
     private fun updateBorderLocation() {

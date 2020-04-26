@@ -19,4 +19,6 @@
     <color name="expandBtnSelect">#df9fb4</color>
     <color name="expandBtnDefault">#525252</color>
 
+    <color name="timerBtnBackground">#21A398</color>
+
 </resources>

@@ -22,12 +22,13 @@
 
     <include layout="@layout/content_timing_list" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/quickTimingBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_timer_black_24dp"/>
+        app:icon="@drawable/ic_timer_black_24dp"
+        app:backgroundTint="@color/timerBtnBackground"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

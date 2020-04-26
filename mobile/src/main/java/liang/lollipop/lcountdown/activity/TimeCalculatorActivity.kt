@@ -197,28 +197,28 @@ class TimeCalculatorActivity : BaseActivity() {
         val offset = abs(startTime - endTime)
         val value = when (resultFormat) {
             RESULT_YEAR -> {
-                v(offset * 1F / ONE_YEAR) + getString(R.string.year)
+                v(offset * 1.0 / ONE_YEAR) + getString(R.string.year)
             }
             RESULT_MONTH -> {
-                v(offset * 1F / ONE_MONTH) + getString(R.string.month)
+                v(offset * 1.0 / ONE_MONTH) + getString(R.string.month)
             }
             RESULT_WEEK -> {
-                v(offset * 1F / ONE_WEEK) + getString(R.string.week)
+                v(offset * 1.0 / ONE_WEEK) + getString(R.string.week)
             }
             RESULT_DAY -> {
-                v(offset * 1F / ONE_DAY) + getString(R.string.day)
+                v(offset * 1.0 / ONE_DAY) + getString(R.string.day)
             }
             RESULT_HOUR -> {
-                v(offset * 1F / ONE_HOUR) + getString(R.string.hour)
+                v(offset * 1.0 / ONE_HOUR) + getString(R.string.hour)
             }
             RESULT_MINUTE -> {
-                v(offset * 1F / ONE_MINUTE) + getString(R.string.minute)
+                v(offset * 1.0 / ONE_MINUTE) + getString(R.string.minute)
             }
             RESULT_SECONDS -> {
-                v(offset * 1F / ONE_SECONDS) + getString(R.string.seconds)
+                v(offset * 1.0 / ONE_SECONDS) + getString(R.string.seconds)
             }
             RESULT_MILLISECOND -> {
-               v(offset * 1F) + getString(R.string.millisecond)
+               v(offset * 1.0) + getString(R.string.millisecond)
             }
             else  -> {
                 val builder = StringBuilder()
@@ -285,12 +285,12 @@ class TimeCalculatorActivity : BaseActivity() {
         borderAnimator.cancel()
     }
 
-    private fun v(float: Float): String {
+    private fun v(float: Double): String {
         return decimalFormat.format(float)
     }
 
-    private fun v(float: Long): String {
-        return decimalFormat.format(float)
+    private fun v(long: Long): String {
+        return long.toString()
     }
 
 }

@@ -128,7 +128,7 @@ class TimeCalculatorActivity : BaseActivity() {
             restoreBtn -> {
                 inputLock = true
                 inputViewArray.forEach {
-                    it.setText("0.00")
+                    it.setText("0")
                     it.clearFocus()
                 }
                 inputLock = false
@@ -179,14 +179,6 @@ class TimeCalculatorActivity : BaseActivity() {
 
     private fun TextView.updateTime(time: Long) {
         this.text = simpleDateFormat.format(Date(time))
-    }
-
-    private fun Int.format(): String {
-        return if (this < 10) {
-            "0$this"
-        } else {
-            this.toString()
-        }
     }
 
     private fun TextInputEditText.getInt() : Int {
@@ -274,16 +266,12 @@ class TimeCalculatorActivity : BaseActivity() {
             startTime - endTime
         }
 
-        onInputChange()
-
         inputLock = true
-        yearInputView.setText(v(offset / ONE_YEAR))
-        monthInputView.setText(v(offset % ONE_YEAR / ONE_MONTH))
-        dayInputView.setText(v(offset % ONE_MONTH / ONE_DAY))
-        hourInputView.setText(v(offset % ONE_DAY / ONE_HOUR))
-        minuteInputView.setText(v(offset % ONE_HOUR / ONE_MINUTE))
-        secondsInputView.setText(v(offset % ONE_MINUTE / ONE_SECONDS))
-        millisecondInputView.setText(v(offset % ONE_SECONDS / ONE_MILLISECOND))
+        dayInputView.setText((offset / ONE_DAY).toString())
+        hourInputView.setText((offset % ONE_DAY / ONE_HOUR).toString())
+        minuteInputView.setText((offset % ONE_HOUR / ONE_MINUTE).toString())
+        secondsInputView.setText((offset % ONE_MINUTE / ONE_SECONDS).toString())
+        millisecondInputView.setText((offset % ONE_SECONDS / ONE_MILLISECOND).toString())
         inputLock = false
     }
 

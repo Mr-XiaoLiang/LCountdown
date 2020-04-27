@@ -20,7 +20,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activity.TimeCalculatorActivity"></activity>
+        <activity
+            android:name=".activity.TimeCalculatorActivity"
+            android:label="@string/title_activity_time_calculator"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activity.MainActivity"
             android:excludeFromRecents="true"

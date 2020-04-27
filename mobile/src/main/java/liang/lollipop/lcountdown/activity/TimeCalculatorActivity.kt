@@ -12,8 +12,7 @@ import kotlinx.android.synthetic.main.activity_time_calculator.*
 import kotlinx.android.synthetic.main.content_time_calculator.*
 import liang.lollipop.lbaselib.base.BaseActivity
 import liang.lollipop.lcountdown.R
-import java.lang.Exception
-import java.lang.StringBuilder
+import liang.lollipop.lcountdown.utils.ClipboardHelper
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -91,6 +90,7 @@ class TimeCalculatorActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_time_calculator)
+        setToolbar(toolbar)
         initView()
     }
 
@@ -249,7 +249,20 @@ class TimeCalculatorActivity : BaseActivity() {
     }
 
     private fun copyTimes(time: Long) {
-        // TODO
+        if (ClipboardHelper.put(this, ClipboardHelper.encodeTimestamp(time))) {
+            alert().setTitle(R.string.title_copy_times)
+                    .setMessage(R.string.msg_copy_times)
+                    .setPositiveButton(R.string.understood) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+        } else {
+            alert().setMessage(R.string.copy_error)
+                    .setPositiveButton(R.string.understood) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+        }
     }
 
     private fun onSelectChange() {

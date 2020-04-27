@@ -82,6 +82,10 @@ class TimingListActivity : BaseActivity() {
                 startActivity(Intent(this, WidgetListActivity::class.java))
                 return true
             }
+            R.id.menuCalculator -> {
+                startActivity(Intent(this, TimeCalculatorActivity::class.java))
+                return true
+            }
             R.id.clearLog -> {
                 val file = (application as LApplication).logDir
                 val size = file.let {
@@ -145,7 +149,7 @@ class TimingListActivity : BaseActivity() {
         when (v) {
             quickTimingBtn -> {
                 startActivityForResult(
-                        Intent(this, TimeCalculatorActivity::class.java),
+                        Intent(this, QuickTimingActivity::class.java),
                         REQUEST_NEW_TIMING,
                         Pair.create(v, QuickTimingActivity.QUIET_BTN_TRANSITION))
             }

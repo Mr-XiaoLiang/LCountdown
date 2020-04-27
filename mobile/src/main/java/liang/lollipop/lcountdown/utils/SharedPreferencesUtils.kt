@@ -32,7 +32,7 @@ object SharedPreferencesUtils {
                 is Int -> conEdit.putInt(key, value as Int)
                 is Float -> conEdit.putFloat(key, value as Float)
             }
-            conEdit.commit()
+            conEdit.apply()
         }
     }
 
@@ -43,6 +43,7 @@ object SharedPreferencesUtils {
         return get(mShareConfig, key, defValue)
     }
 
+    @Suppress("UNCHECKED_CAST")
     operator fun <T> get(mShareConfig: SharedPreferences?, key: String, defValue: T): T? {
         var value: T? = null
         if (notNull(key)) {
@@ -62,7 +63,7 @@ object SharedPreferencesUtils {
     /**
      * object not null
      */
-    fun notNull(obj: Any?): Boolean {
+    private fun notNull(obj: Any?): Boolean {
         return null != obj
     }
 

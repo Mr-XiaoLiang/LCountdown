@@ -76,4 +76,15 @@
     <string name="minute">Minute</string>
     <string name="seconds">Seconds</string>
     <string name="millisecond">Millisecond</string>
+
+    <string name="title_copy_times">Time point copied</string>
+    <string name="msg_copy_times">You can now go to the desktop to add a countdown, this time will be used automatically</string>
+    <string name="understood">Understood</string>
+
+    <string name="copy_error">Cannot copy to clipboard</string>
+
+    <string name="found_copy_times">Found the time point in the clipboard, use it?</string>
+    <string name="use">Use</string>
+    <string name="clear">Clear</string>
+    <string name="title_activity_time_calculator">Time calculator</string>
 </resources>

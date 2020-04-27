@@ -30,6 +30,7 @@ import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.bean.WidgetBean
 import liang.lollipop.lcountdown.bean.WidgetStyle
 import liang.lollipop.lcountdown.fragment.*
+import liang.lollipop.lcountdown.utils.ClipboardHelper
 import liang.lollipop.lcountdown.utils.WidgetDBUtil
 import liang.lollipop.lcountdown.utils.WidgetUtil
 import liang.lollipop.lcountdown.widget.CountdownWidget
@@ -194,6 +195,29 @@ class MainActivity : BaseActivity(),
         }
     }
 
+    private fun checkClipboard() {
+       val value = ClipboardHelper.get(this)
+        if (TextUtils.isEmpty(value)) {
+            return
+        }
+        try {
+            val times = ClipboardHelper.decodeTimestamp(value)
+            alert().setMessage(R.string.found_copy_times)
+                    .setPositiveButton(R.string.use) { dialog, _ ->
+                        widgetBean.endTime = times
+                        rootGroup.post {
+                            syncData()
+                        }
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton(R.string.clear) { dialog, _ ->
+                        ClipboardHelper.clear(this)
+                        dialog.dismiss()
+                    }
+                    .show()
+        } catch (e: Throwable) { }
+    }
+
     private fun syncData() {
         countdownInfoFragment.reset(widgetBean)
         countdownUnitFragment.reset(widgetBean)
@@ -280,6 +304,9 @@ class MainActivity : BaseActivity(),
         super.onStart()
         val delayed = (System.currentTimeMillis() / DELAYED + 1) * DELAYED
         handler.sendEmptyMessageDelayed(WHAT_UPDATE, delayed)
+        rootGroup.post {
+            checkClipboard()
+        }
     }
 
     override fun onNameInfoChange(name: CharSequence) {

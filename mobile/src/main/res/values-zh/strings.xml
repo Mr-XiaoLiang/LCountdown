@@ -76,4 +76,15 @@
     <string name="minute">分钟</string>
     <string name="seconds">秒钟</string>
     <string name="millisecond">毫秒</string>
+
+    <string name="title_copy_times">时间点已复制</string>
+    <string name="msg_copy_times">你现在可以前往桌面添加倒计时，将会自动使用此时间</string>
+    <string name="understood">知道了</string>
+
+    <string name="copy_error">无法复制到剪切板</string>
+
+    <string name="found_copy_times">发现剪切板中的时间点，是否使用?</string>
+    <string name="use">使用</string>
+    <string name="clear">清除</string>
+    <string name="title_activity_time_calculator">时间计算器</string>
 </resources>

@@ -6,6 +6,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import liang.lollipop.lcountdown.bean.RepeatType
 import liang.lollipop.lcountdown.bean.WidgetBean
 
 /**
@@ -288,7 +289,7 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
                 }
                 sql.setTransactionSuccessful()
             }catch (e: Exception) {
-                Log.e("updateAll", e.message)
+                Log.e("updateAll", e.message?:"")
             } finally {
                 sql.endTransaction()
             }
@@ -338,7 +339,7 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
 
             put(WidgetTable.NOT_COUNTDOWN, widgetBean.noCountdown.b2i())
 
-            put(WidgetTable.IN_ONE_DAY, widgetBean.inOneDay.b2i())
+            put(WidgetTable.IN_ONE_DAY, widgetBean.repeatType.ordinal)
 
             put(WidgetTable.LOCATION_INFO, widgetBean.locations)
 
@@ -372,15 +373,27 @@ class WidgetDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
 
             noCountdown = c.getInt(c.getColumnIndex(WidgetTable.NOT_COUNTDOWN)).i2b()
 
-            inOneDay = c.getInt(c.getColumnIndex(WidgetTable.IN_ONE_DAY)).i2b()
+            repeatType = RepeatType.values().at(c.getInt(c.getColumnIndex(WidgetTable.IN_ONE_DAY)))
 
             locations = c.getString(c.getColumnIndex(WidgetTable.LOCATION_INFO))?:""
 
             colors = c.getString(c.getColumnIndex(WidgetTable.COLOR_INFO))?:""
         }
 
+        private fun <T> Array<T>.at(index: Int): T {
+            return this[index.range(0, this.size - 1)]
+        }
+
+        private fun Int.range(min: Int, max: Int): Int {
+            if (this < min) {
+                return min
+            }
+            if (this > max) {
+                return max
+            }
+            return this
+        }
+
     }
-
-
 
 }

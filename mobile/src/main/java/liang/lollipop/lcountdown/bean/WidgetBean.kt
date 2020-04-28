@@ -129,7 +129,7 @@ class WidgetBean : BaseBean() {
      * 如果为 true，那么表示倒计时只计算
      * 小时以下的倒计时，忽略日期
      */
-    var inOneDay = false
+    var repeatType = RepeatType.None
 
     /**
      * 名称的位置
@@ -202,6 +202,14 @@ class WidgetBean : BaseBean() {
     var inscriptionColor = Color.WHITE
 
     /**
+     * 是否单日计时
+     */
+    val inOneDay: Boolean
+        get() {
+            return repeatType == RepeatType.Day
+        }
+
+    /**
      * 位置信息的序列化
      */
     var locations: String
@@ -228,9 +236,9 @@ class WidgetBean : BaseBean() {
      */
     fun getTimerInfo(): CountdownBean {
         return if (noCountdown) {
-            CountdownUtil.timer(endTime, inOneDay)
+            CountdownUtil.timer(endTime, repeatType)
         } else {
-            CountdownUtil.countdown(endTime, inOneDay)
+            CountdownUtil.countdown(endTime, repeatType)
         }
     }
 
@@ -268,7 +276,7 @@ class WidgetBean : BaseBean() {
         this.timeFontSize = new.timeFontSize
         this.signFontSize = new.signFontSize
         this.noCountdown = new.noCountdown
-        this.inOneDay = new.inOneDay
+        this.repeatType = new.repeatType
         this.nameLocation.copy(new.nameLocation)
         this.prefixLocation.copy(new.prefixLocation)
         this.suffixLocation.copy(new.suffixLocation)

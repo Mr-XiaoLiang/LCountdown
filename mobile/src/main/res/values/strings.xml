@@ -16,6 +16,7 @@
     <string name="suffix">suffix</string>
     <string name="the_end">still</string>
     <string name="day_unit">Day</string>
+    <string name="day_unit2">st</string>
     <string name="day">Day</string>
     <string name="hint_timing">The time has started. You can choose to set the name of this time</string>
     <string name="timing_name">Timing name</string>
@@ -55,7 +56,6 @@
     <string name="clear_log_message"> found %1$d logs, are you sure you want to delete them all? </string>
     <string name="clear_log_enter">delete</string>
     <string name="clear_log_end">deleted</string>
-    <string name="in_one_day">One-day</string>
 
     <string name="lollipop_email" translatable="false">lollipop8555@gmail.com</string>
     <string name="copy">copy</string>
@@ -87,4 +87,18 @@
     <string name="use">Use</string>
     <string name="clear">Clear</string>
     <string name="title_activity_time_calculator">Time calculator</string>
+    <string name="not_repeat">Not repeating</string>
+    <string name="week_repeat">Repeat weekly</string>
+    <string name="month_repeat">Repeat monthly</string>
+    <string name="day_repeat">Repeat every day</string>
+
+    <string-array name="week_name">
+        <item>SUNDAY</item>
+        <item>MONDAY</item>
+        <item>TUESDAY</item>
+        <item>WEDNESDAY</item>
+        <item>THURSDAY</item>
+        <item>FRIDAY</item>
+        <item>SATURDAY</item>
+    </string-array>
 </resources>

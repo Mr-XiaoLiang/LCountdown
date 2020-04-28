@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.widget_countdown.*
 import liang.lollipop.lbaselib.base.BaseActivity
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.bean.RepeatType
 import liang.lollipop.lcountdown.bean.WidgetBean
 import liang.lollipop.lcountdown.bean.WidgetStyle
 import liang.lollipop.lcountdown.fragment.*
@@ -287,9 +288,9 @@ class MainActivity : BaseActivity(),
         val bean = widgetBean.getTimerInfo()
         dayView.text = bean.days
         timeView.text = bean.time
-        if (widgetBean.inOneDay && dayGroup.visibility != View.GONE) {
+        if (widgetBean.repeatType == RepeatType.Day && dayGroup.visibility != View.GONE) {
             dayGroup.visibility = View.GONE
-        } else if (!widgetBean.inOneDay && dayGroup.visibility != View.VISIBLE) {
+        } else if (widgetBean.repeatType != RepeatType.Day && dayGroup.visibility != View.VISIBLE) {
             dayGroup.visibility = View.VISIBLE
         }
     }
@@ -338,8 +339,8 @@ class MainActivity : BaseActivity(),
         countdown()
     }
 
-    override fun onOneDayTypeChange(oneDay: Boolean) {
-        widgetBean.inOneDay = oneDay
+    override fun onRepeatTypeChange(repeatType: RepeatType) {
+        widgetBean.repeatType = repeatType
         countdown()
     }
 

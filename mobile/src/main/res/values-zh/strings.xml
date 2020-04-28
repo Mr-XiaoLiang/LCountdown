@@ -17,6 +17,7 @@
     <string name="suffix">后缀</string>
     <string name="the_end">还剩</string>
     <string name="day_unit">天</string>
+    <string name="day_unit2">日</string>
     <string name="day">天</string>
     <string name="hint_timing">计时已开始，您可以选择设置本次计时的名字</string>
     <string name="timing_name">计时名</string>
@@ -56,7 +57,6 @@
     <string name="clear_log_message">找到了%1$d个日志，确定要全部删除吗？</string>
     <string name="clear_log_enter">删除</string>
     <string name="clear_log_end">已删除</string>
-    <string name="in_one_day">单日计时</string>
 
     <string name="copy">复制</string>
     <string name="copy_completed">复制完成</string>
@@ -87,4 +87,18 @@
     <string name="use">使用</string>
     <string name="clear">清除</string>
     <string name="title_activity_time_calculator">时间计算器</string>
+    <string name="not_repeat">不重复</string>
+    <string name="week_repeat">每周重复</string>
+    <string name="month_repeat">每月重复</string>
+    <string name="day_repeat">每天重复</string>
+
+    <string-array name="week_name">
+        <item>星期日</item>
+        <item>星期一</item>
+        <item>星期二</item>
+        <item>星期三</item>
+        <item>星期四</item>
+        <item>星期五</item>
+        <item>星期六</item>
+    </string-array>
 </resources>

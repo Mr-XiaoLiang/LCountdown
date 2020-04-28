@@ -98,14 +98,53 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/no_countdown"/>
-                <CheckBox
-                    android:id="@+id/oneDayCheckBox"
-                    android:textSize="12sp"
-                    android:textColor="@color/inputHintColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/in_one_day"/>
             </com.google.android.flexbox.FlexboxLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:id="@+id/repeatGroup">
+                    <RadioButton
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/notRepeatBtn"
+                        android:text="@string/not_repeat"
+                        android:textColor="@color/inputHintColor"/>
+                    <RadioButton
+                        android:layout_marginLeft="5dp"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/dayRepeatBtn"
+                        android:text="@string/day_repeat"
+                        android:textColor="@color/inputHintColor"/>
+
+                    <RadioButton
+                        android:id="@+id/weekRepeatBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="@string/week_repeat"
+                        android:textColor="@color/inputHintColor"
+                        android:textSize="12sp" />
+
+                    <RadioButton
+                        android:layout_marginLeft="5dp"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/monthRepeatBtn"
+                        android:text="@string/month_repeat"
+                        android:textColor="@color/inputHintColor"/>
+                </RadioGroup>
+
+            </HorizontalScrollView>
 
         </LinearLayout>
 

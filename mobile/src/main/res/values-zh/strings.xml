@@ -101,4 +101,7 @@
         <item>星期五</item>
         <item>星期六</item>
     </string-array>
+
+    <string name="notifi_title_no_alert">无法开启悬浮窗</string>
+    <string name="notifi_msg_no_alert">没有悬浮窗权限，点击通知前往开启悬浮窗权限</string>
 </resources>

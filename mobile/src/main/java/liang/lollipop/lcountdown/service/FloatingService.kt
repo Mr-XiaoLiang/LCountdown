@@ -2,10 +2,7 @@ package liang.lollipop.lcountdown.service
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.Service
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -42,6 +39,9 @@ class FloatingService: Service(), ValueAnimator.AnimatorUpdateListener {
 
         //消息通知的ID
         private const val NOTIFICATION_ID = 548542
+
+        // 请求权限的pendingIntent
+        private const val PENDING_REQUEST_PERMISSION = 23333
 
     }
 
@@ -144,14 +144,35 @@ class FloatingService: Service(), ValueAnimator.AnimatorUpdateListener {
         isReady = false
     }
 
+    private fun notificationToOpenPermission() {
+        val action = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION
+        } else {
+            android.provider.Settings.ACTION_APPLICATION_SETTINGS
+        }
+        val notification = NotificationCompat.Builder(this, FOLLOWERS_CHANNEL_ID)
+                .setContentTitle(getString(R.string.notifi_title_no_alert))
+                .setContentText(getString(R.string.notifi_msg_no_alert))
+                .setLargeIcon(BitmapFactory.decodeResource(this.resources,
+                        R.mipmap.ic_launcher)) // 设置下拉列表中的图标(大图标)
+                .setAutoCancel(true)
+                .setOngoing(false)
+                .setSmallIcon(R.drawable.ic_small_logo)
+                .setFullScreenIntent(PendingIntent.getActivity(this,
+                        PENDING_REQUEST_PERMISSION,
+                        Intent(action, Uri.parse("package:$packageName")),
+                        PendingIntent.FLAG_UPDATE_CURRENT), true)
+                .build()
+        notificationManager.notify(NOTIFICATION_ID, notification)
+    }
+
     private fun addView(view: View){
         if(!isReady){
             return
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !android.provider.Settings.canDrawOverlays(this)) {
-            startActivity(Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:$packageName")))
+            notificationToOpenPermission()
             stopSelf()
             return
         }

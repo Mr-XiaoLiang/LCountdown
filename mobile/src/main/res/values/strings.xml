@@ -101,4 +101,7 @@
         <item>FRIDAY</item>
         <item>SATURDAY</item>
     </string-array>
+
+    <string name="notifi_title_no_alert">Cannot open floating window</string>
+    <string name="notifi_msg_no_alert">No floating window permission, click the notification to open the permission</string>
 </resources>

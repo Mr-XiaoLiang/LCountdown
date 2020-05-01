@@ -48,8 +48,6 @@ class FloatingViewHelper private constructor(private val windowManager: WindowMa
             val layoutParams =  v.layoutParams as WindowManager.LayoutParams
             layoutParams.x += offsetX
             layoutParams.y += offsetY
-            log("offsetX: $offsetX, offsetY: $offsetY")
-            log("layoutParams.x: ${layoutParams.x}, layoutParams.y: ${layoutParams.y}")
             updateViewLayout(view, layoutParams)
         }
     }

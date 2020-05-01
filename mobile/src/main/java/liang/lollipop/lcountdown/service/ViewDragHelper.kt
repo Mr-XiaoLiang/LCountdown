@@ -8,7 +8,6 @@ import android.view.MotionEvent
 import android.view.View
 import liang.lollipop.lcountdown.utils.log
 import kotlin.math.abs
-import kotlin.math.min
 
 /**
  * @author lollipop
@@ -33,8 +32,7 @@ class ViewDragHelper(private val view: View): View.OnTouchListener {
     }
 
     private var dragListener: ((view: View, loc: Point) -> Unit)? = null
-    private var zoomListener: ((view: View, zoom: PointF) -> Unit)? = null
-    private var updateListener: ((view: View, offsetX: Int, offsetY: Int) -> Unit)? = null
+    private var updateLocalListener: ((view: View, offsetX: Int, offsetY: Int) -> Unit)? = null
 
     private val startOffset = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, START_OFFSET_DP, view.resources.displayMetrics)
@@ -45,7 +43,6 @@ class ViewDragHelper(private val view: View): View.OnTouchListener {
     private val tempPoint = Point()
     private var allowClick = false
     private var startDrag = false
-    private var zoomMode = false
     private var dragCancel = true
 
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
@@ -67,8 +64,6 @@ class ViewDragHelper(private val view: View): View.OnTouchListener {
                 startDrag = false
                 // 事件是否取消？
                 dragCancel = false
-                // 是否落在缩放区域
-                checkZoomMode()
             }
             MotionEvent.ACTION_MOVE -> {
                 if (dragCancel) {
@@ -107,11 +102,7 @@ class ViewDragHelper(private val view: View): View.OnTouchListener {
         if (!startDrag) {
             return
         }
-        if (zoomMode) {
-            zoomView(x, y)
-        } else {
-            dragView(x, y)
-        }
+        dragView(x, y)
     }
 
     private fun dragView(x: Float, y: Float) {
@@ -126,25 +117,7 @@ class ViewDragHelper(private val view: View): View.OnTouchListener {
         moveOffset.y = moveY - realY
         lastPoint.x = x
         lastPoint.y = y
-        updateListener?.invoke(view, realX, realY)
-    }
-
-    private fun zoomView(x: Float, y: Float) {
-        // TODO
-    }
-
-    private fun checkZoomMode() {
-        val viewWidth = view.width
-        val viewHeight = view.height
-        val left = view.left
-        val top = view.top
-        val right = left + viewWidth
-        val bottom = top + viewHeight
-        val range = min(viewWidth, viewHeight) / 2
-        zoomMode = downPoint.x >= left && downPoint.x <= right
-                && downPoint.y <= bottom
-                && (downPoint.x < range + left || downPoint.x > right - range)
-                && downPoint.y > bottom - range
+        updateLocalListener?.invoke(view, realX, realY)
     }
 
     private fun MotionEvent.activeX(): Float {
@@ -155,12 +128,14 @@ class ViewDragHelper(private val view: View): View.OnTouchListener {
         return this.rawY
     }
 
-    fun onLocationUpdate(listener: ((view: View, offsetX: Int, offsetY: Int) -> Unit)?) {
-        updateListener = listener
+    fun onLocationUpdate(listener: ((view: View, offsetX: Int, offsetY: Int) -> Unit)?): ViewDragHelper {
+        updateLocalListener = listener
+        return this
     }
 
-    fun onViewDrag(listener: ((view: View, loc: Point) -> Unit)?) {
+    fun onViewDrag(listener: ((view: View, loc: Point) -> Unit)?): ViewDragHelper {
         dragListener = listener
+        return this
     }
 
 }

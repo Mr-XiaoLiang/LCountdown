@@ -43,10 +43,10 @@ class ViewDragHelper(private val view: View): View.OnTouchListener {
     private val lastPoint = PointF()
     private val downPoint = PointF()
     private val tempPoint = Point()
-    private var activePointId = -1
     private var allowClick = false
     private var startDrag = false
     private var zoomMode = false
+    private var dragCancel = true
 
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         if (v != view) {
@@ -54,8 +54,7 @@ class ViewDragHelper(private val view: View): View.OnTouchListener {
         }
         when(event?.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
-                // 保存并记录手指id
-                event.updatePointId()
+                log("ACTION_DOWN")
                 // 保存本次落点
                 downPoint.set(event.activeX(), event.activeY())
                 // 保存上次位置
@@ -66,24 +65,30 @@ class ViewDragHelper(private val view: View): View.OnTouchListener {
                 allowClick = true
                 // 尚未开始拖拽
                 startDrag = false
+                // 事件是否取消？
+                dragCancel = false
                 // 是否落在缩放区域
                 checkZoomMode()
             }
             MotionEvent.ACTION_MOVE -> {
-                log("x: ${event.x}, y: ${event.y}, activeX: ${event.activeX()}, activeY: ${event.activeY()}")
+                if (dragCancel) {
+                    return false
+                }
                 onMove(event)
             }
             MotionEvent.ACTION_UP -> {
+                if (dragCancel) {
+                    return false
+                }
                 val now = SystemClock.uptimeMillis()
                 if (allowClick && now - downTime <= SINGLE_TAP_TIME) {
                     view.performClick()
                 }
             }
-//            MotionEvent.ACTION_POINTER_UP -> {
-//                if (event.updatePointId()) {
-//                    lastPoint.set(event.activeX(), event.activeY())
-//                }
-//            }
+            MotionEvent.ACTION_POINTER_DOWN, MotionEvent.ACTION_CANCEL -> {
+                dragCancel = true
+                return false
+            }
         }
         return true
     }
@@ -131,8 +136,8 @@ class ViewDragHelper(private val view: View): View.OnTouchListener {
     private fun checkZoomMode() {
         val viewWidth = view.width
         val viewHeight = view.height
-        val left = 0
-        val top = 0
+        val left = view.left
+        val top = view.top
         val right = left + viewWidth
         val bottom = top + viewHeight
         val range = min(viewWidth, viewHeight) / 2
@@ -143,32 +148,19 @@ class ViewDragHelper(private val view: View): View.OnTouchListener {
     }
 
     private fun MotionEvent.activeX(): Float {
-        val index = findPointerIndex(activePointId)
-        if (index < 0) {
-            return lastPoint.x
-        }
-        return this.getX(index)
+        return this.rawX
     }
 
     private fun MotionEvent.activeY(): Float {
-        val index = findPointerIndex(activePointId)
-        if (index < 0) {
-            return lastPoint.y
-        }
-        return this.getY(index)
-    }
-
-    private fun MotionEvent.updatePointId(): Boolean {
-        val index = findPointerIndex(activePointId)
-        if (index < 0) {
-            activePointId = getPointerId(0)
-            return true
-        }
-        return false
+        return this.rawY
     }
 
     fun onLocationUpdate(listener: ((view: View, offsetX: Int, offsetY: Int) -> Unit)?) {
         updateListener = listener
+    }
+
+    fun onViewDrag(listener: ((view: View, loc: Point) -> Unit)?) {
+        dragListener = listener
     }
 
 }

@@ -26,8 +26,8 @@ class FloatingViewHelper private constructor(private val windowManager: WindowMa
                 WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
             }
             return WindowManager.LayoutParams(
-                    WindowManager.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
                     type,
                     WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
                             or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE//不拦截焦点，否则所有界面将不可用

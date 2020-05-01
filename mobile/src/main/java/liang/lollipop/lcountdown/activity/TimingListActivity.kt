@@ -76,10 +76,6 @@ class TimingListActivity : BaseActivity() {
 
         adapter.notifyDataSetChanged()
 
-        ViewDragHelper.bind(quickTimingBtn).onLocationUpdate { view, offsetX, offsetY ->
-            view.offsetTopAndBottom(offsetY)
-            view.offsetLeftAndRight(offsetX)
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -164,24 +160,24 @@ class TimingListActivity : BaseActivity() {
 //                        REQUEST_NEW_TIMING,
 //                        Pair.create(v, QuickTimingActivity.QUIET_BTN_TRANSITION))
 
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-//                        && !android.provider.Settings.canDrawOverlays(this)) {
-//                    val action = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                        android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION
-//                    } else {
-//                        android.provider.Settings.ACTION_APPLICATION_SETTINGS
-//                    }
-//                    startActivity(Intent(action, Uri.parse("package:$packageName")))
-//                    return
-//                }
-//                FloatingViewHelper.create(this.windowManager).addView(TextView(this).apply {
-//                    text = "HelloWorld"
-//                    backgroundColor = Color.RED
-//                    setPadding(10, 10, 10, 10)
-//                    setOnClickListener {
-//                        Toast.makeText(it.context, "Toast", Toast.LENGTH_SHORT).show()
-//                    }
-//                }, FloatingViewHelper.createParams())
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                        && !android.provider.Settings.canDrawOverlays(this)) {
+                    val action = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION
+                    } else {
+                        android.provider.Settings.ACTION_APPLICATION_SETTINGS
+                    }
+                    startActivity(Intent(action, Uri.parse("package:$packageName")))
+                    return
+                }
+                FloatingViewHelper.create(this.windowManager).addView(TextView(this).apply {
+                    text = "HelloWorld"
+                    backgroundColor = Color.RED
+                    setPadding(10, 10, 10, 10)
+                    setOnClickListener {
+                        Toast.makeText(it.context, "Toast", Toast.LENGTH_SHORT).show()
+                    }
+                }, FloatingViewHelper.createParams())
             }
 
         }

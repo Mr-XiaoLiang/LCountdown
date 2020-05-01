@@ -2,10 +2,14 @@ package liang.lollipop.lcountdown.activity
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
+import android.widget.FrameLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.util.Pair
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,8 +24,11 @@ import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.adapter.TimingListAdapter
 import liang.lollipop.lcountdown.bean.TimingBean
 import liang.lollipop.lcountdown.holder.TimingHolder
+import liang.lollipop.lcountdown.service.ViewDragHelper
+import liang.lollipop.lcountdown.utils.FloatingViewHelper
 import liang.lollipop.lcountdown.utils.LogHelper
 import liang.lollipop.lcountdown.utils.TimingUtil
+import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
@@ -69,6 +76,10 @@ class TimingListActivity : BaseActivity() {
 
         adapter.notifyDataSetChanged()
 
+        ViewDragHelper.bind(quickTimingBtn).onLocationUpdate { view, offsetX, offsetY ->
+            view.offsetTopAndBottom(offsetY)
+            view.offsetLeftAndRight(offsetX)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -148,10 +159,29 @@ class TimingListActivity : BaseActivity() {
 
         when (v) {
             quickTimingBtn -> {
-                startActivityForResult(
-                        Intent(this, QuickTimingActivity::class.java),
-                        REQUEST_NEW_TIMING,
-                        Pair.create(v, QuickTimingActivity.QUIET_BTN_TRANSITION))
+//                startActivityForResult(
+//                        Intent(this, QuickTimingActivity::class.java),
+//                        REQUEST_NEW_TIMING,
+//                        Pair.create(v, QuickTimingActivity.QUIET_BTN_TRANSITION))
+
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+//                        && !android.provider.Settings.canDrawOverlays(this)) {
+//                    val action = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                        android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION
+//                    } else {
+//                        android.provider.Settings.ACTION_APPLICATION_SETTINGS
+//                    }
+//                    startActivity(Intent(action, Uri.parse("package:$packageName")))
+//                    return
+//                }
+//                FloatingViewHelper.create(this.windowManager).addView(TextView(this).apply {
+//                    text = "HelloWorld"
+//                    backgroundColor = Color.RED
+//                    setPadding(10, 10, 10, 10)
+//                    setOnClickListener {
+//                        Toast.makeText(it.context, "Toast", Toast.LENGTH_SHORT).show()
+//                    }
+//                }, FloatingViewHelper.createParams())
             }
 
         }

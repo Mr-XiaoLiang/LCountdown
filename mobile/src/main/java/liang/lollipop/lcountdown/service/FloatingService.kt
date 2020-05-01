@@ -126,6 +126,7 @@ class FloatingService: Service(), ValueAnimator.AnimatorUpdateListener {
                     Uri.parse("package:$packageName")))
             stopSelf()
             isReady = false
+            return START_REDELIVER_INTENT
         }
 
         isReady = true

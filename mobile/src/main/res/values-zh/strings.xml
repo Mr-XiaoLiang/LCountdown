@@ -109,4 +109,5 @@
 
     <string name="followers_channel_name">倒计时悬浮窗</string>
     <string name="close_floating">关闭全部</string>
+    <string name="add_floating_error">添加悬浮窗失败\n请检查权限</string>
 </resources>

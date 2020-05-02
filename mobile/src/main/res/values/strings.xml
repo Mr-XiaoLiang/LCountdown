@@ -108,6 +108,7 @@
     <string name="notifi_msg_no_alert">No floating window permission, click the notification to open the permission</string>
 
     <string name="followers_channel_name">Floating Countdown</string>
-
     <string name="close_floating">Close All</string>
+
+    <string name="add_floating_error">Failed to add floating window\nPlease check permissions</string>
 </resources>

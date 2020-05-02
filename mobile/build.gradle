@@ -10,9 +10,8 @@ android {
         applicationId "liang.lollipop.lcountdown"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 30400
-        versionName "2.4.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionCode 30500
+        versionName "2.5.0"
     }
     buildTypes {
         release {

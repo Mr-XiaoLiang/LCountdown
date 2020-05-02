@@ -211,7 +211,15 @@ class MainActivity : BaseActivity(),
                         }
                         dialog.dismiss()
                     }
-                    .setNegativeButton(R.string.clear) { dialog, _ ->
+                    .setNeutralButton(R.string.clear) { dialog, _ ->
+                        ClipboardHelper.clear(this)
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton(R.string.use_and_clear) { dialog, _ ->
+                        widgetBean.endTime = times
+                        rootGroup.post {
+                            syncData()
+                        }
                         ClipboardHelper.clear(this)
                         dialog.dismiss()
                     }

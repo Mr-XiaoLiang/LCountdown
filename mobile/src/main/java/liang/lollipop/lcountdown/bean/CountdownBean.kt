@@ -18,7 +18,11 @@ class CountdownBean {
     var secondInt = 0
 
     fun getTimerValue(): String{
-        return "$days.$hours.$minutes.$seconds"
+        return if (dayInt != 0) {
+            "$days - $hours:$minutes:$seconds"
+        } else {
+            "$hours:$minutes:$seconds"
+        }
     }
 
 }

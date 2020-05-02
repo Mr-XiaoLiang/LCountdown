@@ -19,6 +19,7 @@ import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.adapter.TimingListAdapter
 import liang.lollipop.lcountdown.bean.TimingBean
 import liang.lollipop.lcountdown.holder.TimingHolder
+import liang.lollipop.lcountdown.service.FloatingService
 import liang.lollipop.lcountdown.utils.LogHelper
 import liang.lollipop.lcountdown.utils.TimingUtil
 import org.jetbrains.anko.doAsync
@@ -67,7 +68,6 @@ class TimingListActivity : BaseActivity() {
         recyclerView.adapter = adapter
 
         adapter.notifyDataSetChanged()
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -151,7 +151,6 @@ class TimingListActivity : BaseActivity() {
                         Intent(this, QuickTimingActivity::class.java),
                         REQUEST_NEW_TIMING,
                         androidx.core.util.Pair.create(v, QuickTimingActivity.QUIET_BTN_TRANSITION))
-//                FloatingService.start(this)
             }
 
         }
@@ -216,12 +215,20 @@ class TimingListActivity : BaseActivity() {
             return
         }
 
-        if (holder is TimingHolder && holder.stopBtn == v) {
+        if (holder is TimingHolder) {
+            when (v) {
+                holder.stopBtn -> {
+                    val bean = dataList[holder.adapterPosition]
+                    timingUtil.stopTiming(bean.id).selectOne(bean)
+                    adapter.notifyItemChanged(holder.adapterPosition)
+                    FloatingService.start(this, bean, true)
+                }
 
-            val bean = dataList[holder.adapterPosition]
-            timingUtil.stopTiming(bean.id).selectOne(bean)
-            adapter.notifyItemChanged(holder.adapterPosition)
-
+                holder.floatingBtn -> {
+                    val bean = dataList[holder.adapterPosition]
+                    FloatingService.start(this, bean, false)
+                }
+            }
         }
 
     }

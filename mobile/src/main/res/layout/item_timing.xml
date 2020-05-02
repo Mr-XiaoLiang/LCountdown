@@ -13,6 +13,7 @@
         android:layout_height="0px"
         android:minHeight="100dp"
         android:src="#0F00"
+        android:alpha="0.5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"

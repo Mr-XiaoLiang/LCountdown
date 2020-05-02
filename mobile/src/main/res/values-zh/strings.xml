@@ -86,6 +86,7 @@
 
     <string name="found_copy_times">发现剪切板中的时间点，是否使用?</string>
     <string name="use">使用</string>
+    <string name="use_and_clear">使用并清理</string>
     <string name="clear">清除</string>
     <string name="title_activity_time_calculator">时间计算器</string>
     <string name="not_repeat">不重复</string>
@@ -105,4 +106,7 @@
 
     <string name="notifi_title_no_alert">无法开启悬浮窗</string>
     <string name="notifi_msg_no_alert">没有悬浮窗权限，点击通知前往开启悬浮窗权限</string>
+
+    <string name="followers_channel_name">倒计时悬浮窗</string>
+    <string name="close_floating">关闭全部</string>
 </resources>

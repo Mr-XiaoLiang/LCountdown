@@ -57,6 +57,9 @@ class FloatingViewHelper private constructor(private val windowManager: WindowMa
     }
 
     override fun removeView(view: View) {
+        if (view.parent == null) {
+            return
+        }
         windowManager.removeView(view)
     }
 

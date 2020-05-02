@@ -6,4 +6,6 @@
 
     <dimen name="peekHeight">48dp</dimen>
 
+    <dimen name="floating_corners">10dp</dimen>
+
 </resources>

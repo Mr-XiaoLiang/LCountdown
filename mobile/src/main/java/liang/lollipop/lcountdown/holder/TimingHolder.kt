@@ -1,5 +1,6 @@
 package liang.lollipop.lcountdown.holder
 
+import android.app.AlertDialog
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -12,10 +13,7 @@ import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.bean.CountdownBean
 import liang.lollipop.lcountdown.bean.TimingBean
 import liang.lollipop.lcountdown.drawable.LinearGradientDrawable
-import liang.lollipop.lcountdown.utils.CountdownUtil
-import liang.lollipop.lcountdown.utils.createTask
-import liang.lollipop.lcountdown.utils.onUIDelay
-import liang.lollipop.lcountdown.utils.removeTask
+import liang.lollipop.lcountdown.utils.*
 import org.jetbrains.anko.textColor
 import java.text.SimpleDateFormat
 import java.util.*
@@ -42,7 +40,7 @@ class TimingHolder(itemView: View) : BaseHolder<TimingBean>(itemView) {
     private val endTimeView: TextView = find(R.id.endTimeView)
 
     // 开启悬浮窗的按钮
-    private val floatingBtn: ImageView = find(R.id.floatingBtn)
+    val floatingBtn: ImageView = find(R.id.floatingBtn)
 
     //头部的颜色
     private val headColorDrawable = LinearGradientDrawable()
@@ -72,8 +70,22 @@ class TimingHolder(itemView: View) : BaseHolder<TimingBean>(itemView) {
         headColorView.setImageDrawable(headColorDrawable)
 
         stopBtn.setOnClickListener(this)
+        floatingBtn.setOnClickListener(this)
 
         canSwipe = true
+
+        itemView.setOnLongClickListener { view ->
+            lastBean?.let { bean ->
+                ClipboardHelper.put(view.context, ClipboardHelper.encodeTimestamp(bean.startTime))
+                AlertDialog.Builder(view.context).setTitle(R.string.title_copy_times)
+                        .setMessage(R.string.msg_copy_times)
+                        .setPositiveButton(R.string.understood) { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .show()
+            }
+            true
+        }
     }
 
     companion object {
@@ -126,14 +138,12 @@ class TimingHolder(itemView: View) : BaseHolder<TimingBean>(itemView) {
         }
 
         stopBtn.visibility = btnVisibility
-        floatingBtn.visibility = btnVisibility
+        floatingBtn.isEnabled = btnVisibility == View.VISIBLE
 
-        if (btnVisibility == View.VISIBLE) {
-            floatingBtn.rotation = if (bean.isCountdown) {
-                0F
-            } else {
-                -90F
-            }
+        floatingBtn.rotation = if (bean.isCountdown) {
+            0F
+        } else {
+            -90F
         }
 
     }

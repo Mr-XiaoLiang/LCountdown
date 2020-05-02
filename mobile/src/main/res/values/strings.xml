@@ -86,6 +86,7 @@
 
     <string name="found_copy_times">Found the time point in the clipboard, use it?</string>
     <string name="use">Use</string>
+    <string name="use_and_clear">Use and clear</string>
     <string name="clear">Clear</string>
     <string name="title_activity_time_calculator">Time calculator</string>
     <string name="not_repeat">Not repeating</string>
@@ -105,4 +106,8 @@
 
     <string name="notifi_title_no_alert">Cannot open floating window</string>
     <string name="notifi_msg_no_alert">No floating window permission, click the notification to open the permission</string>
+
+    <string name="followers_channel_name">Floating Countdown</string>
+
+    <string name="close_floating">Close All</string>
 </resources>

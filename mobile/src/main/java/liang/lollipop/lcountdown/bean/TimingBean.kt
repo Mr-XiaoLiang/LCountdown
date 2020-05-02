@@ -9,9 +9,11 @@ import liang.lollipop.lcountdown.utils.StringToColorUtil
  * 计时的bean
  * @author Lollipop
  */
-class TimingBean constructor(var id: Int = 0): BaseBean() {
+class TimingBean constructor(var id: Int = 0) : BaseBean() {
 
     var name = ""
+
+    var isCountdown = false
 
     var startTime = 0L
 
@@ -23,9 +25,12 @@ class TimingBean constructor(var id: Int = 0): BaseBean() {
 
     private var lastColor = getBeanColor()
 
-    private fun getBeanColor(): Int{
-
-        val value = if(TextUtils.isEmpty(name)){ "$startTime" }else{ name }
+    private fun getBeanColor(): Int {
+        val value = if (TextUtils.isEmpty(name)) {
+            "$startTime"
+        } else {
+            name
+        }
         return StringToColorUtil.format(value)
 
     }
@@ -33,7 +38,7 @@ class TimingBean constructor(var id: Int = 0): BaseBean() {
     val color: Int
         get() {
 
-            if(name != lastName || lastStartTime != startTime){
+            if (name != lastName || lastStartTime != startTime) {
                 lastColor = getBeanColor()
             }
 
@@ -41,27 +46,27 @@ class TimingBean constructor(var id: Int = 0): BaseBean() {
         }
 
     val invertedColor: Int
-         get() {
+        get() {
 
-             if(name != lastName || lastStartTime != startTime){
-                 lastColor = getBeanColor()
+            if (name != lastName || lastStartTime != startTime) {
+                lastColor = getBeanColor()
 
-             }
+            }
 
-             val gray = getGray(lastColor).inverted()
+            val gray = getGray(lastColor).inverted()
 
-             return Color.rgb(gray,gray,gray)
+            return Color.rgb(gray, gray, gray)
 
-         }
+        }
 
-    private fun Int.inverted(): Int{
+    private fun Int.inverted(): Int {
         val color = 255 - this
 
-        if (color in 65..127){
+        if (color in 65..127) {
             return color - 64
         }
 
-        if (color in 128..191){
+        if (color in 128..191) {
             return color + 64
         }
 

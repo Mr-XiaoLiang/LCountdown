@@ -21,7 +21,8 @@
     <string name="day">天</string>
     <string name="hint_timing">计时已开始，您可以选择设置本次计时的名字</string>
     <string name="timing_name">计时名</string>
-    <string name="quiet">开始</string>
+    <string name="timing">计时</string>
+    <string name="countdown">倒计时</string>
     <string name="title_activity_timing_list">计时器</string>
     <string name="now">现在</string>
     <string name="stop_timing">停止计时</string>

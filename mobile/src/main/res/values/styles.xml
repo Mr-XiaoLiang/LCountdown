@@ -84,6 +84,7 @@
 
     <style name="textButton" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:textColor">@color/btn_text_color</item>
+        <item name="iconColor">@color/btn_text_color</item>
     </style>
 
 </resources>

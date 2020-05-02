@@ -20,5 +20,6 @@
     <color name="expandBtnDefault">#525252</color>
 
     <color name="timerBtnBackground">#21A398</color>
+    <color name="countdownBtnBackground">#9F3B5E</color>
 
 </resources>

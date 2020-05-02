@@ -20,7 +20,8 @@
     <string name="day">Day</string>
     <string name="hint_timing">The time has started. You can choose to set the name of this time</string>
     <string name="timing_name">Timing name</string>
-    <string name="quiet">Start</string>
+    <string name="timing">Timing</string>
+    <string name="countdown">Countdown</string>
     <string name="title_activity_timing_list">Timer</string>
     <string name="now">Now</string>
     <string name="stop_timing">Stop timing</string>

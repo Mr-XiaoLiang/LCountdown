@@ -20,7 +20,6 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import com.google.android.flexbox.FlexboxLayout
 import liang.lollipop.lbaselib.base.SimpleHandler
-import liang.lollipop.lbaselib.util.TaskUtils
 import liang.lollipop.lbaselib.util.TintUtil
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.bean.IconBean
@@ -28,6 +27,8 @@ import liang.lollipop.lcountdown.bean.WidgetBean
 import liang.lollipop.lcountdown.holder.IconHolder
 import liang.lollipop.lcountdown.utils.CountdownUtil
 import liang.lollipop.lcountdown.utils.WidgetDBUtil
+import liang.lollipop.lcountdown.utils.doAsync
+import liang.lollipop.lcountdown.utils.onUI
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.abs
@@ -292,36 +293,27 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
             return
         }
         packageNames.add(pkgName)
-        TaskUtils.addUITask(object :TaskUtils.UICallback<IconBean,Bundle>{
-            override fun onSuccess(result: IconBean) {
 
-                iconBeanList.add(result)
+        doAsync {
+            val iconId = bundle.getInt(NotificationService.ARG_ICON, 0)
+            if(iconId == 0){
+                throw RuntimeException("iconId == 0")
+            }
+            val pkgContext = createPackageContext(pkgName, Context.CONTEXT_IGNORE_SECURITY)
+            val icon = TintUtil.tintDrawable(pkgContext,iconId).setColor(ICON_COLOR).mutate().tint()
+            val iconBean = IconBean(pkgName,icon)
+            onUI {
+                iconBeanList.add(iconBean)
                 val holder: IconHolder = if (waitHolders.size > 0) {
                     waitHolders.removeAt(0)
                 } else {
                     IconHolder.getInstance(inflater, iconGroup)
                 }
                 holder.addTo(iconGroup)
-                holder.onBind(result)
+                holder.onBind(iconBean)
                 shownHolders.add(holder)
             }
-
-            override fun onError(e: Exception, code: Int, msg: String) {
-                e.printStackTrace()
-            }
-
-            override fun onBackground(args: Bundle?): IconBean {
-                val iconId = args?.getInt(NotificationService.ARG_ICON, 0)?:0
-                if(iconId == 0){
-                    throw RuntimeException("iconId == 0")
-                }
-                val pkgContext = createPackageContext(pkgName, Context.CONTEXT_IGNORE_SECURITY)
-                val icon = TintUtil.tintDrawable(pkgContext,iconId).setColor(ICON_COLOR).mutate().tint()
-                return IconBean(pkgName,icon)
-            }
-
-        },bundle)
-
+        }
     }
 
     private fun removeIcon(bundle: Bundle?){

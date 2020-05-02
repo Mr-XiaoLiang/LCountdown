@@ -16,7 +16,7 @@ class TimingDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
     companion object {
 
         private const val DB_NAME = "TimingDatabase"
-        private const val VERSION = 1
+        private const val VERSION = 2
 
         fun read(context: Context): SqlDB {
             return SqlDB(TimingDBUtil(context), false)
@@ -33,7 +33,11 @@ class TimingDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-
+        when(oldVersion) {
+            1 -> {
+                db?.execSQL("ALTER TABLE ${TimingTable.TABLE} ADD ${TimingTable.COUNTDOWN} INTEGER DEFAULT 0")
+            }
+        }
     }
 
     private object TimingTable{
@@ -43,26 +47,30 @@ class TimingDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
         const val START_TIME = "START_TIME"
         const val END_TIME = "END_TIME"
         const val NAME = "NAME"
+        const val COUNTDOWN = "COUNTDOWN"
 
         const val SELECT_ALL_SQL = " select " +
                 " $ID , " +
                 " $END_TIME , " +
                 " $START_TIME , " +
-                " $NAME " +
+                " $NAME , " +
+                " $COUNTDOWN " +
                 " from $TABLE order by $END_TIME ASC , $ID DESC ;"
 
         const val SELECT_ONE_SQL = " select " +
                 " $ID , " +
                 " $END_TIME , " +
                 " $START_TIME , " +
-                " $NAME " +
+                " $NAME , " +
+                " $COUNTDOWN " +
                 " from $TABLE WHERE $ID = ? ;"
 
         const val CREATE_TABLE = "create table $TABLE ( " +
                 " $NAME VARCHAR , " +
                 " $ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 " $END_TIME INTEGER , " +
-                " $START_TIME INTEGER " +
+                " $START_TIME INTEGER , " +
+                " $COUNTDOWN INTEGER " +
                 " );"
 
         const val DROP_TABLE = " DROP TABLE $TABLE "
@@ -204,6 +212,7 @@ class TimingDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             put(TimingTable.NAME, timingBean.name)
             put(TimingTable.END_TIME, timingBean.endTime)
             put(TimingTable.START_TIME, timingBean.startTime)
+            put(TimingTable.COUNTDOWN, timingBean.isCountdown.toInt())
         }
 
         private fun TimingBean.putData(c: Cursor){
@@ -211,6 +220,15 @@ class TimingDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             name = c.getString(c.getColumnIndex(TimingTable.NAME))?:""
             endTime = c.getLong(c.getColumnIndex(TimingTable.END_TIME))
             startTime = c.getLong(c.getColumnIndex(TimingTable.START_TIME))
+            isCountdown = c.getInt(c.getColumnIndex(TimingTable.COUNTDOWN)).toBoolean()
+        }
+
+        private fun Int.toBoolean(): Boolean {
+            return this > 0
+        }
+
+        private fun Boolean.toInt(): Int {
+            return if (this) { 1 } else { 0 }
         }
 
     }

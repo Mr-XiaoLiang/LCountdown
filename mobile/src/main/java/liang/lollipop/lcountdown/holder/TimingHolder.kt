@@ -1,7 +1,5 @@
 package liang.lollipop.lcountdown.holder
 
-import android.os.Handler
-import android.os.Looper
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +13,9 @@ import liang.lollipop.lcountdown.bean.CountdownBean
 import liang.lollipop.lcountdown.bean.TimingBean
 import liang.lollipop.lcountdown.drawable.LinearGradientDrawable
 import liang.lollipop.lcountdown.utils.CountdownUtil
+import liang.lollipop.lcountdown.utils.createTask
+import liang.lollipop.lcountdown.utils.onUIDelay
+import liang.lollipop.lcountdown.utils.removeTask
 import org.jetbrains.anko.textColor
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,18 +24,26 @@ import java.util.*
  * 计时的显示Holder
  * @author Lollipop
  */
-class TimingHolder(itemView: View): BaseHolder<TimingBean>(itemView) {
+class TimingHolder(itemView: View) : BaseHolder<TimingBean>(itemView) {
 
     //标题文字
     private val titleIconView: TextView = find(R.id.titleIconView)
+
     //标题View
     private val timingTitleView: TextView = find(R.id.timingTitleView)
+
     //开始时间
     private val startTimeView: TextView = find(R.id.startTimeView)
+
     //时长
     private val timeLengthView: TextView = find(R.id.timeLengthView)
+
     //结束时间
     private val endTimeView: TextView = find(R.id.endTimeView)
+
+    // 开启悬浮窗的按钮
+    private val floatingBtn: ImageView = find(R.id.floatingBtn)
+
     //头部的颜色
     private val headColorDrawable = LinearGradientDrawable()
 
@@ -44,20 +53,11 @@ class TimingHolder(itemView: View): BaseHolder<TimingBean>(itemView) {
     private var lastBean: TimingBean? = null
 
     //计时显示的Handler
-    private val timerHandler = Handler(Looper.getMainLooper(), Handler.Callback { msg ->
-        when(msg?.what){
-
-            WHAT_TIMER_NEXT -> {
-
-                onTimeChange()
-
-                true
-            }
-
-            else -> false
-
+    private val timerTask = createTask {
+        if (itemView.isAttachedToWindow) {
+            onTimeChange()
         }
-    })
+    }
 
     //时间格式化
     private val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS", Locale.ENGLISH).apply {
@@ -78,11 +78,9 @@ class TimingHolder(itemView: View): BaseHolder<TimingBean>(itemView) {
 
     companion object {
 
-        fun new(layoutInflater: LayoutInflater,parent: ViewGroup): TimingHolder{
-            return TimingHolder(layoutInflater.inflate(R.layout.item_timing,parent,false))
+        fun new(layoutInflater: LayoutInflater, parent: ViewGroup): TimingHolder {
+            return TimingHolder(layoutInflater.inflate(R.layout.item_timing, parent, false))
         }
-
-        private const val WHAT_TIMER_NEXT = 345
 
     }
 
@@ -90,63 +88,87 @@ class TimingHolder(itemView: View): BaseHolder<TimingBean>(itemView) {
 
         lastBean = bean
 
-        headColorDrawable.onColorChange(bean.color,0x00FFFFFF)
+        headColorDrawable.onColorChange(bean.color, 0x00FFFFFF)
         headColorDrawable.callUpdate()
 
         titleIconView.text = bean.name.let {
-            if(TextUtils.isEmpty(it)){
+            if (TextUtils.isEmpty(it)) {
                 ""
-            }else{
-                it.substring(0,1).toUpperCase()
+            } else {
+                it.substring(0, 1).toUpperCase(Locale.getDefault())
             }
         }
         titleIconView.textColor = bean.invertedColor
 
         timingTitleView.text = bean.name
-        timingTitleView.visibility = if(TextUtils.isEmpty(bean.name)){View.GONE}else{View.VISIBLE}
+        timingTitleView.visibility = if (TextUtils.isEmpty(bean.name)) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
 
         startTimeView.text = simpleDateFormat.format(Date(bean.startTime))
 
-        endTimeView.text = bean.endTime.let { if(it == 0L){
-            context.getString(R.string.now)
-        }else{
-            simpleDateFormat.format(Date(bean.endTime))
-        } }
+        endTimeView.text = bean.endTime.let {
+            if (it == 0L) {
+                context.getString(R.string.now)
+            } else {
+                simpleDateFormat.format(Date(bean.endTime))
+            }
+        }
 
         onTimeChange()
 
-        stopBtn.visibility = if(bean.endTime == 0L){ View.VISIBLE }else{ View.GONE }
+        val btnVisibility = if (bean.endTime == 0L) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
 
-    }
+        stopBtn.visibility = btnVisibility
+        floatingBtn.visibility = btnVisibility
 
-    private fun onTimeChange(){
-
-        if(lastBean != null){
-
-            val startTime = lastBean?.startTime?:0L
-            val endTime = lastBean?.endTime?:0L
-
-            timeLengthView.text = CountdownUtil.timer(
-                    countdownBean,
-                    startTime,
-                    if(endTime == 0L){
-                        System.currentTimeMillis()
-                    }else{
-                        endTime
-                    }
-            ).getTimerValue()
-
-            timerHandler.removeMessages(WHAT_TIMER_NEXT)
-            if(lastBean?.endTime == 0L){
-                timerHandler.sendEmptyMessageDelayed(WHAT_TIMER_NEXT,1000)
+        if (btnVisibility == View.VISIBLE) {
+            floatingBtn.rotation = if (bean.isCountdown) {
+                0F
+            } else {
+                -90F
             }
-
         }
 
     }
 
-    fun stopTiming(){
-        timerHandler.removeMessages(WHAT_TIMER_NEXT)
+    private fun onTimeChange() {
+
+        val bean = lastBean ?: return
+
+        var startTime = bean.startTime
+        var endTime = bean.endTime
+        if (endTime == 0L) {
+            endTime = System.currentTimeMillis()
+        }
+
+        if (bean.isCountdown) {
+            val temp = startTime
+            startTime = endTime
+            endTime = temp
+        }
+
+        timeLengthView.text = CountdownUtil.timer(
+                countdownBean,
+                startTime,
+                endTime
+        ).getTimerValue()
+
+        removeTask(timerTask)
+        if (lastBean?.endTime == 0L) {
+            onUIDelay(1000, timerTask)
+        }
+
+    }
+
+    fun stopTiming() {
+        removeTask(timerTask)
     }
 
 }

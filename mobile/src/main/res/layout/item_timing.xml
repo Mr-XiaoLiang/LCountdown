@@ -7,6 +7,17 @@
     android:minHeight="80dp"
     android:elevation="2dp">
 
+    <ImageView
+        android:id="@+id/headColorView"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:minHeight="100dp"
+        android:src="#0F00"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
     <TextView
         android:id="@+id/titleIconView"
         android:layout_width="wrap_content"
@@ -108,14 +119,15 @@
         app:layout_constraintRight_toRightOf="parent" />
 
     <ImageView
-        android:id="@+id/headColorView"
-        android:layout_width="0px"
-        android:layout_height="0px"
-        android:minHeight="100dp"
-        android:src="#0F00"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        android:id="@+id/floatingBtn"
+        android:padding="12dp"
+        android:scaleType="centerInside"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:tint="@color/btn_text_color"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_small_logo"
+        app:layout_constraintBottom_toTopOf="@id/stopBtn"
+        app:layout_constraintRight_toRightOf="@id/stopBtn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

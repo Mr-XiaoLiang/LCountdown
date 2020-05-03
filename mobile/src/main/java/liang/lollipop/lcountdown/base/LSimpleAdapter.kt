@@ -1,4 +1,4 @@
-package liang.lollipop.lbaselib.base
+package liang.lollipop.lcountdown.base
 
 import androidx.recyclerview.widget.RecyclerView
 
@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
  * @author Lollipop
  * 简化后的适配器组件
  */
-abstract class LSimpleAdapter<H:BaseHolder<B>, B:BaseBean>(protected val data:List<B>): RecyclerView.Adapter<H>() {
+abstract class LSimpleAdapter<H: BaseHolder<B>, B: BaseBean>(private val data:List<B>): RecyclerView.Adapter<H>() {
 
     override fun onBindViewHolder(holder: H, position: Int) {
         holder.onBind(data[position])

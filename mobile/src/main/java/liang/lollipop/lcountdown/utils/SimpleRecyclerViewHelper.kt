@@ -1,4 +1,4 @@
-package liang.lollipop.lbaselib.util
+package liang.lollipop.lcountdown.utils
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +12,7 @@ import java.util.*
  *
  * 简单的RV帮助工具
  */
-class SimpleRecyclerViewHelper<E>(option: HelperBuilder<E>): LItemTouchCallback.OnItemTouchCallbackListener{
+class SimpleRecyclerViewHelper<E>(option: HelperBuilder<E>): LItemTouchCallback.OnItemTouchCallbackListener {
 
     private lateinit var adapter: RecyclerView.Adapter<*>
 
@@ -28,19 +28,8 @@ class SimpleRecyclerViewHelper<E>(option: HelperBuilder<E>): LItemTouchCallback.
 
     companion object {
 
-        fun <E> create(): HelperBuilder<E>{
+        fun <E> create(): HelperBuilder<E> {
             return HelperBuilder()
-        }
-
-        fun <E> create(
-                recyclerViewArg: RecyclerView,
-                dataListArg: List<E>,
-                callbackArg: OnRecyclerChangeCallback<E>): HelperBuilder<E>{
-            return create<E>().apply{
-                recyclerView = recyclerViewArg
-                dataList = dataListArg
-                callback = callbackArg
-            }
         }
 
     }
@@ -57,11 +46,11 @@ class SimpleRecyclerViewHelper<E>(option: HelperBuilder<E>): LItemTouchCallback.
 
         var undoValue = "undo"
 
-        fun buildToTouchHelper(): LItemTouchHelper{
-            return LItemTouchHelper.newInstance(recyclerView,buildToHelper())
+        fun buildToTouchHelper(): LItemTouchHelper {
+            return LItemTouchHelper.newInstance(recyclerView, buildToHelper())
         }
 
-        fun buildToHelper(): SimpleRecyclerViewHelper<E>{
+        fun buildToHelper(): SimpleRecyclerViewHelper<E> {
 
             if(!this::recyclerView.isInitialized){
                 throw RuntimeException("recyclerView.isInitialized = false")
@@ -101,7 +90,7 @@ class SimpleRecyclerViewHelper<E>(option: HelperBuilder<E>): LItemTouchCallback.
                     }
                     adapter.notifyItemInserted(adapterPosition)
                 }
-                .addCallback(OnSwipedHelper(bean,callback)).show()
+                .addCallback(OnSwipedHelper(bean, callback)).show()
 
     }
 
@@ -152,7 +141,7 @@ class SimpleRecyclerViewHelper<E>(option: HelperBuilder<E>): LItemTouchCallback.
 
     }
 
-    open class SimpleCallback<E>: OnRecyclerChangeCallback<E>{
+    open class SimpleCallback<E>: OnRecyclerChangeCallback<E> {
         override fun onSwiped(data: E) {
         }
 

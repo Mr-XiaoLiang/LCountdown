@@ -11,7 +11,7 @@ import liang.lollipop.lcountdown.bean.TimingBean
 /**
  * 计时的数据库操作类
  */
-class TimingDBUtil private constructor(context: Context): SQLiteOpenHelper(context,DB_NAME,null, VERSION)  {
+class TimingDBUtil private constructor(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, VERSION) {
 
     companion object {
 
@@ -33,14 +33,18 @@ class TimingDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        when(oldVersion) {
+        if (oldVersion >= newVersion) {
+            return
+        }
+        when (oldVersion) {
             1 -> {
                 db?.execSQL("ALTER TABLE ${TimingTable.TABLE} ADD ${TimingTable.COUNTDOWN} INTEGER DEFAULT 0")
             }
         }
+        onUpgrade(db, oldVersion + 1, newVersion)
     }
 
-    private object TimingTable{
+    private object TimingTable {
 
         const val TABLE = "TIMING_TABLE"
         const val ID = "TIMING_ID"
@@ -102,7 +106,7 @@ class TimingDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             return this
         }
 
-        fun getAllId(idList: ArrayList<Int>): SqlDB{
+        fun getAllId(idList: ArrayList<Int>): SqlDB {
 
             idList.clear()
             val sql = getSqLiteDatabase()
@@ -115,7 +119,7 @@ class TimingDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             return this
         }
 
-        fun get(bean: TimingBean): SqlDB{
+        fun get(bean: TimingBean): SqlDB {
 
             val sql = getSqLiteDatabase()
             val c = sql.rawQuery(TimingTable.SELECT_ONE_SQL, arrayOf("${bean.id}"))
@@ -137,7 +141,7 @@ class TimingDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             return this
         }
 
-        fun add(bean: TimingBean): SqlDB{
+        fun add(bean: TimingBean): SqlDB {
             val sql = getSqLiteDatabase()
             val values = ContentValues()
             values.putData(bean)
@@ -145,15 +149,15 @@ class TimingDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             sql.insert(TimingTable.TABLE, "", values)
 
             bean.id = 0
-            val cursor = sql.rawQuery(TimingTable.SELECT_LAST_ID,null)?:return this
-            if(cursor.moveToFirst()){
+            val cursor = sql.rawQuery(TimingTable.SELECT_LAST_ID, null) ?: return this
+            if (cursor.moveToFirst()) {
                 bean.id = cursor.getInt(0)
             }
             cursor.close()
             return this
         }
 
-        fun update(timingBean: TimingBean): SqlDB{
+        fun update(timingBean: TimingBean): SqlDB {
             val sql = getSqLiteDatabase()
             val values = ContentValues()
             values.putData(timingBean)
@@ -161,30 +165,30 @@ class TimingDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             return this
         }
 
-        fun updateEndTime(id: Int): SqlDB{
-            return updateEndTime(System.currentTimeMillis(),id)
+        fun updateEndTime(id: Int): SqlDB {
+            return updateEndTime(System.currentTimeMillis(), id)
         }
 
-        fun updateEndTime(endTime: Long,id: Int): SqlDB{
+        fun updateEndTime(endTime: Long, id: Int): SqlDB {
             val sql = getSqLiteDatabase()
             val values = ContentValues()
-            values.put(TimingTable.END_TIME,endTime)
+            values.put(TimingTable.END_TIME, endTime)
             sql.update(TimingTable.TABLE, values, " ${TimingTable.ID} = ? ", arrayOf("$id"))
             return this
         }
 
-        fun updateAll(list: List<TimingBean>): SqlDB{
+        fun updateAll(list: List<TimingBean>): SqlDB {
             val sql = getSqLiteDatabase()
             val values = ContentValues()
             sql.beginTransaction()
             try {
-                for(timingBean in list){
+                for (timingBean in list) {
                     values.putData(timingBean)
                     sql.update(TimingTable.TABLE, values, " ${TimingTable.ID} = ? ", arrayOf("${timingBean.id}"))
                 }
                 sql.setTransactionSuccessful()
-            }catch (e: Exception) {
-                Log.e("updateAll", e.message)
+            } catch (e: Exception) {
+                Log.e("updateAll", e.message ?: "")
             } finally {
                 sql.endTransaction()
             }
@@ -206,7 +210,7 @@ class TimingDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             return sqLiteDatabase!!
         }
 
-        private fun ContentValues.putData(timingBean: TimingBean){
+        private fun ContentValues.putData(timingBean: TimingBean) {
             clear()
             put(TimingTable.ID, timingBean.id)
             put(TimingTable.NAME, timingBean.name)
@@ -215,9 +219,9 @@ class TimingDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
             put(TimingTable.COUNTDOWN, timingBean.isCountdown.toInt())
         }
 
-        private fun TimingBean.putData(c: Cursor){
+        private fun TimingBean.putData(c: Cursor) {
             id = c.getInt(c.getColumnIndex(TimingTable.ID))
-            name = c.getString(c.getColumnIndex(TimingTable.NAME))?:""
+            name = c.getString(c.getColumnIndex(TimingTable.NAME)) ?: ""
             endTime = c.getLong(c.getColumnIndex(TimingTable.END_TIME))
             startTime = c.getLong(c.getColumnIndex(TimingTable.START_TIME))
             isCountdown = c.getInt(c.getColumnIndex(TimingTable.COUNTDOWN)).toBoolean()
@@ -228,11 +232,14 @@ class TimingDBUtil private constructor(context: Context): SQLiteOpenHelper(conte
         }
 
         private fun Boolean.toInt(): Int {
-            return if (this) { 1 } else { 0 }
+            return if (this) {
+                1
+            } else {
+                0
+            }
         }
 
     }
-
 
 
 }

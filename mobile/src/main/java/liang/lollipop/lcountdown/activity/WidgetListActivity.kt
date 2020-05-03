@@ -7,15 +7,14 @@ import android.os.Message
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.android.synthetic.main.activity_widget_list.*
 import kotlinx.android.synthetic.main.content_widget_list.*
-import liang.lollipop.lbaselib.base.BaseActivity
-import liang.lollipop.lbaselib.util.SimpleRecyclerViewHelper
+import liang.lollipop.lcountdown.base.BaseActivity
+import liang.lollipop.lcountdown.utils.SimpleRecyclerViewHelper
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.adapter.WidgetListAdapter
 import liang.lollipop.lcountdown.bean.WidgetBean
@@ -88,7 +87,7 @@ class WidgetListActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener 
             dataList = this@WidgetListActivity.widgetList
             undoValue = getString(R.string.undo)
             deleteValue = getString(R.string.deleted)
-            callback = object :SimpleRecyclerViewHelper.SimpleCallback<WidgetBean>(){
+            callback = object : SimpleRecyclerViewHelper.SimpleCallback<WidgetBean>(){
                 override fun onMove(src: WidgetBean, target: WidgetBean, srcPosition: Int, targetPosition: Int): Boolean {
                     isChangeManual = true
                     return true

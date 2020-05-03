@@ -6,18 +6,18 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.RemoteViews
-import liang.lollipop.lcountdown.widget.CountdownWidget
-import liang.lollipop.lcountdown.activity.MainActivity
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.activity.MainActivity
 import liang.lollipop.lcountdown.bean.CountdownBean
 import liang.lollipop.lcountdown.bean.WidgetBean
 import liang.lollipop.lcountdown.bean.WidgetStyle
+import liang.lollipop.lcountdown.widget.CountdownWidget
 import kotlin.math.abs
 
 object WidgetUtil {
@@ -34,6 +34,8 @@ object WidgetUtil {
         val views = RemoteViews(context.packageName, layoutId)
 
         views.updateColors(widgetBean)
+
+        views.updateImage(context, widgetBean)
 
         views.updateValues(widgetBean.getTimerInfo(), widgetBean)
 
@@ -108,6 +110,16 @@ object WidgetUtil {
         TEXT_VIEW_ID.forEach { id ->
             run(id, getColorById(id, defColor, bean))
         }
+    }
+
+    private fun RemoteViews.updateImage(context: Context, bean: WidgetBean) {
+        val image = FileUtil.getWidgetImage(context, bean.widgetId)
+        if (!image.exists()) {
+            setImageViewBitmap(R.id.backgroundImage, null)
+            return
+        }
+        val bitmap = BitmapFactory.decodeFile(image.path)
+        setImageViewBitmap(R.id.backgroundImage, bitmap)
     }
 
     private fun RemoteViews.updateColors(bean: WidgetBean) {
@@ -286,10 +298,6 @@ object WidgetUtil {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,getIdArray(context))
         context.sendBroadcast(intent)
 
-    }
-
-    private fun log(value: String) {
-        Log.d("Lollipop", "WidgetUtil: $value")
     }
 
     enum class Target(val value: Int) {

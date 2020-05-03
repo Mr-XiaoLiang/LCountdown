@@ -13,8 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import liang.lollipop.lcountdown.R
-import org.jetbrains.anko.internals.AnkoInternals
 import kotlin.math.max
 import kotlin.math.min
 
@@ -127,7 +127,7 @@ open class ExpandButton(context: Context, attr: AttributeSet?,
      */
     var textColor: Int
         set(value) = nameView.setTextColor(value)
-        @Deprecated(AnkoInternals.NO_GETTER, level = DeprecationLevel.ERROR) get() = AnkoInternals.noGetter()
+        get() = nameView.textColors.defaultColor
 
     /**
      * icon 的颜色
@@ -492,8 +492,8 @@ open class ExpandButton(context: Context, attr: AttributeSet?,
     }
 
     private class PressedImageView(context: Context, attr: AttributeSet? = null,
-                                   defStyleAttr: Int = 0, defStyleRes: Int = 0):
-            ImageView(context, attr, defStyleAttr, defStyleRes) {
+                                   defStyleAttr: Int = 0):
+            AppCompatImageView(context, attr, defStyleAttr) {
 
         private var pressedListener: ((Boolean) -> Unit)? = null
 

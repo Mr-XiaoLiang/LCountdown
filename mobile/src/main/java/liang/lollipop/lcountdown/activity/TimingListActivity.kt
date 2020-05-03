@@ -1,5 +1,7 @@
 package liang.lollipop.lcountdown.activity
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -13,30 +15,34 @@ import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_timing_list.*
 import kotlinx.android.synthetic.main.content_timing_list.*
-import liang.lollipop.lbaselib.base.BaseActivity
 import liang.lollipop.lcountdown.LApplication
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.adapter.TimingListAdapter
+import liang.lollipop.lcountdown.base.BaseActivity
+import liang.lollipop.lcountdown.bean.PhotoInfo
 import liang.lollipop.lcountdown.bean.TimingBean
+import liang.lollipop.lcountdown.fragment.CountdownImageFragment
 import liang.lollipop.lcountdown.holder.TimingHolder
 import liang.lollipop.lcountdown.service.FloatingService
-import liang.lollipop.lcountdown.utils.LogHelper
-import liang.lollipop.lcountdown.utils.TimingUtil
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
+import liang.lollipop.lcountdown.utils.*
 
 
 /**
  * 计时列表的Activity
  * @author Lollipop
  */
-class TimingListActivity : BaseActivity() {
+class TimingListActivity : BaseActivity(),
+        CountdownImageFragment.Callback{
 
     private lateinit var timingUtil: TimingUtil
 
     private val dataList = ArrayList<TimingBean>()
 
     private lateinit var adapter: TimingListAdapter
+
+    private var selectedInfo: Int = 0
+
+    private lateinit var sheetHelper: BottomSheetHelper
 
     companion object {
 
@@ -56,6 +62,15 @@ class TimingListActivity : BaseActivity() {
 
     private fun initView() {
 
+        sheetHelper = BottomSheetHelper(imagePanel)
+        sheetHelper.onStateChange {
+            if (it == BottomSheetHelper.State.COLLAPSED) {
+                selectedInfo = 0
+            }
+            updateButton(it)
+        }
+        sheetBtn.setOnClickListener(this)
+        sheetHelper.close(false)
         quickTimingBtn.setOnClickListener(this)
 
         refreshLayout.setOnRefreshListener(this)
@@ -68,6 +83,23 @@ class TimingListActivity : BaseActivity() {
         recyclerView.adapter = adapter
 
         adapter.notifyDataSetChanged()
+    }
+
+    private fun selectedItem(position: Int) {
+        selectedInfo = dataList[position].id
+        sheetHelper.expand(true)
+    }
+
+    private fun updateButton(newState: BottomSheetHelper.State) {
+        val rotation = if (BottomSheetHelper.State.EXPANDED == newState) {
+            180F
+        } else {
+            0F
+        }
+        sheetBtn.animate().let {
+            it.cancel()
+            it.rotation(rotation).start()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -153,6 +185,10 @@ class TimingListActivity : BaseActivity() {
                         androidx.core.util.Pair.create(v, QuickTimingActivity.QUIET_BTN_TRANSITION))
             }
 
+            sheetBtn -> {
+                sheetHelper.reverse()
+            }
+
         }
 
     }
@@ -164,14 +200,14 @@ class TimingListActivity : BaseActivity() {
             dataList.clear()
             timingUtil.selectAll(dataList)
 
-            uiThread {
+            onUI {
 
                 adapter.notifyDataSetChanged()
                 refreshLayout.isRefreshing = false
 
                 if (dataList.isEmpty()) {
 
-                    Snackbar.make(recyclerView, "你现在还没有计时项目", Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(recyclerView, getString(R.string.timer_empty), Snackbar.LENGTH_LONG).show()
 
                 }
             }
@@ -203,9 +239,7 @@ class TimingListActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-
         onRefresh()
-
     }
 
     override fun onItemViewClick(holder: RecyclerView.ViewHolder?, v: View) {
@@ -228,9 +262,158 @@ class TimingListActivity : BaseActivity() {
                     val bean = dataList[holder.adapterPosition]
                     FloatingService.start(this, bean, false)
                 }
+                holder.itemView -> {
+                    selectedItem(holder.adapterPosition)
+                }
             }
         }
 
+    }
+
+    private class BottomSheetHelper(private val sheetView: View) :
+            ValueAnimator.AnimatorUpdateListener,
+            Animator.AnimatorListener {
+
+        private val valueAnimator = ValueAnimator().apply {
+            addUpdateListener(this@BottomSheetHelper)
+            addListener(this@BottomSheetHelper)
+        }
+
+        companion object {
+            private const val MIN = 0F
+            private const val MAX = 1F
+            private const val DURATION = 300L
+        }
+
+        enum class State {
+            NOTHING,
+            EXPANDED,
+            COLLAPSED,
+            SCROLLING
+        }
+
+        private var progress = 0F
+        var state = State.NOTHING
+            private set
+        private var isOpen = false
+
+        private var stateListener: ((State) -> Unit)? = null
+
+        fun onStateChange(listener: (State) -> Unit) {
+            this.stateListener = listener
+        }
+
+        private fun changeState(s: State) {
+            if (s != state) {
+                state = s
+                stateListener?.invoke(s)
+            }
+        }
+
+        fun close(isAnimator: Boolean = true) {
+            isOpen = false
+            post {
+                if (!isAnimator) {
+                    changeState(State.COLLAPSED)
+                    onProgressChange(MIN)
+                } else {
+                    changeState(State.SCROLLING)
+                    valueAnimator.cancel()
+                    valueAnimator.setFloatValues(progress, MIN)
+                    valueAnimator.duration = ((progress - MIN) / (MAX - MIN) * DURATION).toLong()
+                    valueAnimator.start()
+                }
+            }
+        }
+
+        fun expand(isAnimator: Boolean = true) {
+            isOpen = true
+            post {
+                if (!isAnimator) {
+                    changeState(State.EXPANDED)
+                    onProgressChange(MAX)
+                } else {
+                    changeState(State.SCROLLING)
+                    valueAnimator.cancel()
+                    valueAnimator.setFloatValues(progress, MAX)
+                    valueAnimator.duration = ((MAX - progress) / (MAX - MIN) * DURATION).toLong()
+                    valueAnimator.start()
+                }
+            }
+        }
+
+        fun reverse(isAnimator: Boolean = true) {
+            if (isOpen) {
+                close(isAnimator)
+            } else {
+                expand(isAnimator)
+            }
+        }
+
+        fun end() {
+            if (valueAnimator.isRunning) {
+                valueAnimator.end()
+            }
+        }
+
+        private fun post(run: () -> Unit) {
+            sheetView.post(run)
+        }
+
+        private fun onProgressChange(value: Float) {
+            progress = value
+            val offsetMax = sheetView.height
+            sheetView.translationY = offsetMax * (1 - value)
+        }
+
+        override fun onAnimationUpdate(animation: ValueAnimator?) {
+            if (animation == valueAnimator) {
+                onProgressChange(animation.animatedValue as Float)
+            }
+        }
+
+        override fun onAnimationRepeat(animation: Animator?) {}
+
+        override fun onAnimationEnd(animation: Animator?) {
+            if (animation == valueAnimator) {
+                changeState(if (isOpen) {
+                    State.EXPANDED
+                } else {
+                    State.COLLAPSED
+                })
+            }
+        }
+
+        override fun onAnimationCancel(animation: Animator?) {  }
+
+        override fun onAnimationStart(animation: Animator?) {
+            if (animation == valueAnimator) {
+                changeState(State.SCROLLING)
+            }
+        }
+    }
+
+    override fun onImageSelected(info: PhotoInfo) {
+        if (selectedInfo == 0) {
+            sheetHelper.close(true)
+            return
+        }
+        doAsync {
+            val selected = selectedInfo
+            FileUtil.copyTimer(this, info.path, selected)
+            var position = -1
+            for (index in dataList.indices) {
+                if (dataList[index].id == selected) {
+                    position = index
+                }
+            }
+            if (position >= 0) {
+                onUI {
+                    adapter.notifyItemChanged(position)
+                }
+            }
+        }
+        sheetHelper.close(true)
     }
 
 }

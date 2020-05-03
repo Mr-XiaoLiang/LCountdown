@@ -1,9 +1,9 @@
-package liang.lollipop.lbaselib.util
+package liang.lollipop.lcountdown.utils
 
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import liang.lollipop.lbaselib.base.BaseHolder
+import liang.lollipop.lcountdown.base.BaseHolder
 
 /**
  * Created by lollipop on 2018/1/2.
@@ -12,7 +12,7 @@ import liang.lollipop.lbaselib.base.BaseHolder
  * 以及点击事件
  *
  */
-class LItemTouchHelper(private val callback:LItemTouchCallback): ItemTouchHelper(callback) {
+class LItemTouchHelper(private val callback: LItemTouchCallback): ItemTouchHelper(callback) {
 
     companion object {
 

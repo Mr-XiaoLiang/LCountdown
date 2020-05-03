@@ -4,31 +4,82 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/windowBackground"
     tools:context=".activity.TimingListActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
+        android:elevation="0px"
+        app:elevation="0px"
+        android:theme="@android:style/ThemeOverlay.Material.Dark.ActionBar"
+        android:background="@android:color/transparent">
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
+            android:elevation="0px"
+            android:background="@android:color/transparent"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
-            android:background="@color/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
-
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_timing_list" />
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="10dp"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/quickTimingBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_margin="@dimen/fab_margin"
-        app:icon="@drawable/ic_timer_black_24dp"
-        app:backgroundTint="@color/timerBtnBackground"/>
+        <include layout="@layout/content_timing_list" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/quickTimingBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_margin="6dp"
+            app:elevation="20dp"
+            app:fabSize="normal"
+            app:icon="@drawable/ic_timer_black_24dp"
+            android:src="@drawable/ic_timer_black_24dp"
+            app:backgroundTint="@color/timerBtnBackground"
+            app:iconTint="@color/fabIconColor" />
+
+        <LinearLayout
+            app:elevation="26dp"
+            android:elevation="26dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imagePanel"
+            android:background="@color/windowBackground"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/peekHeight">
+
+                <ImageView
+                    android:id="@+id/sheetBtn"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_gravity="center"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_keyboard_arrow_up_white_24dp"
+                    android:tint="@color/bottomSheetCard" />
+            </FrameLayout>
+
+            <fragment
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:name="liang.lollipop.lcountdown.fragment.CountdownImageFragment"
+                android:id="@+id/imageFragment" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -5,6 +5,12 @@
     android:layout_height="match_parent"
     android:id="@+id/widgetGroup">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:id="@+id/backgroundImage"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import liang.lollipop.lcountdown.R
-import org.jetbrains.anko.singleLine
 
 /**
  * @date: 2019-06-29 15:25

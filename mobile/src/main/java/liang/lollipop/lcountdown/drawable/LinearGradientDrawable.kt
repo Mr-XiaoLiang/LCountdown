@@ -68,7 +68,7 @@ class LinearGradientDrawable(private var orientation: Orientation = Orientation.
         positionsList.clear()
 
         val step = 1.0F / colors.size
-        for(index in 0 until colors.size){
+        for(index in colors.indices){
             val color = colors[index]
             colorList.add(color)
             positionsList.add(step*index)

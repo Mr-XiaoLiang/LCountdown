@@ -44,7 +44,7 @@ class CountdownWidget: AppWidgetProvider() {
         if(context==null || oldWidgetIds == null || newWidgetIds == null || oldWidgetIds.size != newWidgetIds.size){
             return
         }
-        for(index in 0 until oldWidgetIds.size){
+        for(index in oldWidgetIds.indices){
             AppSettings.copyData(context,newWidgetIds[index],oldWidgetIds[index])
         }
     }
@@ -66,11 +66,7 @@ class CountdownWidget: AppWidgetProvider() {
         if(context == null){
             return
         }
-//        if(context != null){
-//            WidgetUtil.lastUpdate(context)
-//        }
         WidgetUtil.alarmUpdate(context)
-//        context?.startService(Intent(context,CountdownService::class.java))
     }
 
     override fun onDisabled(context: Context?) {
@@ -78,13 +74,8 @@ class CountdownWidget: AppWidgetProvider() {
         if(context == null){
             return
         }
-//        if(context != null){
-//            WidgetUtil.cancel(context)
-//        }
-
         WidgetDBUtil.write(context).deleteAll().close()
         WidgetUtil.cancel(context)
-//        context.stopService(Intent(context,CountdownService::class.java))
     }
 
 }

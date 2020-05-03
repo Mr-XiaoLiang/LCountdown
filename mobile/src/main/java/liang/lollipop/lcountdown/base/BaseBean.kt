@@ -1,4 +1,4 @@
-package liang.lollipop.lbaselib.base
+package liang.lollipop.lcountdown.base
 
 import java.io.Serializable
 
@@ -7,7 +7,7 @@ import java.io.Serializable
  * @author Lollipop
  * 基础的Bean
  */
-open class BaseBean:Serializable {
+open class BaseBean : Serializable {
 
     /**Bean的类型*/
     var beanType = 0

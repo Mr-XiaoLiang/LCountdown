@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">LCountdown</string>
-    <string name="title_activity_widget_list">Countdown list</string>
+    <string name="title_activity_widget_list">Widget list</string>
     <string name="deleted">deleted</string>
     <string name="undo">undo</string>
     <string name="alert">Note</string>
@@ -111,4 +111,8 @@
     <string name="close_floating">Close All</string>
 
     <string name="add_floating_error">Failed to add floating window\nPlease check permissions</string>
+    <string name="help_calculator">1.After selecting a set of times, set the corresponding offset parameters, and the results will be displayed in another set of times. \n2.You can reach any point in time by switching between the two sets of time \n3.Click the refresh button after the time distance to change the display method of the time distance \n4.Click the copy button after a certain group of time to quickly copy the time stamp </string>
+    <string name="timer_empty">You don\'t have a time item yet</string>
+    <string name="title_image_fragment">图片</string>
+    <string name="granted_permission">Check permission</string>
 </resources>

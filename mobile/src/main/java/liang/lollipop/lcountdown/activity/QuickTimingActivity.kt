@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.View
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.activity_quick_timing.*
-import liang.lollipop.lbaselib.base.BaseActivity
+import liang.lollipop.lcountdown.base.BaseActivity
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.bean.TimingBean
 import liang.lollipop.lcountdown.utils.TimingUtil

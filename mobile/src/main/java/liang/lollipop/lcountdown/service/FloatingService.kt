@@ -13,6 +13,9 @@ import android.os.Build
 import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewOutlineProvider
+import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
@@ -21,7 +24,7 @@ import liang.lollipop.lcountdown.activity.TimingListActivity
 import liang.lollipop.lcountdown.bean.CountdownBean
 import liang.lollipop.lcountdown.bean.TimingBean
 import liang.lollipop.lcountdown.utils.*
-import org.jetbrains.anko.windowManager
+import kotlin.math.min
 
 /**
  * @date: 2018/6/25 10:30
@@ -38,7 +41,7 @@ class FloatingService : Service() {
 
     private val floatingHolderList = ArrayList<ViewHolder>()
     private val floatingViewHelper: FloatingViewHelper by lazy {
-        FloatingViewHelper.create(windowManager)
+        FloatingViewHelper.create(getSystemService(Context.WINDOW_SERVICE) as WindowManager)
     }
 
     companion object {
@@ -269,6 +272,7 @@ class FloatingService : Service() {
 
         private val nameView: TextView = view.findViewById(R.id.countdownName)
         private val valueView: TextView = view.findViewById(R.id.countdownValue)
+        private val iconView: ImageView = view.findViewById(R.id.iconView)
 
         private val updateTask = createTask {
             onTimeChange()
@@ -276,14 +280,31 @@ class FloatingService : Service() {
 
         init {
             view.background = backgroundDrawable
-            backgroundDrawable.corners = context.resources.getDimensionPixelSize(
-                    R.dimen.floating_corners).toFloat()
+            iconView.outlineProvider = object : ViewOutlineProvider() {
+                override fun getOutline(view: View?, outline: Outline?) {
+                    view?:return
+                    outline?:return
+                    outline.setOval(
+                            view.paddingLeft,
+                            view.paddingTop,
+                            view.width - view.paddingRight,
+                            view.height - view.paddingBottom)
+                }
+            }
+            iconView.clipToOutline = true
         }
 
         fun onStart(info: TimingBean) {
             timingInfo = info
             backgroundDrawable.color = info.color
             nameView.text = info.name
+            val image = FileUtil.getTimerImage(iconView.context, info.id)
+            iconView.visibility = if (image.exists()) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+            FileUtil.loadTimerImage(iconView, info.id)
             onTimeChange()
         }
 
@@ -319,7 +340,7 @@ class FloatingService : Service() {
         }
 
         var color = Color.WHITE
-        var corners = 0F
+        private var corners = 0F
         private var rootAlpha = ALPHA_MAX
 
         private val boundsF = RectF()
@@ -357,6 +378,7 @@ class FloatingService : Service() {
         override fun onBoundsChange(b: Rect?) {
             super.onBoundsChange(b)
             boundsF.set(bounds)
+            corners = min(boundsF.width(), boundsF.height()) / 2
             invalidateSelf()
         }
 

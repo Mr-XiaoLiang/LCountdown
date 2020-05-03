@@ -19,16 +19,11 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import com.google.android.flexbox.FlexboxLayout
-import liang.lollipop.lbaselib.base.SimpleHandler
-import liang.lollipop.lbaselib.util.TintUtil
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.bean.IconBean
 import liang.lollipop.lcountdown.bean.WidgetBean
 import liang.lollipop.lcountdown.holder.IconHolder
-import liang.lollipop.lcountdown.utils.CountdownUtil
-import liang.lollipop.lcountdown.utils.WidgetDBUtil
-import liang.lollipop.lcountdown.utils.doAsync
-import liang.lollipop.lcountdown.utils.onUI
+import liang.lollipop.lcountdown.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.abs
@@ -37,7 +32,7 @@ import kotlin.math.abs
  * 倒计时的睡眠服务
  * @author Lollipop
  */
-class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener,Animator.AnimatorListener,SimpleHandler.HandlerCallback {
+class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener,Animator.AnimatorListener {
 
     private val calendar = Calendar.getInstance()
 
@@ -83,7 +78,7 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
 
     private val dreamBroadcastReceiver = DreamBroadcastReceiver()
 
-    private val handler = SimpleHandler(this)
+    private val handler = SimpleHandler{ onHandler(it) }
 
     private var isTimer = false
 
@@ -107,7 +102,7 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
 
     }
 
-    override fun onHandler(message: Message) {
+    private fun onHandler(message: Message) {
 
         when(message.what){
 

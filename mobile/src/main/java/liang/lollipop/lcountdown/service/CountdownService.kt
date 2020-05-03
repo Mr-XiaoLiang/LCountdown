@@ -4,16 +4,16 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.os.Message
-import liang.lollipop.lbaselib.base.SimpleHandler
+import liang.lollipop.lcountdown.utils.SimpleHandler
 import liang.lollipop.lcountdown.utils.WidgetUtil
 
 /**
  * 倒计时的服务
  * @author Lollipop
  */
-class CountdownService: Service(), SimpleHandler.HandlerCallback {
+class CountdownService: Service() {
 
-    private val handler = SimpleHandler(this)
+    private val handler = SimpleHandler { onHandler(it) }
 
     companion object {
 
@@ -33,7 +33,7 @@ class CountdownService: Service(), SimpleHandler.HandlerCallback {
         return START_STICKY_COMPATIBILITY
     }
 
-    override fun onHandler(message: Message) {
+    private fun onHandler(message: Message) {
 
         when(message.what){
 

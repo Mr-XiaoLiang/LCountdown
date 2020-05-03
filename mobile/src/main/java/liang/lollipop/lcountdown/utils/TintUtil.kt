@@ -1,4 +1,4 @@
-package liang.lollipop.lbaselib.util
+package liang.lollipop.lcountdown.utils
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -73,11 +73,11 @@ object TintUtil {
         }
 
         fun add(value:CharSequence,color: Int): TintTextBuilder {
-            return add(TintBean(value,color))
+            return add(TintBean(value, color))
         }
 
         fun add(value:String,color: Int): TintTextBuilder {
-            return add(TintBean(value,color))
+            return add(TintBean(value, color))
         }
 
         fun addAll(vararg beans: TintBean): TintTextBuilder {

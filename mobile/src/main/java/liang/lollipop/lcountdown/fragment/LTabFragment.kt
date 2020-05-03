@@ -1,8 +1,7 @@
 package liang.lollipop.lcountdown.fragment
 
-import android.graphics.Color
 import android.graphics.drawable.Drawable
-import liang.lollipop.lbaselib.base.BaseFragment
+import liang.lollipop.lcountdown.base.BaseFragment
 
 /**
  * @date: 2019-06-22 17:35

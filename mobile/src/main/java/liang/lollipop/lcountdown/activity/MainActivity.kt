@@ -11,7 +11,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Message
 import android.text.TextUtils
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -25,19 +24,17 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.widget_countdown.*
-import liang.lollipop.lbaselib.base.BaseActivity
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.base.BaseActivity
+import liang.lollipop.lcountdown.bean.PhotoInfo
 import liang.lollipop.lcountdown.bean.RepeatType
 import liang.lollipop.lcountdown.bean.WidgetBean
 import liang.lollipop.lcountdown.bean.WidgetStyle
 import liang.lollipop.lcountdown.fragment.*
-import liang.lollipop.lcountdown.utils.ClipboardHelper
-import liang.lollipop.lcountdown.utils.WidgetDBUtil
-import liang.lollipop.lcountdown.utils.WidgetUtil
+import liang.lollipop.lcountdown.utils.*
 import liang.lollipop.lcountdown.widget.CountdownWidget
 import liang.lollipop.ltabview.LTabHelper
 import liang.lollipop.ltabview.LTabView
-import org.jetbrains.anko.doAsync
 import kotlin.math.abs
 
 /**
@@ -51,7 +48,8 @@ class MainActivity : BaseActivity(),
         CountdownLocationFragment.OnLocationChangeListener,
         CountdownLocationFragment.LocationInfoProvider,
         CountdownColorFragment.Callback,
-        CountdownColorFragment.Provider {
+        CountdownColorFragment.Provider,
+        CountdownImageFragment.Callback {
     companion object {
 
         private const val WHAT_UPDATE = 99
@@ -74,9 +72,12 @@ class MainActivity : BaseActivity(),
 
     private val countdownColorFragment = CountdownColorFragment()
 
+    private val countdownImageFragment = CountdownImageFragment()
+
     private val fragments: Array<LTabFragment> = arrayOf(
             countdownInfoFragment, countdownUnitFragment,
-            countdownFontSizeFragment, countdownLocationFragment, countdownColorFragment)
+            countdownFontSizeFragment, countdownLocationFragment,
+            countdownColorFragment, countdownImageFragment)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,7 +135,7 @@ class MainActivity : BaseActivity(),
                         this.selectedIconColor = selectedColor
                         this.unselectedIconColor = tabUnselectedColor
                         this.textColor = selectedColor
-                        this.expandColor = selectedColor.and(0x60FFFFFF)
+                        this.expandColor = selectedColor.and(0x40FFFFFF)
                     }
                 }
             }
@@ -263,6 +264,8 @@ class MainActivity : BaseActivity(),
         WidgetUtil.Target.forEach {
             onColorChange(it, getColorByTarget(it))
         }
+
+        updateImage()
     }
 
     override fun onHandler(message: Message) {
@@ -272,6 +275,10 @@ class MainActivity : BaseActivity(),
                 handler.sendEmptyMessageDelayed(WHAT_UPDATE, DELAYED)
             }
         }
+    }
+
+    override fun onInsetsChange(root: View, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onInsetsChange(root, left, 0, right, bottom)
     }
 
     private fun updateWidget() {
@@ -288,7 +295,7 @@ class MainActivity : BaseActivity(),
         val resultValue = Intent()
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetBean.widgetId)
         setResult(Activity.RESULT_OK, resultValue)
-
+        isCreateModel = false
         onBackPressed()
     }
 
@@ -366,7 +373,7 @@ class MainActivity : BaseActivity(),
             Color.BLACK
         }
 
-        contentGroup.setBackgroundColor(bgColor)
+        widgetFrame.setCardBackgroundColor(bgColor)
         changeTextViewColor(widgetFrame, textColor)
         widgetBean.widgetStyle = style
     }
@@ -533,7 +540,6 @@ class MainActivity : BaseActivity(),
             }
             else -> null
         }
-        Log.d("Lollipop", "onColorChange: target=$target, view=$view, color=$color")
         view?.setTextColor(color)
     }
 
@@ -548,6 +554,33 @@ class MainActivity : BaseActivity(),
             WidgetUtil.Target.Inscription -> widgetBean.inscriptionColor
             else -> Color.WHITE
         }
+    }
+
+    override fun onImageSelected(info: PhotoInfo) {
+        info.loadTo(backgroundImage)
+        if (info == PhotoInfo.Empty) {
+            FileUtil.removeWidgetImage(this, widgetBean.widgetId)
+            info.loadTo(fullBgView)
+            return
+        }
+        doAsync {
+            FileUtil.copyWidget(this, info.path, widgetBean.widgetId)
+            onUI{
+                updateImage()
+            }
+        }
+    }
+
+    private fun updateImage() {
+        FileUtil.loadWidgetImage(backgroundImage, widgetBean.widgetId)
+        FileUtil.loadWidgetImage(fullBgView, widgetBean.widgetId, true)
+    }
+
+    override fun onDestroy() {
+        if (isCreateModel) {
+            FileUtil.removeWidgetImage(this, widgetBean.widgetId)
+        }
+        super.onDestroy()
     }
 
     private fun resetViewLocation(target: WidgetUtil.Target, isShowBorder: Boolean = true) {

@@ -1,18 +1,17 @@
-package liang.lollipop.lbaselib.base
+package liang.lollipop.lcountdown.base
 
 import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import liang.lollipop.lbaselib.util.LItemTouchHelper
 
 /**
  * Created by lollipop on 2018/1/2.
  * @author Lollipop
  * 基础的Item Holder
  */
-abstract class BaseHolder<in T:BaseBean>(itemView: View): RecyclerView.ViewHolder(itemView),View.OnClickListener {
+abstract class BaseHolder<in T: BaseBean>(itemView: View): RecyclerView.ViewHolder(itemView),View.OnClickListener {
 
-    protected var touch: LItemTouchHelper? = null
+    protected var touch: liang.lollipop.lcountdown.utils.LItemTouchHelper? = null
     protected var canSwipe = false
     protected var canMove = false
     protected val context:Context = itemView.context
@@ -37,7 +36,7 @@ abstract class BaseHolder<in T:BaseBean>(itemView: View): RecyclerView.ViewHolde
         }
     }
 
-    fun setTouchHelper(helper:LItemTouchHelper){
+    fun setTouchHelper(helper: liang.lollipop.lcountdown.utils.LItemTouchHelper){
         touch = helper
     }
 

@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_crash.*
-import liang.lollipop.lbaselib.base.BaseActivity
+import liang.lollipop.lcountdown.base.BaseActivity
 import liang.lollipop.lcountdown.LApplication
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.utils.LogHelper

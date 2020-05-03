@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">倒计时</string>
-    <string name="title_activity_widget_list">倒计时列表</string>
+    <string name="title_activity_widget_list">小部件列表</string>
     <string name="deleted">已删除</string>
     <string name="undo">撤回</string>
     <string name="alert">注意</string>
@@ -110,4 +110,10 @@
     <string name="followers_channel_name">倒计时悬浮窗</string>
     <string name="close_floating">关闭全部</string>
     <string name="add_floating_error">添加悬浮窗失败\n请检查权限</string>
+
+    <string name="help_calculator">1. 你可以选中一组时间后，设置相应的偏移参数，产生的结果将会在另一组时间中展示出来。\n2.你可以通过两组时间之间的切换到达任何时间点\n3.点击时间距离后的刷新按钮，可以改变时间距离的展示方式\n4.点击某一组时间后的复制按钮，可以快速复制时间戳</string>
+
+    <string name="timer_empty">你现在还没有计时项目</string>
+    <string name="title_image_fragment">图片</string>
+    <string name="granted_permission">检查权限</string>
 </resources>

@@ -1,15 +1,15 @@
-package liang.lollipop.lbaselib.util
+package liang.lollipop.lcountdown.utils
 
 import android.view.View
 import androidx.recyclerview.widget.*
-import liang.lollipop.lbaselib.base.BaseHolder
+import liang.lollipop.lcountdown.base.BaseHolder
 
 /**
  * Created by lollipop on 2018/1/2.
  * @author Lollipop
  * ItemTouchHelper的回调函数
  */
-class LItemTouchCallback(private val listener:OnItemTouchCallbackListener): ItemTouchHelper.Callback() {
+class LItemTouchCallback(private val listener: OnItemTouchCallbackListener): ItemTouchHelper.Callback() {
 
     private var stateChangedListener: OnItemTouchStateChangedListener? = null
 

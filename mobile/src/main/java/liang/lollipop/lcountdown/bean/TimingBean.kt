@@ -1,9 +1,9 @@
 package liang.lollipop.lcountdown.bean
 
 import android.content.Intent
-import android.graphics.Color
+import android.database.Cursor
 import android.text.TextUtils
-import liang.lollipop.lbaselib.base.BaseBean
+import liang.lollipop.lcountdown.base.BaseBean
 import liang.lollipop.lcountdown.utils.StringToColorUtil
 
 /**
@@ -70,37 +70,4 @@ class TimingBean constructor(var id: Int = 0) : BaseBean() {
             return lastColor
         }
 
-    val invertedColor: Int
-        get() {
-
-            if (name != lastName || lastStartTime != startTime) {
-                lastColor = getBeanColor()
-
-            }
-
-            val gray = getGray(lastColor).inverted()
-
-            return Color.rgb(gray, gray, gray)
-
-        }
-
-    private fun Int.inverted(): Int {
-        val color = 255 - this
-
-        if (color in 65..127) {
-            return color - 64
-        }
-
-        if (color in 128..191) {
-            return color + 64
-        }
-
-        return color
-    }
-
-    private fun getGray(pixel: Int): Int {
-        return (Color.red(pixel) * 30
-                + Color.green(pixel) * 60
-                + Color.blue(pixel) * 10) / 100
-    }
 }

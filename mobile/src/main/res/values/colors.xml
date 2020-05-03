@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#000000</color>
-    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorPrimary">#CACACA</color>
+    <color name="colorPrimaryDark">#959494</color>
     <color name="colorAccent">#df9fb4</color>
 
     <color name="baseTabSelected">#DA2661</color>
     <color name="unitTabSelected">#2A88D6</color>
     <color name="fontTabSelected">#46A222</color>
     <color name="localTabSelected">#2AD6C8</color>
-    <color name="colorTabSelected">#862AD6</color>
+    <color name="colorTabSelected">#C83BD6</color>
     <color name="tabUnselectedColor">#C9C9C9</color>
 
     <color name="bottomSheetCard">#3A3A3A</color>
@@ -21,5 +21,9 @@
 
     <color name="timerBtnBackground">#21A398</color>
     <color name="countdownBtnBackground">#9F3B5E</color>
+
+    <color name="windowBackground">#5E6668</color>
+    <color name="fabIconColor">#FFFFFF</color>
+    <color name="imageTabSelected">#C7942C</color>
 
 </resources>

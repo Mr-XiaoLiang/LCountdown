@@ -7,13 +7,29 @@
     android:minHeight="80dp"
     android:elevation="2dp">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="100dp" />
+
     <ImageView
+        android:scaleType="centerCrop"
+        android:id="@+id/backImageView"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <ImageView
+        android:background="#78000000"
         android:id="@+id/headColorView"
         android:layout_width="0px"
         android:layout_height="0px"
         android:minHeight="100dp"
-        android:src="#0F00"
-        android:alpha="0.5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -26,25 +42,21 @@
         android:gravity="center"
         android:textSize="50sp"
         android:text="w"
+        android:theme="@style/widgetText"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/guideline"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="100dp" />
-
     <TextView
+        android:theme="@style/widgetText"
         android:id="@+id/timingTitleView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="我的第一个计时"
-        android:textColor="#B8B8B8"
+        android:textColor="@android:color/white"
         android:textSize="16sp"
         android:visibility="visible"
         app:layout_constraintLeft_toRightOf="@id/guideline"
@@ -57,8 +69,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="12:34:23.123"
-        android:textColor="#B8B8B8"
+        android:textColor="@android:color/white"
         android:textSize="20sp"
+        android:theme="@style/widgetText"
         app:layout_constraintLeft_toLeftOf="@id/timingTitleView"
         app:layout_constraintTop_toBottomOf="@id/timingTitleView" />
 
@@ -79,8 +92,9 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
         android:text="2018-06-15 12:34:23.123"
-        android:textColor="#999999"
+        android:textColor="@android:color/white"
         android:textSize="12sp"
+        android:theme="@style/widgetText"
         app:layout_constraintLeft_toRightOf="@id/startTimeIcon"
         app:layout_constraintTop_toBottomOf="@id/timeLengthView" />
 
@@ -102,8 +116,9 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
         android:text="2018-06-15 12:34:23.123"
-        android:textColor="#999999"
+        android:textColor="@android:color/white"
         android:textSize="12sp"
+        android:theme="@style/widgetText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/endTimeIcon"
         app:layout_constraintTop_toBottomOf="@id/startTimeView" />
@@ -116,6 +131,7 @@
         android:layout_marginBottom="5dp"
         android:layout_marginEnd="5dp"
         android:text="@string/stop_timing"
+        android:theme="@style/widgetText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 

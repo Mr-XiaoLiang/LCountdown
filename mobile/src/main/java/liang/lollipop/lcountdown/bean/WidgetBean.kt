@@ -3,7 +3,7 @@ package liang.lollipop.lcountdown.bean
 import android.graphics.Color
 import android.text.TextUtils
 import android.view.Gravity
-import liang.lollipop.lbaselib.base.BaseBean
+import liang.lollipop.lcountdown.base.BaseBean
 import liang.lollipop.lcountdown.utils.CountdownUtil
 import org.json.JSONObject
 

@@ -237,6 +237,7 @@
         app:backgroundTint="@color/timerBtnBackground"
         app:fabSize="normal"
         app:icon="@drawable/ic_timer_black_24dp"
+        app:iconTint="@color/fabIconColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/countdownBtn"
@@ -249,6 +250,7 @@
         app:backgroundTint="@color/countdownBtnBackground"
         app:fabSize="normal"
         app:icon="@drawable/ic_timer_black_24dp"
+        app:iconTint="@color/fabIconColor"
         app:layout_constraintLeft_toRightOf="@id/timingBtn"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/timingBtn" />

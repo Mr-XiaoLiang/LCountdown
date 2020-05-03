@@ -8,13 +8,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import liang.lollipop.lbaselib.base.BaseHolder
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.base.BaseHolder
 import liang.lollipop.lcountdown.bean.CountdownBean
 import liang.lollipop.lcountdown.bean.TimingBean
 import liang.lollipop.lcountdown.drawable.LinearGradientDrawable
 import liang.lollipop.lcountdown.utils.*
-import org.jetbrains.anko.textColor
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -41,6 +40,9 @@ class TimingHolder(itemView: View) : BaseHolder<TimingBean>(itemView) {
 
     // 开启悬浮窗的按钮
     val floatingBtn: ImageView = find(R.id.floatingBtn)
+
+    // 背景图
+    private val backImageView: ImageView = find(R.id.backImageView)
 
     //头部的颜色
     private val headColorDrawable = LinearGradientDrawable()
@@ -69,6 +71,7 @@ class TimingHolder(itemView: View) : BaseHolder<TimingBean>(itemView) {
         val headColorView: ImageView = find(R.id.headColorView)
         headColorView.setImageDrawable(headColorDrawable)
 
+        itemView.setOnClickListener(this)
         stopBtn.setOnClickListener(this)
         floatingBtn.setOnClickListener(this)
 
@@ -101,6 +104,7 @@ class TimingHolder(itemView: View) : BaseHolder<TimingBean>(itemView) {
         lastBean = bean
 
         headColorDrawable.onColorChange(bean.color, 0x00FFFFFF)
+        headColorDrawable.alpha = 128
         headColorDrawable.callUpdate()
 
         titleIconView.text = bean.name.let {
@@ -110,7 +114,6 @@ class TimingHolder(itemView: View) : BaseHolder<TimingBean>(itemView) {
                 it.substring(0, 1).toUpperCase(Locale.getDefault())
             }
         }
-        titleIconView.textColor = bean.invertedColor
 
         timingTitleView.text = bean.name
         timingTitleView.visibility = if (TextUtils.isEmpty(bean.name)) {
@@ -146,6 +149,7 @@ class TimingHolder(itemView: View) : BaseHolder<TimingBean>(itemView) {
             -90F
         }
 
+        FileUtil.loadTimerImage(backImageView, bean.id)
     }
 
     private fun onTimeChange() {

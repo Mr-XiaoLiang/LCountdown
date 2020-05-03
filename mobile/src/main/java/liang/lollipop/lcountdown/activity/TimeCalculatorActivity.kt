@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.activity_time_calculator.*
 import kotlinx.android.synthetic.main.content_time_calculator.*
-import liang.lollipop.lbaselib.base.BaseActivity
+import liang.lollipop.lcountdown.base.BaseActivity
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.utils.ClipboardHelper
 import java.text.DecimalFormat
@@ -51,12 +53,16 @@ class TimeCalculatorActivity : BaseActivity() {
 
     // 开始时间
     private var startTime = System.currentTimeMillis()
+
     // 结束时间
     private var endTime = System.currentTimeMillis() + 10000000000
+
     // 选中的是开始时间
     private var selectedStart = true
+
     // 返回值格式化类型
     private var resultFormat = RESULT_FORMAT
+
     // 输入的view
     private val inputViewArray: Array<TextInputEditText> by lazy {
         arrayOf(yearInputView,
@@ -67,10 +73,13 @@ class TimeCalculatorActivity : BaseActivity() {
                 secondsInputView,
                 millisecondInputView)
     }
+
     // 输入框锁
     private var inputLock = false
+
     // 选中框的偏移量
     private var selectedBorderProgress = 0F
+
     // 边框动画的对象
     private val borderAnimator = ValueAnimator().apply {
         addUpdateListener {
@@ -78,6 +87,7 @@ class TimeCalculatorActivity : BaseActivity() {
             updateBorderLocation()
         }
     }
+
     // 浮点数格式化工具
     private val decimalFormat = DecimalFormat("#,##0.00###")
 
@@ -102,6 +112,7 @@ class TimeCalculatorActivity : BaseActivity() {
                 override fun afterTextChanged(s: Editable?) {
                     onInputChange()
                 }
+
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             })
@@ -109,6 +120,23 @@ class TimeCalculatorActivity : BaseActivity() {
         restoreBtn.callOnClick()
         startTimeView.updateTime(startTime)
         endTimeView.updateTime(endTime)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_calculator, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+
+            R.id.menuHelp -> {
+                alert().setMessage(R.string.help_calculator).show()
+                return true
+            }
+
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onClick(v: View?) {
@@ -155,7 +183,7 @@ class TimeCalculatorActivity : BaseActivity() {
         }
         val targetTime = if (selectedStart) {
             startTime
-        } else  {
+        } else {
             endTime
         }
         calendar.timeInMillis = targetTime
@@ -169,7 +197,7 @@ class TimeCalculatorActivity : BaseActivity() {
         val resultTime = calendar.timeInMillis
         if (selectedStart) {
             endTime = resultTime
-        } else  {
+        } else {
             startTime = resultTime
         }
         startTimeView.updateTime(startTime)
@@ -181,8 +209,8 @@ class TimeCalculatorActivity : BaseActivity() {
         this.text = simpleDateFormat.format(Date(time))
     }
 
-    private fun TextInputEditText.getInt() : Int {
-        val value = this.text?.toString()?:""
+    private fun TextInputEditText.getInt(): Int {
+        val value = this.text?.toString() ?: ""
         if (TextUtils.isEmpty(value)) {
             return 0
         }
@@ -218,9 +246,9 @@ class TimeCalculatorActivity : BaseActivity() {
                 v(offset * 1.0 / ONE_SECONDS) + getString(R.string.seconds)
             }
             RESULT_MILLISECOND -> {
-               v(offset * 1.0) + getString(R.string.millisecond)
+                v(offset * 1.0) + getString(R.string.millisecond)
             }
-            else  -> {
+            else -> {
                 val builder = StringBuilder()
                 builder.append(v(offset / ONE_YEAR))
                 builder.append(getString(R.string.year))
@@ -267,7 +295,11 @@ class TimeCalculatorActivity : BaseActivity() {
 
     private fun onSelectChange() {
         borderAnimator.cancel()
-        val targetProgress = if (selectedStart) { 0F } else { 1F }
+        val targetProgress = if (selectedStart) {
+            0F
+        } else {
+            1F
+        }
         borderAnimator.setFloatValues(selectedBorderProgress, targetProgress)
         borderAnimator.duration = (BORDER_ANIMATOR_DURATION *
                 abs(targetProgress - selectedBorderProgress)).toLong()
@@ -275,7 +307,7 @@ class TimeCalculatorActivity : BaseActivity() {
 
         val offset = if (selectedStart) {
             endTime - startTime
-        } else  {
+        } else {
             startTime - endTime
         }
 

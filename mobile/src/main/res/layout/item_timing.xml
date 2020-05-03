@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/bottomSheetCard"
-    android:minHeight="80dp"
+    android:minHeight="160dp"
     android:elevation="2dp">
 
     <androidx.constraintlayout.widget.Guideline
@@ -59,8 +59,10 @@
         android:textColor="@android:color/white"
         android:textSize="16sp"
         android:visibility="visible"
+        app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintLeft_toRightOf="@id/guideline"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/timeLengthView"
         app:layout_goneMarginTop="5dp" />
 
     <TextView
@@ -70,10 +72,11 @@
         android:layout_marginTop="5dp"
         android:text="12:34:23.123"
         android:textColor="@android:color/white"
-        android:textSize="20sp"
+        android:textSize="24sp"
         android:theme="@style/widgetText"
         app:layout_constraintLeft_toLeftOf="@id/timingTitleView"
-        app:layout_constraintTop_toBottomOf="@id/timingTitleView" />
+        app:layout_constraintTop_toBottomOf="@id/timingTitleView"
+        app:layout_constraintBottom_toTopOf="@id/startTimeView"/>
 
     <ImageView
         android:id="@+id/startTimeIcon"
@@ -96,7 +99,8 @@
         android:textSize="12sp"
         android:theme="@style/widgetText"
         app:layout_constraintLeft_toRightOf="@id/startTimeIcon"
-        app:layout_constraintTop_toBottomOf="@id/timeLengthView" />
+        app:layout_constraintTop_toBottomOf="@id/timeLengthView"
+        app:layout_constraintBottom_toTopOf="@id/endTimeView"/>
 
     <ImageView
         android:id="@+id/endTimeIcon"

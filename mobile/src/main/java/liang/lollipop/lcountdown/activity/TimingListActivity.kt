@@ -196,20 +196,11 @@ class TimingListActivity : BaseActivity(),
     private fun getData() {
 
         doAsync {
-
             dataList.clear()
             timingUtil.selectAll(dataList)
-
             onUI {
-
                 adapter.notifyDataSetChanged()
                 refreshLayout.isRefreshing = false
-
-                if (dataList.isEmpty()) {
-
-                    Snackbar.make(recyclerView, getString(R.string.timer_empty), Snackbar.LENGTH_LONG).show()
-
-                }
             }
 
         }

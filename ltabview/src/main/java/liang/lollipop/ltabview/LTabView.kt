@@ -118,7 +118,7 @@ class LTabView(context: Context, attr: AttributeSet?,
         val height = MeasureSpec.getSize(heightMeasureSpec)
         val widthMode = MeasureSpec.getMode(widthMeasureSpec)
         if (widthMode == MeasureSpec.EXACTLY) {
-            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), height)
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
             return
         }
         var left = paddingLeft

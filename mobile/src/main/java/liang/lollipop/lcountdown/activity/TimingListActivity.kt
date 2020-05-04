@@ -391,7 +391,11 @@ class TimingListActivity : BaseActivity(),
         }
         doAsync {
             val selected = selectedInfo
-            FileUtil.copyTimer(this, info.path, selected)
+            if (info == PhotoInfo.Empty) {
+                FileUtil.removeTimerImage(this, selected)
+            } else {
+                FileUtil.copyTimer(this, info.path, selected)
+            }
             var position = -1
             for (index in dataList.indices) {
                 if (dataList[index].id == selected) {

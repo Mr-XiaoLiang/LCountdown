@@ -128,8 +128,8 @@ object FileUtil {
                 .transition(DrawableTransitionOptions
                         .withCrossFade(DrawableCrossFadeFactory.Builder()
                                 .setCrossFadeEnabled(true)
-                                .build())
-                ).into(imageView)
+                                .build()))
+                .into(imageView)
     }
 
     fun loadWidgetImage(imageView: ImageView, id: Int, blur: Boolean = false) {

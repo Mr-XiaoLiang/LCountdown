@@ -11,7 +11,10 @@ import android.graphics.Color
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RemoteViews
+import android.widget.TextView
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.activity.MainActivity
 import liang.lollipop.lcountdown.bean.CountdownBean
@@ -31,17 +34,15 @@ object WidgetUtil {
 
         val layoutId = R.layout.widget_countdown
 
-        val views = RemoteViews(context.packageName, layoutId)
+        val views = RemoteViewInterface(context, RemoteViews(context.packageName, layoutId))
 
-        views.updateColors(widgetBean)
+//        views.updateColors(widgetBean)
+//        views.updateImage(context, widgetBean)
+//        views.updateValues(widgetBean.getTimerInfo(), widgetBean)
+//        views.updateTextSize(widgetBean)
+//        views.updateLocation(widgetBean, context.resources)
 
-        views.updateImage(context, widgetBean)
-
-        views.updateValues(widgetBean.getTimerInfo(), widgetBean)
-
-        views.updateTextSize(widgetBean)
-
-        views.updateLocation(widgetBean, context.resources)
+        updateUI(context, widgetBean, views)
 
         //创建点击意图
         val intent = Intent(context, MainActivity::class.java)
@@ -55,9 +56,117 @@ object WidgetUtil {
         val pendingIntent = PendingIntent.getActivity(context, widgetBean.widgetId,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT)
         //为小部件设置点击事件
-        views.setOnClickPendingIntent(R.id.widgetGroup, pendingIntent)
+        views.target.setOnClickPendingIntent(R.id.widgetGroup, pendingIntent)
 
-        appWidgetManager.updateAppWidget(widgetBean.widgetId, views)
+        appWidgetManager.updateAppWidget(widgetBean.widgetId, views.target)
+
+    }
+
+    fun updateUI(context: Context, widgetBean: WidgetBean, views: ViewInterface) {
+        views.updateColors(widgetBean)
+        views.updateImage(widgetBean)
+        views.updateValues(widgetBean.getTimerInfo(), widgetBean)
+        views.updateTextSize(widgetBean)
+        views.updateLocation(widgetBean, context.resources)
+    }
+
+    interface ViewInterface {
+        fun setImageViewBitmapById(id: Int, widgetId: Int)
+        fun setTextColor(id: Int, color: Int)
+        fun setBackgroundResource(id: Int, res: Int)
+        fun setTextViewText(id: Int, text: CharSequence)
+        fun setViewVisibility(id: Int, visible: Int)
+        fun setTextViewTextSize(id: Int, units: Int, size: Float)
+        fun setViewPadding(id: Int, left: Int, top: Int, right: Int, bottom: Int)
+        fun setGravity(id: Int, gravity: Int)
+    }
+
+    class NativeViewInterface(private val views: View): ViewInterface {
+
+        private fun <T: View> Int.find(): T? {
+            return views.findViewById<T>(this)
+        }
+
+        override fun setImageViewBitmapById(id: Int, widgetId: Int) {
+            id.find<ImageView>()?.let {
+                FileUtil.loadWidgetImage(it, widgetId)
+            }
+        }
+
+        override fun setTextColor(id: Int, color: Int) {
+            id.find<TextView>()?.setTextColor(color)
+        }
+
+        override fun setBackgroundResource(id: Int, res: Int) {
+            id.find<View>()?.setBackgroundResource(res)
+        }
+
+        override fun setTextViewText(id: Int, text: CharSequence) {
+            id.find<TextView>()?.text = text
+        }
+
+        override fun setViewVisibility(id: Int, visible: Int) {
+            id.find<View>()?.visibility = visible
+        }
+
+        override fun setTextViewTextSize(id: Int, units: Int, size: Float) {
+            id.find<TextView>()?.setTextSize(units, size)
+        }
+
+        override fun setViewPadding(id: Int, left: Int, top: Int, right: Int, bottom: Int) {
+            id.find<View>()?.setPadding(left, top, right, bottom)
+        }
+
+        override fun setGravity(id: Int, gravity: Int) {
+            id.find<LinearLayout>()?.gravity = gravity
+        }
+    }
+
+    private class RemoteViewInterface(private val context: Context,
+                                      private val views: RemoteViews): ViewInterface {
+
+        val target: RemoteViews
+            get() {
+                return views
+            }
+
+        override fun setImageViewBitmapById(id: Int, widgetId: Int) {
+            val image = FileUtil.getWidgetImage(context, widgetId)
+            if (!image.exists()) {
+                views.setImageViewBitmap(id, null)
+                return
+            }
+            val bitmap = BitmapFactory.decodeFile(image.path)
+            views.setImageViewBitmap(id, bitmap)
+        }
+
+        override fun setTextColor(id: Int, color: Int) {
+            views.setTextColor(id, color)
+        }
+
+        override fun setBackgroundResource(id: Int, res: Int) {
+            views.setInt(R.id.widgetGroup, "setBackgroundResource", res)
+        }
+
+        override fun setTextViewText(id: Int, text: CharSequence) {
+            views.setTextViewText(id, text)
+        }
+
+        override fun setViewVisibility(id: Int, visible: Int) {
+            views.setViewVisibility(id, visible)
+        }
+
+        override fun setTextViewTextSize(id: Int, units: Int, size: Float) {
+            views.setTextViewTextSize(id, units, size)
+        }
+
+        override fun setViewPadding(id: Int, left: Int, top: Int, right: Int, bottom: Int) {
+            views.setViewPadding(id, left, top, right, bottom)
+        }
+
+        override fun setGravity(id: Int, gravity: Int) {
+            views.setInt(id, "setGravity", gravity)
+        }
 
     }
 
@@ -105,33 +214,28 @@ object WidgetUtil {
         }
     }
 
-    fun updateTextColor(bean: WidgetBean, run: (Int, Int) -> Unit) {
+    private fun updateTextColor(bean: WidgetBean, run: (Int, Int) -> Unit) {
         val defColor = getTextColor(bean.widgetStyle)
         TEXT_VIEW_ID.forEach { id ->
             run(id, getColorById(id, defColor, bean))
         }
     }
 
-    private fun RemoteViews.updateImage(context: Context, bean: WidgetBean) {
-        val image = FileUtil.getWidgetImage(context, bean.widgetId)
-        if (!image.exists()) {
-            setImageViewBitmap(R.id.backgroundImage, null)
-            return
-        }
-        val bitmap = BitmapFactory.decodeFile(image.path)
-        setImageViewBitmap(R.id.backgroundImage, bitmap)
+    private fun ViewInterface.updateImage(bean: WidgetBean) {
+        setImageViewBitmapById(R.id.backgroundImage, bean.widgetId)
     }
 
-    private fun RemoteViews.updateColors(bean: WidgetBean) {
+    private fun ViewInterface.updateColors(bean: WidgetBean) {
         log("RemoteViews.updateColors: ${bean.widgetStyle}")
         updateTextColor(bean) { id, color ->
             setTextColor(id, color)
         }
         val background = getBackgroundResource(bean.widgetStyle)
-        setInt(R.id.widgetGroup, "setBackgroundResource", background)
+//        setInt(R.id.widgetGroup, "setBackgroundResource", background)
+        setBackgroundResource(R.id.widgetGroup, background)
     }
 
-    private fun RemoteViews.updateValues(bean: CountdownBean, widgetBean: WidgetBean) {
+    private fun ViewInterface.updateValues(bean: CountdownBean, widgetBean: WidgetBean) {
         setTextViewText(R.id.nameView,widgetBean.countdownName)
         setTextViewText(R.id.dayView,bean.days)
         setTextViewText(R.id.timeView,bean.time)
@@ -144,7 +248,7 @@ object WidgetUtil {
         setTextViewText(R.id.dayUnitView,widgetBean.dayUnit)
     }
 
-    private fun RemoteViews.updateTextSize(widgetBean: WidgetBean) {
+    private fun ViewInterface.updateTextSize(widgetBean: WidgetBean) {
         setTextViewTextSize(R.id.nameFrontView,TypedValue.COMPLEX_UNIT_SP,widgetBean.prefixFontSize.toFloat())
         setTextViewTextSize(R.id.nameView,TypedValue.COMPLEX_UNIT_SP,widgetBean.nameFontSize.toFloat())
         setTextViewTextSize(R.id.nameBehindView,TypedValue.COMPLEX_UNIT_SP,widgetBean.suffixFontSize.toFloat())
@@ -155,7 +259,7 @@ object WidgetUtil {
         setViewVisibility(R.id.dayGroup, if (widgetBean.inOneDay) { View.GONE } else { View.VISIBLE })
     }
 
-    private fun RemoteViews.updateLocation(widgetBean: WidgetBean, resources: Resources) {
+    private fun ViewInterface.updateLocation(widgetBean: WidgetBean, resources: Resources) {
         Target.forEach { target ->
             val locationGroup = when (target) {
                 Target.Name -> R.id.nameLocationGroup
@@ -196,7 +300,8 @@ object WidgetUtil {
                     r = 0
                 }
                 setViewPadding(groupId, l, t, r, b)
-                setInt(groupId, "setGravity", gravity)
+//                setInt(groupId, "setGravity", gravity)
+                setGravity(groupId, gravity)
             }
         }
     }

@@ -63,7 +63,7 @@ class FloatingService : Service() {
             val intent = Intent(context, FloatingService::class.java)
             info.bindToIntent(intent)
             intent.putExtra(ARG_STOP, isStop)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !isStop) {
                 context.startForegroundService(intent)
             } else {
                 context.startService(intent)
@@ -132,7 +132,7 @@ class FloatingService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && !android.provider.Settings.canDrawOverlays(this)) {
             notificationToOpenPermission()
-            stopSelf()
+            stop()
             return false
         }
         return true
@@ -147,17 +147,25 @@ class FloatingService : Service() {
         return null
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    private fun stop() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            stopForeground(STOP_FOREGROUND_REMOVE)
+        }
+        stopSelf()
+    }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        showForeground()
         if (!checkPermission() || intent == null) {
+            stop()
             return START_REDELIVER_INTENT
         }
+
+        val isStop = intent.getBooleanExtra(ARG_STOP, false)
         isReady = true
 
         val info = TimingBean()
         info.getFromIntent(intent)
-
-        val isStop = intent.getBooleanExtra(ARG_STOP, false)
 
         val holder = findHolderById(info.id)
         if (holder != null) {
@@ -165,14 +173,22 @@ class FloatingService : Service() {
             return START_REDELIVER_INTENT
         }
 
+        // 如果刚刚是结束了一个倒计时项目，
+        // 并且限制没有计时内容，那么放弃任务，结束服务
         if (isStop) {
+            if (floatingHolderList.isEmpty()) {
+                stop()
+            }
             return START_REDELIVER_INTENT
         }
 
         createHolder(info)
-        startForeground(NOTIFICATION_ID, createNotification())
 
         return START_REDELIVER_INTENT
+    }
+
+    private fun showForeground() {
+        startForeground(NOTIFICATION_ID, createNotification())
     }
 
     private fun closeFloating(holder: ViewHolder) {
@@ -181,7 +197,7 @@ class FloatingService : Service() {
         floatingHolderList.remove(holder)
         if (floatingHolderList.isEmpty()) {
             notificationManager.cancel(NOTIFICATION_ID)
-            stopSelf()
+            stop()
         }
         System.gc()
     }
@@ -193,16 +209,11 @@ class FloatingService : Service() {
         }
         floatingHolderList.clear()
         notificationManager.cancel(NOTIFICATION_ID)
-        stopSelf()
+        stop()
         System.gc()
     }
 
     private fun createHolder(info: TimingBean): ViewHolder {
-        for (holder in floatingHolderList) {
-            if (holder.timingInfo?.id == info.id) {
-                return holder
-            }
-        }
         val holder = ViewHolder(this)
         floatingHolderList.add(holder)
         addView(holder.view)
@@ -222,20 +233,23 @@ class FloatingService : Service() {
         } else {
             android.provider.Settings.ACTION_APPLICATION_SETTINGS
         }
+        val intent = PendingIntent.getActivity(this,
+                PENDING_REQUEST_PERMISSION,
+                Intent(action, Uri.parse("package:$packageName")),
+                PendingIntent.FLAG_UPDATE_CURRENT)
         val notification = NotificationCompat.Builder(this, FOLLOWERS_CHANNEL_ID)
                 .setContentTitle(getString(R.string.notifi_title_no_alert))
                 .setContentText(getString(R.string.notifi_msg_no_alert))
                 .setLargeIcon(BitmapFactory.decodeResource(this.resources,
                         R.mipmap.ic_launcher)) // 设置下拉列表中的图标(大图标)
                 .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_MAX)//最高等级的通知优先级
                 .setOngoing(false)
                 .setSmallIcon(R.drawable.ic_small_logo)
-                .setFullScreenIntent(PendingIntent.getActivity(this,
-                        PENDING_REQUEST_PERMISSION,
-                        Intent(action, Uri.parse("package:$packageName")),
-                        PendingIntent.FLAG_UPDATE_CURRENT), true)
+                .setFullScreenIntent(intent, true)
+                .setContentIntent(intent)
                 .build()
-        notificationManager.notify(NOTIFICATION_ID, notification)
+        notificationManager.notify(NOTIFICATION_ID + 1, notification)
     }
 
     private fun addView(view: View) {

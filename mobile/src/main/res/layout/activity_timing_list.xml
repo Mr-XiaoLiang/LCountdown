@@ -31,23 +31,10 @@
         android:layout_marginBottom="10dp"
         android:layout_marginRight="10dp"
         app:cardCornerRadius="32dp"
-        app:cardElevation="10dp"
+        app:cardElevation="3dp"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <include layout="@layout/content_timing_list" />
-
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/quickTimingBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|start"
-            android:layout_margin="6dp"
-            app:elevation="20dp"
-            app:fabSize="normal"
-            app:icon="@drawable/ic_timer_black_24dp"
-            android:src="@drawable/ic_timer_black_24dp"
-            app:backgroundTint="@color/timerBtnBackground"
-            app:iconTint="@color/fabIconColor" />
 
         <LinearLayout
             app:elevation="26dp"
@@ -81,5 +68,18 @@
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/quickTimingBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="@dimen/fab_margin"
+        app:elevation="20dp"
+        app:fabSize="normal"
+        app:icon="@drawable/ic_timer_black_24dp"
+        android:src="@drawable/ic_timer_black_24dp"
+        app:backgroundTint="@color/timerBtnBackground"
+        app:iconTint="@color/fabIconColor" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

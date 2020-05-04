@@ -7,9 +7,9 @@ import android.util.Log
 import android.view.InflateException
 import android.view.View
 import android.widget.FrameLayout
-import androidx.viewpager.widget.ViewPager
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.min
 
 /**
  * @date: 2019/04/17 19:43
@@ -109,10 +109,49 @@ class LTabView(context: Context, attr: AttributeSet?,
         }
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+        if (heightMode == MeasureSpec.UNSPECIFIED) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+            return
+        }
+        val height = MeasureSpec.getSize(heightMeasureSpec)
+        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
+        if (widthMode == MeasureSpec.EXACTLY) {
+            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), height)
+            return
+        }
+        var left = paddingLeft
+        val usedHeight = height - paddingBottom - paddingTop
+        var maxItem = 0
+        for (index in 0 until childCount) {
+            val child = getChildAt(index)
+            if (child.visibility == View.GONE) {
+                continue
+            }
+            child.measure(widthMeasureSpec, heightMeasureSpec)
+            val item = child as LTabItem
+            val childExpend = child.measuredWidth - item.miniSize
+            if (maxItem < childExpend) {
+                maxItem = childExpend
+            }
+            left += max(usedHeight, item.miniSize)
+            left += space
+        }
+        left += maxItem
+        left -= space
+        left += paddingRight
+
+        val width = if (widthMode == MeasureSpec.AT_MOST) {
+            min(MeasureSpec.getSize(widthMeasureSpec), left)
+        } else {
+            style = Style.Start
+            left
+        }
+        setMeasuredDimension(width, height)
+    }
+
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-//        super.onLayout(changed, l, t, r, b)
-//        log("onLayout: [$l, $t, $r, $b]")
-//        log("onLayout-Size: [$left, $top, $right, $bottom]")
         limit()
         reLayout()
     }
@@ -362,7 +401,7 @@ class LTabView(context: Context, attr: AttributeSet?,
         onSelectedListener?.onTabSelected(index)
     }
 
-    fun updateLocationByAnimator() {
+    private fun updateLocationByAnimator() {
         if (locationAnimator.isRunning) {
             locationAnimator.cancel()
         }

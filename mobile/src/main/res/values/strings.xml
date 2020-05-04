@@ -115,4 +115,5 @@
     <string name="timer_empty">You don\'t have a time item yet</string>
     <string name="title_image_fragment">图片</string>
     <string name="granted_permission">Check permission</string>
+    <string name="save">save</string>
 </resources>

@@ -36,14 +36,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <liang.lollipop.ltabview.LTabView
-                    android:id="@+id/tabLayout"
+                <HorizontalScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"/>
+                    android:layout_marginBottom="10dp">
+                    <liang.lollipop.ltabview.LTabView
+                        android:id="@+id/tabLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp" />
+                </HorizontalScrollView>
                 <liang.lollipop.lcountdown.view.WrapHeightViewPager
                     android:id="@+id/viewPager"
                     android:layout_width="match_parent"
@@ -53,16 +57,15 @@
 
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/updateBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:fabSize="normal"
         android:layout_marginEnd="10dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="5dp"
-        android:src="@drawable/ic_done_white_24dp"
+        android:layout_marginTop="5dp"
+        app:icon="@drawable/ic_done_white_24dp"
+        android:text="@string/save"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_gravity="end"/>
+        android:layout_gravity="end" />
 
 </FrameLayout>

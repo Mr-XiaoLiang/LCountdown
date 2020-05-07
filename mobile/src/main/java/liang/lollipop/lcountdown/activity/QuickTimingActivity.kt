@@ -44,7 +44,7 @@ class QuickTimingActivity : BaseActivity() {
         calendar.timeInMillis = startTime
 
         yearInputView.setText(calendar.get(Calendar.YEAR).format(4))
-        monthInputView.setText(calendar.get(Calendar.MONTH).format())
+        monthInputView.setText((calendar.get(Calendar.MONTH) + 1).format())
         dayInputView.setText(calendar.get(Calendar.DAY_OF_MONTH).format())
         hourInputView.setText(calendar.get(Calendar.HOUR_OF_DAY).format())
         minuteInputView.setText(calendar.get(Calendar.MINUTE).format())
@@ -94,7 +94,14 @@ class QuickTimingActivity : BaseActivity() {
 
     private fun saveTiming(isCountdown: Boolean) {
         calendar.set(Calendar.YEAR, yearInputView.getInt())
-        calendar.set(Calendar.MONTH, monthInputView.getInt())
+        val month = monthInputView.getInt().let {
+            if (it > 0) {
+                it - 1
+            } else {
+                0
+            }
+        }
+        calendar.set(Calendar.MONTH, month)
         calendar.set(Calendar.DAY_OF_MONTH, dayInputView.getInt())
         calendar.set(Calendar.HOUR_OF_DAY, hourInputView.getInt())
         calendar.set(Calendar.MINUTE, minuteInputView.getInt())

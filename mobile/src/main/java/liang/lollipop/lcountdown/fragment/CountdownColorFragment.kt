@@ -3,13 +3,16 @@ package liang.lollipop.lcountdown.fragment
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.fragment_countdown_color.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.utils.WidgetUtil
 import liang.lollipop.lcountdown.view.ExpandButton
+import java.util.*
 
 /**
  * @author lollipop
@@ -58,17 +61,24 @@ class CountdownColorFragment: LTabFragment() {
     private fun initView() {
         expandBtnGroup.onSelectedBtnChange {
             onTargetChange(it)
-            parser(provider?.getColorByTarget(selectedTarget)?:Color.WHITE)
+            val target = if (selectedTarget == WidgetUtil.Target.All) {
+                WidgetUtil.Target.Name
+            } else {
+                selectedTarget
+            }
+            parser(provider?.getColorByTarget(target)?:Color.WHITE)
         }
         expandBtnGroup.onExpandStateChange { _, isOpen ->
             if (isOpen) {
                 hideView(transparencyPalette)
                 hideView(huePalette)
                 hideView(satValPalette)
+                hideView(colorValueGroup)
             } else {
                 showView(transparencyPalette)
                 showView(huePalette)
                 showView(satValPalette)
+                showView(colorValueGroup)
             }
         }
         huePalette.onHueChange { hue, _ ->
@@ -86,11 +96,101 @@ class CountdownColorFragment: LTabFragment() {
                 onColorChange()
             }
         }
+
+        colorValueView.setOnEditorActionListener { _, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE
+                    || event.keyCode == KeyEvent.KEYCODE_ENTER) {
+                parserValue(colorValueView.text?.toString()?:"")
+                true
+            } else {
+                false
+            }
+        }
+
         parser(Color.WHITE)
     }
 
+    private fun parserValue(value: String) {
+        if (value.isEmpty()) {
+            colorToValue()
+            return
+        }
+        val color: Int = when(value.length) {
+            1 -> {
+                val v = (value + value).toInt(16)
+                Color.rgb(v, v, v)
+            }
+            2 -> {
+                val v = value.toInt(16)
+                Color.rgb(v, v, v)
+            }
+            3 -> {
+                val r = value.substring(0, 1)
+                val g = value.substring(1, 2)
+                val b = value.substring(2, 3)
+                Color.rgb((r + r).toInt(16),
+                        (g + g).toInt(16),
+                        (b + b).toInt(16))
+            }
+            4, 5 -> {
+                val a = value.substring(0, 1)
+                val r = value.substring(1, 2)
+                val g = value.substring(2, 3)
+                val b = value.substring(3, 4)
+                Color.argb((a + a).toInt(16),
+                        (r + r).toInt(16),
+                        (g + g).toInt(16),
+                        (b + b).toInt(16))
+            }
+            6, 7 -> {
+                val r = value.substring(0, 2).toInt(16)
+                val g = value.substring(2, 4).toInt(16)
+                val b = value.substring(4, 6).toInt(16)
+                Color.rgb(r, g, b)
+            }
+            8 -> {
+                val a = value.substring(0, 2).toInt(16)
+                val r = value.substring(2, 4).toInt(16)
+                val g = value.substring(4, 6).toInt(16)
+                val b = value.substring(6, 8).toInt(16)
+                Color.argb(a, r, g, b)
+            }
+            else -> {
+                Color.WHITE
+            }
+        }
+        parser(color)
+    }
+
+    private fun colorToValue() {
+        val alpha = Color.alpha(targetColor).format()
+        val red = Color.red(targetColor).format()
+        val green = Color.green(targetColor).format()
+        val blue = Color.blue(targetColor).format()
+        colorValueView.setText("${alpha}${red}${green}${blue}")
+    }
+
+    private fun Int.format(): String {
+        return this.toString(16).toUpperCase(Locale.US).let {
+            if (it.length < 2) {
+                "0$it"
+            } else {
+                it
+            }
+        }
+    }
+
     private fun onColorChange() {
-        callback?.onColorChange(selectedTarget, targetColor)
+        if (selectedTarget == WidgetUtil.Target.All) {
+            WidgetUtil.Target.values().forEach {
+                if (it.value >= 0) {
+                    callback?.onColorChange(it, targetColor)
+                }
+            }
+        } else {
+            callback?.onColorChange(selectedTarget, targetColor)
+        }
+        colorToValue()
     }
 
     private fun parser(color: Int) {
@@ -100,6 +200,7 @@ class CountdownColorFragment: LTabFragment() {
         Color.colorToHSV(color, hsv)
         satValPalette.parser(hsv[1], hsv[2])
         huePalette.parser(hsv[0])
+        colorToValue()
     }
 
     private fun hideView(view: View) {
@@ -122,6 +223,7 @@ class CountdownColorFragment: LTabFragment() {
 
     private fun onTargetChange(view: ExpandButton) {
         selectedTarget = when (view) {
+            allModeBtn -> WidgetUtil.Target.All
             titleModeBtn ->  WidgetUtil.Target.Name
             prefixModeBtn -> WidgetUtil.Target.Prefix
             suffixModeBtn -> WidgetUtil.Target.Suffix

@@ -406,6 +406,8 @@ object WidgetUtil {
     }
 
     enum class Target(val value: Int) {
+        /** 全部 **/
+        All(-2),
         /** 什么也没有 **/
         Nothing(-1),
         /** 名称 **/

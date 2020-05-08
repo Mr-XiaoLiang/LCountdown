@@ -27,13 +27,13 @@ class ExpandButtonGroup(context: Context, attr: AttributeSet?,
     var selectedColor = Color.BLUE
         set(value) {
             field = value
-            onBtnClick()
+            updateBtnColor()
         }
 
     var defaultColor = Color.GREEN
         set(value) {
             field = value
-            onBtnClick()
+            updateBtnColor()
         }
 
     var textMaxLines = 1
@@ -108,6 +108,10 @@ class ExpandButtonGroup(context: Context, attr: AttributeSet?,
                 selectedIndex = index
             }
         }
+        updateBtnColor()
+    }
+
+    private fun updateBtnColor() {
         for (i in 0 until childCount) {
             getChildAt(i).let {
                 if (it is ExpandButton) {
@@ -119,15 +123,7 @@ class ExpandButtonGroup(context: Context, attr: AttributeSet?,
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         super.onLayout(changed, l, t, r, b)
-        if (selectedIndex == NOTHING) {
-            for (i in 0 until childCount) {
-                if (getChildAt(i) is ExpandButton) {
-                    selectedIndex = i
-                    break
-                }
-            }
-        }
-        onBtnClick()
+        updateBtnColor()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

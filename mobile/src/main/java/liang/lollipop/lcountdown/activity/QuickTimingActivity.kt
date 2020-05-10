@@ -57,40 +57,60 @@ class QuickTimingActivity : BaseActivity() {
     private fun init() {
         onTimeChange()
 
-        bindClick(rootGroup, timingBtn, countdownBtn, infoBody)
+        bindClick(rootGroup, timingBtn, countdownBtn, infoBody, autoChangeGroup)
 
         autoChangeList.adapter = autoChangeAdapter
         autoChangeList.layoutManager = FlexboxLayoutManager(this,
-                FlexDirection.ROW_REVERSE, FlexWrap.WRAP).apply {
+                FlexDirection.ROW, FlexWrap.WRAP).apply {
             justifyContent = JustifyContent.CENTER
+            alignItems = AlignItems.CENTER
         }
         initListData()
         autoChangeAdapter.notifyDataSetChanged()
     }
 
     private fun initListData() {
+        autoChangeInfoList.add(AutoChangeInfo(
+                getString(R.string.now), srcStartTime))
+
+        autoChangeInfoList.add(AutoChangeInfo(
+                getString(R.string.minutes_later_10),
+                srcStartTime + (MINUTE * 10)))
+
+        autoChangeInfoList.add(AutoChangeInfo(
+                getString(R.string.minutes_later_15),
+                srcStartTime + (MINUTE * 15)))
+
+        autoChangeInfoList.add(AutoChangeInfo(
+                getString(R.string.after_half_an_hour),
+                srcStartTime + (MINUTE * 30)))
+
+        autoChangeInfoList.add(AutoChangeInfo(
+                getString(R.string.after_one_hour),
+                srcStartTime + HOUR))
+
         calendar.timeInMillis = srcStartTime
-        val nextHour = (calendar.get(Calendar.HOUR_OF_DAY) + 1).format()
-        val nextHourInMillis = (srcStartTime + HOUR) / HOUR * HOUR
-        autoChangeInfoList.add(AutoChangeInfo("${nextHour}:00", nextHourInMillis))
+        calendar.add(Calendar.DAY_OF_MONTH, 1)
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        val endDay = calendar.timeInMillis
+        autoChangeInfoList.add(AutoChangeInfo(
+                getString(R.string.end_today),
+                endDay))
 
         autoChangeInfoList.add(AutoChangeInfo(
-                getString(R.string.minutes_later_10), srcStartTime + (MINUTE * 10)))
+                getString(R.string.tomorrow_at_this_time),
+                srcStartTime + DAY))
 
-        autoChangeInfoList.add(AutoChangeInfo(
-                getString(R.string.minutes_later_15), srcStartTime + (MINUTE * 15)))
-
-        autoChangeInfoList.add(AutoChangeInfo(
-                getString(R.string.after_half_an_hour), srcStartTime + (MINUTE * 30)))
-
-        autoChangeInfoList.add(AutoChangeInfo(
-                getString(R.string.after_one_hour), srcStartTime + HOUR))
-
-        autoChangeInfoList.add(AutoChangeInfo(
-                getString(R.string.end_today), (srcStartTime + DAY) / DAY * DAY))
-
-        autoChangeInfoList.add(AutoChangeInfo(
-                getString(R.string.tomorrow_at_this_time), srcStartTime + DAY))
+        calendar.timeInMillis = srcStartTime
+        val thisHour = calendar.get(Calendar.HOUR_OF_DAY)
+        for (i in 1 .. 23) {
+            val nextHour = ((thisHour + i) % 24).format()
+            val nextHourInMillis = (srcStartTime + (HOUR * i)) / HOUR * HOUR
+            autoChangeInfoList.add(AutoChangeInfo("${nextHour}:00", nextHourInMillis))
+        }
     }
 
     private fun onTimeChange() {
@@ -173,9 +193,10 @@ class QuickTimingActivity : BaseActivity() {
     }
 
     private fun onItemClick(holder: AutoChangeHolder) {
-        val position = holder.adapterPosition
-        startTime = autoChangeInfoList[position].time
+        val info = autoChangeInfoList[holder.adapterPosition]
+        startTime = info.time
         onTimeChange()
+        timingNameEdit.setText(info.name)
     }
 
     private data class AutoChangeInfo(val name: String, val time: Long)
@@ -191,13 +212,13 @@ class QuickTimingActivity : BaseActivity() {
             }
         }
 
+        private val nameView: TextView = itemView.findViewById(R.id.nameView)
+
         init {
-            itemView.findViewById<View>(R.id.itemBody).setOnClickListener {
+            nameView.setOnClickListener {
                 onClick(this)
             }
         }
-
-        private val nameView: TextView = itemView.findViewById(R.id.nameView)
 
         fun bind(info: AutoChangeInfo) {
             nameView.text = info.name

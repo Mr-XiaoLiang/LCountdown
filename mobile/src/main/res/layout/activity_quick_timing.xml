@@ -14,6 +14,7 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         app:cardElevation="6dp"
+        app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toTopOf="@id/timingBtn"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -228,13 +229,24 @@
 
     </androidx.cardview.widget.CardView>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.cardview.widget.CardView
         android:layout_width="0px"
-        android:layout_height="wrap_content"
-        android:id="@+id/autoChangeList"
+        android:layout_height="200dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        app:cardElevation="6dp"
+        app:cardCornerRadius="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toTopOf="@id/infoBody"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/autoChangeGroup">
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/autoChangeList"/>
+    </androidx.cardview.widget.CardView>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/timingBtn"
@@ -268,6 +280,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         app:cardElevation="3dp"
+        app:cardCornerRadius="10dp"
         app:layout_constraintLeft_toLeftOf="@id/timingBtn"
         app:layout_constraintRight_toRightOf="@id/timingBtn"
         app:layout_constraintTop_toBottomOf="@id/timingBtn">
@@ -287,6 +300,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         app:cardElevation="3dp"
+        app:cardCornerRadius="10dp"
         app:layout_constraintLeft_toLeftOf="@id/countdownBtn"
         app:layout_constraintRight_toRightOf="@id/countdownBtn"
         app:layout_constraintTop_toBottomOf="@id/countdownBtn">

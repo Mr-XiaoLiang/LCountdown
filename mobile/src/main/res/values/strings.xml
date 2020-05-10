@@ -113,8 +113,15 @@
     <string name="add_floating_error">Failed to add floating window\nPlease check permissions</string>
     <string name="help_calculator">1.After selecting a set of times, set the corresponding offset parameters, and the results will be displayed in another set of times. \n2.You can reach any point in time by switching between the two sets of time \n3.Click the refresh button after the time distance to change the display method of the time distance \n4.Click the copy button after a certain group of time to quickly copy the time stamp </string>
     <string name="timer_empty">You don\'t have a time item yet</string>
-    <string name="title_image_fragment">图片</string>
+    <string name="title_image_fragment">Image</string>
     <string name="granted_permission">Check permission</string>
     <string name="save">save</string>
     <string name="all">All</string>
+
+    <string name="minutes_later_10">10 minutes later</string>
+    <string name="minutes_later_15">15 minutes later</string>
+    <string name="after_half_an_hour">After half an hour</string>
+    <string name="after_one_hour">After one hour</string>
+    <string name="end_today">End_today</string>
+    <string name="tomorrow_at_this_time">Tomorrow at this time</string>
 </resources>

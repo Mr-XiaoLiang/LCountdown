@@ -118,4 +118,11 @@
     <string name="granted_permission">检查权限</string>
     <string name="save">保存</string>
     <string name="all">全部</string>
+    
+    <string name="minutes_later_10">10分钟后</string>
+    <string name="minutes_later_15">15分钟后</string>
+    <string name="after_half_an_hour">半小时后</string>
+    <string name="after_one_hour">一小时后</string>
+    <string name="end_today">今日结束</string>
+    <string name="tomorrow_at_this_time">明日此时</string>
 </resources>

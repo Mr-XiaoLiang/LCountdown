@@ -21,6 +21,7 @@ import liang.lollipop.lcountdown.adapter.TimingListAdapter
 import liang.lollipop.lcountdown.base.BaseActivity
 import liang.lollipop.lcountdown.bean.PhotoInfo
 import liang.lollipop.lcountdown.bean.TimingBean
+import liang.lollipop.lcountdown.dialog.CurtainDialog
 import liang.lollipop.lcountdown.fragment.CountdownImageFragment
 import liang.lollipop.lcountdown.holder.TimingHolder
 import liang.lollipop.lcountdown.service.FloatingService
@@ -179,10 +180,11 @@ class TimingListActivity : BaseActivity(),
 
         when (v) {
             quickTimingBtn -> {
-                startActivityForResult(
-                        Intent(this, QuickTimingActivity::class.java),
-                        REQUEST_NEW_TIMING,
-                        androidx.core.util.Pair.create(v, QuickTimingActivity.QUIET_BTN_TRANSITION))
+//                startActivityForResult(
+//                        Intent(this, QuickTimingActivity::class.java),
+//                        REQUEST_NEW_TIMING,
+//                        androidx.core.util.Pair.create(v, QuickTimingActivity.QUIET_BTN_TRANSITION))
+                CurtainDialog.with(this).showOnce()
             }
 
             sheetBtn -> {

@@ -26,4 +26,6 @@
     <color name="fabIconColor">#FFFFFF</color>
     <color name="imageTabSelected">#C7942C</color>
 
+    <color name="curtain_card">#ECECEC</color>
+
 </resources>

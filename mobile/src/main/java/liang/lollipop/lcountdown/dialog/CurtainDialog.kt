@@ -11,6 +11,9 @@ import android.widget.FrameLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.base.OnWindowInsetsListener
+import liang.lollipop.lcountdown.base.OnWindowInsetsProvider
+import liang.lollipop.lcountdown.utils.WindowInsetsHelper
 import java.util.*
 
 /**
@@ -19,22 +22,27 @@ import java.util.*
  * 帘子一样垂下的Dialog
  * 它会在保持页面不变的情况下尽可能的提供更多的内容空间
  */
-class CurtainDialog private constructor(private val rootGroup: ViewGroup):
+class CurtainDialog private constructor(
+        private val rootGroup: ViewGroup,
+        private val onWindowInsetsProvider: OnWindowInsetsProvider?):
         View.OnClickListener,
         ValueAnimator.AnimatorUpdateListener,
-        Animator.AnimatorListener{
+        Animator.AnimatorListener,
+        OnWindowInsetsListener {
 
     companion object {
         private const val DURATION = 300L
 
         fun with(activity: Activity): CurtainDialog {
+            val provider = if (activity is OnWindowInsetsProvider) { activity } else { null }
             return CurtainDialog(findGroup(activity.window.decorView)
-                    ?:throw InflateException("Not fount root group"))
+                    ?:throw InflateException("Not fount root group"), provider)
         }
 
         fun with(fragment: Fragment): CurtainDialog {
+            val provider = if (fragment is OnWindowInsetsProvider) { fragment } else { null }
             return CurtainDialog(findGroup(fragment.view)
-                    ?:throw InflateException("Not fount root group"))
+                    ?:throw InflateException("Not fount root group"), provider)
         }
 
         private fun findGroup(rootGroup: View?): ViewGroup? {
@@ -81,6 +89,10 @@ class CurtainDialog private constructor(private val rootGroup: ViewGroup):
     private val valueAnimator = ValueAnimator()
     private var once = false
 
+    private val windowInsetsHelper: WindowInsetsHelper by lazy {
+        WindowInsetsHelper(contentGroup)
+    }
+
     init {
         valueAnimator.addUpdateListener(this)
         valueAnimator.addListener(this)
@@ -88,20 +100,6 @@ class CurtainDialog private constructor(private val rootGroup: ViewGroup):
         closeBtn.setOnClickListener(this)
         contentGroup.setOnClickListener{}
         dialogView.visibility = View.INVISIBLE
-        contentGroup.outlineProvider = object : ViewOutlineProvider() {
-            override fun getOutline(view: View?, outline: Outline?) {
-                view?:return
-                outline?:return
-                outline.setRoundRect(
-                        view.paddingLeft,
-                        view.paddingTop,
-                        view.width - view.paddingRight,
-                        view.height - view.paddingBottom,
-                        TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_DIP, 20F, view.resources.displayMetrics))
-            }
-        }
-        contentGroup.clipToOutline = true
     }
 
     fun dismiss() {
@@ -124,6 +122,8 @@ class CurtainDialog private constructor(private val rootGroup: ViewGroup):
                 }
             }
             rootGroup.addView(dialogView)
+            windowInsetsHelper.baseMarginFromNow()
+            onWindowInsetsProvider?.addOnWindowInsetsProvider(this)
         }
         dialogView.post {
             doAnimation(true)
@@ -138,6 +138,7 @@ class CurtainDialog private constructor(private val rootGroup: ViewGroup):
                 }
             }
         }
+        onWindowInsetsProvider?.removeOnWindowInsetsProvider(this)
     }
 
     private fun doAnimation(open: Boolean) {
@@ -160,7 +161,7 @@ class CurtainDialog private constructor(private val rootGroup: ViewGroup):
             progress = 0F
         }
         backgroundView.alpha = progress
-        contentGroup.translationY = contentGroup.height * (progress - 1)
+        contentGroup.translationY = (contentGroup.top + contentGroup.height) * (progress - 1)
     }
 
     private fun hideCloseBtn() {
@@ -223,6 +224,10 @@ class CurtainDialog private constructor(private val rootGroup: ViewGroup):
         } else {
             hideCloseBtn()
         }
+    }
+
+    override fun onInsetsChange(root: View, left: Int, top: Int, right: Int, bottom: Int) {
+        windowInsetsHelper.updateByMargin(root, left, top, right, bottom)
     }
 
 }

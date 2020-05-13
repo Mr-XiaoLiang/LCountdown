@@ -20,6 +20,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import liang.lollipop.lcountdown.utils.LItemTouchCallback
 import liang.lollipop.lcountdown.utils.LItemTouchHelper
 import liang.lollipop.lcountdown.utils.SimpleHandler
+import liang.lollipop.lcountdown.utils.WindowInsetsProviderHelper
 
 /**
  * Created by lollipop on 2018/1/2.
@@ -31,7 +32,8 @@ open class BaseActivity : AppCompatActivity(),
         SwipeRefreshLayout.OnRefreshListener,
         LItemTouchCallback.OnItemTouchStateChangedListener,
         LItemTouchCallback.OnItemTouchCallbackListener,
-        View.OnClickListener {
+        View.OnClickListener,
+        OnWindowInsetsProvider {
 
     /**是否显示返回按钮*/
     protected var isShowBack = true
@@ -46,6 +48,10 @@ open class BaseActivity : AppCompatActivity(),
     companion object {
         /**用来做关联动画的别名*/
         protected const val TRANSITION_NAME = "ROOT_VIEW"
+    }
+
+    private val windowInsetsProviderHelper: WindowInsetsProviderHelper by lazy {
+        WindowInsetsProviderHelper()
     }
 
     override fun onStart() {
@@ -94,6 +100,9 @@ open class BaseActivity : AppCompatActivity(),
         group.fitsSystemWindows = true
         group.setOnApplyWindowInsetsListener { _, insets ->
             onInsetsChange(group, insets.systemWindowInsetLeft, insets.systemWindowInsetTop,
+                    insets.systemWindowInsetRight, insets.systemWindowInsetBottom)
+            windowInsetsProviderHelper.onInsetsChange(group,
+                    insets.systemWindowInsetLeft, insets.systemWindowInsetTop,
                     insets.systemWindowInsetRight, insets.systemWindowInsetBottom)
             insets.consumeSystemWindowInsets()
         }
@@ -159,6 +168,14 @@ open class BaseActivity : AppCompatActivity(),
         for (v in views) {
             v.setOnClickListener(this)
         }
+    }
+
+    override fun addOnWindowInsetsProvider(listener: OnWindowInsetsListener) {
+        windowInsetsProviderHelper.addOnWindowInsetsProvider(listener)
+    }
+
+    override fun removeOnWindowInsetsProvider(listener: OnWindowInsetsListener) {
+        windowInsetsProviderHelper.removeOnWindowInsetsProvider(listener)
     }
 
 }

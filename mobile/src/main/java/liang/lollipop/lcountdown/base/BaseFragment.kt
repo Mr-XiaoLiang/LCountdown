@@ -1,5 +1,6 @@
 package liang.lollipop.lcountdown.base
 
+import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Message
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import liang.lollipop.lcountdown.utils.LItemTouchCallback
 import liang.lollipop.lcountdown.utils.SimpleHandler
+import liang.lollipop.lcountdown.utils.WindowInsetsProviderHelper
 
 /**
  * Created by lollipop on 2018/1/2.
@@ -20,12 +22,18 @@ open class BaseFragment: Fragment(),
         SwipeRefreshLayout.OnRefreshListener,
         View.OnClickListener,
         LItemTouchCallback.OnItemTouchCallbackListener,
-        LItemTouchCallback.OnItemTouchStateChangedListener{
+        LItemTouchCallback.OnItemTouchStateChangedListener,
+        OnWindowInsetsProvider,
+        OnWindowInsetsListener {
 
     protected val handler: Handler by lazy {
         SimpleHandler {
             onHandler(it)
         }
+    }
+
+    private val windowInsetsProviderHelper: WindowInsetsProviderHelper by lazy {
+        WindowInsetsProviderHelper()
     }
 
     override fun onClick(v: View?) {
@@ -78,6 +86,34 @@ open class BaseFragment: Fragment(),
         for (v in views) {
             v.setOnClickListener(this)
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnWindowInsetsProvider) {
+            context.addOnWindowInsetsProvider(this)
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        context?.let {
+            if (it is OnWindowInsetsProvider) {
+                it.removeOnWindowInsetsProvider(this)
+            }
+        }
+    }
+
+    override fun addOnWindowInsetsProvider(listener: OnWindowInsetsListener) {
+        windowInsetsProviderHelper.addOnWindowInsetsProvider(listener)
+    }
+
+    override fun removeOnWindowInsetsProvider(listener: OnWindowInsetsListener) {
+        windowInsetsProviderHelper.removeOnWindowInsetsProvider(listener)
+    }
+
+    override fun onInsetsChange(root: View, left: Int, top: Int, right: Int, bottom: Int) {
+        windowInsetsProviderHelper.onInsetsChange(root, left, top, right, bottom)
     }
 
 }

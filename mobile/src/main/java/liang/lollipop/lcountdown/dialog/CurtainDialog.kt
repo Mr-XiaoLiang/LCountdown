@@ -31,7 +31,8 @@ class CurtainDialog private constructor(
         Animator.AnimatorListener,
         OnWindowInsetsListener,
         BackPressedProvider,
-        BackPressedListener {
+        BackPressedListener,
+        InnerDialogProvider.Callback{
 
     companion object {
         private const val DURATION = 300L
@@ -86,13 +87,14 @@ class CurtainDialog private constructor(
             .inflate(R.layout.dialog_curtain, rootGroup, false)
 
     private val backgroundView: View = dialogView.findViewById(R.id.backgroundView)
-    private val contentGroup: FrameLayout = dialogView.findViewById(R.id.contentGroup)
+    private val contentGroup: ViewGroup = dialogView.findViewById(R.id.contentGroup)
     private val closeBtn: View = dialogView.findViewById(R.id.closeBtn)
 
     private var progress = 0F
     private var pullCurtain = false
     private val valueAnimator = ValueAnimator()
     private var once = false
+    private var innerDialogProvider: InnerDialogProvider? = null
 
     private val windowInsetsHelper: WindowInsetsHelper by lazy {
         WindowInsetsHelper(contentGroup)
@@ -116,6 +118,7 @@ class CurtainDialog private constructor(
         if (!rootGroup.isAttachedToWindow || rootGroup.parent == null || !rootGroup.isShown) {
             return
         }
+        innerDialogProvider?.onStop()
         doAnimation(false)
     }
 
@@ -131,17 +134,37 @@ class CurtainDialog private constructor(
                     parent.removeView(dialogView)
                 }
             }
+            innerDialogProvider?.let { provider ->
+                provider.onCreate()
+                val contentView = provider.createContentView(contentGroup)
+                contentGroup.addView(contentView)
+                provider.onViewCreated(contentView)
+            }
             rootGroup.addView(dialogView)
             windowInsetsHelper.baseMarginFromNow()
             onWindowInsetsProvider?.addOnWindowInsetsProvider(this)
         }
         dialogView.post {
+            innerDialogProvider?.onStart()
             backPressedProvider?.addBackPressedListener(this)
             doAnimation(true)
         }
     }
 
+    fun bindProvider(provider: InnerDialogProvider): CurtainDialog {
+        innerDialogProvider?.let {
+            removeBackPressedListener(it)
+            it.bindCallback(null)
+        }
+        this.innerDialogProvider = provider
+        provider.bindCallback(this)
+        addBackPressedListener(provider)
+        return this
+    }
+
     private fun removeView() {
+        innerDialogProvider?.onDestroy()
+        backPressedProviderHelper.clear()
         if (dialogView.isAttachedToWindow) {
             dialogView.parent?.let { parent ->
                 if (parent is ViewManager) {
@@ -255,6 +278,10 @@ class CurtainDialog private constructor(
 
     override fun removeBackPressedListener(listener: BackPressedListener) {
         backPressedProviderHelper.removeBackPressedListener(listener)
+    }
+
+    override fun callDismiss() {
+        dismiss()
     }
 
 }

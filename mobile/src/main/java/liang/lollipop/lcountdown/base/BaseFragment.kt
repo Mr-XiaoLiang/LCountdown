@@ -129,6 +129,11 @@ open class BaseFragment: Fragment(),
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        backPressedProviderHelper.clear()
+    }
+
     override fun addOnWindowInsetsProvider(listener: OnWindowInsetsListener) {
         windowInsetsProviderHelper.addOnWindowInsetsProvider(listener)
     }

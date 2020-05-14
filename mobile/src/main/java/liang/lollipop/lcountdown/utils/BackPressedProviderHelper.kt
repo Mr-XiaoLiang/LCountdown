@@ -29,4 +29,8 @@ class BackPressedProviderHelper: BackPressedProvider, BackPressedListener {
         return false
     }
 
+    fun clear() {
+        listenerList.clear()
+    }
+
 }

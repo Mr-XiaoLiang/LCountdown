@@ -195,4 +195,9 @@ open class BaseActivity : AppCompatActivity(),
         super.onBackPressed()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        backPressedProviderHelper.clear()
+    }
+
 }

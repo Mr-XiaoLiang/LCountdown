@@ -17,10 +17,7 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import liang.lollipop.lcountdown.utils.LItemTouchCallback
-import liang.lollipop.lcountdown.utils.LItemTouchHelper
-import liang.lollipop.lcountdown.utils.SimpleHandler
-import liang.lollipop.lcountdown.utils.WindowInsetsProviderHelper
+import liang.lollipop.lcountdown.utils.*
 
 /**
  * Created by lollipop on 2018/1/2.
@@ -33,7 +30,8 @@ open class BaseActivity : AppCompatActivity(),
         LItemTouchCallback.OnItemTouchStateChangedListener,
         LItemTouchCallback.OnItemTouchCallbackListener,
         View.OnClickListener,
-        OnWindowInsetsProvider {
+        OnWindowInsetsProvider,
+        BackPressedProvider {
 
     /**是否显示返回按钮*/
     protected var isShowBack = true
@@ -52,6 +50,10 @@ open class BaseActivity : AppCompatActivity(),
 
     private val windowInsetsProviderHelper: WindowInsetsProviderHelper by lazy {
         WindowInsetsProviderHelper()
+    }
+
+    private val backPressedProviderHelper: BackPressedProviderHelper by lazy {
+        BackPressedProviderHelper()
     }
 
     override fun onStart() {
@@ -176,6 +178,21 @@ open class BaseActivity : AppCompatActivity(),
 
     override fun removeOnWindowInsetsProvider(listener: OnWindowInsetsListener) {
         windowInsetsProviderHelper.removeOnWindowInsetsProvider(listener)
+    }
+
+    override fun addBackPressedListener(listener: BackPressedListener) {
+        backPressedProviderHelper.addBackPressedListener(listener)
+    }
+
+    override fun removeBackPressedListener(listener: BackPressedListener) {
+        backPressedProviderHelper.removeBackPressedListener(listener)
+    }
+
+    override fun onBackPressed() {
+        if (backPressedProviderHelper.onBackPressed()) {
+            return
+        }
+        super.onBackPressed()
     }
 
 }

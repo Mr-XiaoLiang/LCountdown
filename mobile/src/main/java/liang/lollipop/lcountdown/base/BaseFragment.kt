@@ -10,6 +10,7 @@ import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import liang.lollipop.lcountdown.utils.BackPressedProviderHelper
 import liang.lollipop.lcountdown.utils.LItemTouchCallback
 import liang.lollipop.lcountdown.utils.SimpleHandler
 import liang.lollipop.lcountdown.utils.WindowInsetsProviderHelper
@@ -24,7 +25,9 @@ open class BaseFragment: Fragment(),
         LItemTouchCallback.OnItemTouchCallbackListener,
         LItemTouchCallback.OnItemTouchStateChangedListener,
         OnWindowInsetsProvider,
-        OnWindowInsetsListener {
+        OnWindowInsetsListener,
+        BackPressedProvider,
+        BackPressedListener {
 
     protected val handler: Handler by lazy {
         SimpleHandler {
@@ -34,6 +37,10 @@ open class BaseFragment: Fragment(),
 
     private val windowInsetsProviderHelper: WindowInsetsProviderHelper by lazy {
         WindowInsetsProviderHelper()
+    }
+
+    private val backPressedProviderHelper: BackPressedProviderHelper by lazy {
+        BackPressedProviderHelper()
     }
 
     override fun onClick(v: View?) {
@@ -104,6 +111,24 @@ open class BaseFragment: Fragment(),
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        context?.let {
+            if (it is BackPressedProvider) {
+                it.addBackPressedListener(this)
+            }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        context?.let {
+            if (it is BackPressedProvider) {
+                it.removeBackPressedListener(this)
+            }
+        }
+    }
+
     override fun addOnWindowInsetsProvider(listener: OnWindowInsetsListener) {
         windowInsetsProviderHelper.addOnWindowInsetsProvider(listener)
     }
@@ -114,6 +139,18 @@ open class BaseFragment: Fragment(),
 
     override fun onInsetsChange(root: View, left: Int, top: Int, right: Int, bottom: Int) {
         windowInsetsProviderHelper.onInsetsChange(root, left, top, right, bottom)
+    }
+
+    override fun addBackPressedListener(listener: BackPressedListener) {
+        backPressedProviderHelper.addBackPressedListener(listener)
+    }
+
+    override fun removeBackPressedListener(listener: BackPressedListener) {
+        backPressedProviderHelper.removeBackPressedListener(listener)
+    }
+
+    override fun onBackPressed(): Boolean {
+        return backPressedProviderHelper.onBackPressed()
     }
 
 }

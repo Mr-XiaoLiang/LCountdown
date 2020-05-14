@@ -3,16 +3,16 @@ package liang.lollipop.lcountdown.dialog
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.app.Activity
-import android.graphics.Outline
-import android.graphics.Path
-import android.util.TypedValue
 import android.view.*
 import android.widget.FrameLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.base.BackPressedListener
+import liang.lollipop.lcountdown.base.BackPressedProvider
 import liang.lollipop.lcountdown.base.OnWindowInsetsListener
 import liang.lollipop.lcountdown.base.OnWindowInsetsProvider
+import liang.lollipop.lcountdown.utils.BackPressedProviderHelper
 import liang.lollipop.lcountdown.utils.WindowInsetsHelper
 import java.util.*
 
@@ -24,25 +24,30 @@ import java.util.*
  */
 class CurtainDialog private constructor(
         private val rootGroup: ViewGroup,
-        private val onWindowInsetsProvider: OnWindowInsetsProvider?):
+        private val onWindowInsetsProvider: OnWindowInsetsProvider?,
+        private val backPressedProvider: BackPressedProvider?):
         View.OnClickListener,
         ValueAnimator.AnimatorUpdateListener,
         Animator.AnimatorListener,
-        OnWindowInsetsListener {
+        OnWindowInsetsListener,
+        BackPressedProvider,
+        BackPressedListener {
 
     companion object {
         private const val DURATION = 300L
 
         fun with(activity: Activity): CurtainDialog {
             val provider = if (activity is OnWindowInsetsProvider) { activity } else { null }
+            val backProvider = if (activity is BackPressedProvider) { activity } else { null }
             return CurtainDialog(findGroup(activity.window.decorView)
-                    ?:throw InflateException("Not fount root group"), provider)
+                    ?:throw InflateException("Not fount root group"), provider, backProvider)
         }
 
         fun with(fragment: Fragment): CurtainDialog {
             val provider = if (fragment is OnWindowInsetsProvider) { fragment } else { null }
+            val backProvider = if (fragment is BackPressedProvider) { fragment } else { null }
             return CurtainDialog(findGroup(fragment.view)
-                    ?:throw InflateException("Not fount root group"), provider)
+                    ?:throw InflateException("Not fount root group"), provider, backProvider)
         }
 
         private fun findGroup(rootGroup: View?): ViewGroup? {
@@ -93,6 +98,10 @@ class CurtainDialog private constructor(
         WindowInsetsHelper(contentGroup)
     }
 
+    private val backPressedProviderHelper: BackPressedProviderHelper by lazy {
+        BackPressedProviderHelper()
+    }
+
     init {
         valueAnimator.addUpdateListener(this)
         valueAnimator.addListener(this)
@@ -103,6 +112,7 @@ class CurtainDialog private constructor(
     }
 
     fun dismiss() {
+        backPressedProvider?.removeBackPressedListener(this)
         if (!rootGroup.isAttachedToWindow || rootGroup.parent == null || !rootGroup.isShown) {
             return
         }
@@ -126,6 +136,7 @@ class CurtainDialog private constructor(
             onWindowInsetsProvider?.addOnWindowInsetsProvider(this)
         }
         dialogView.post {
+            backPressedProvider?.addBackPressedListener(this)
             doAnimation(true)
         }
     }
@@ -189,7 +200,7 @@ class CurtainDialog private constructor(
     override fun onClick(v: View?) {
         when (v) {
             dialogView, closeBtn -> {
-                dismiss()
+                onBackPressed()
             }
         }
     }
@@ -214,6 +225,14 @@ class CurtainDialog private constructor(
         }
     }
 
+    override fun onBackPressed(): Boolean {
+        if (backPressedProviderHelper.onBackPressed()) {
+            return true
+        }
+        dismiss()
+        return true
+    }
+
     override fun onAnimationCancel(animation: Animator?) {  }
 
     override fun onAnimationStart(animation: Animator?) {
@@ -228,6 +247,14 @@ class CurtainDialog private constructor(
 
     override fun onInsetsChange(root: View, left: Int, top: Int, right: Int, bottom: Int) {
         windowInsetsHelper.updateByMargin(root, left, top, right, bottom)
+    }
+
+    override fun addBackPressedListener(listener: BackPressedListener) {
+        backPressedProviderHelper.addBackPressedListener(listener)
+    }
+
+    override fun removeBackPressedListener(listener: BackPressedListener) {
+        backPressedProviderHelper.removeBackPressedListener(listener)
     }
 
 }

@@ -180,11 +180,11 @@ class TimingListActivity : BaseActivity(),
 
         when (v) {
             quickTimingBtn -> {
-//                startActivityForResult(
-//                        Intent(this, QuickTimingActivity::class.java),
-//                        REQUEST_NEW_TIMING,
-//                        androidx.core.util.Pair.create(v, QuickTimingActivity.QUIET_BTN_TRANSITION))
-                CurtainDialog.with(this).showOnce()
+                startActivityForResult(
+                        Intent(this, QuickTimingActivity::class.java),
+                        REQUEST_NEW_TIMING,
+                        androidx.core.util.Pair.create(v, QuickTimingActivity.QUIET_BTN_TRANSITION))
+//                CurtainDialog.with(this).showOnce()
             }
 
             sheetBtn -> {

@@ -16,6 +16,7 @@ import liang.lollipop.lcountdown.base.BaseHolder
 import liang.lollipop.lcountdown.base.LSimpleAdapter
 import liang.lollipop.lcountdown.bean.PhotoInfo
 import liang.lollipop.lcountdown.utils.PhotoAlbumHelper
+import liang.lollipop.lcountdown.utils.onUI
 
 /**
  * @author lollipop
@@ -43,7 +44,9 @@ class CountdownImageFragment: LTabFragment() {
     private val photoAlbumHelper = PhotoAlbumHelper().onComplete {
         onLoadComplete()
     }.onError {
-        onLoadError()
+        onUI {
+            onLoadError()
+        }
     }
     private val adapter = ImageAdapter(photoAlbumHelper.data) {
         callback?.onImageSelected(photoAlbumHelper.get(it))

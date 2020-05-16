@@ -21,7 +21,6 @@ import liang.lollipop.lcountdown.adapter.TimingListAdapter
 import liang.lollipop.lcountdown.base.BaseActivity
 import liang.lollipop.lcountdown.bean.PhotoInfo
 import liang.lollipop.lcountdown.bean.TimingBean
-import liang.lollipop.lcountdown.dialog.CurtainDialog
 import liang.lollipop.lcountdown.fragment.CountdownImageFragment
 import liang.lollipop.lcountdown.holder.TimingHolder
 import liang.lollipop.lcountdown.service.FloatingService

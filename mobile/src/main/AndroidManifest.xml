@@ -22,7 +22,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activity.GradientActivity"></activity>
+        <activity android:name=".activity2.BaseActivity"></activity>
+        <activity android:name=".activity.GradientActivity" />
         <activity
             android:name=".activity.TimeCalculatorActivity"
             android:label="@string/title_activity_time_calculator"

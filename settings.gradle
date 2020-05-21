@@ -1,1 +1,1 @@
-include ':mobile', ':ltabview'
+include ':mobile', ':ltabview',':mobile2'

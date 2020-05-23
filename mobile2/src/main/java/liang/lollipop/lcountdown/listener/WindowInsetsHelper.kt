@@ -1,6 +1,7 @@
 package liang.lollipop.lcountdown.listener
 
 import android.graphics.Rect
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 
@@ -20,6 +21,8 @@ class WindowInsetsHelper (private val self: View) {
 
     private val srcMargin = Rect()
 
+    private val pendingInsetsList = ArrayList<PendingInsets>()
+
     init {
         if (self.isAttachedToWindow) {
             rootParent = findRootParent(self)
@@ -33,10 +36,29 @@ class WindowInsetsHelper (private val self: View) {
                 rootParent = findRootParent(self)
             }
         })
+        self.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            if (pendingInsetsList.isNotEmpty()) {
+                val pending = pendingInsetsList.removeAt(0)
+                if (pending.isPadding) {
+                    updateByPadding(pending.target,
+                            pending.left, pending.top,
+                            pending.right, pending.bottom)
+                } else {
+                    updateByMargin(pending.target,
+                            pending.left, pending.top,
+                            pending.right, pending.bottom)
+                }
+            }
+        }
     }
 
     fun updateByPadding(view: View, left: Int, top: Int, right: Int, bottom: Int) {
         if (checkParent(view)) {
+            if (self.width < 1 && self.height < 1) {
+                pendingInsetsList.clear()
+                pendingInsetsList.add(PendingInsets(view, left, top, right, bottom, true))
+                return
+            }
             val insets = getViewInsets(left, top, right, bottom)
             self.setPadding(insets.left, insets.top, insets.right, insets.bottom)
         }
@@ -44,6 +66,11 @@ class WindowInsetsHelper (private val self: View) {
 
     fun updateByMargin(view: View, left: Int, top: Int, right: Int, bottom: Int) {
         if (checkParent(view)) {
+            if (self.width < 1 && self.height < 1) {
+                pendingInsetsList.clear()
+                pendingInsetsList.add(PendingInsets(view, left, top, right, bottom, false))
+                return
+            }
             val layoutParams = self.layoutParams
             if (layoutParams is ViewGroup.MarginLayoutParams) {
                 val insets = getViewInsets(left, top, right, bottom)
@@ -58,15 +85,32 @@ class WindowInsetsHelper (private val self: View) {
     }
 
     private fun getViewInsets(left: Int, top: Int, right: Int, bottom: Int): Rect {
-        self.getLocationInWindow(tempLocalArray)
+//        self.getLocationInWindow(tempLocalArray)
+        getLocationInRoot(tempLocalArray)
         tempBounds.set(0, 0, self.width, self.height)
         tempBounds.offset(tempLocalArray[0], tempLocalArray[1])
-        self.getWindowVisibleDisplayFrame(windowBounds)
-        tempOutSize.left = (left - tempBounds.left).limit()
-        tempOutSize.top = (top - tempBounds.top).limit()
-        tempOutSize.right = (right - windowBounds.width() + tempBounds.right).limit()
-        tempOutSize.bottom = (bottom - windowBounds.height() +  tempBounds.bottom).limit()
+        windowBounds.set(rootParent?.left?:0, rootParent?.top?:0,
+                rootParent?.right?:0, rootParent?.bottom?:0)
+        if (windowBounds.isEmpty) {
+            tempOutSize.set(0, 0, 0, 0)
+        } else {
+            tempOutSize.left = (left - tempBounds.left).limit()
+            tempOutSize.top = (top - tempBounds.top).limit()
+            tempOutSize.right = (right - (windowBounds.right - tempBounds.right)).limit()
+            tempOutSize.bottom = (bottom - (windowBounds.bottom - tempBounds.bottom)).limit()
+        }
+        Log.d("getViewInsets", "${self.javaClass.simpleName}: [$left, $top - $right, $bottom], $tempOutSize")
+        Log.d("getViewInsets", "${self.javaClass.simpleName}: windowBounds: $windowBounds, tempBounds: $tempBounds")
         return tempOutSize
+    }
+
+    private fun getLocationInRoot(intArray: IntArray) {
+        val selfLoc = IntArray(2)
+        self.getLocationInWindow(selfLoc)
+        val rootLoc = IntArray(2) { 0 }
+        rootParent?.getLocationInWindow(rootLoc)
+        intArray[0] = selfLoc[0] - rootLoc[0]
+        intArray[1] = selfLoc[1] - rootLoc[1]
     }
 
     private fun Int.limit(): Int {
@@ -109,5 +153,10 @@ class WindowInsetsHelper (private val self: View) {
         }
         return target
     }
+
+    private data class PendingInsets(val target: View,
+                                     val left: Int, val top: Int,
+                                     val right: Int, val bottom: Int,
+                                     val isPadding: Boolean)
 
 }

@@ -6,11 +6,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.BottomBarActivity"
-    android:id="@+id/rootGroup">
+    android:id="@+id/rootGroup"
+    android:background="@color/windowBackground">
+
+    <FrameLayout
+        android:id="@+id/contentGroup"
+        android:background="@color/contentBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"/>
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="bottom"/>
+        android:background="@color/colorPrimary"
+        android:layout_gravity="bottom"
+        android:id="@+id/appBar"
+        app:backgroundTint="@color/colorPrimary"
+        app:titleTextColor="@color/colorPrimaryText"
+        app:navigationIcon="@drawable/ic_arrow_white_black_24dp"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

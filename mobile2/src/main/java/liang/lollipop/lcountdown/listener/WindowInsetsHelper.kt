@@ -23,6 +23,8 @@ class WindowInsetsHelper (private val self: View) {
 
     private val pendingInsetsList = ArrayList<PendingInsets>()
 
+    private var insetsCallback: (WindowInsetsHelper.(Rect) -> Unit)? = null
+
     init {
         if (self.isAttachedToWindow) {
             rootParent = findRootParent(self)
@@ -55,33 +57,54 @@ class WindowInsetsHelper (private val self: View) {
     fun updateByPadding(view: View, left: Int, top: Int, right: Int, bottom: Int) {
         if (checkParent(view)) {
             if (self.width < 1 && self.height < 1) {
-                pendingInsetsList.clear()
                 pendingInsetsList.add(PendingInsets(view, left, top, right, bottom, true))
                 return
             }
             val insets = getViewInsets(left, top, right, bottom)
-            self.setPadding(insets.left, insets.top, insets.right, insets.bottom)
+            val callback = insetsCallback
+            if (callback != null) {
+                callback(insets)
+            } else {
+                setInsetsByPadding(insets.left, insets.top, insets.right, insets.bottom)
+            }
         }
     }
 
     fun updateByMargin(view: View, left: Int, top: Int, right: Int, bottom: Int) {
         if (checkParent(view)) {
             if (self.width < 1 && self.height < 1) {
-                pendingInsetsList.clear()
                 pendingInsetsList.add(PendingInsets(view, left, top, right, bottom, false))
                 return
             }
-            val layoutParams = self.layoutParams
-            if (layoutParams is ViewGroup.MarginLayoutParams) {
-                val insets = getViewInsets(left, top, right, bottom)
-                layoutParams.setMargins(
-                        srcMargin.left + insets.left,
-                        srcMargin.top + insets.top,
-                        srcMargin.right + insets.right,
-                        srcMargin.bottom + insets.bottom)
-                self.layoutParams = layoutParams
+            val insets = getViewInsets(left, top, right, bottom)
+            val callback = insetsCallback
+            if (callback != null) {
+                callback(insets)
+            } else {
+                setInsetsByMargin(insets.left, insets.top, insets.right, insets.bottom)
             }
         }
+    }
+
+    fun setInsetsByPadding(left: Int, top: Int, right: Int, bottom: Int) {
+        self.setPadding(left, top, right, bottom)
+    }
+
+    fun setInsetsByMargin(left: Int, top: Int, right: Int, bottom: Int) {
+        val layoutParams = self.layoutParams
+        if (layoutParams is ViewGroup.MarginLayoutParams) {
+            layoutParams.setMargins(
+                    srcMargin.left + left,
+                    srcMargin.top + top,
+                    srcMargin.right + right,
+                    srcMargin.bottom + bottom)
+            self.layoutParams = layoutParams
+        }
+    }
+
+    fun custom(callback: (WindowInsetsHelper.(Rect) -> Unit)?): WindowInsetsHelper {
+        this.insetsCallback = callback
+        return this
     }
 
     private fun getViewInsets(left: Int, top: Int, right: Int, bottom: Int): Rect {

@@ -5,13 +5,11 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import liang.lollipop.lcountdown.R
 import kotlin.math.abs
-import kotlin.math.max
 import kotlin.math.min
 
 /**

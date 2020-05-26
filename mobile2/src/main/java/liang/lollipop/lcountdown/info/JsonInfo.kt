@@ -6,22 +6,23 @@ import org.json.JSONObject
 /**
  * @author lollipop
  * @date 2020/5/26 23:44
+ * 基础的信息类
  */
-open class JsonInfo private constructor(private var infoObject: JSONObject = JSONObject()){
+open class JsonInfo private constructor(private val infoObject: JSONObject = JSONObject()){
 
     constructor(): this(JSONObject())
 
     companion object {
+
         private fun createWith(info: JsonInfo): JsonInfo {
-            return JsonInfo(copyOut(info))
+            return JsonInfo(copyOut(JSONObject(), info))
         }
 
-        private fun copyOut(info: JsonInfo): JSONObject {
-            return copyObj(info.infoObject)
+        private fun copyOut(newObj: JSONObject, info: JsonInfo): JSONObject {
+            return copyObj(newObj, info.infoObject)
         }
 
-        private fun copyObj(obj: JSONObject): JSONObject {
-            val newObj = JSONObject()
+        private fun copyObj(newObj: JSONObject, obj: JSONObject): JSONObject {
             obj.keys().forEach {
                 if (it != null) {
                     newObj.put(it, newObj.opt(it)?.copyValue())
@@ -41,7 +42,7 @@ open class JsonInfo private constructor(private var infoObject: JSONObject = JSO
         private fun Any.copyValue(): Any {
             return when (this) {
                 is JSONObject -> {
-                    copyObj(this)
+                    copyObj(JSONObject(), this)
                 }
                 is JSONArray -> {
                     copyArray(this)
@@ -57,7 +58,14 @@ open class JsonInfo private constructor(private var infoObject: JSONObject = JSO
     }
 
     fun copy(info: JsonInfo) {
-        this.infoObject = copyOut(info)
+        val allKey = ArrayList<String>()
+        this.infoObject.keys().forEach {
+            allKey.add(it)
+        }
+        allKey.forEach {
+            this.infoObject.remove(it)
+        }
+        copyOut(this.infoObject, info)
     }
 
     fun <T> invoke(c: Class<T>): T {
@@ -74,7 +82,7 @@ open class JsonInfo private constructor(private var infoObject: JSONObject = JSO
     }
 
     @Suppress("UNCHECKED_CAST")
-    protected fun <T: Any> get(key: String, def: T): T {
+    fun <T: Any> get(key: String, def: T): T {
         try {
             val result = when (def) {
                 is String -> {
@@ -113,6 +121,9 @@ open class JsonInfo private constructor(private var infoObject: JSONObject = JSO
                 is JSONArray -> {
                     infoObject.optJSONArray(key)
                 }
+                is JsonInfo -> {
+                    JsonInfo(infoObject.optJSONObject(key)?: JSONObject())
+                }
                 else -> {
                     infoObject.opt(key)
                 }
@@ -123,7 +134,20 @@ open class JsonInfo private constructor(private var infoObject: JSONObject = JSO
         }
     }
 
-    protected fun set(key: String, value: Any) {
-        infoObject.put(key, value)
+    fun optInfo(key: String): JsonInfo {
+        return JsonInfo(get(key, JSONObject()))
+    }
+
+    fun set(key: String, value: Any) {
+        if (value is JsonInfo) {
+            infoObject.put(key, value.infoObject)
+        } else {
+            infoObject.put(key, value)
+        }
+
+    }
+
+    override fun toString(): String {
+        return infoObject.toString()
     }
 }

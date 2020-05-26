@@ -7,6 +7,29 @@ package liang.lollipop.lcountdown.info
  */
 class WeightInfo: JsonInfo() {
 
+    /**
+     * 序号
+     */
+    var index: Int by IntDelegate(this, Int.MAX_VALUE)
 
+    /**
+     * 小部件的ID
+     */
+    var widgetId: Int by IntDelegate(this)
+
+    /**
+     * 小部件名称
+     */
+    var countdownName: String by StringDelegate(this)
+
+    /**
+     * 倒计时结束时间
+     */
+    var endTime: Int by IntDelegate(this)
+
+    /**
+     * 签名内容
+     */
+    var signValue: String by StringDelegate(this)
 
 }

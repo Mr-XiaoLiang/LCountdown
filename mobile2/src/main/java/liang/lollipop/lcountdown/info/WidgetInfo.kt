@@ -5,7 +5,7 @@ package liang.lollipop.lcountdown.info
  * @date 2020/5/26 23:34
  * 小部件的描述信息
  */
-class WeightInfo: JsonInfo() {
+class WidgetInfo: JsonInfo() {
 
     /**
      * 序号
@@ -31,5 +31,15 @@ class WeightInfo: JsonInfo() {
      * 签名内容
      */
     var signValue: String by StringDelegate(this)
+
+    /**
+     * 宽度
+     */
+    var width: Int by IntDelegate(this, -1)
+
+    /**
+     * 宽度
+     */
+    var height: Int by IntDelegate(this, -1)
 
 }

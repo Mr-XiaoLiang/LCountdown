@@ -82,7 +82,7 @@ open class JsonInfo private constructor(private val infoObject: JSONObject = JSO
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T: Any> get(key: String, def: T): T {
+    operator fun <T: Any> get(key: String, def: T): T {
         try {
             val result = when (def) {
                 is String -> {
@@ -138,13 +138,12 @@ open class JsonInfo private constructor(private val infoObject: JSONObject = JSO
         return JsonInfo(get(key, JSONObject()))
     }
 
-    fun set(key: String, value: Any) {
+    operator fun set(key: String, value: Any) {
         if (value is JsonInfo) {
             infoObject.put(key, value.infoObject)
         } else {
             infoObject.put(key, value)
         }
-
     }
 
     override fun toString(): String {

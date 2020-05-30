@@ -2,25 +2,24 @@ package liang.lollipop.lcountdown.info
 
 /**
  * @author lollipop
- * @date 2020/5/26 23:34
- * 小部件的描述信息
+ * @date 2020/5/30 21:35
  */
-class WidgetInfo: JsonInfo() {
-
-    /**
-     * 小部件的ID
-     */
-    var widgetId: Int by IntDelegate(this)
+class TimerInfo: JsonInfo() {
 
     /**
      * 序号
      */
-    var index: Int by IntDelegate(this, Int.MAX_VALUE)
+    var id: Int by IntDelegate(this, Int.MAX_VALUE)
 
     /**
-     * 倒计时的时间点
+     * 倒计时结束时间
      */
-    var time: Int by IntDelegate(this)
+    var startTime: Int by IntDelegate(this)
+
+    /**
+     * 倒计时结束时间
+     */
+    var endTime: Int by IntDelegate(this)
 
     /**
      * 宽度

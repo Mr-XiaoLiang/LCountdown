@@ -8,7 +8,7 @@ import org.json.JSONObject
  * @date 2020/5/26 23:44
  * 基础的信息类
  */
-open class JsonInfo private constructor(private val infoObject: JSONObject = JSONObject()){
+open class JsonInfo private constructor(private val infoObject: JSONObject = JSONObject()) {
 
     constructor(): this(JSONObject())
 
@@ -135,7 +135,12 @@ open class JsonInfo private constructor(private val infoObject: JSONObject = JSO
     }
 
     fun optInfo(key: String): JsonInfo {
-        return JsonInfo(get(key, JSONObject()))
+        // 尝试获取信息
+        val resultObj = get(key, JSONObject())
+        // 二次绑定对象
+        set(key, resultObj)
+        // 包裹对象返回
+        return JsonInfo(resultObj)
     }
 
     operator fun set(key: String, value: Any) {

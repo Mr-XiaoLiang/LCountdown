@@ -8,16 +8,16 @@ import org.json.JSONObject
  * @date 2020/5/26 23:44
  * 基础的信息类
  */
-open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
+open class JsonArrayInfo (val infoArray: JSONArray = JSONArray()) {
 
     companion object {
 
-        private fun createWith(info: JsonInfo): JsonInfo {
-            return JsonInfo(copyOut(JSONObject(), info))
+        private fun createWith(info: JsonArrayInfo): JsonArrayInfo {
+            return JsonArrayInfo(copyOut(JSONArray(), info))
         }
 
-        private fun copyOut(newObj: JSONObject, info: JsonInfo): JSONObject {
-            return copyObj(newObj, info.infoObject)
+        private fun copyOut(newObj: JSONArray, info: JsonArrayInfo): JSONArray {
+            return copyArray(newObj, info.infoArray)
         }
 
         private fun copyObj(newObj: JSONObject, obj: JSONObject): JSONObject {
@@ -29,8 +29,7 @@ open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
             return newObj
         }
 
-        private fun copyArray(array: JSONArray): JSONArray {
-            val newArray = JSONArray()
+        private fun copyArray(newArray: JSONArray, array: JSONArray): JSONArray {
             for (index in 0 until array.length()) {
                 newArray.put(array.opt(index)?.copyValue())
             }
@@ -43,9 +42,9 @@ open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
                     copyObj(JSONObject(), this)
                 }
                 is JSONArray -> {
-                    copyArray(this)
+                    copyArray(JSONArray(), this)
                 }
-                is JsonInfo -> {
+                is JsonArrayInfo -> {
                     createWith(this)
                 }
                 else -> {
@@ -55,22 +54,18 @@ open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
         }
     }
 
-    fun copy(info: JsonInfo) {
-        val allKey = ArrayList<String>()
-        this.infoObject.keys().forEach {
-            allKey.add(it)
+    fun copy(info: JsonArrayInfo) {
+        for (index in 0 until info.infoArray.length()) {
+            this.infoArray.remove(index)
         }
-        allKey.forEach {
-            this.infoObject.remove(it)
-        }
-        copyOut(this.infoObject, info)
+        copyOut(this.infoArray, info)
     }
 
     fun <T> invoke(c: Class<T>): T {
         return c.newInstance()
     }
 
-    inline fun <reified S: JsonInfo, reified T: JsonInfo> S.convertTo(): T {
+    inline fun <reified S: JsonArrayInfo, reified T: JsonArrayInfo> S.convertTo(): T {
         if (this is T) {
             return this
         }
@@ -80,23 +75,23 @@ open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
     }
 
     @Suppress("UNCHECKED_CAST")
-    operator fun <T: Any> get(key: String, def: T): T {
+    operator fun <T: Any> get(key: Int, def: T): T {
         try {
             val result = when (def) {
                 is String -> {
-                    infoObject.optString(key)
+                    infoArray.optString(key)
                 }
                 is Boolean -> {
-                    infoObject.optBoolean(key)
+                    infoArray.optBoolean(key)
                 }
                 is Int -> {
-                    infoObject.optInt(key)
+                    infoArray.optInt(key)
                 }
                 is Long -> {
-                    infoObject.optLong(key)
+                    infoArray.optLong(key)
                 }
                 is Float -> {
-                    infoObject.optDouble(key).let {
+                    infoArray.optDouble(key).let {
                         if (!it.isNaN()) {
                             it.toFloat()
                         } else {
@@ -105,7 +100,7 @@ open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
                     }
                 }
                 is Double -> {
-                    infoObject.optDouble(key).let {
+                    infoArray.optDouble(key).let {
                         if (it.isNaN()) {
                             def
                         } else {
@@ -114,19 +109,19 @@ open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
                     }
                 }
                 is JSONObject -> {
-                    infoObject.optJSONObject(key)
+                    infoArray.optJSONObject(key)
                 }
                 is JSONArray -> {
-                    infoObject.optJSONArray(key)
-                }
-                is JsonInfo -> {
-                    JsonInfo(infoObject.optJSONObject(key)?: JSONObject())
+                    infoArray.optJSONArray(key)
                 }
                 is JsonArrayInfo -> {
-                    JsonArrayInfo(infoObject.optJSONArray(key)?: JSONArray())
+                    JsonArrayInfo(infoArray.optJSONArray(key)?: JSONArray())
+                }
+                is JsonInfo -> {
+                    JsonInfo(infoArray.optJSONObject(key)?: JSONObject())
                 }
                 else -> {
-                    infoObject.opt(key)
+                    infoArray.opt(key)
                 }
             } ?: def
             return result as T
@@ -135,7 +130,7 @@ open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
         }
     }
 
-    fun optInfo(key: String): JsonInfo {
+    fun optInfo(key: Int): JsonInfo {
         // 尝试获取信息
         val resultObj = get(key, JSONObject())
         // 二次绑定对象
@@ -144,7 +139,7 @@ open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
         return JsonInfo(resultObj)
     }
 
-    fun optArray(key: String): JsonArrayInfo {
+    fun optArray(key: Int): JsonArrayInfo {
         // 尝试获取信息
         val resultObj = get(key, JSONArray())
         // 二次绑定对象
@@ -153,21 +148,30 @@ open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
         return JsonArrayInfo(resultObj)
     }
 
-    operator fun set(key: String, value: Any) {
+    operator fun set(key: Int, value: Any) {
         when (value) {
             is JsonArrayInfo -> {
-                infoObject.put(key, value.infoArray)
+                infoArray.put(key, value.infoArray)
             }
             is JsonInfo -> {
-                infoObject.put(key, value.infoObject)
+                infoArray.put(key, value.infoObject)
             }
             else -> {
-                infoObject.put(key, value)
+                infoArray.put(key, value)
             }
         }
     }
 
+    fun put(value: Any) {
+        infoArray.put(value)
+    }
+
+    val size: Int
+        get() {
+            return infoArray.length()
+        }
+
     override fun toString(): String {
-        return infoObject.toString()
+        return infoArray.toString()
     }
 }

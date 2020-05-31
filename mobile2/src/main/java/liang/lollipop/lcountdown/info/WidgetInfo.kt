@@ -10,17 +10,22 @@ class WidgetInfo: JsonInfo() {
     /**
      * 小部件的ID
      */
-    var widgetId: Int by IntDelegate(this)
+    var widgetId: Int by IntDelegate(this, -1)
 
     /**
      * 序号
      */
-    var index: Int by IntDelegate(this, Int.MAX_VALUE)
+    var id: Int by IntDelegate(this, Int.MAX_VALUE)
 
     /**
-     * 倒计时的时间点
+     * 倒计时结束时间
      */
-    var time: Int by IntDelegate(this)
+    var startTime: Int by IntDelegate(this)
+
+    /**
+     * 倒计时结束时间
+     */
+    var endTime: Int by IntDelegate(this)
 
     /**
      * 宽度
@@ -36,5 +41,7 @@ class WidgetInfo: JsonInfo() {
      * 是否是倒计时的形式
      */
     var isCountdown: Boolean by BooleanDelegate(this)
+
+
 
 }

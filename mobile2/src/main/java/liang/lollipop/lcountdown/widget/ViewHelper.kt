@@ -3,6 +3,8 @@ package liang.lollipop.lcountdown.widget
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewManager
 
 /**
  * @author lollipop
@@ -20,6 +22,20 @@ object ViewHelper {
         view.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY))
         view.layout(0, 0, width, height)
+    }
+
+    fun addView(group: ViewGroup, child: View,
+                bind: (ViewGroup.LayoutParams) -> Unit,
+                generate: (ViewGroup) -> ViewGroup.LayoutParams) {
+        val layoutParams = child.layoutParams?:generate.invoke(group)
+        bind.invoke(layoutParams)
+        child.layoutParams = layoutParams
+        child.parent?.let {
+            if (it is ViewManager) {
+                it.removeView(child)
+            }
+        }
+        group.addView(child)
     }
 
 }

@@ -7,10 +7,12 @@ import liang.lollipop.lcountdown.listener.*
  * @author lollipop
  * @date 2020/6/3 00:28
  */
-class BaseFragment: Fragment(),
+abstract class BaseFragment: Fragment(),
         BackPressedListener,
         BackPressedProvider,
         OnWindowInsetsProvider {
+
+    abstract val title: Int
 
     private val windowInsetsProviderHelper: WindowInsetsProviderHelper by lazy {
         WindowInsetsProviderHelper()

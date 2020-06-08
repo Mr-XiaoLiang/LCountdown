@@ -7,7 +7,7 @@ import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.listener.WindowInsetsHelper
 
 /**
- * 底部AppBar的Activity
+ * AppBar的Activity
  */
 abstract class AppBarActivity : BaseActivity() {
 

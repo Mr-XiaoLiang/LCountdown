@@ -10,4 +10,7 @@
 
     <color name="toolbarIcon">#DDFFFFFF</color>
     <color name="toolbarTitle">#FFFFFF</color>
+
+    <color name="fabIcon">#DDFFFFFF</color>
+    <color name="fabBackground">#546e7a</color>
 </resources>

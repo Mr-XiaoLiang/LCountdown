@@ -14,6 +14,8 @@ abstract class BaseFragment: Fragment(),
 
     abstract val title: Int
 
+    abstract val colorId: Int
+
     private val windowInsetsProviderHelper: WindowInsetsProviderHelper by lazy {
         WindowInsetsProviderHelper()
     }

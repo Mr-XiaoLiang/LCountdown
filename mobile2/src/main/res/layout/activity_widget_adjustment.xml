@@ -32,7 +32,18 @@
         <include layout="@layout/widget_panel"/>
     </FrameLayout>
 
+    <ImageView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toTopOf="@id/sheetPanel"
+        app:layout_constraintLeft_toLeftOf="@id/sheetPanel"
+        app:layout_constraintRight_toRightOf="@id/sheetPanel"
+        android:id="@+id/panelGrip"
+        android:src="@drawable/ic_baseline_keyboard_arrow_up_24"
+        android:scaleType="centerInside"/>
+
     <LinearLayout
+        android:visibility="invisible"
         android:id="@+id/sheetPanel"
         android:layout_width="match_parent"
         android:layout_height="0px"
@@ -54,6 +65,7 @@
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintRight_toRightOf="@id/sheetPanel"

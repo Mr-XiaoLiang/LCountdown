@@ -42,10 +42,17 @@ class BottomSheetHelper(
 
     private var isInit: Boolean = false
 
-    private val isHide: Boolean
+    val isHide: Boolean
         get() {
-            return (progress * 100).toInt() < 1
+            return (progress * 100).toInt() < 2
         }
+
+    val isShown: Boolean
+        get() {
+            return (progress * 100).toInt() > 98
+        }
+
+    private var statusChangeListener: ((Boolean) -> Unit)? = null
 
     init {
         sheetGrip.post {
@@ -67,6 +74,10 @@ class BottomSheetHelper(
         if (valueAnimator.isStarted && valueAnimator.isRunning) {
             valueAnimator.end()
         }
+    }
+
+    fun onStatusChange(listener: (Boolean) -> Unit) {
+        statusChangeListener = listener
     }
 
     fun show(animation: Boolean = true) {
@@ -125,6 +136,7 @@ class BottomSheetHelper(
         if (isHide) {
             sheetBody.visibility = View.INVISIBLE
         }
+        statusChangeListener?.invoke(isShown)
     }
 
     override fun onAnimationCancel(animation: Animator?) { }

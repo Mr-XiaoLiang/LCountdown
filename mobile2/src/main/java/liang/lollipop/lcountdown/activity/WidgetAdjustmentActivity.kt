@@ -15,10 +15,6 @@ class WidgetAdjustmentActivity : BaseActivity() {
 
     private var bottomSheetHelper: BottomSheetHelper? = null
 
-    private val tabInsetsHelper: WindowInsetsHelper by lazy {
-        WindowInsetsHelper(tabGroup)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_widget_adjustment)
@@ -31,7 +27,7 @@ class WidgetAdjustmentActivity : BaseActivity() {
     }
 
     override fun onInsetsChange(root: View, left: Int, top: Int, right: Int, bottom: Int) {
-        tabInsetsHelper.updateByPadding(root, left, 0, right, bottom)
+        tabGroup.setPadding(left, 0, right, bottom)
         bottomSheetHelper?.paddingBottom = bottom
         log("bottom:", bottom)
     }

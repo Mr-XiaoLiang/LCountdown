@@ -4,6 +4,7 @@ import android.graphics.Rect
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import liang.lollipop.lcountdown.util.log
 
 /**
  * @author lollipop
@@ -87,6 +88,7 @@ class WindowInsetsHelper (private val self: View) {
     }
 
     fun setInsetsByPadding(left: Int, top: Int, right: Int, bottom: Int) {
+        log("setInsetsByPadding", left, top, right, bottom)
         self.setPadding(left, top, right, bottom)
     }
 

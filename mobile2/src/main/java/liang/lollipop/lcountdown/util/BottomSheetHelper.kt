@@ -55,7 +55,7 @@ class BottomSheetHelper(
             return (progress * 100).toInt() > 98
         }
 
-    private var statusChangeListener: ((Boolean) -> Unit)? = null
+    private var statusChangeListener: ((isShow: Boolean, start: Boolean) -> Unit)? = null
 
     init {
         sheetGrip.post {
@@ -79,16 +79,16 @@ class BottomSheetHelper(
         }
     }
 
-    fun onStatusChange(listener: (Boolean) -> Unit) {
+    fun onStatusChange(listener: (isShow: Boolean, start: Boolean) -> Unit) {
         statusChangeListener = listener
     }
 
     fun show(animation: Boolean = true) {
-        post(animation, PROGRESS_MAX)
+        post(animation, PROGRESS_MAX, true)
     }
 
     fun hide(animation: Boolean = true) {
-        post(animation, PROGRESS_MIN)
+        post(animation, PROGRESS_MIN, false)
     }
 
     fun changeStatus() {
@@ -110,12 +110,13 @@ class BottomSheetHelper(
                 progress = it.target
                 onAnimationEnd(valueAnimator)
             }
+            statusChangeListener?.invoke(it.isShow, true)
         }
         pendingTask = null
     }
 
-    private fun post(animation: Boolean, target: Float) {
-        pendingTask = PendingTask(animation, target)
+    private fun post(animation: Boolean, target: Float, isShow: Boolean) {
+        pendingTask = PendingTask(animation, target, isShow)
         checkPending()
     }
 
@@ -128,6 +129,8 @@ class BottomSheetHelper(
         valueAnimator.setFloatValues(now, endProgress)
         valueAnimator.duration = duration
         valueAnimator.start()
+
+        log("onProgressChange.height=", sheetContent.height, ", bottom=", paddingBottom)
     }
 
     private fun cancel() {
@@ -149,7 +152,7 @@ class BottomSheetHelper(
         if (isHide) {
             sheetContent.visibility = View.INVISIBLE
         }
-        statusChangeListener?.invoke(isShown)
+        statusChangeListener?.invoke(isShown, false)
     }
 
     override fun onAnimationCancel(animation: Animator?) { }
@@ -169,6 +172,6 @@ class BottomSheetHelper(
         }
     }
 
-    private data class PendingTask(val animation: Boolean, val target: Float)
+    private data class PendingTask(val animation: Boolean, val target: Float, val isShow: Boolean)
 
 }

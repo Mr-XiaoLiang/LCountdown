@@ -1,89 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.WidgetAdjustmentActivity"
-    android:id="@+id/rootGroup"
-    android:background="#300f">
-
-    <ImageView
-        android:id="@+id/fullBgView"
+    android:id="@+id/rootGroup">
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-    <FrameLayout
-        android:id="@+id/widgetFrame"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="200dp">
-        <include layout="@layout/widget_panel"/>
-    </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/sheetPanel"
-        android:layout_width="match_parent"
-        android:layout_height="0px"
-        app:layout_constraintHeight_percent="0.6"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:orientation="vertical">
         <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:id="@+id/panelGrip"
-            android:src="@drawable/ic_baseline_keyboard_arrow_up_24"
-            android:scaleType="centerInside"/>
-        <LinearLayout
-            android:background="#3F00"
+            android:id="@+id/fullBgView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/sheetContent">
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/panelPager"
-                android:layout_width="match_parent"
-                android:layout_height="0px"
-                android:layout_weight="1"/>
-            <FrameLayout
-                android:id="@+id/tabGroup"
+            android:layout_height="match_parent"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <FrameLayout
+            android:id="@+id/widgetFrame"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+            <include layout="@layout/widget_panel"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/sheetPanel"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            app:layout_constraintHeight_percent="0.6"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:id="@+id/panelGrip"
+                android:src="@drawable/ic_baseline_keyboard_arrow_up_24"
+                android:scaleType="centerInside"/>
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#30f0">
-                <liang.lollipop.ltabview.LTabView
-                    android:id="@+id/tabView"
+                android:orientation="vertical"
+                android:id="@+id/sheetContent">
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/panelPager"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"/>
-            </FrameLayout>
+                    android:layout_height="0px"
+                    android:layout_weight="1"/>
+                <FrameLayout
+                    android:id="@+id/tabGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimaryDark">
+                    <liang.lollipop.ltabview.LTabView
+                        android:id="@+id/tabView"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"/>
+                </FrameLayout>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:visibility="invisible"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintRight_toRightOf="@id/sheetPanel"
-        app:layout_constraintBottom_toTopOf="@id/sheetPanel"
-        app:layout_constraintTop_toTopOf="@id/sheetPanel"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        app:icon="@drawable/ic_baseline_done_24"
-        app:iconTint="@color/fabIcon"
-        android:backgroundTint="@color/fabBackground"
-        android:text="@string/save"
-        android:textColor="@color/fabIcon"/>
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="@id/sheetPanel"
+            app:layout_constraintBottom_toTopOf="@id/sheetPanel"
+            app:layout_constraintTop_toTopOf="@id/sheetPanel"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            app:icon="@drawable/ic_baseline_done_24"
+            app:iconTint="@color/fabIcon"
+            android:backgroundTint="@color/fabBackground"
+            android:text="@string/save"
+            android:textColor="@color/fabIcon"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

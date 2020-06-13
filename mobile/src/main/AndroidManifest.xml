@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="liang.lollipop.lcountdown">
@@ -22,7 +21,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activity2.BaseActivity"></activity>
         <activity android:name=".activity.GradientActivity" />
         <activity
             android:name=".activity.TimeCalculatorActivity"

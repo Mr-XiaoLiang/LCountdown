@@ -2,6 +2,7 @@ package liang.lollipop.lcountdown.util
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -51,6 +52,23 @@ object CommonUtil {
      */
     fun <T> remove(task: Task<T>) {
         mainThread.removeCallbacks(task.runnable)
+    }
+
+    fun print(value: Array<out Any>): String {
+        if (value.isEmpty()) {
+            return ""
+        }
+        val iMax = value.size - 1
+        val b = StringBuilder()
+        var i = 0
+        while (true) {
+            b.append(value[i].toString())
+            if (i == iMax)  {
+                return b.toString()
+            }
+            b.append(" ")
+            i++
+        }
     }
 
     /**
@@ -132,3 +150,9 @@ inline fun <reified T> T.delay(
     CommonUtil.delay(delay, task)
     return task
 }
+
+inline fun <reified T: Any> T.log(vararg value: Any) {
+    Log.d("Lollipop", "${this.javaClass.simpleName} -> ${CommonUtil.print(value)}")
+}
+
+

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".activity.WidgetAdjustmentActivity"
     android:id="@+id/rootGroup"
-    android:background="@color/windowBackground">
+    android:background="#300f">
 
     <ImageView
         android:id="@+id/fullBgView"
@@ -14,7 +14,6 @@
         android:layout_height="match_parent"/>
 
     <View
-        android:background="#3000"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
@@ -32,36 +31,44 @@
         <include layout="@layout/widget_panel"/>
     </FrameLayout>
 
-    <ImageView
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        app:layout_constraintBottom_toTopOf="@id/sheetPanel"
-        app:layout_constraintLeft_toLeftOf="@id/sheetPanel"
-        app:layout_constraintRight_toRightOf="@id/sheetPanel"
-        android:id="@+id/panelGrip"
-        android:src="@drawable/ic_baseline_keyboard_arrow_up_24"
-        android:scaleType="centerInside"/>
-
     <LinearLayout
-        android:visibility="invisible"
         android:id="@+id/sheetPanel"
         android:layout_width="match_parent"
         android:layout_height="0px"
-        app:layout_constraintHeight_percent="0.55"
+        app:layout_constraintHeight_percent="0.6"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:orientation="vertical">
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/panelPager"
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:id="@+id/panelGrip"
+            android:src="@drawable/ic_baseline_keyboard_arrow_up_24"
+            android:scaleType="centerInside"/>
+        <LinearLayout
+            android:background="#3F00"
             android:layout_width="match_parent"
-            android:layout_height="0px"
-            android:layout_weight="1"/>
-        <liang.lollipop.ltabview.LTabView
-            android:id="@+id/tabView"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/sheetContent">
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/panelPager"
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="1"/>
+            <FrameLayout
+                android:id="@+id/tabGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#30f0">
+                <liang.lollipop.ltabview.LTabView
+                    android:id="@+id/tabView"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"/>
+            </FrameLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton

@@ -14,7 +14,8 @@ import kotlin.math.abs
 class BottomSheetHelper(
         private val sheetBody: View,
         private val sheetGrip: View,
-        private val linkageView: View):
+        private val linkageView: View,
+        private val sheetContent: View):
         Animator.AnimatorListener,
         ValueAnimator.AnimatorUpdateListener {
 
@@ -37,6 +38,8 @@ class BottomSheetHelper(
             interpolator = AccelerateDecelerateInterpolator()
         }
     }
+
+    var paddingBottom = 0
 
     private var pendingTask: PendingTask? = null
 
@@ -88,6 +91,14 @@ class BottomSheetHelper(
         post(animation, PROGRESS_MIN)
     }
 
+    fun changeStatus() {
+        if (progress > 0.5F) {
+            hide()
+        } else {
+            show()
+        }
+    }
+
     private fun checkPending() {
         if (!isInit) {
             return
@@ -97,6 +108,7 @@ class BottomSheetHelper(
                 startAnimation(it.target)
             } else {
                 progress = it.target
+                onAnimationEnd(valueAnimator)
             }
         }
         pendingTask = null
@@ -124,17 +136,18 @@ class BottomSheetHelper(
 
     private fun onProgressChange() {
         val now = progress
-        val offset = (PROGRESS_MAX - now) * sheetBody.height
+        val height = sheetContent.height - paddingBottom
+        val offset = (PROGRESS_MAX - now) * height
         sheetBody.translationY = offset
         sheetGrip.rotation = now * 180
-        linkageView.translationY = offset * -0.5F
+        linkageView.translationY = height * now * -0.5F
     }
 
     override fun onAnimationRepeat(animation: Animator?) { }
 
     override fun onAnimationEnd(animation: Animator?) {
         if (isHide) {
-            sheetBody.visibility = View.INVISIBLE
+            sheetContent.visibility = View.INVISIBLE
         }
         statusChangeListener?.invoke(isShown)
     }
@@ -144,6 +157,9 @@ class BottomSheetHelper(
     override fun onAnimationStart(animation: Animator?) {
         if (sheetBody.visibility != View.VISIBLE) {
             sheetBody.visibility = View.VISIBLE
+        }
+        if (sheetContent.visibility != View.VISIBLE) {
+            sheetContent.visibility = View.VISIBLE
         }
     }
 

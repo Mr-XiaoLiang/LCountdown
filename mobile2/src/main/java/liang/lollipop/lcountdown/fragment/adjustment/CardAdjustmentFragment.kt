@@ -15,6 +15,8 @@ abstract class CardAdjustmentFragment: BaseFragment() {
 
     abstract val layoutId: Int
 
+    abstract val icon: Int
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,

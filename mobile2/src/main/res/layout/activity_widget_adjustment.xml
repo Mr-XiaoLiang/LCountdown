@@ -55,26 +55,28 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/sheetContent">
-                <androidx.viewpager.widget.ViewPager
+                <liang.lollipop.lcountdown.view.NoTouchViewPager
                     android:id="@+id/panelPager"
                     android:layout_width="match_parent"
                     android:layout_height="0px"
                     android:layout_weight="1"/>
-                <FrameLayout
+                <HorizontalScrollView
                     android:id="@+id/tabGroup"
+                    android:elevation="6dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/colorPrimaryDark">
                     <liang.lollipop.ltabview.LTabView
                         android:id="@+id/tabView"
-                        android:layout_width="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="48dp"/>
-                </FrameLayout>
+                </HorizontalScrollView>
             </LinearLayout>
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintRight_toRightOf="@id/sheetPanel"
@@ -86,6 +88,7 @@
             app:iconTint="@color/fabIcon"
             android:backgroundTint="@color/fabBackground"
             android:text="@string/save"
+            android:id="@+id/saveBtn"
             android:textColor="@color/fabIcon"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

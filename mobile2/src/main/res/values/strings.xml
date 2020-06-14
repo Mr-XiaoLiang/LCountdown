@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">倒计时</string>
     <string name="save">保存</string>
+    <string name="timing_method">计时模式</string>
+    <string name="countdown_method">倒计时模式</string>
+    <string name="no_cycle">不重复</string>
+    <string name="day_cycle">每日重复</string>
+    <string name="week_cycle">每周重复</string>
+    <string name="month_cycle">每月重复</string>
+    <string name="year_cycle">每年重复</string>
+
+    <string name="title_time">时间调整</string>
 </resources>

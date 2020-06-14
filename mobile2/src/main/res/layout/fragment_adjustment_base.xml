@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="6dp"
+        android:id="@+id/panelCard"
+        app:cardBackgroundColor="@color/contentBackground">
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/panelBodyGroup"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"/>
+    </com.google.android.material.card.MaterialCardView>
+</FrameLayout>

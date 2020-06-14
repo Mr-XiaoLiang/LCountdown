@@ -13,4 +13,8 @@
 
     <color name="fabIcon">#DDFFFFFF</color>
     <color name="fabBackground">#546e7a</color>
+
+    <color name="radioTextColor">#424242</color>
+
+    <color name="focusTimeAdjust">#1C9745</color>
 </resources>

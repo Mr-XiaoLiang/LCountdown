@@ -17,5 +17,6 @@
     <color name="radioTextColor">#424242</color>
 
     <color name="focusTimeAdjust">#C7CC32</color>
+    <color name="focusSettingsAdjust">#32CCA8</color>
     <color name="tabUnselectedColor">#DDFFFFFF</color>
 </resources>

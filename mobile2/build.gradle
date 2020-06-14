@@ -35,4 +35,5 @@ dependencies {
     implementation 'com.google.android:flexbox:2.0.0'
     implementation project(':ltabview')
     implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 }

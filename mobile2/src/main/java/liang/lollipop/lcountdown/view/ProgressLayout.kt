@@ -24,7 +24,7 @@ class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int
     init {
         progressDrawable.callback = this
         if (isInEditMode) {
-
+            progressDrawable.progress = 0.5F
         }
     }
 

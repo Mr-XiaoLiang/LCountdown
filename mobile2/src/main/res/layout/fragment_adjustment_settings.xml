@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     tools:context=".fragment.adjustment.SettingsAdjustmentFragment">
 
-
+    <liang.lollipop.lcountdown.view.ProgressLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"/>
 
 </FrameLayout>

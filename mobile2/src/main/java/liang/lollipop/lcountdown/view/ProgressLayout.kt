@@ -1,5 +1,7 @@
 package liang.lollipop.lcountdown.view
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
@@ -13,13 +15,22 @@ import kotlin.math.min
  * 带有进度的Layout
  */
 class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int):
-        FrameLayout(context, attributeSet, styleId) {
+        FrameLayout(context, attributeSet, styleId),
+        Animator.AnimatorListener,
+        ValueAnimator.AnimatorUpdateListener {
 
     constructor(context: Context, attr: AttributeSet?): this(context, attr, 0)
 
     constructor(context: Context): this(context, null)
 
     private val progressDrawable = ProgressDrawable()
+
+    private val valueAnimator: ValueAnimator by lazy {
+        ValueAnimator().apply {
+            addListener(this@ProgressLayout)
+            addUpdateListener(this@ProgressLayout)
+        }
+    }
 
     init {
         progressDrawable.callback = this
@@ -57,6 +68,8 @@ class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int
         get() {
             return progressDrawable.radius
         }
+
+
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
@@ -174,6 +187,26 @@ class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int
             paint.colorFilter = colorFilter
         }
 
+    }
+
+    override fun onAnimationRepeat(animation: Animator?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onAnimationEnd(animation: Animator?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onAnimationCancel(animation: Animator?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onAnimationStart(animation: Animator?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onAnimationUpdate(animation: ValueAnimator?) {
+        TODO("Not yet implemented")
     }
 
 }

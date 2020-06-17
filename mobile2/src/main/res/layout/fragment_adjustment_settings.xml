@@ -6,7 +6,17 @@
     tools:context=".fragment.adjustment.SettingsAdjustmentFragment">
 
     <liang.lollipop.lcountdown.view.ProgressLayout
+        android:id="@+id/testProgressLayout"
         android:layout_width="match_parent"
-        android:layout_height="48dp"/>
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+        <TextView
+            android:id="@+id/testBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@string/app_name"
+            android:gravity="center"/>
+    </liang.lollipop.lcountdown.view.ProgressLayout>
 
 </FrameLayout>

@@ -1,5 +1,8 @@
 package liang.lollipop.lcountdown.fragment.adjustment
 
+import android.os.Bundle
+import android.view.View
+import kotlinx.android.synthetic.main.fragment_adjustment_settings.*
 import liang.lollipop.lcountdown.R
 
 /**
@@ -15,4 +18,12 @@ class SettingsAdjustmentFragment : CardAdjustmentFragment() {
     override val title = R.string.title_settings
 
     override val colorId = R.color.focusSettingsAdjust
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        testBtn.setOnClickListener {
+            testProgressLayout.progress = 0.5F
+            testProgressLayout.startLoad()
+        }
+    }
 }

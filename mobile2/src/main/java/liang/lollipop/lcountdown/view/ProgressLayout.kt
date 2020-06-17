@@ -6,7 +6,11 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
+import liang.lollipop.lcountdown.util.log
+import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.min
 
 /**
@@ -16,8 +20,11 @@ import kotlin.math.min
  */
 class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int):
         FrameLayout(context, attributeSet, styleId),
-        Animator.AnimatorListener,
         ValueAnimator.AnimatorUpdateListener {
+
+    companion object {
+        const val ANIMATION_DURATION = 3000L
+    }
 
     constructor(context: Context, attr: AttributeSet?): this(context, attr, 0)
 
@@ -27,16 +34,38 @@ class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int
 
     private val valueAnimator: ValueAnimator by lazy {
         ValueAnimator().apply {
-            addListener(this@ProgressLayout)
             addUpdateListener(this@ProgressLayout)
+            interpolator = LinearInterpolator()
         }
     }
+
+    private var onLoading = false
 
     init {
         progressDrawable.callback = this
         if (isInEditMode) {
-            progressDrawable.progress = 0.5F
+            progressDrawable.update(0F, 0.5F)
         }
+    }
+
+    fun startLoad() {
+        onLoading = true
+        val pro = progress
+        valueAnimator.cancel()
+        valueAnimator.duration = ANIMATION_DURATION * 2
+        valueAnimator.setFloatValues(ProgressDrawable.MIN, ProgressDrawable.MAX +
+                ProgressDrawable.LENGTH)
+        valueAnimator.repeatCount = ValueAnimator.INFINITE
+        valueAnimator.repeatMode = ValueAnimator.RESTART
+        valueAnimator.start()
+    }
+
+    fun loadSuccess() {
+        onLoading = false
+    }
+
+    fun loadFailure() {
+        onLoading = false
     }
 
     var strokeWidth: Float
@@ -55,7 +84,7 @@ class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int
 
     var progress: Float
         set(value) {
-            progressDrawable.progress = value
+            progressDrawable.update(0F, value)
         }
         get() {
             return progressDrawable.progress
@@ -88,14 +117,42 @@ class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int
         }
     }
 
-    override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
+    override fun dispatchDraw(canvas: Canvas?) {
+        super.dispatchDraw(canvas)
         canvas?.let {
             progressDrawable.draw(it)
         }
     }
 
+    override fun onAnimationUpdate(animation: ValueAnimator?) {
+        if (animation == valueAnimator) {
+            val p = animation.animatedValue as Float
+            val progress = if (p > ProgressDrawable.MAX) {
+                abs(p - ProgressDrawable.MAX * 2)
+            } else {
+                p
+            }
+            val offset = if (onLoading) {
+                if (p < ProgressDrawable.MAX) {
+                    p
+                } else {
+                    p - ProgressDrawable.MAX
+                }
+            } else {
+                0F
+            } * 2F
+            log("offset: $offset, progress:$progress")
+            progressDrawable.update(offset, progress)
+        }
+    }
+
     private class ProgressDrawable: Drawable() {
+
+        companion object {
+            const val MIN = 0F
+            const val MAX = 1F
+            const val LENGTH = MAX - MIN
+        }
 
         private val paint = Paint().apply {
             isDither = true
@@ -115,10 +172,10 @@ class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int
         var selected = Color.BLACK
 
         var progress = 0F
-            set(value) {
-                field = value
-                updateProgress()
-            }
+            private set
+
+        var offset = 0F
+            private set
 
         var radius: Int = -1
             set(value) {
@@ -142,6 +199,12 @@ class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int
         override fun onBoundsChange(bounds: Rect?) {
             super.onBoundsChange(bounds)
             updatePath()
+        }
+
+        fun update(offset: Float = 0F, progress: Float) {
+            this.offset = offset
+            this.progress = progress
+            updateProgress()
         }
 
         private fun updatePath() {
@@ -171,7 +234,14 @@ class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int
         private fun updateProgress() {
             dstPath.reset()
             val length = pathMeasure.length
-            pathMeasure.getSegment(0F, length * progress, dstPath, true)
+            val start = length * offset
+            val end = length * progress + start
+            if (end <= length) {
+                pathMeasure.getSegment(start, end, dstPath, true)
+            } else {
+                pathMeasure.getSegment(start, length, dstPath, true)
+                pathMeasure.getSegment(0F, end - length, dstPath, true)
+            }
             invalidateSelf()
         }
 
@@ -187,26 +257,6 @@ class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int
             paint.colorFilter = colorFilter
         }
 
-    }
-
-    override fun onAnimationRepeat(animation: Animator?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onAnimationEnd(animation: Animator?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onAnimationCancel(animation: Animator?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onAnimationStart(animation: Animator?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onAnimationUpdate(animation: ValueAnimator?) {
-        TODO("Not yet implemented")
     }
 
 }

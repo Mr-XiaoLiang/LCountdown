@@ -8,9 +8,7 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
-import liang.lollipop.lcountdown.util.log
 import kotlin.math.abs
-import kotlin.math.max
 import kotlin.math.min
 
 /**
@@ -20,7 +18,8 @@ import kotlin.math.min
  */
 class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int):
         FrameLayout(context, attributeSet, styleId),
-        ValueAnimator.AnimatorUpdateListener {
+        ValueAnimator.AnimatorUpdateListener,
+        Animator.AnimatorListener{
 
     companion object {
         const val ANIMATION_DURATION = 3000L
@@ -34,12 +33,16 @@ class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int
 
     private val valueAnimator: ValueAnimator by lazy {
         ValueAnimator().apply {
+            addListener(this@ProgressLayout)
             addUpdateListener(this@ProgressLayout)
             interpolator = LinearInterpolator()
         }
     }
 
-    private var onLoading = false
+    var onLoading = false
+        private set
+
+    private var pendingToLoading = false
 
     init {
         progressDrawable.callback = this
@@ -49,8 +52,23 @@ class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int
     }
 
     fun startLoad() {
+        if (!onLoading && valueAnimator.isRunning) {
+            pendingToLoading = true
+            return
+        }
+        doLoadingAnimation()
+    }
+
+    fun loadSuccess() {
+        doSuccessAnimation()
+    }
+
+    fun loadFailure() {
+        doFailureAnimation()
+    }
+
+    private fun doLoadingAnimation() {
         onLoading = true
-        val pro = progress
         valueAnimator.cancel()
         valueAnimator.duration = ANIMATION_DURATION * 2
         valueAnimator.setFloatValues(ProgressDrawable.MIN, ProgressDrawable.MAX +
@@ -60,12 +78,26 @@ class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int
         valueAnimator.start()
     }
 
-    fun loadSuccess() {
+    private fun doSuccessAnimation() {
         onLoading = false
+        valueAnimator.cancel()
+        val pro = progress
+        valueAnimator.duration = (ANIMATION_DURATION *
+                (ProgressDrawable.MAX - pro) / ProgressDrawable.LENGTH).toLong()
+        valueAnimator.setFloatValues(pro, ProgressDrawable.MAX)
+        valueAnimator.repeatCount = 0
+        valueAnimator.start()
     }
 
-    fun loadFailure() {
+    private fun doFailureAnimation() {
         onLoading = false
+        valueAnimator.cancel()
+        val pro = progress
+        valueAnimator.duration = (ANIMATION_DURATION *
+                (pro - ProgressDrawable.MIN) / ProgressDrawable.LENGTH).toLong()
+        valueAnimator.setFloatValues(pro, ProgressDrawable.MIN)
+        valueAnimator.repeatCount = 0
+        valueAnimator.start()
     }
 
     var strokeWidth: Float
@@ -80,7 +112,11 @@ class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int
             progressDrawable.unselected = value
         }
 
-    var selected = Color.BLACK
+    var selected: Int
+        get() = progressDrawable.selected
+        set(value) {
+            progressDrawable.selected = value
+        }
 
     var progress: Float
         set(value) {
@@ -97,8 +133,6 @@ class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int
         get() {
             return progressDrawable.radius
         }
-
-
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
@@ -133,18 +167,26 @@ class ProgressLayout(context: Context, attributeSet: AttributeSet?, styleId: Int
                 p
             }
             val offset = if (onLoading) {
-                if (p < ProgressDrawable.MAX) {
-                    p
-                } else {
-                    p - ProgressDrawable.MAX
-                }
+                p / (ProgressDrawable.LENGTH * 2)
             } else {
-                0F
-            } * 2F
-            log("offset: $offset, progress:$progress")
+                progressDrawable.offset
+            }
             progressDrawable.update(offset, progress)
         }
     }
+
+    override fun onAnimationRepeat(animation: Animator?) {  }
+
+    override fun onAnimationEnd(animation: Animator?) {
+        if (pendingToLoading) {
+            pendingToLoading = false
+            startLoad()
+        }
+    }
+
+    override fun onAnimationCancel(animation: Animator?) { }
+
+    override fun onAnimationStart(animation: Animator?) { }
 
     private class ProgressDrawable: Drawable() {
 

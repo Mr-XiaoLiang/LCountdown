@@ -19,4 +19,13 @@
             android:gravity="center"/>
     </liang.lollipop.lcountdown.view.ProgressLayout>
 
+    <TextView
+        android:layout_marginTop="70dp"
+        android:id="@+id/loadBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="加载"
+        android:padding="10dp"
+        android:layout_gravity="center_horizontal"/>
+
 </FrameLayout>

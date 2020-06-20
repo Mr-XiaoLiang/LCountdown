@@ -18,5 +18,6 @@
 
     <color name="focusTimeAdjust">#C7CC32</color>
     <color name="focusSettingsAdjust">#32CCA8</color>
+    <color name="focusFontAdjust">#3BA2F1</color>
     <color name="tabUnselectedColor">#DDFFFFFF</color>
 </resources>

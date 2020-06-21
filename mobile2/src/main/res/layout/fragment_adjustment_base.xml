@@ -9,11 +9,6 @@
         android:layout_margin="10dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="6dp"
-        android:id="@+id/panelCard"
-        app:cardBackgroundColor="@color/contentBackground">
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/panelBodyGroup"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"/>
-    </com.google.android.material.card.MaterialCardView>
+        android:id="@+id/panelBodyGroup"
+        app:cardBackgroundColor="@color/contentBackground"/>
 </FrameLayout>

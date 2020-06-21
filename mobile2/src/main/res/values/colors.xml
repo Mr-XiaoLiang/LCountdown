@@ -20,4 +20,6 @@
     <color name="focusSettingsAdjust">#32CCA8</color>
     <color name="focusFontAdjust">#3BA2F1</color>
     <color name="tabUnselectedColor">#DDFFFFFF</color>
+
+    <color name="curtainCard">#D8D8D8</color>
 </resources>

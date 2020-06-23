@@ -12,4 +12,5 @@
     <string name="title_time">时间调整</string>
     <string name="title_settings">偏好设置</string>
     <string name="title_font">字体设置</string>
+    <string name="hint_font_info">显示内容</string>
 </resources>

@@ -14,7 +14,7 @@ open class InnerDialogProvider: BackPressedListener {
 
     private var callback: Callback? = null
 
-    private var layoutId = 0
+    open val layoutId = 0
 
     fun bindCallback(callback: Callback?) {
         this.callback = callback

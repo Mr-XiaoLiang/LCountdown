@@ -24,4 +24,20 @@
         <item name="actionMenuTextColor">@color/toolbarTitle</item>
         <item name="iconTint">@color/toolbarIcon</item>
     </style>
+
+    <style name="InputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+<!--        <item name="boxStrokeColor">@color/inout_box_color</item>-->
+<!--        <item name="hintTextColor">@color/inputHintColor</item>-->
+<!--        <item name="counterTextColor">@color/inputHintTextColor</item>-->
+<!--        <item name="android:textColorHint">@color/inputHintTextColor</item>-->
+<!--        <item name="colorAccent">@color/inputHintColor</item>-->
+<!--        <item name="colorPrimary">@color/inputHintColor</item>-->
+<!--        <item name="colorControlNormal">@color/inputHintColor</item>-->
+<!--        <item name="colorControlActivated">@color/inputHintColor</item>-->
+<!--        <item name="colorControlHighlight">@color/inputHintColor</item>-->
+<!--        <item name="android:colorControlNormal">@color/inputHintColor</item>-->
+<!--        <item name="android:colorControlActivated">@color/inputHintColor</item>-->
+<!--        <item name="android:colorControlHighlight">@color/inputHintColor</item>-->
+<!--        <item name="android:textColor">@color/inputHintColor</item>-->
+    </style>
 </resources>

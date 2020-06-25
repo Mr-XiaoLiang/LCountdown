@@ -10,10 +10,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import kotlinx.android.synthetic.main.activity_widget_adjustment.*
 import liang.lollipop.lcountdown.R
-import liang.lollipop.lcountdown.fragment.adjustment.CardAdjustmentFragment
-import liang.lollipop.lcountdown.fragment.adjustment.FontAdjustmentFragment
-import liang.lollipop.lcountdown.fragment.adjustment.SettingsAdjustmentFragment
-import liang.lollipop.lcountdown.fragment.adjustment.TimeAdjustmentFragment
+import liang.lollipop.lcountdown.fragment.adjustment.*
 import liang.lollipop.lcountdown.util.BottomSheetHelper
 import liang.lollipop.ltabview.LTabHelper
 import liang.lollipop.ltabview.LTabView
@@ -27,8 +24,9 @@ class WidgetAdjustmentActivity : BaseActivity() {
 
     private val fragments: Array<CardAdjustmentFragment> = arrayOf(
             TimeAdjustmentFragment(),
-            SettingsAdjustmentFragment(),
-            FontAdjustmentFragment()
+            TextAdjustmentFragment(),
+            FontAdjustmentFragment(),
+            SettingsAdjustmentFragment()
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

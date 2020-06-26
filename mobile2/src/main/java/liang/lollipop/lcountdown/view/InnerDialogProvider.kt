@@ -16,6 +16,9 @@ open class InnerDialogProvider: BackPressedListener {
 
     open val layoutId = 0
 
+    private var view: View? = null
+        private set
+
     fun bindCallback(callback: Callback?) {
         this.callback = callback
     }
@@ -52,7 +55,9 @@ open class InnerDialogProvider: BackPressedListener {
         if (layoutId == 0) {
             throw NullPointerException("layoutId == 0")
         }
-        return LayoutInflater.from(group.context).inflate(layoutId, group, false)
+        val thisView = LayoutInflater.from(group.context).inflate(layoutId, group, false)
+        view = thisView
+        return thisView
     }
 
     interface Callback {
@@ -61,6 +66,10 @@ open class InnerDialogProvider: BackPressedListener {
 
     override fun onBackPressed(): Boolean {
         return false
+    }
+
+    fun <T: View> find(id: Int): T? {
+        return view?.findViewById<T>(id)
     }
 
 }

@@ -148,6 +148,9 @@ class CurtainDialog private constructor(
     }
 
     fun bindProvider(provider: InnerDialogProvider): CurtainDialog {
+        if (innerDialogProvider == provider) {
+            return this
+        }
         innerDialogProvider?.let {
             removeBackPressedListener(it)
             it.bindCallback(null)

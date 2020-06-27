@@ -50,6 +50,31 @@ class TextAdjustmentFragment: CardAdjustmentFragment() {
         adjustmentProvider.show("", AdjustmentProvider.ID_NONE)
     }
 
+    private class TextItemHolder
+        private constructor(
+                view: View,
+                private val clickListener: (Int) -> Unit,
+                private val deleteListener: (Int) -> Unit): RecyclerView.ViewHolder(view) {
+
+        private val nameView: TextView by lazy {
+            itemView.findViewById<TextView>(R.id.textView)
+        }
+
+        init {
+            itemView.setOnClickListener {
+                clickListener(this.adapterPosition)
+            }
+            itemView.findViewById<View>(R.id.deleteBtn)?.setOnClickListener {
+                deleteListener(this.adapterPosition)
+            }
+        }
+
+        fun bind(text: String) {
+            nameView.text = text
+        }
+
+    }
+
     private class AdjustmentProvider(
             activity: FragmentActivity,
             private val onTextChangeListener: ((value: String, index: Int) -> Unit)):

@@ -19,9 +19,13 @@
     <color name="focusTimeAdjust">#C7CC32</color>
     <color name="focusSettingsAdjust">#32CCA8</color>
     <color name="focusFontAdjust">#3BA2F1</color>
+    <color name="focusTextAdjust">#F436A8</color>
     <color name="tabUnselectedColor">#DDFFFFFF</color>
 
     <color name="curtainCard">#D8D8D8</color>
 
     <color name="splitLine">#919191</color>
+
+    <color name="curtainText">#353936</color>
+    <color name="curtainTextSecondary">#585C59</color>
 </resources>

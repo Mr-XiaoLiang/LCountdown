@@ -1,11 +1,20 @@
 package liang.lollipop.lcountdown.fragment.adjustment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
 import kotlinx.android.synthetic.main.fragment_adjustment_text.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.util.CurtainDialog
+import liang.lollipop.lcountdown.util.TextFormat
 import liang.lollipop.lcountdown.view.InnerDialogProvider
 
 /**
@@ -16,25 +25,33 @@ import liang.lollipop.lcountdown.view.InnerDialogProvider
 class TextAdjustmentFragment: CardAdjustmentFragment() {
     override val layoutId = R.layout.fragment_adjustment_text
 
-    override val icon = R.drawable.ic_baseline_format_size_24
+    override val icon = R.drawable.ic_baseline_short_text_24
 
     override val title = R.string.title_text
 
-    override val colorId = R.color.focusFontAdjust
+    override val colorId = R.color.focusTextAdjust
+
+    private val onTextChangeListener: ((String, Int) -> Unit) = { value, index ->
+        Toast.makeText(context, "$value, index=$index", Toast.LENGTH_SHORT).show()
+    }
+
+    private val adjustmentProvider: AdjustmentProvider by lazy {
+        AdjustmentProvider(activity as FragmentActivity, onTextChangeListener)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         addTextBtn.setOnClickListener {
-
+            addText()
         }
     }
 
     private fun addText() {
-
+        adjustmentProvider.show("", AdjustmentProvider.ID_NONE)
     }
 
     private class AdjustmentProvider(
-            private val fragment: TextAdjustmentFragment,
+            activity: FragmentActivity,
             private val onTextChangeListener: ((value: String, index: Int) -> Unit)):
             InnerDialogProvider() {
 
@@ -44,7 +61,7 @@ class TextAdjustmentFragment: CardAdjustmentFragment() {
 
         override val layoutId = R.layout.dialog_adjustment_text
 
-        private val curtainDialog = CurtainDialog.with(fragment)
+        private val curtainDialog = CurtainDialog.with(activity)
 
         private var index = ID_NONE
         private var pendingValue = ""
@@ -54,7 +71,22 @@ class TextAdjustmentFragment: CardAdjustmentFragment() {
             view.findViewById<View>(R.id.enterBtn)?.setOnClickListener {
                 val value = find<TextView>(R.id.inputView)?.text?.toString()?:""
                 onTextChangeListener(value, index)
+                dismiss()
             }
+
+            find<RecyclerView>(R.id.recycleView)?.let { recyclerView ->
+                val adapter = TimeKeyAdapter { key ->
+                    find<EditText>(R.id.inputView)?.append(key)
+                }
+
+                recyclerView.layoutManager = FlexboxLayoutManager(recyclerView.context,
+                        FlexDirection.ROW)
+
+                recyclerView.adapter = adapter
+
+                adapter.notifyDataSetChanged()
+            }
+
         }
 
         fun show(value: String, key: Int) {
@@ -67,6 +99,61 @@ class TextAdjustmentFragment: CardAdjustmentFragment() {
         override fun onStart() {
             super.onStart()
             find<TextView>(R.id.inputView)?.text = pendingValue
+        }
+
+    }
+
+    private class TimeKeyAdapter(private val clickListener: (String) -> Unit):
+            RecyclerView.Adapter<TimeKeyHolder>() {
+
+        private val data = TextFormat.KEYS
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeKeyHolder {
+            return TimeKeyHolder.create(parent) { clickListener(data[it].value) }
+        }
+
+        override fun getItemCount(): Int {
+            return data.size
+        }
+
+        override fun onBindViewHolder(holder: TimeKeyHolder, position: Int) {
+            val key = data[position]
+            holder.bind(key.name, key.value)
+        }
+
+    }
+
+    private class TimeKeyHolder
+        private constructor(
+                view: View,
+                private val clickListener: (Int) -> Unit): RecyclerView.ViewHolder(view) {
+        companion object {
+            fun create(parent: ViewGroup,
+                       clickListener: (Int) -> Unit): TimeKeyHolder {
+                return TimeKeyHolder(
+                        LayoutInflater.from(parent.context)
+                                .inflate(R.layout.item_time_key, parent, false),
+                        clickListener)
+            }
+        }
+
+        private val nameView: TextView by lazy {
+            itemView.findViewById<TextView>(R.id.keyNameView)
+        }
+
+        private val valueView: TextView by lazy {
+            itemView.findViewById<TextView>(R.id.keyValueView)
+        }
+
+        init {
+            itemView.setOnClickListener {
+                clickListener(this.adapterPosition)
+            }
+        }
+
+        fun bind(name: Int, value: String) {
+            nameView.setText(name)
+            valueView.text = value
         }
 
     }

@@ -65,15 +65,6 @@ open class JsonArrayInfo (val infoArray: JSONArray = JSONArray()) {
         return c.newInstance()
     }
 
-    inline fun <reified S: JsonArrayInfo, reified T: JsonArrayInfo> S.convertTo(): T {
-        if (this is T) {
-            return this
-        }
-        val newObj = T::class.java.newInstance()
-        newObj.copy(this)
-        return newObj
-    }
-
     @Suppress("UNCHECKED_CAST")
     operator fun <T: Any> get(key: Int, def: T): T {
         try {
@@ -163,7 +154,13 @@ open class JsonArrayInfo (val infoArray: JSONArray = JSONArray()) {
     }
 
     fun put(value: Any) {
-        infoArray.put(value)
+        if (checkPut(value)) {
+            infoArray.put(value)
+        }
+    }
+
+    fun remove(index: Int) {
+        infoArray.remove(index)
     }
 
     val size: Int
@@ -174,4 +171,9 @@ open class JsonArrayInfo (val infoArray: JSONArray = JSONArray()) {
     override fun toString(): String {
         return infoArray.toString()
     }
+
+    protected open fun checkPut(value: Any): Boolean {
+        return true
+    }
+
 }

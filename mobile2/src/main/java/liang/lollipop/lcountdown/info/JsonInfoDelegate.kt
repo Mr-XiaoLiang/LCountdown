@@ -76,3 +76,31 @@ class JsonInfoDelegate<T: JsonInfo>(private val info: JsonInfo, private val case
         info[property.name] = value
     }
 }
+
+class JsonArrayDelegate<T: JsonArrayInfo>(private val info: JsonInfo, private val caseTo: (JsonArrayInfo) -> T) {
+    operator fun getValue(thisRef: Any, property: KProperty<*>): T {
+        return caseTo(info.optArray(property.name))
+    }
+
+    operator fun setValue(thisRef: Any, property: KProperty<*>, value: JsonArrayInfo) {
+        info[property.name] = value
+    }
+}
+
+inline fun <reified S: JsonInfo, reified T: JsonInfo> S.convertTo(): T {
+    if (this is T) {
+        return this
+    }
+    val newObj = T::class.java.newInstance()
+    newObj.copy(this)
+    return newObj
+}
+
+inline fun <reified S: JsonArrayInfo, reified T: JsonArrayInfo> S.convertTo(): T {
+    if (this is T) {
+        return this
+    }
+    val newObj = T::class.java.newInstance()
+    newObj.copy(this)
+    return newObj
+}

@@ -70,15 +70,6 @@ open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
         return c.newInstance()
     }
 
-    inline fun <reified S: JsonInfo, reified T: JsonInfo> S.convertTo(): T {
-        if (this is T) {
-            return this
-        }
-        val newObj = T::class.java.newInstance()
-        newObj.copy(this)
-        return newObj
-    }
-
     @Suppress("UNCHECKED_CAST")
     operator fun <T: Any> get(key: String, def: T): T {
         try {

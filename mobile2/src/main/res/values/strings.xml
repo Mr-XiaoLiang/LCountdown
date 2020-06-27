@@ -14,4 +14,36 @@
     <string name="title_font">字体设置</string>
     <string name="hint_font_info">显示内容</string>
     <string name="title_text">内容编辑</string>
+
+    <string name="key_name_days">所有天</string>
+    <string name="key_name_day_of_month">按月天数</string>
+    <string name="key_name_day_of_year">按年天数</string>
+    <string name="key_name_day_of_week">按周天数</string>
+
+    <string name="key_name_day_with_month">月日期</string>
+    <string name="key_name_day_with_year">年日期</string>
+    <string name="key_name_day_with_week">周日期</string>
+
+    <string name="key_name_month">月份</string>
+    <string name="key_name_month_full">定长月份</string>
+    <string name="key_name_month_japan">日语月份</string>
+    <string name="key_name_month_english">英语月份</string>
+
+    <string name="key_name_year">年份</string>
+    <string name="key_name_year_full">定长年份</string>
+
+    <string name="key_name_week">星期</string>
+    <string name="key_name_week_japan">日语星期</string>
+    <string name="key_name_week_english">英语星期</string>
+    <string name="key_name_week_china">汉语星期</string>
+    <string name="key_name_week_num">数字星期</string>
+
+    <string name="key_name_hour">小时</string>
+    <string name="key_name_hour_full">定长小时</string>
+
+    <string name="key_name_minute">分钟</string>
+    <string name="key_name_minute_full">定长分钟</string>
+
+    <string name="key_name_time_china">汉语时间</string>
+    <string name="key_name_time_english">英语时间</string>
 </resources>

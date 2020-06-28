@@ -13,6 +13,7 @@ import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import kotlinx.android.synthetic.main.fragment_adjustment_text.*
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.info.TextInfoArray
 import liang.lollipop.lcountdown.util.CurtainDialog
 import liang.lollipop.lcountdown.util.TextFormat
 import liang.lollipop.lcountdown.view.InnerDialogProvider
@@ -50,11 +51,43 @@ class TextAdjustmentFragment: CardAdjustmentFragment() {
         adjustmentProvider.show("", AdjustmentProvider.ID_NONE)
     }
 
+    private class TextItemAdapter(
+            private val data: TextInfoArray,
+            private val clickListener: (Int) -> Unit,
+            private val deleteListener: (Int) -> Unit
+    ): RecyclerView.Adapter<TextItemHolder>() {
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TextItemHolder {
+            return TextItemHolder.create(parent, deleteListener, deleteListener)
+        }
+
+        override fun getItemCount(): Int {
+            return data.size
+        }
+
+        override fun onBindViewHolder(holder: TextItemHolder, position: Int) {
+            holder.bind(data.getText(position).textValue)
+        }
+
+    }
+
     private class TextItemHolder
         private constructor(
                 view: View,
                 private val clickListener: (Int) -> Unit,
                 private val deleteListener: (Int) -> Unit): RecyclerView.ViewHolder(view) {
+
+        companion object {
+            fun create(parent: ViewGroup,
+                       clickListener: (Int) -> Unit,
+                       deleteListener: (Int) -> Unit): TextItemHolder {
+                return TextItemHolder(
+                        LayoutInflater.from(parent.context)
+                                .inflate(R.layout.item_time_key, parent, false),
+                        clickListener,
+                        deleteListener)
+            }
+        }
 
         private val nameView: TextView by lazy {
             itemView.findViewById<TextView>(R.id.textView)

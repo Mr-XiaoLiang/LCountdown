@@ -1,5 +1,6 @@
 package liang.lollipop.lcountdown.fragment.adjustment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import kotlinx.android.synthetic.main.fragment_adjustment_text.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.info.TextInfoArray
+import liang.lollipop.lcountdown.provider.TextInfoProvider
 import liang.lollipop.lcountdown.util.CurtainDialog
 import liang.lollipop.lcountdown.util.TextFormat
 import liang.lollipop.lcountdown.view.InnerDialogProvider
@@ -40,11 +42,32 @@ class TextAdjustmentFragment: CardAdjustmentFragment() {
         AdjustmentProvider(activity as FragmentActivity, onTextChangeListener)
     }
 
+    private var textInfoProvider: TextInfoProviderWrapper = TextInfoProviderWrapper(null)
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         addTextBtn.setOnClickListener {
             addText()
         }
+
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is TextInfoProvider) {
+            textInfoProvider.parent = textInfoProvider
+        } else {
+            parentFragment?.let { parent ->
+                if (parent is TextInfoProvider) {
+                    textInfoProvider.parent = parent
+                }
+            }
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        textInfoProvider.parent = null
     }
 
     private fun addText() {
@@ -52,21 +75,21 @@ class TextAdjustmentFragment: CardAdjustmentFragment() {
     }
 
     private class TextItemAdapter(
-            private val data: TextInfoArray,
+            private val data: TextInfoProvider,
             private val clickListener: (Int) -> Unit,
             private val deleteListener: (Int) -> Unit
     ): RecyclerView.Adapter<TextItemHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TextItemHolder {
-            return TextItemHolder.create(parent, deleteListener, deleteListener)
+            return TextItemHolder.create(parent, clickListener, deleteListener)
         }
 
         override fun getItemCount(): Int {
-            return data.size
+            return data.textCount
         }
 
         override fun onBindViewHolder(holder: TextItemHolder, position: Int) {
-            holder.bind(data.getText(position).textValue)
+            holder.bind(data.getText(position))
         }
 
     }
@@ -212,6 +235,26 @@ class TextAdjustmentFragment: CardAdjustmentFragment() {
         fun bind(name: Int, value: String) {
             nameView.setText(name)
             valueView.text = value
+        }
+
+    }
+
+    private class TextInfoProviderWrapper(var parent: TextInfoProvider? = null): TextInfoProvider {
+        override val textCount: Int
+            get() {
+                return parent?.textCount?:0
+            }
+
+        override fun getText(index: Int): String {
+            return parent?.getText(index)?:""
+        }
+
+        override fun setText(index: Int, value: String) {
+            parent?.setText(index, value)
+        }
+
+        override fun addText(value: String) {
+            parent?.addText(value)
         }
 
     }

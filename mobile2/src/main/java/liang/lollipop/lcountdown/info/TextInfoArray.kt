@@ -1,56 +1,45 @@
 package liang.lollipop.lcountdown.info
 
+import liang.lollipop.lcountdown.provider.TextInfoProvider
+
 /**
  * @author lollipop
  * @date 2020/6/27 22:47
  * 文字信息的数据集合
  */
-class TextInfoArray: JsonArrayInfo() {
+class TextInfoArray: JsonArrayInfo(), TextInfoProvider {
 
-    interface Text {
-        var textValue: String
+    private fun optTextInfo(index: Int): TextInfoImpl {
+        return optInfo(index).convertTo()
     }
 
-    interface Location {
-        var left: Int
-        var top: Int
-        var right: Int
-        var bottom: Int
+    override val textCount: Int
+        get() { return this.size }
+
+    override fun getText(index: Int): String {
+        return optTextInfo(index).textValue
     }
 
-    interface Size {
-        var fontSize: Float
+    override fun setText(index: Int, value: String) {
+        optTextInfo(index).textValue = value
     }
 
-    interface Color {
-        val colorSize: Int
-        fun getColor(index: Int): TextColor
-        fun setColor(index: Int, color: TextColor)
-        fun addColor(color: TextColor)
-    }
-
-    data class TextColor(val start: Int, val length: Int, val color: Int)
-
-    fun getText(index: Int): Text {
-        return optInfo(index).convertTo<JsonInfo, TextInfoImpl>()
+    override fun addText(value: String) {
+        put(TextInfoImpl().apply {
+            textValue = value
+        })
     }
 
     fun getLocation(index: Int): Location {
         return optInfo(index).convertTo<JsonInfo, TextInfoImpl>()
     }
 
-    fun getSize(index: Int): Size {
+    fun getSize(index: Int): FontSize {
         return optInfo(index).convertTo<JsonInfo, TextInfoImpl>()
     }
 
-    fun getColor(index: Int): Color {
+    fun getColor(index: Int): TextColor {
         return optInfo(index).convertTo<JsonInfo, TextInfoImpl>()
-    }
-
-    fun addText(value: String) {
-        val textInfoImpl = TextInfoImpl()
-        textInfoImpl.textValue = value
-        put(textInfoImpl)
     }
 
     override fun checkPut(value: Any): Boolean {
@@ -60,7 +49,7 @@ class TextInfoArray: JsonArrayInfo() {
         return super.checkPut(value)
     }
 
-    private class TextInfoImpl: JsonInfo(), Text, Location, Size, Color {
+    private class TextInfoImpl: JsonInfo(), Text, Location, FontSize, TextColor {
 
         override var textValue by StringDelegate(this)
 
@@ -83,16 +72,16 @@ class TextInfoArray: JsonArrayInfo() {
                 return colorArray.size
             }
 
-        private val colorCache = ArrayList<TextColor?>()
+        private val colorCache = ArrayList<TextTint?>()
 
-        private val EMPTY_COLOR = TextColor(0, 0, 0)
+        private val EMPTY_COLOR = TextTint(0, 0, 0)
 
-        override fun getColor(index: Int): TextColor {
+        override fun getColor(index: Int): TextTint {
             if (keepColorSize(index)) {
                 var colorInfo = colorCache[index]
                 if (colorInfo == null) {
                     val color = colorArray.getColor(index)
-                    colorInfo = TextColor(color.start, color.length, color.color)
+                    colorInfo = TextTint(color.start, color.length, color.color)
                     colorCache[index] = colorInfo
                 }
                 return colorInfo
@@ -100,7 +89,7 @@ class TextInfoArray: JsonArrayInfo() {
             return EMPTY_COLOR
         }
 
-        override fun setColor(index: Int, color: TextColor) {
+        override fun setColor(index: Int, color: TextTint) {
             if (keepColorSize(index)) {
                 colorCache[index] = color
                 val colorInfo = colorArray.getColor(index)
@@ -111,13 +100,13 @@ class TextInfoArray: JsonArrayInfo() {
             }
         }
 
-        override fun addColor(textColor: TextColor) {
+        override fun addColor(textTint: TextTint) {
             if (keepColorSize(0)) {
-                colorCache.add(textColor)
+                colorCache.add(textTint)
                 colorArray.put(TextColorImpl().apply {
-                    start = textColor.start
-                    length = textColor.length
-                    color = textColor.color
+                    start = textTint.start
+                    length = textTint.length
+                    color = textTint.color
                 })
             }
         }

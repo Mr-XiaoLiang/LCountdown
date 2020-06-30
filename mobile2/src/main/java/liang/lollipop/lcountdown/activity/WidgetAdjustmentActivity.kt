@@ -11,6 +11,8 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import kotlinx.android.synthetic.main.activity_widget_adjustment.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.fragment.adjustment.*
+import liang.lollipop.lcountdown.info.TextInfoArray
+import liang.lollipop.lcountdown.provider.TextInfoProvider
 import liang.lollipop.lcountdown.util.BottomSheetHelper
 import liang.lollipop.ltabview.LTabHelper
 import liang.lollipop.ltabview.LTabView
@@ -18,7 +20,8 @@ import liang.lollipop.ltabview.LTabView
 /**
  * 小部件的调整页面
  */
-class WidgetAdjustmentActivity : BaseActivity() {
+class WidgetAdjustmentActivity : BaseActivity(),
+        TextAdjustmentFragment.Callback {
 
     private var bottomSheetHelper: BottomSheetHelper? = null
 
@@ -28,6 +31,8 @@ class WidgetAdjustmentActivity : BaseActivity() {
             FontAdjustmentFragment(),
             SettingsAdjustmentFragment()
     )
+
+    private val textInfoArray = TextInfoArray()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,6 +119,10 @@ class WidgetAdjustmentActivity : BaseActivity() {
             return ""
         }
 
+    }
+
+    override fun getTextInfoProvider(): TextInfoProvider {
+        return textInfoArray
     }
 
 }

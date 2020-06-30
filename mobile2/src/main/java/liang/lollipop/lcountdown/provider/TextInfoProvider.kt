@@ -27,4 +27,9 @@ interface TextInfoProvider {
      */
     fun addText(value: String)
 
+    /**
+     * 删除一个文本信息
+     */
+    fun removeText(index: Int)
+
 }

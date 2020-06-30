@@ -14,6 +14,7 @@
         android:paddingEnd="58dp"
         android:textSize="16sp"
         android:paddingTop="12dp"
+        android:textColor="@color/curtainText"
         android:paddingBottom="12dp"/>
 
     <ImageView

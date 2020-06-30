@@ -30,6 +30,10 @@ class TextInfoArray: JsonArrayInfo(), TextInfoProvider {
         })
     }
 
+    override fun removeText(index: Int) {
+        remove(index)
+    }
+
     fun getLocation(index: Int): Location {
         return optInfo(index).convertTo<JsonInfo, TextInfoImpl>()
     }

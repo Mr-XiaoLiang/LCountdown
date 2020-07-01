@@ -17,6 +17,7 @@ import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.provider.TextInfoProvider
 import liang.lollipop.lcountdown.util.CurtainDialog
 import liang.lollipop.lcountdown.util.TextFormat
+import liang.lollipop.lcountdown.util.closeBoard
 import liang.lollipop.lcountdown.view.InnerDialogProvider
 
 /**
@@ -213,7 +214,14 @@ class TextAdjustmentFragment: CardAdjustmentFragment() {
 
         override fun onStart() {
             super.onStart()
-            find<TextView>(R.id.inputView)?.text = pendingValue
+            find<TextView>(R.id.inputView)?.let { view ->
+                view.text = pendingValue
+            }
+        }
+
+        override fun onStop() {
+            find<EditText>(R.id.inputView)?.closeBoard()
+            super.onStop()
         }
 
     }

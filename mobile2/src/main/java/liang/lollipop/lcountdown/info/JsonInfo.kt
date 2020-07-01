@@ -23,7 +23,7 @@ open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
         private fun copyObj(newObj: JSONObject, obj: JSONObject): JSONObject {
             obj.keys().forEach {
                 if (it != null) {
-                    newObj.put(it, newObj.opt(it)?.copyValue())
+                    newObj.put(it, obj.opt(it)?.copyValue())
                 }
             }
             return newObj

@@ -1,10 +1,16 @@
 package liang.lollipop.lcountdown.util
 
+import android.app.Activity
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import androidx.core.content.ContextCompat.getSystemService
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
+
 
 /**
  * @author lollipop
@@ -155,4 +161,31 @@ inline fun <reified T: Any> T.log(vararg value: Any) {
     Log.d("Lollipop", "${this.javaClass.simpleName} -> ${CommonUtil.print(value)}")
 }
 
+fun EditText.closeBoard() {
+    //拿到InputMethodManager
+    (context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.let { imm ->
+        //如果window上view获取焦点 && view不为空
+        if (imm.isActive) {
+            //拿到view的token 不为空
+            windowToken?.let { token ->
+                imm.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS)
+            }
+        }
+    }
+}
 
+fun Activity.closeBoard() {
+    //拿到InputMethodManager
+    (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.let { imm ->
+        //如果window上view获取焦点 && view不为空
+        if (imm.isActive) {
+            currentFocus?.let { focus ->
+                //拿到view的token 不为空
+                focus.windowToken?.let { token ->
+                    //表示软键盘窗口总是隐藏，除非开始时以SHOW_FORCED显示。
+                    imm.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS)
+                }
+            }
+        }
+    }
+}

@@ -23,7 +23,7 @@ open class JsonArrayInfo (val infoArray: JSONArray = JSONArray()) {
         private fun copyObj(newObj: JSONObject, obj: JSONObject): JSONObject {
             obj.keys().forEach {
                 if (it != null) {
-                    newObj.put(it, newObj.opt(it)?.copyValue())
+                    newObj.put(it, obj.opt(it)?.copyValue())
                 }
             }
             return newObj
@@ -155,7 +155,17 @@ open class JsonArrayInfo (val infoArray: JSONArray = JSONArray()) {
 
     fun put(value: Any) {
         if (checkPut(value)) {
-            infoArray.put(value)
+            when (value) {
+                is JsonArrayInfo -> {
+                    infoArray.put(value.infoArray)
+                }
+                is JsonInfo -> {
+                    infoArray.put(value.infoObject)
+                }
+                else -> {
+                    infoArray.put(value)
+                }
+            }
         }
     }
 

@@ -12,6 +12,9 @@ open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
 
     companion object {
 
+        private val TYPE_INFO = JSONObject()
+        private val TYPE_ARRAY = JSONArray()
+
         private fun createWith(info: JsonInfo): JsonInfo {
             return JsonInfo(copyOut(JSONObject(), info))
         }
@@ -53,9 +56,17 @@ open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
                 }
             }
         }
+
+        private val INFO_FACTORY = { JSONObject() }
+
+        private val ARRAY_FACTORY = { JSONArray() }
+
     }
 
+    private val cache = HashMap<String, Any>()
+
     fun copy(info: JsonInfo) {
+        cache.clear()
         val allKey = ArrayList<String>()
         this.infoObject.keys().forEach {
             allKey.add(it)
@@ -70,10 +81,14 @@ open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
         return c.newInstance()
     }
 
-    @Suppress("UNCHECKED_CAST")
     operator fun <T: Any> get(key: String, def: T): T {
+        return get(key, def, null)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T: Any> get(key: String, type: T, def: (() -> T)?): T {
         try {
-            val result = when (def) {
+            val result = when (type) {
                 is String -> {
                     infoObject.optString(key)
                 }
@@ -91,14 +106,14 @@ open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
                         if (!it.isNaN()) {
                             it.toFloat()
                         } else {
-                            def
+                            null
                         }
                     }
                 }
                 is Double -> {
                     infoObject.optDouble(key).let {
                         if (it.isNaN()) {
-                            def
+                            null
                         } else {
                             it
                         }
@@ -119,29 +134,43 @@ open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
                 else -> {
                     infoObject.opt(key)
                 }
-            } ?: def
+            } ?: def?.invoke() ?:type
             return result as T
         } catch (e: Throwable) {
-            return def
+            return def?.invoke() ?:type
         }
     }
 
     fun optInfo(key: String): JsonInfo {
+        val cacheValue = cache[key]
+        if (cacheValue is JsonInfo) {
+            return cacheValue
+        }
         // 尝试获取信息
-        val resultObj = get(key, JSONObject())
+        val resultObj = get(key, TYPE_INFO, INFO_FACTORY)
         // 二次绑定对象
         set(key, resultObj)
+        // 缓存
+        val result = JsonInfo(resultObj)
+        cache[key] = result
         // 包裹对象返回
-        return JsonInfo(resultObj)
+        return result
     }
 
     fun optArray(key: String): JsonArrayInfo {
+        val cacheValue = cache[key]
+        if (cacheValue is JsonArrayInfo) {
+            return cacheValue
+        }
         // 尝试获取信息
-        val resultObj = get(key, JSONArray())
+        val resultObj = get(key, TYPE_ARRAY, ARRAY_FACTORY)
         // 二次绑定对象
         set(key, resultObj)
+        // 缓存
+        val result = JsonArrayInfo(resultObj)
+        cache[key] = result
         // 包裹对象返回
-        return JsonArrayInfo(resultObj)
+        return result
     }
 
     operator fun set(key: String, value: Any) {
@@ -156,7 +185,14 @@ open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
                 infoObject.put(key, value)
             }
         }
+        // 移除缓存
+        cache.remove(key)
     }
+
+    val size: Int
+        get() {
+            return infoObject.length()
+        }
 
     override fun toString(): String {
         return infoObject.toString()

@@ -1,5 +1,6 @@
 package liang.lollipop.lcountdown.info
 
+import android.util.SparseArray
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -11,6 +12,9 @@ import org.json.JSONObject
 open class JsonArrayInfo (val infoArray: JSONArray = JSONArray()) {
 
     companion object {
+
+        private val TYPE_INFO = JSONObject()
+        private val TYPE_ARRAY = JSONArray()
 
         private fun createWith(info: JsonArrayInfo): JsonArrayInfo {
             return JsonArrayInfo(copyOut(JSONArray(), info))
@@ -52,9 +56,17 @@ open class JsonArrayInfo (val infoArray: JSONArray = JSONArray()) {
                 }
             }
         }
+
+        private val INFO_FACTORY = { JSONObject() }
+
+        private val ARRAY_FACTORY = { JSONArray() }
+
     }
 
+    private val cache = SparseArray<Any>()
+
     fun copy(info: JsonArrayInfo) {
+        cache.clear()
         for (index in 0 until info.infoArray.length()) {
             this.infoArray.remove(index)
         }
@@ -65,10 +77,14 @@ open class JsonArrayInfo (val infoArray: JSONArray = JSONArray()) {
         return c.newInstance()
     }
 
-    @Suppress("UNCHECKED_CAST")
     operator fun <T: Any> get(key: Int, def: T): T {
+        return get(key, def, null)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T: Any> get(key: Int, type: T, def: (() -> T)?): T {
         try {
-            val result = when (def) {
+            val result = when (type) {
                 is String -> {
                     infoArray.optString(key)
                 }
@@ -86,14 +102,14 @@ open class JsonArrayInfo (val infoArray: JSONArray = JSONArray()) {
                         if (!it.isNaN()) {
                             it.toFloat()
                         } else {
-                            def
+                            null
                         }
                     }
                 }
                 is Double -> {
                     infoArray.optDouble(key).let {
                         if (it.isNaN()) {
-                            def
+                            null
                         } else {
                             it
                         }
@@ -114,29 +130,43 @@ open class JsonArrayInfo (val infoArray: JSONArray = JSONArray()) {
                 else -> {
                     infoArray.opt(key)
                 }
-            } ?: def
+            } ?: def?.invoke() ?: type
             return result as T
         } catch (e: Throwable) {
-            return def
+            return def?.invoke() ?: type
         }
     }
 
     fun optInfo(key: Int): JsonInfo {
+        val cacheValue = cache[key]
+        if (cacheValue is JsonInfo) {
+            return cacheValue
+        }
         // 尝试获取信息
-        val resultObj = get(key, JSONObject())
+        val resultObj = get(key, TYPE_INFO, INFO_FACTORY)
         // 二次绑定对象
         set(key, resultObj)
+        // 缓存
+        val result = JsonInfo(resultObj)
+        cache.put(key, result)
         // 包裹对象返回
-        return JsonInfo(resultObj)
+        return result
     }
 
     fun optArray(key: Int): JsonArrayInfo {
+        val cacheValue = cache[key]
+        if (cacheValue is JsonArrayInfo) {
+            return cacheValue
+        }
         // 尝试获取信息
-        val resultObj = get(key, JSONArray())
+        val resultObj = get(key, TYPE_ARRAY, ARRAY_FACTORY)
         // 二次绑定对象
         set(key, resultObj)
+        // 缓存
+        val result = JsonArrayInfo(resultObj)
+        cache.put(key, result)
         // 包裹对象返回
-        return JsonArrayInfo(resultObj)
+        return result
     }
 
     operator fun set(key: Int, value: Any) {
@@ -151,6 +181,8 @@ open class JsonArrayInfo (val infoArray: JSONArray = JSONArray()) {
                 infoArray.put(key, value)
             }
         }
+        // 更新数据后更新缓存
+        cache.remove(key)
     }
 
     fun put(value: Any) {

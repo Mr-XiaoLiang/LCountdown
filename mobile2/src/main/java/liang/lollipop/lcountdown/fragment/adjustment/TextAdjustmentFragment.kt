@@ -36,6 +36,8 @@ class TextAdjustmentFragment: CardAdjustmentFragment() {
 
     private val textInfoProvider: TextInfoProviderWrapper = TextInfoProviderWrapper(null)
 
+    private var textChangeCallback: (() -> Unit)? = null
+
     private val adapter = TextItemAdapter(textInfoProvider, { _, it ->
         adjustmentProvider.show(textInfoProvider.getText(it), it)
     }, { a, it ->
@@ -47,6 +49,7 @@ class TextAdjustmentFragment: CardAdjustmentFragment() {
         } else {
             a.notifyDataSetChanged()
         }
+        textChangeCallback?.invoke()
     })
 
     private val onTextChangeListener: ((String, Int) -> Unit) = { value, index ->
@@ -63,6 +66,7 @@ class TextAdjustmentFragment: CardAdjustmentFragment() {
             textInfoProvider.setText(index, value)
             adapter.notifyItemChanged(index)
         }
+        textChangeCallback?.invoke()
     }
 
     private val adjustmentProvider: AdjustmentProvider by lazy {
@@ -307,6 +311,7 @@ class TextAdjustmentFragment: CardAdjustmentFragment() {
 
     interface Callback {
         fun getTextInfoProvider(): TextInfoProvider
+        fun onTextInfoChange()
     }
 
 }

@@ -1,5 +1,7 @@
 package liang.lollipop.lcountdown.info
 
+import android.util.SparseArray
+import liang.lollipop.lcountdown.provider.FontSizeProvider
 import liang.lollipop.lcountdown.provider.TextInfoProvider
 
 /**
@@ -7,7 +9,7 @@ import liang.lollipop.lcountdown.provider.TextInfoProvider
  * @date 2020/6/27 22:47
  * 文字信息的数据集合
  */
-class TextInfoArray: JsonArrayInfo(), TextInfoProvider {
+class TextInfoArray: JsonArrayInfo(), TextInfoProvider, FontSizeProvider {
 
     private fun optTextInfo(index: Int): TextInfoImpl {
         return optInfo(index).convertTo()
@@ -15,6 +17,14 @@ class TextInfoArray: JsonArrayInfo(), TextInfoProvider {
 
     override val textCount: Int
         get() { return this.size }
+
+    override fun getFontSize(index: Int): Float {
+        return optTextInfo(index).fontSize
+    }
+
+    override fun setFontSize(index: Int, value: Float) {
+        optTextInfo(index).fontSize = value
+    }
 
     override fun getText(index: Int): String {
         return optTextInfo(index).textValue
@@ -32,18 +42,6 @@ class TextInfoArray: JsonArrayInfo(), TextInfoProvider {
 
     override fun removeText(index: Int) {
         remove(index)
-    }
-
-    fun getLocation(index: Int): Location {
-        return optInfo(index).convertTo<JsonInfo, TextInfoImpl>()
-    }
-
-    fun getSize(index: Int): FontSize {
-        return optInfo(index).convertTo<JsonInfo, TextInfoImpl>()
-    }
-
-    fun getColor(index: Int): TextColor {
-        return optInfo(index).convertTo<JsonInfo, TextInfoImpl>()
     }
 
     override fun checkPut(value: Any): Boolean {
@@ -67,6 +65,8 @@ class TextInfoArray: JsonArrayInfo(), TextInfoProvider {
 
         override var fontSize by FloatDelegate(this, 16F)
 
+        private val colorCache = SparseArray<TextTint?>()
+
         private val colorArray: ColorJsonArray by JsonArrayDelegate(this) {
             it.convertTo<JsonArrayInfo, ColorJsonArray>()
         }
@@ -76,56 +76,36 @@ class TextInfoArray: JsonArrayInfo(), TextInfoProvider {
                 return colorArray.size
             }
 
-        private val colorCache = ArrayList<TextTint?>()
-
-        private val EMPTY_COLOR = TextTint(0, 0, 0)
-
         override fun getColor(index: Int): TextTint {
-            if (keepColorSize(index)) {
-                var colorInfo = colorCache[index]
-                if (colorInfo == null) {
-                    val color = colorArray.getColor(index)
-                    colorInfo = TextTint(color.start, color.length, color.color)
-                    colorCache[index] = colorInfo
-                }
-                return colorInfo
+            var colorInfo = colorCache[index]
+            if (colorInfo == null) {
+                val color = colorArray.getColor(index)
+                colorInfo = TextTint(color.start, color.length, color.color)
+                colorCache.put(index, colorInfo)
             }
-            return EMPTY_COLOR
+            return colorInfo
         }
 
-        override fun setColor(index: Int, color: TextTint) {
-            if (keepColorSize(index)) {
-                colorCache[index] = color
-                val colorInfo = colorArray.getColor(index)
-                colorInfo.start = color.start
-                colorInfo.length = color.length
-                colorInfo.color = color.color
-                colorArray.setColor(index, colorInfo)
-            }
+        override fun setColor(index: Int, textTint: TextTint) {
+            colorCache.put(index, textTint)
+            val colorInfo = colorArray.getColor(index)
+            colorInfo.start = textTint.start
+            colorInfo.length = textTint.length
+            colorInfo.color = textTint.color
+            colorArray.setColor(index, colorInfo)
         }
 
         override fun addColor(textTint: TextTint) {
-            if (keepColorSize(0)) {
-                colorCache.add(textTint)
-                colorArray.put(TextColorImpl().apply {
-                    start = textTint.start
-                    length = textTint.length
-                    color = textTint.color
-                })
-            }
+            colorArray.put(TextColorImpl().apply {
+                start = textTint.start
+                length = textTint.length
+                color = textTint.color
+            })
         }
 
-        private fun keepColorSize(index: Int): Boolean {
-            if (index < 0) {
-                return false
-            }
-            if (index > 0 && index >= colorSize) {
-                return false
-            }
-            while (colorCache.size < colorSize) {
-                colorCache.add(null)
-            }
-            return true
+        override fun removeColor(index: Int) {
+            colorCache.remove(index)
+            colorArray.remove(index)
         }
 
     }

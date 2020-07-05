@@ -22,8 +22,9 @@ interface FontSize {
 interface TextColor {
     val colorSize: Int
     fun getColor(index: Int): TextTint
-    fun setColor(index: Int, color: TextTint)
-    fun addColor(color: TextTint)
+    fun setColor(index: Int, textTint: TextTint)
+    fun addColor(textTint: TextTint)
+    fun removeColor(index: Int)
 }
 
 data class TextTint(val start: Int, val length: Int, val color: Int)

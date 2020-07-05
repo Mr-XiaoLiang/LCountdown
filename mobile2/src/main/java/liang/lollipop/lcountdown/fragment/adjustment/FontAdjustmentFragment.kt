@@ -28,4 +28,6 @@ class FontAdjustmentFragment: CardAdjustmentFragment() {
         override val layoutId = R.layout.dialog_adjustment_font
     }
 
+
+
 }

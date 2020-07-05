@@ -86,10 +86,16 @@ class TextAdjustmentFragment: CardAdjustmentFragment() {
         super.onAttach(context)
         if (context is Callback) {
             textInfoProvider.parent = context.getTextInfoProvider()
+            textChangeCallback = {
+                context.onTextInfoChange()
+            }
         } else {
             parentFragment?.let { parent ->
                 if (parent is Callback) {
                     textInfoProvider.parent = parent.getTextInfoProvider()
+                    textChangeCallback = {
+                        parent.onTextInfoChange()
+                    }
                 }
             }
         }
@@ -98,6 +104,7 @@ class TextAdjustmentFragment: CardAdjustmentFragment() {
     override fun onDetach() {
         super.onDetach()
         textInfoProvider.parent = null
+        textChangeCallback = null
     }
 
     override fun onResume() {

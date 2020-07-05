@@ -26,7 +26,8 @@
         android:layout_gravity="end"
         android:layout_marginEnd="10dp"
         android:layout_marginStart="0px"
-        android:tint="@color/colorAccent"/>
+        android:tint="@color/colorAccent"
+        android:background="?attr/selectableItemBackgroundBorderless"/>
 
     <View
         android:layout_width="match_parent"

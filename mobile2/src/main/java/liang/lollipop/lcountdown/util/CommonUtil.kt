@@ -189,3 +189,12 @@ fun Activity.closeBoard() {
         }
     }
 }
+
+fun Int.alpha(a: Int): Int {
+    return this and 0xFFFFFF or ((a % 255) shl 24)
+}
+
+fun Int.alpha(f: Float): Int {
+    val a = this shr 24
+    return this.alpha(a)
+}

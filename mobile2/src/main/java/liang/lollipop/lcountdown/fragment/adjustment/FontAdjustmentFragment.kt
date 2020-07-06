@@ -67,6 +67,8 @@ class FontAdjustmentFragment: CardAdjustmentFragment() {
 
         fun bind(name: String, color: Int, size: Float) {
             nameView.text = name
+            seekBar.setTheme(color)
+            seekBar.setProgress(size, false)
         }
 
     }

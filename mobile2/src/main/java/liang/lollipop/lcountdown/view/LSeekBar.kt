@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.util.alpha
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -117,6 +118,12 @@ class LSeekBar (context: Context, attr: AttributeSet?,
             progress = typedArray.getFloat(R.styleable.LSeekBar_progress, 0F)
             typedArray.recycle()
         }
+    }
+
+    fun setTheme(color: Int) {
+        pointColor = color
+        barColor = color.alpha(0.3F)
+        selectedBarColor = color.alpha(0.6F)
     }
 
     fun setProgress(value: Float, callListener: Boolean = true) {

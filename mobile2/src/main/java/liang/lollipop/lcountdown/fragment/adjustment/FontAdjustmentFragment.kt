@@ -8,7 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.fragment_adjustment_font.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.provider.FontSizeProvider
 import liang.lollipop.lcountdown.util.CacheMap
@@ -33,13 +35,36 @@ class FontAdjustmentFragment: CardAdjustmentFragment() {
     private var onFontSizeChangeCallback: ((Int, Float) -> Unit)? = null
     private val fontSizeProvider = FontSizeProviderWrapper(null)
 
+//    private val adapter =
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        recycleView.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
 
     }
 
     private class AdjustmentProvider: InnerDialogProvider() {
         override val layoutId = R.layout.dialog_adjustment_font
+    }
+
+    private class FontItemAdapter(
+            private val fontSizeProvider: FontSizeProviderWrapper,
+            private val onClickListener: (Int) -> Unit,
+            private val onSizeChangedListener: (Int, Float) -> Unit):
+            RecyclerView.Adapter<FontItemHolder>()  {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FontItemHolder {
+            return FontItemHolder.create(parent, onSizeChangedListener, onClickListener)
+        }
+
+        override fun getItemCount(): Int {
+            return fontSizeProvider.textCount
+        }
+
+        override fun onBindViewHolder(holder: FontItemHolder, position: Int) {
+            val name = fontSizeProvider.getText(position)
+            holder.bind(name, fontSizeProvider.getColor(name), fontSizeProvider.getFontSize(position))
+        }
+
     }
 
     private class FontItemHolder(view: View,

@@ -82,12 +82,19 @@ class FontAdjustmentFragment: CardAdjustmentFragment() {
             }
         }
 
-        private val nameView: TextView by lazy {
-            itemView.findViewById<TextView>(R.id.textView)
+        private val seekBar: LSeekBar = itemView.findViewById(R.id.seekBar)
+
+        init {
+            seekBar.onProgressChange { _, progress ->
+                changeListener(adapterPosition, progress)
+            }
+            itemView.setOnClickListener {
+                clickListener(adapterPosition)
+            }
         }
 
-        private val seekBar: LSeekBar by lazy {
-            itemView.findViewById<LSeekBar>(R.id.seekBar)
+        private val nameView: TextView by lazy {
+            itemView.findViewById<TextView>(R.id.textView)
         }
 
         fun bind(name: String, color: Int, size: Float) {

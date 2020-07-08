@@ -133,6 +133,16 @@ class LSeekBar (context: Context, attr: AttributeSet?,
         }
     }
 
+    fun onProgressChange(run: (view: LSeekBar, progress: Float) -> Unit): OnProgressChangeListener {
+        val listener = object : OnProgressChangeListener {
+            override fun onProgressChange(view: LSeekBar, progress: Float) {
+                run(view, progress)
+            }
+        }
+        onProgressChangeListener = listener
+        return listener
+    }
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas?:return

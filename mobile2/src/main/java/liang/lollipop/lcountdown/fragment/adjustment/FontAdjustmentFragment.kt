@@ -33,14 +33,24 @@ class FontAdjustmentFragment: CardAdjustmentFragment() {
     override val colorId = R.color.focusFontAdjust
 
     private var onFontSizeChangeCallback: ((Int, Float) -> Unit)? = null
+
     private val fontSizeProvider = FontSizeProviderWrapper(null)
 
-//    private val adapter =
+    private val adapter = FontItemAdapter(fontSizeProvider, this::onItemClick, this::onItemSizeChange)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recycleView.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
+        recycleView.adapter = adapter
+        adapter.notifyDataSetChanged()
+    }
 
+    private fun onItemClick(position: Int) {
+        // TODO
+    }
+
+    private fun onItemSizeChange(position: Int, size: Float) {
+        // TODO
     }
 
     private class AdjustmentProvider: InnerDialogProvider() {

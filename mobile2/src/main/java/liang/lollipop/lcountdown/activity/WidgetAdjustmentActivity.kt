@@ -125,4 +125,8 @@ class WidgetAdjustmentActivity : BaseActivity(),
         return textInfoArray
     }
 
+    override fun onTextInfoChange() {
+        TODO("Not yet implemented")
+    }
+
 }

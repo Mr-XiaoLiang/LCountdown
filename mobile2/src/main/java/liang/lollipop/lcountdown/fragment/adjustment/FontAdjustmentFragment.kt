@@ -45,12 +45,17 @@ class FontAdjustmentFragment: CardAdjustmentFragment() {
         adapter.notifyDataSetChanged()
     }
 
+    override fun onResume() {
+        super.onResume()
+        adapter.notifyDataSetChanged()
+    }
+
     private fun onItemClick(position: Int) {
         // TODO
     }
 
     private fun onItemSizeChange(position: Int, size: Float) {
-        // TODO
+        fontSizeProvider.setFontSize(position, size)
     }
 
     private class AdjustmentProvider: InnerDialogProvider() {

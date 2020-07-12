@@ -175,15 +175,6 @@ class FontAdjustmentFragment: CardAdjustmentFragment() {
             return provider?.getText(index)?:""
         }
 
-        override fun setText(index: Int, value: String) {
-        }
-
-        override fun addText(value: String) {
-        }
-
-        override fun removeText(index: Int) {
-        }
-
         override fun getFontSize(index: Int): Float {
             return provider?.getFontSize(index)?:0F
         }

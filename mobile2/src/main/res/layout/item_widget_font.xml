@@ -32,6 +32,7 @@
         app:layout_constraintLeft_toLeftOf="@id/textView"/>
 
     <ImageView
+        android:visibility="gone"
         android:id="@+id/moreBtn"
         android:layout_width="48dp"
         android:layout_height="48dp"

@@ -14,6 +14,7 @@
     <string name="title_font">字体设置</string>
     <string name="hint_font_info">显示内容</string>
     <string name="title_text">内容编辑</string>
+    <string name="title_color">颜色调整</string>
 
     <string name="key_name_days">所有天</string>
     <string name="key_name_day_of_month">按月天数</string>

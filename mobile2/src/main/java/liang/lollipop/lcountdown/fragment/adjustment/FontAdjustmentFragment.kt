@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.fragment_adjustment_font.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.provider.FontSizeProvider
 import liang.lollipop.lcountdown.util.CacheMap
+import liang.lollipop.lcountdown.util.FontSizeHelper
 import liang.lollipop.lcountdown.view.InnerDialogProvider
 import liang.lollipop.lcountdown.view.LSeekBar
 import liang.lollipop.lpunch.utils.StringToColorUtil
@@ -98,10 +99,12 @@ class FontAdjustmentFragment: CardAdjustmentFragment() {
         }
 
         private val seekBar: LSeekBar = itemView.findViewById(R.id.seekBar)
+        private val maxFontSize = FontSizeHelper.maxFontSize(view.context)
 
         init {
             seekBar.onProgressChange { _, progress ->
                 changeListener(adapterPosition, progress)
+                changeSizeValue(progress)
             }
             itemView.setOnClickListener {
                 clickListener(adapterPosition)
@@ -112,10 +115,19 @@ class FontAdjustmentFragment: CardAdjustmentFragment() {
             itemView.findViewById<TextView>(R.id.textView)
         }
 
+        private val fontSizeView: TextView by lazy {
+            itemView.findViewById<TextView>(R.id.fontSizeValue)
+        }
+
         fun bind(name: String, color: Int, size: Float) {
             nameView.text = name
             seekBar.setTheme(color)
             seekBar.setProgress(size, false)
+            changeSizeValue(size)
+        }
+
+        private fun changeSizeValue(size: Float) {
+            fontSizeView.text = "${FontSizeHelper.getFontSize(maxFontSize, size)}"
         }
 
     }

@@ -128,7 +128,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
     }
 
     override fun onTextInfoChange() {
-        TODO("Not yet implemented")
+        // TODO("Not yet implemented")
     }
 
     override fun getFontSizeProvider(): FontSizeProvider {
@@ -136,7 +136,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
     }
 
     override fun onFontSizeChange(index: Int, fontSize: Float) {
-        TODO("Not yet implemented")
+        // TODO("Not yet implemented")
     }
 
 }

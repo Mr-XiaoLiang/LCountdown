@@ -31,6 +31,16 @@
         app:layout_constraintRight_toRightOf="@id/textView"
         app:layout_constraintLeft_toLeftOf="@id/textView"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="8sp"
+        app:layout_constraintRight_toRightOf="@id/seekBar"
+        app:layout_constraintBottom_toBottomOf="@id/seekBar"
+        android:layout_margin="4dp"
+        android:id="@+id/fontSizeValue"
+        android:textColor="@color/curtainTextSecondary"/>
+
     <ImageView
         android:visibility="gone"
         android:id="@+id/moreBtn"

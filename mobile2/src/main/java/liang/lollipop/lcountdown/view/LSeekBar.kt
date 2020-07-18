@@ -121,9 +121,9 @@ class LSeekBar (context: Context, attr: AttributeSet?,
     }
 
     fun setTheme(color: Int) {
-        pointColor = color
-        barColor = color.alpha(0.3F)
-        selectedBarColor = color.alpha(0.6F)
+        pointColor = Color.WHITE.alpha(0.5F)
+        barColor = color.alpha(0.2F)
+        selectedBarColor = color
     }
 
     fun setProgress(value: Float, callListener: Boolean = true) {

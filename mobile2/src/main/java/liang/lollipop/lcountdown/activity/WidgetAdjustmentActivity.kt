@@ -31,6 +31,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
             TimeAdjustmentFragment(),
             TextAdjustmentFragment(),
             FontAdjustmentFragment(),
+            ColorAdjustmentFragment(),
             SettingsAdjustmentFragment()
     )
 

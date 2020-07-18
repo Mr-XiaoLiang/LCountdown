@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="30dp" />
+        app:layout_constraintGuide_end="10dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="0px"
@@ -40,7 +40,7 @@
         android:id="@+id/recycleView"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/panelRight"/>
+        app:layout_constraintRight_toLeftOf="@id/panelLeft"/>
 
     <liang.lollipop.lcountdown.view.HuePaletteView
         android:id="@+id/huePalette"
@@ -94,5 +94,28 @@
         app:layout_constraintRight_toRightOf="@id/transparencyPalette"
         app:layout_constraintBottom_toTopOf="@id/panelBottom"
         android:layout_marginTop="5dp"/>
+
+    <androidx.cardview.widget.CardView
+        android:visibility="invisible"
+        android:id="@+id/floatingTextPanel"
+        app:cardBackgroundColor="@color/contentBackground"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="10dp"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        app:layout_constraintLeft_toLeftOf="@id/panelLeft"
+        app:layout_constraintRight_toRightOf="@id/panelRight"
+        app:layout_constraintTop_toTopOf="@id/panelTop"
+        app:layout_constraintBottom_toBottomOf="@id/panelBottom"
+        android:layout_margin="16dp"
+        app:layout_constraintDimensionRatio="1:1">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/infoDetailView"
+            android:textColor="@color/curtainTextSecondary"
+            android:textSize="14sp"
+            android:gravity="center"/>
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

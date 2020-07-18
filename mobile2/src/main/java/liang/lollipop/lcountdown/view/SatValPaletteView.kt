@@ -112,8 +112,10 @@ class SatValPaletteView(context: Context, attrs: AttributeSet?, defStyleAttr: In
                 loc[0] - selectRadius, loc[1] - selectRadius,
                 loc[0] + selectRadius, loc[1] + selectRadius
             )
-            canvas.drawArc(oval, 0F, 90F, false, pointPaint)
-            canvas.drawArc(oval, 180F, 90F, false, pointPaint)
+            canvas.drawArc(oval, 0F, 45F, false, pointPaint)
+            canvas.drawArc(oval, 90F, 45F, false, pointPaint)
+            canvas.drawArc(oval, 180F, 45F, false, pointPaint)
+            canvas.drawArc(oval, 270F, 45F, false, pointPaint)
         }
 
         override fun onBoundsChange(bounds: Rect?) {

@@ -1,6 +1,9 @@
 package liang.lollipop.lcountdown.fragment.adjustment
 
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.info.TextColor
+import liang.lollipop.lcountdown.info.TextTint
+import liang.lollipop.lcountdown.provider.FontColorProvider
 
 /**
  * @author lollipop
@@ -16,4 +19,41 @@ class ColorAdjustmentFragment: CardAdjustmentFragment() {
         get() = R.string.title_color
     override val colorId: Int
         get() = R.color.focusColorAdjust
+
+    private class FontColorProviderWrapper(private val provider: FontColorProvider?) : FontColorProvider {
+
+        private val emptyTint = TextTint(0, 0, 0)
+
+        private val emptyColor = object : TextColor {
+            override val colorSize: Int
+                get() = 0
+
+            override fun getColor(index: Int): TextTint {
+                return emptyTint
+            }
+
+            override fun setColor(index: Int, textTint: TextTint) {
+            }
+
+            override fun addColor(textTint: TextTint) {
+            }
+
+            override fun removeColor(index: Int) {
+            }
+
+        }
+
+        override val textCount: Int
+            get() = provider?.textCount?:0
+
+        override fun getText(index: Int): String {
+            return provider?.getText(index)?:""
+        }
+
+        override fun getFontColor(index: Int): TextColor {
+            return provider?.getFontColor(index)?:emptyColor
+        }
+
+    }
+
 }

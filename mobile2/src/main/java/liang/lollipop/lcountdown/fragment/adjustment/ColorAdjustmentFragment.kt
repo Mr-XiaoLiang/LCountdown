@@ -1,5 +1,6 @@
 package liang.lollipop.lcountdown.fragment.adjustment
 
+import android.content.Context
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.info.TextColor
 import liang.lollipop.lcountdown.info.TextTint
@@ -20,7 +21,34 @@ class ColorAdjustmentFragment: CardAdjustmentFragment() {
     override val colorId: Int
         get() = R.color.focusColorAdjust
 
-    private class FontColorProviderWrapper(private val provider: FontColorProvider?) : FontColorProvider {
+    private val fontColorProvider = FontColorProviderWrapper(null)
+    private var onFontColorChangeCallback: ((Int, TextColor) -> Unit)? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is Callback) {
+            fontColorProvider.provider = context.getFontColorProvider()
+            onFontColorChangeCallback = { index, fontColor ->
+                context.onFontColorChange(index, fontColor)
+            }
+        } else {
+            parentFragment?.let { parent ->
+                if (parent is Callback) {
+                    fontColorProvider.provider = parent.getFontColorProvider()
+                    onFontColorChangeCallback = { index, fontColor ->
+                        parent.onFontColorChange(index, fontColor)
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        fontColorProvider.provider = null
+    }
+
+    private class FontColorProviderWrapper(var provider: FontColorProvider?) : FontColorProvider {
 
         private val emptyTint = TextTint(0, 0, 0)
 
@@ -54,6 +82,11 @@ class ColorAdjustmentFragment: CardAdjustmentFragment() {
             return provider?.getFontColor(index)?:emptyColor
         }
 
+    }
+
+    interface Callback {
+        fun getFontColorProvider(): FontColorProvider
+        fun onFontColorChange(index: Int, fontColor: TextColor)
     }
 
 }

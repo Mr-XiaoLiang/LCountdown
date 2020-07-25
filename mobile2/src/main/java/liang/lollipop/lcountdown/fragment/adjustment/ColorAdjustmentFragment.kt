@@ -1,7 +1,10 @@
 package liang.lollipop.lcountdown.fragment.adjustment
 
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.info.TextColor
@@ -50,9 +53,27 @@ class ColorAdjustmentFragment: CardAdjustmentFragment() {
         fontColorProvider.provider = null
     }
 
-    private class ItemHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(info: String, isSelected: Boolean) {
+    private class ItemHolder(
+            view: View,
+            private val onClick: (Int) -> Unit,
+            private val onLongClick: (Int, Boolean) -> Unit) : RecyclerView.ViewHolder(view) {
 
+        companion object {
+            fun create(parent: ViewGroup,
+                       onClick: (Int) -> Unit,
+                       onLongClick: (Int, Boolean) -> Unit): ItemHolder {
+                return ItemHolder(LayoutInflater.from(parent.context)
+                        .inflate(R.layout.item_in_color_panel, parent, false),
+                        onClick, onLongClick)
+            }
+        }
+
+        private val textView: TextView by lazy {
+            itemView.findViewById<TextView>(R.id.textView)
+        }
+
+        fun bind(info: String, isSelected: Boolean) {
+            textView.text = info
         }
     }
 

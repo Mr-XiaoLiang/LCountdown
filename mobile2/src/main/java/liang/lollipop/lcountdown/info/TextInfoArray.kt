@@ -1,6 +1,7 @@
 package liang.lollipop.lcountdown.info
 
 import android.util.SparseArray
+import liang.lollipop.lcountdown.provider.FontColorProvider
 import liang.lollipop.lcountdown.provider.FontSizeProvider
 import liang.lollipop.lcountdown.provider.TextInfoProvider
 
@@ -9,7 +10,7 @@ import liang.lollipop.lcountdown.provider.TextInfoProvider
  * @date 2020/6/27 22:47
  * 文字信息的数据集合
  */
-class TextInfoArray: JsonArrayInfo(), TextInfoProvider, FontSizeProvider {
+class TextInfoArray: JsonArrayInfo(), TextInfoProvider, FontSizeProvider, FontColorProvider {
 
     private fun optTextInfo(index: Int): TextInfoImpl {
         return optInfo(index).convertTo()
@@ -28,6 +29,10 @@ class TextInfoArray: JsonArrayInfo(), TextInfoProvider, FontSizeProvider {
 
     override fun getText(index: Int): String {
         return optTextInfo(index).textValue
+    }
+
+    override fun getFontColor(index: Int): TextColor {
+        return optTextInfo(index)
     }
 
     override fun setText(index: Int, value: String) {

@@ -11,7 +11,9 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import kotlinx.android.synthetic.main.activity_widget_adjustment.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.fragment.adjustment.*
+import liang.lollipop.lcountdown.info.TextColor
 import liang.lollipop.lcountdown.info.TextInfoArray
+import liang.lollipop.lcountdown.provider.FontColorProvider
 import liang.lollipop.lcountdown.provider.FontSizeProvider
 import liang.lollipop.lcountdown.provider.TextInfoProvider
 import liang.lollipop.lcountdown.util.BottomSheetHelper
@@ -23,7 +25,8 @@ import liang.lollipop.ltabview.LTabView
  */
 class WidgetAdjustmentActivity : BaseActivity(),
         TextAdjustmentFragment.Callback,
-        FontAdjustmentFragment.Callback{
+        FontAdjustmentFragment.Callback,
+        ColorAdjustmentFragment.Callback{
 
     private var bottomSheetHelper: BottomSheetHelper? = null
 
@@ -137,6 +140,14 @@ class WidgetAdjustmentActivity : BaseActivity(),
     }
 
     override fun onFontSizeChange(index: Int, fontSize: Float) {
+        // TODO("Not yet implemented")
+    }
+
+    override fun getFontColorProvider(): FontColorProvider {
+        return textInfoArray
+    }
+
+    override fun onFontColorChange(index: Int, fontColor: TextColor) {
         // TODO("Not yet implemented")
     }
 

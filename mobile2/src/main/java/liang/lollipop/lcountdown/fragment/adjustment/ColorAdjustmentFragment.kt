@@ -5,10 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.fragment_adjustment_color.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.info.TextColor
 import liang.lollipop.lcountdown.info.TextTint
+import liang.lollipop.lcountdown.listener.TextFocusProvider
 import liang.lollipop.lcountdown.provider.FontColorProvider
 import liang.lollipop.lcountdown.view.CheckableTextView
 
@@ -29,9 +32,40 @@ class ColorAdjustmentFragment: CardAdjustmentFragment() {
 
     private val fontColorProvider = FontColorProviderWrapper(null)
     private var onFontColorChangeCallback: ((Int, TextColor) -> Unit)? = null
+    private var textFocusProvider: TextFocusProvider? = null
+
+    private val focusIndex: Int
+        get() {
+            return textFocusProvider?.getSelectedIndex()?:-1
+        }
+
+    private val focusItemAdapter = FocusItemAdapter(fontColorProvider, {
+        focusIndex
+    }, { index ->
+        focusChange(index)
+    }, { index, isPressed ->
+        showInfoDetail(index, isPressed)
+    })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+
+        recycleView.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
+        recycleView.adapter = focusItemAdapter
+    }
+
+    private fun showInfoDetail(index: Int, isPressed: Boolean) {
+        // TODO
+    }
+
+    private fun focusChange(index: Int) {
+        if (focusIndex == index) {
+            return
+        }
+        textFocusProvider?.onTextSelected(index)
+        // TODO
     }
 
     override fun onAttach(context: Context) {
@@ -51,11 +85,40 @@ class ColorAdjustmentFragment: CardAdjustmentFragment() {
                 }
             }
         }
+        if (context is TextFocusProvider) {
+            textFocusProvider = context
+        } else {
+            parentFragment?.let { parent ->
+                if (parent is TextFocusProvider) {
+                    textFocusProvider = parent
+                }
+            }
+        }
     }
 
     override fun onDetach() {
         super.onDetach()
         fontColorProvider.provider = null
+        textFocusProvider = null
+    }
+
+    private class FocusItemAdapter(
+            private val fontColorProvider: FontColorProvider,
+            private val focusIndex: () -> Int,
+            private val onClick: (Int) -> Unit,
+            private val onLongClick: (Int, Boolean) -> Unit): RecyclerView.Adapter<ItemHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
+            return ItemHolder.create(parent, onClick, onLongClick)
+        }
+
+        override fun getItemCount(): Int {
+            return fontColorProvider.textCount
+        }
+
+        override fun onBindViewHolder(holder: ItemHolder, position: Int) {
+            holder.bind(fontColorProvider.getText(position), focusIndex() == position)
+        }
+
     }
 
     private class ItemHolder(

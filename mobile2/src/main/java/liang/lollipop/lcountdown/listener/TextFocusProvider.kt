@@ -5,7 +5,7 @@ package liang.lollipop.lcountdown.listener
  * @date 7/18/20 17:04
  * 当一个文本被选中时当回调函数
  */
-interface OnTextSelectedListener {
+interface TextFocusProvider {
 
     /**
      * 文本的序号

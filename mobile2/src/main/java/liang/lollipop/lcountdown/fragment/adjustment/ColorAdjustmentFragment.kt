@@ -49,8 +49,6 @@ class ColorAdjustmentFragment: CardAdjustmentFragment() {
         focusIndex
     }, { index ->
         focusChange(index)
-    }, { index, isPressed ->
-        showInfoDetail(index, isPressed)
     })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -169,20 +167,40 @@ class ColorAdjustmentFragment: CardAdjustmentFragment() {
         }
     }
 
-    private fun showInfoDetail(index: Int, isPressed: Boolean) {
-        // TODO
-    }
-
     private fun focusChange(index: Int) {
-        if (focusIndex == index) {
-            return
-        }
         textFocusProvider?.onTextSelected(index)
-        // TODO
+        parser(if (index < 0) {
+            Color.WHITE
+        } else {
+            getColorByIndex(index)
+        })
     }
 
     private fun onColorChange() {
-        // TODO
+        val index = textFocusProvider?.getSelectedIndex()?:-1
+        if (index < 0) {
+            return
+        }
+        val fontColor = setColorByIndex(index, targetColor)
+        onFontColorChangeCallback?.invoke(index, fontColor)
+    }
+
+    private fun getColorByIndex(index: Int): Int {
+        val fontColor = fontColorProvider.getFontColor(index)
+        if (fontColor.colorSize < 1) {
+            return Color.WHITE
+        }
+        return fontColor.getColor(0).color
+    }
+
+    private fun setColorByIndex(index: Int, color: Int): TextColor {
+        val fontColor = fontColorProvider.getFontColor(index)
+        if (fontColor.colorSize < 1) {
+            fontColor.addColor(TextTint(-1, -1, color))
+        } else {
+            fontColor.setColor(0, TextTint(-1, -1, color))
+        }
+        return fontColor
     }
 
     override fun onAttach(context: Context) {
@@ -222,10 +240,9 @@ class ColorAdjustmentFragment: CardAdjustmentFragment() {
     private class FocusItemAdapter(
             private val fontColorProvider: FontColorProvider,
             private val focusIndex: () -> Int,
-            private val onClick: (Int) -> Unit,
-            private val onLongClick: (Int, Boolean) -> Unit): RecyclerView.Adapter<ItemHolder>() {
+            private val onClick: (Int) -> Unit): RecyclerView.Adapter<ItemHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
-            return ItemHolder.create(parent, onClick, onLongClick)
+            return ItemHolder.create(parent, onClick)
         }
 
         override fun getItemCount(): Int {
@@ -240,16 +257,20 @@ class ColorAdjustmentFragment: CardAdjustmentFragment() {
 
     private class ItemHolder(
             view: View,
-            private val onClick: (Int) -> Unit,
-            private val onLongClick: (Int, Boolean) -> Unit) : RecyclerView.ViewHolder(view) {
+            private val onClick: (Int) -> Unit) : RecyclerView.ViewHolder(view) {
 
         companion object {
             fun create(parent: ViewGroup,
-                       onClick: (Int) -> Unit,
-                       onLongClick: (Int, Boolean) -> Unit): ItemHolder {
+                       onClick: (Int) -> Unit): ItemHolder {
                 return ItemHolder(LayoutInflater.from(parent.context)
                         .inflate(R.layout.item_in_color_panel, parent, false),
-                        onClick, onLongClick)
+                        onClick)
+            }
+        }
+
+        init {
+            itemView.setOnClickListener {
+                onClick(this.adapterPosition)
             }
         }
 

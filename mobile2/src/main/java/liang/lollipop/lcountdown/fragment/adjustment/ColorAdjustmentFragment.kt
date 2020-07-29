@@ -3,6 +3,7 @@ package liang.lollipop.lcountdown.fragment.adjustment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.graphics.LinearGradient
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -201,6 +202,11 @@ class ColorAdjustmentFragment: CardAdjustmentFragment() {
             fontColor.setColor(0, TextTint(-1, -1, color))
         }
         return fontColor
+    }
+
+    override fun onResume() {
+        super.onResume()
+        parser(textFocusProvider?.let { getColorByIndex(it.getSelectedIndex()) }?:Color.WHITE)
     }
 
     override fun onAttach(context: Context) {

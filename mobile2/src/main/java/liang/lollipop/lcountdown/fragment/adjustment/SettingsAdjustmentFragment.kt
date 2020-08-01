@@ -6,14 +6,13 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.fragment_adjustment_settings.*
 import liang.lollipop.lcountdown.R
-import liang.lollipop.lcountdown.util.log
 
 /**
  * @author lollipop
  * @date 2020/6/14 23:09
  * 偏好设置的碎片
  */
-class SettingsAdjustmentFragment : CardAdjustmentFragment() {
+class SettingsAdjustmentFragment : BaseAdjustmentFragment() {
     override val layoutId = R.layout.fragment_adjustment_settings
 
     override val icon = R.drawable.ic_baseline_settings_24

@@ -30,7 +30,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
 
     private var bottomSheetHelper: BottomSheetHelper? = null
 
-    private val fragments: Array<CardAdjustmentFragment> = arrayOf(
+    private val fragments: Array<BaseAdjustmentFragment> = arrayOf(
             TimeAdjustmentFragment(),
             TextAdjustmentFragment(),
             FontAdjustmentFragment(),
@@ -105,7 +105,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
 
     @SuppressLint("WrongConstant")
     private class Adapter(fragmentManager: FragmentManager,
-                          private val fragments: Array<CardAdjustmentFragment>,
+                          private val fragments: Array<BaseAdjustmentFragment>,
                           private val context: Context)
         : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 

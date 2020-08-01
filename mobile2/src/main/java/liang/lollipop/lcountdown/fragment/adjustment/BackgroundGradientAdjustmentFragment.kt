@@ -5,7 +5,7 @@ package liang.lollipop.lcountdown.fragment.adjustment
  * @date 7/29/20 23:39
  * 背景梯度渐变渲染的Fragment
  */
-class BackgroundGradientAdjustmentFragment: CardAdjustmentFragment() {
+class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
     override val layoutId: Int
         get() = TODO("Not yet implemented")
     override val icon: Int

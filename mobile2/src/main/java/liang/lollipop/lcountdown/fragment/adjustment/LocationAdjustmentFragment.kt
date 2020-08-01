@@ -4,7 +4,7 @@ package liang.lollipop.lcountdown.fragment.adjustment
  * @author lollipop
  * @date 7/30/20 23:42
  */
-class LocationAdjustmentFragment: CardAdjustmentFragment() {
+class LocationAdjustmentFragment: BaseAdjustmentFragment() {
     override val layoutId: Int
         get() = TODO("Not yet implemented")
     override val icon: Int
@@ -13,4 +13,7 @@ class LocationAdjustmentFragment: CardAdjustmentFragment() {
         get() = TODO("Not yet implemented")
     override val colorId: Int
         get() = TODO("Not yet implemented")
+
+
 }
+

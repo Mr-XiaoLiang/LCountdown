@@ -24,7 +24,7 @@ import liang.lollipop.lpunch.utils.StringToColorUtil
  * @date 2020/6/20 20:55
  * 文字调整的碎片页
  */
-class FontAdjustmentFragment: CardAdjustmentFragment() {
+class FontAdjustmentFragment: BaseAdjustmentFragment() {
     override val layoutId = R.layout.fragment_adjustment_font
 
     override val icon = R.drawable.ic_baseline_format_size_24

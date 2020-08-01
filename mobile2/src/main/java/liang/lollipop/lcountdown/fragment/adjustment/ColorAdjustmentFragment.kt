@@ -3,7 +3,6 @@ package liang.lollipop.lcountdown.fragment.adjustment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
-import android.graphics.LinearGradient
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -26,7 +25,7 @@ import java.util.*
  * @date 7/14/20 00:13
  * 颜色调整的fragment
  */
-class ColorAdjustmentFragment: CardAdjustmentFragment() {
+class ColorAdjustmentFragment: BaseAdjustmentFragment() {
     override val layoutId: Int
         get() = R.layout.fragment_adjustment_color
     override val icon: Int

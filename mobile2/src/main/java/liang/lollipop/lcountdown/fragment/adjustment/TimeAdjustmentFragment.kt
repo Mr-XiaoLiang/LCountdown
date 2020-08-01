@@ -7,7 +7,7 @@ import liang.lollipop.lcountdown.R
  * @date 2020/6/14 22:09
  * 时间调整的碎片
  */
-class TimeAdjustmentFragment: CardAdjustmentFragment() {
+class TimeAdjustmentFragment: BaseAdjustmentFragment() {
     override val layoutId = R.layout.fragment_adjustment_time
 
     override val icon = R.drawable.ic_baseline_access_time_24

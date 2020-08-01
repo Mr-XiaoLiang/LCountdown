@@ -25,7 +25,7 @@ import liang.lollipop.lcountdown.view.InnerDialogProvider
  * @date 2020/6/20 20:55
  * 文字调整的碎片页
  */
-class TextAdjustmentFragment: CardAdjustmentFragment() {
+class TextAdjustmentFragment: BaseAdjustmentFragment() {
     override val layoutId = R.layout.fragment_adjustment_text
 
     override val icon = R.drawable.ic_baseline_short_text_24

@@ -9,11 +9,11 @@ import liang.lollipop.lcountdown.R
  */
 class CardAdjustmentFragment: BaseAdjustmentFragment() {
     override val layoutId: Int
-        get() = TODO("Not yet implemented")
+        get() = R.layout.fragment_adjustment_card
     override val icon: Int
         get() = R.drawable.ic_baseline_crop_24
     override val title: Int
-        get() = TODO("Not yet implemented")
+        get() = R.string.title_card
     override val colorId: Int
-        get() = TODO("Not yet implemented")
+        get() = R.color.focusCardAdjust
 }

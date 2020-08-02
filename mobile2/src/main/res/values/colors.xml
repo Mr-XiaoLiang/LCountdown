@@ -21,6 +21,9 @@
     <color name="focusFontAdjust">#3BA2F1</color>
     <color name="focusColorAdjust">#FF9800</color>
     <color name="focusTextAdjust">#F436A8</color>
+    <color name="focusLocationAdjust">#D6FF63</color>
+    <color name="focusGradientAdjust">#52E442</color>
+    <color name="focusCardAdjust">#D5AEF8</color>
     <color name="tabUnselectedColor">#DDFFFFFF</color>
 
     <color name="curtainCard">#D8D8D8</color>

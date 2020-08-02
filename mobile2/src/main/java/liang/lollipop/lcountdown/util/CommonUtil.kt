@@ -5,6 +5,8 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.util.TypedValue
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.core.content.ContextCompat.getSystemService
@@ -197,4 +199,22 @@ fun Int.alpha(a: Int): Int {
 fun Int.alpha(f: Float): Int {
     val a = this shr 24
     return this.alpha(a)
+}
+
+fun Float.toDip(context: Context): Float {
+    return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP, this,
+            context.resources.displayMetrics)
+}
+
+fun Float.toDip(view: View): Float {
+    return this.toDip(view.context)
+}
+
+fun Int.zeroTo(value: () -> Int): Int {
+    return if (this == 0) {
+        value()
+    } else {
+        this
+    }
 }

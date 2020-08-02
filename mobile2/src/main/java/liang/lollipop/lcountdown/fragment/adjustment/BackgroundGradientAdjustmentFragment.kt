@@ -9,11 +9,11 @@ import liang.lollipop.lcountdown.R
  */
 class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
     override val layoutId: Int
-        get() = TODO("Not yet implemented")
+        get() = R.layout.fragment_adjustment_background_gradient
     override val icon: Int
         get() = R.drawable.ic_baseline_gradient_24
     override val title: Int
-        get() = TODO("Not yet implemented")
+        get() = R.string.title_background_gradient
     override val colorId: Int
-        get() = TODO("Not yet implemented")
+        get() = R.color.focusGradientAdjust
 }

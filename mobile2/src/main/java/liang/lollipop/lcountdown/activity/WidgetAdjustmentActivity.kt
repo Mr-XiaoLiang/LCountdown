@@ -17,6 +17,8 @@ import liang.lollipop.lcountdown.provider.FontColorProvider
 import liang.lollipop.lcountdown.provider.FontSizeProvider
 import liang.lollipop.lcountdown.provider.TextInfoProvider
 import liang.lollipop.lcountdown.util.BottomSheetHelper
+import liang.lollipop.lcountdown.util.toDip
+import liang.lollipop.lcountdown.util.zeroTo
 import liang.lollipop.ltabview.LTabHelper
 import liang.lollipop.ltabview.LTabView
 
@@ -35,6 +37,9 @@ class WidgetAdjustmentActivity : BaseActivity(),
             TextAdjustmentFragment(),
             FontAdjustmentFragment(),
             ColorAdjustmentFragment(),
+            LocationAdjustmentFragment(),
+            BackgroundGradientAdjustmentFragment(),
+            CardAdjustmentFragment(),
             SettingsAdjustmentFragment()
     )
 
@@ -89,7 +94,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
     }
 
     override fun onInsetsChange(root: View, left: Int, top: Int, right: Int, bottom: Int) {
-        tabGroup.setPadding(left, 0, right, bottom)
+        tabGroup.setPadding(left, 0, right, bottom.zeroTo{ 10F.toDip(root).toInt() })
         bottomSheetHelper?.paddingBottom = bottom
     }
 

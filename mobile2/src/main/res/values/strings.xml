@@ -50,4 +50,5 @@
 
     <string name="key_name_time_china">汉语时间</string>
     <string name="key_name_time_english">英语时间</string>
+    <string name="title_background_image">背景图片</string>
 </resources>

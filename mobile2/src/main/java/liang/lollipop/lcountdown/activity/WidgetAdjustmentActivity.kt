@@ -39,6 +39,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
             ColorAdjustmentFragment(),
             LocationAdjustmentFragment(),
             BackgroundGradientAdjustmentFragment(),
+            BackgroundImageAdjustmentFragment(),
             CardAdjustmentFragment(),
             SettingsAdjustmentFragment()
     )

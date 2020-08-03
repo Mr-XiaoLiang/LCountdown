@@ -1,8 +1,6 @@
 package liang.lollipop.lcountdown.drawable
 
-import android.graphics.Canvas
-import android.graphics.ColorFilter
-import android.graphics.Paint
+import android.graphics.*
 import android.graphics.drawable.Drawable
 
 /**
@@ -17,6 +15,12 @@ class GradientDrawable: Drawable() {
         isDither = true
     }
 
+    var gradientType = Type.Linear
+        set(value) {
+            field = value
+            invalidateSelf()
+        }
+
     override fun draw(canvas: Canvas) {
         TODO("Not yet implemented")
     }
@@ -30,6 +34,13 @@ class GradientDrawable: Drawable() {
     }
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
-        TODO("Not yet implemented")
+        paint.colorFilter = colorFilter
     }
+
+    enum class Type {
+        Linear,
+        Sweep,
+        Radial
+    }
+
 }

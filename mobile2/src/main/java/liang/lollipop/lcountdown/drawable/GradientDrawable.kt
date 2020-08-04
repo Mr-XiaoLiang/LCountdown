@@ -21,6 +21,29 @@ class GradientDrawable: Drawable() {
             invalidateSelf()
         }
 
+    val startPoint = PointF()
+
+    val endPoint = PointF()
+
+    private val colorArray = ArrayList<Int>()
+
+    val colorSize: Int
+        get() {
+            return colorArray.size
+        }
+
+    fun changeColor(vararg colors: Int) {
+        colorArray.clear()
+        colors.forEach {
+            colorArray.add(it)
+        }
+    }
+
+    fun changeColor(colors: List<Int>) {
+        colorArray.clear()
+        colorArray.addAll(colors)
+    }
+
     override fun draw(canvas: Canvas) {
         TODO("Not yet implemented")
     }

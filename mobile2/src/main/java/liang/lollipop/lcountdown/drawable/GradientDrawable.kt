@@ -19,10 +19,6 @@ class GradientDrawable: Drawable() {
     }
 
     var gradientType = Type.Linear
-        set(value) {
-            field = value
-            updateGradient()
-        }
 
     private val startPoint = PointF()
 
@@ -42,13 +38,11 @@ class GradientDrawable: Drawable() {
         colors.forEach {
             colorArray.add(it)
         }
-        updateGradient()
     }
 
     fun changeColor(colors: List<Int>) {
         colorArray.clear()
         colorArray.addAll(colors)
-        updateGradient()
     }
 
     fun changeStart(x: Float, y: Float) {
@@ -71,12 +65,12 @@ class GradientDrawable: Drawable() {
         }
     }
 
-    fun setShape(path: Path) {
+    fun setShape(path: Path?) {
         this.path = path;
         invalidateSelf()
     }
 
-    private fun updateGradient() {
+    fun updateGradient() {
         if (bounds.isEmpty) {
             return
         }

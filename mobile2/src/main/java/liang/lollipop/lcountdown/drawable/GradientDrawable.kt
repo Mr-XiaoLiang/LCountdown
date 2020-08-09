@@ -33,6 +33,10 @@ class GradientDrawable: Drawable() {
 
     var path: Path? = null
 
+    var corner = 0F
+
+    private val tempRectF = RectF()
+
     fun changeColor(vararg colors: Int) {
         colorArray.clear()
         colors.forEach {
@@ -61,7 +65,8 @@ class GradientDrawable: Drawable() {
         if (shape != null) {
             canvas.drawPath(shape, paint)
         } else {
-            canvas.drawRect(bounds, paint)
+            tempRectF.set(bounds)
+            canvas.drawRoundRect(tempRectF, corner, corner, paint)
         }
     }
 
@@ -71,7 +76,8 @@ class GradientDrawable: Drawable() {
     }
 
     fun updateGradient() {
-        if (bounds.isEmpty) {
+        paint.shader = null
+        if (bounds.isEmpty || colorSize == 0) {
             return
         }
         val startX = startPoint.x * bounds.width() + bounds.left

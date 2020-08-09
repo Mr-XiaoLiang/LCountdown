@@ -211,6 +211,14 @@ fun Float.toDip(view: View): Float {
     return this.toDip(view.context)
 }
 
+fun Int.toDip(view: View): Float {
+    return this.toFloat().toDip(view.context)
+}
+
+fun Int.toDip(context: Context): Float {
+    return this.toFloat().toDip(context)
+}
+
 fun Int.zeroTo(value: () -> Int): Int {
     return if (this == 0) {
         value()

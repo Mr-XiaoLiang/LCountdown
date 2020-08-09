@@ -1,10 +1,13 @@
 package liang.lollipop.lcountdown.view
 
 import android.content.Context
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.graphics.Outline
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewOutlineProvider
+import android.widget.Checkable
 import liang.lollipop.lcountdown.drawable.GradientDrawable
 
 /**
@@ -13,7 +16,7 @@ import liang.lollipop.lcountdown.drawable.GradientDrawable
  * 形状的View
  */
 class ShapeView(context: Context, attr: AttributeSet?,
-                defStyleAttr: Int, defStyleRes: Int) : View(context, attr, defStyleAttr, defStyleRes) {
+                defStyleAttr: Int, defStyleRes: Int) : View(context, attr, defStyleAttr, defStyleRes), Checkable {
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -21,18 +24,19 @@ class ShapeView(context: Context, attr: AttributeSet?,
 
     private val gradientDrawable = GradientDrawable()
 
-    private var corner = 0F
+    private val grayColorFilter = ColorMatrixColorFilter(ColorMatrix().apply {
+        setSaturation(0F)
+    })
 
-    private val myOutlineProvider = object : ViewOutlineProvider() {
-        override fun getOutline(view: View?, outline: Outline?) {
-            view?:return
-            outline?:return
-            outline.setRoundRect(view.left, view.top, view.right, view.bottom, corner)
-        }
-    }
+    private var isChecked = false
 
     init {
         background = gradientDrawable
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        onCheckedChange()
     }
 
     fun changeColor(vararg colors: Int) {
@@ -51,8 +55,36 @@ class ShapeView(context: Context, attr: AttributeSet?,
         gradientDrawable.changeEnd(x, y)
     }
 
-    override fun getOutlineProvider(): ViewOutlineProvider {
-        return myOutlineProvider
+    fun setType(type: GradientDrawable.Type) {
+        gradientDrawable.gradientType = type
+    }
+
+    fun setCorner(value: Float) {
+        gradientDrawable.corner = value
+    }
+
+    override fun isChecked(): Boolean {
+        return isChecked
+    }
+
+    override fun toggle() {
+        isChecked = !isChecked
+        onCheckedChange()
+    }
+
+    override fun setChecked(checked: Boolean) {
+        isChecked = checked
+        onCheckedChange()
+    }
+
+    private fun onCheckedChange() {
+        gradientDrawable.colorFilter = if (isChecked) { null } else { grayColorFilter }
+        invalidate()
+    }
+
+    override fun invalidate() {
+        gradientDrawable.updateGradient()
+        super.invalidate()
     }
 
 }

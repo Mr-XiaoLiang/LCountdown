@@ -34,6 +34,8 @@ class ShapeView(context: Context, attr: AttributeSet?,
         background = gradientDrawable
     }
 
+    private var checkedChangeListener: ((ShapeView, Boolean) -> Unit)? = null
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         onCheckedChange()
@@ -73,8 +75,11 @@ class ShapeView(context: Context, attr: AttributeSet?,
     }
 
     override fun setChecked(checked: Boolean) {
-        isChecked = checked
-        onCheckedChange()
+        if (checked != isChecked) {
+            this.checkedChangeListener?.invoke(this, checked)
+            isChecked = checked
+            onCheckedChange()
+        }
     }
 
     private fun onCheckedChange() {
@@ -85,6 +90,78 @@ class ShapeView(context: Context, attr: AttributeSet?,
     override fun invalidate() {
         gradientDrawable.updateGradient()
         super.invalidate()
+    }
+
+    fun onCheckedChange(listener: ((ShapeView, Boolean) -> Unit)?) {
+        this.checkedChangeListener = listener
+    }
+
+    class CheckedGroup {
+
+        private val viewList = ArrayList<ShapeView>()
+
+        private var checkedIndex = -1
+
+        private var isEnable = true
+
+        private var checkedChangeListener: ((view: ShapeView) -> Unit)? = null
+
+        private var viewClickListener = { view: View ->
+            if (view is ShapeView) {
+                select(view)
+            }
+        }
+
+        fun add(vararg views: ShapeView) {
+            views.forEach {
+                it.setOnClickListener(viewClickListener)
+                viewList.add(it)
+            }
+            checked()
+        }
+
+        fun select(view: ShapeView) {
+            if (!view.isChecked) {
+                return
+            }
+            view.isChecked = true
+            checkedIndex = viewList.indexOf(view)
+            for (index in viewList.indices) {
+                if (index != checkedIndex && viewList[index].isChecked) {
+                    viewList[index].isChecked = false
+                }
+            }
+            checkedChangeListener?.invoke(view)
+        }
+
+        private fun checked() {
+            isEnable = false
+            if (checkedIndex < 0) {
+                // 如果没有选中的，那么默认记录第一个选中的
+                for (index in viewList.indices) {
+                    if (viewList[index].isChecked) {
+                        if (checkedIndex < 0) {
+                            checkedIndex = index
+                        } else {
+                            viewList[index].isChecked = false
+                        }
+                    }
+                }
+            } else {
+                // 如果已经有一个选中的，那么关闭其他
+                for (index in viewList.indices) {
+                    if (index != checkedIndex && viewList[index].isChecked) {
+                        viewList[index].isChecked = false
+                    }
+                }
+            }
+            isEnable = true
+        }
+
+        fun onCheckedChange(listener: (view: ShapeView) -> Unit) {
+            checkedChangeListener = listener
+        }
+
     }
 
 }

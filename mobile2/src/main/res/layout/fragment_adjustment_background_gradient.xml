@@ -1,13 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <liang.lollipop.lcountdown.view.ShapeView
-        android:layout_width="40dp"
-        android:layout_height="20dp"
-        android:layout_gravity="center"
-        android:id="@+id/testShapeBtn"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/colorListView"
+        android:layout_width="84dp"
+        android:layout_height="0px"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
 
-</FrameLayout>
+    <liang.lollipop.lcountdown.view.ShapeView
+        android:layout_width="0px"
+        android:layout_height="48dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/colorListView"
+        app:layout_constraintRight_toLeftOf="@id/sweepShapeBtn"
+        android:id="@+id/linearShapeBtn"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="10dp"/>
+
+    <liang.lollipop.lcountdown.view.ShapeView
+        android:layout_width="0px"
+        android:layout_height="48dp"
+        app:layout_constraintTop_toTopOf="@id/linearShapeBtn"
+        app:layout_constraintLeft_toRightOf="@id/linearShapeBtn"
+        app:layout_constraintRight_toLeftOf="@id/radialShapeBtn"
+        android:id="@+id/sweepShapeBtn"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"/>
+
+    <liang.lollipop.lcountdown.view.ShapeView
+        android:layout_width="0px"
+        android:layout_height="48dp"
+        app:layout_constraintTop_toTopOf="@id/sweepShapeBtn"
+        app:layout_constraintLeft_toRightOf="@id/sweepShapeBtn"
+        app:layout_constraintRight_toRightOf="parent"
+        android:id="@+id/radialShapeBtn"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"/>
+
+    <View
+        android:layout_width="0px"
+        android:layout_height="0px"
+        app:layout_constraintTop_toBottomOf="@id/linearShapeBtn"
+        app:layout_constraintLeft_toRightOf="@id/colorListView"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -226,3 +226,14 @@ fun Int.zeroTo(value: () -> Int): Int {
         this
     }
 }
+
+fun Float.range(min: Float, max: Float): Float {
+    if (this < min) {
+        return min
+    }
+    if (this > max) {
+        return max
+    }
+    return this
+}
+

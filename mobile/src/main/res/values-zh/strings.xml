@@ -125,4 +125,5 @@
     <string name="after_one_hour">一小时后</string>
     <string name="end_today">今日结束</string>
     <string name="tomorrow_at_this_time">明日此时</string>
+    <string name="ignore_permission">忽略权限</string>
 </resources>

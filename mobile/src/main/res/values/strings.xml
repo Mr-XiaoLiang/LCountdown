@@ -124,4 +124,5 @@
     <string name="after_one_hour">After one hour</string>
     <string name="end_today">End_today</string>
     <string name="tomorrow_at_this_time">Tomorrow at this time</string>
+    <string name="ignore_permission">ignore permission</string>
 </resources>

@@ -60,7 +60,7 @@ class CountdownImageFragment: LTabFragment() {
         super.onViewCreated(view, savedInstanceState)
         imageListView.adapter = adapter
         imageListView.layoutManager = GridLayoutManager(context, 4)
-        bindClick(permissionBtn)
+        bindClick(permissionBtn, ignoreBtn)
     }
 
     override fun onAttach(context: Context) {
@@ -89,6 +89,13 @@ class CountdownImageFragment: LTabFragment() {
                     }
                 }
             }
+            ignoreBtn -> {
+                activity?.let {
+                    imageListView.visibility = View.VISIBLE
+                    setBtnVisible(View.INVISIBLE)
+                    photoAlbumHelper.initData(it)
+                }
+            }
         }
         super.onClick(v)
     }
@@ -103,10 +110,15 @@ class CountdownImageFragment: LTabFragment() {
                 }
             }
             imageListView.visibility = View.VISIBLE
-            permissionBtn.visibility = View.INVISIBLE
+            setBtnVisible(View.INVISIBLE)
             photoAlbumHelper.initData(it)
         }
         return true
+    }
+
+    private fun setBtnVisible(value: Int) {
+        permissionBtn.visibility = value
+        ignoreBtn.visibility = value
     }
 
     private fun onLoadComplete() {
@@ -116,7 +128,7 @@ class CountdownImageFragment: LTabFragment() {
 
     private fun onLoadError() {
         imageListView.visibility = View.INVISIBLE
-        permissionBtn.visibility = View.VISIBLE
+        setBtnVisible(View.VISIBLE)
     }
 
     private class ImageHolder

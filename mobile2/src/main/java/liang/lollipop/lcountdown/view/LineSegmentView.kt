@@ -24,7 +24,7 @@ class LineSegmentView(context: Context, attr: AttributeSet?,
     constructor(context: Context) : this(context, null)
 
     private abstract class LineDrawable: Drawable() {
-        var backgroundColor = Color.GREEN
+        var backgroundColor = Color.WHITE
         var lineColor = Color.BLACK
         var pointRadius = 10F
 
@@ -70,10 +70,20 @@ class LineSegmentView(context: Context, attr: AttributeSet?,
 
     private val locationWeights = FloatArray(4)
 
+    private var moveChangeListener: ((startX: Float, startY: Float,
+                                      endX: Float, endY: Float) -> Unit)? = null
+
     init {
         background = lineDrawable
         pointRadius = 10F.toDip(this)
         setLocation(0.2F, 0.2F, 0.8F, 0.8F)
+    }
+
+    override fun setBackground(background: Drawable?) {
+        if (background != lineDrawable) {
+            throw RuntimeException("cant set background")
+        }
+        super.setBackground(background)
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -133,9 +143,28 @@ class LineSegmentView(context: Context, attr: AttributeSet?,
         onLocationChange(false)
     }
 
+    fun onMoved(listener: (startX: Float, startY: Float,
+                          endX: Float, endY: Float) -> Unit) {
+        this.moveChangeListener = listener
+    }
+
     private fun onLocationChange(isUser: Boolean) {
         lineDrawable.changePoint(start.x, start.y, end.x, end.y)
         invalidate()
+        val d = pointRadius * 2
+        val contentWith = width - d
+        val contentHeight = height - d
+        val sX = (start.x - pointRadius) / contentWith
+        val sY = (start.y - pointRadius) / contentHeight
+        val eX = (end.x - pointRadius) / contentWith
+        val eY = (end.y - pointRadius) / contentHeight
+        locationWeights[0] = sX
+        locationWeights[1] = sY
+        locationWeights[2] = eX
+        locationWeights[3] = eY
+        if (isUser) {
+            moveChangeListener?.invoke(sX, sY, eX, eY)
+        }
     }
 
     private fun MotionEvent.focusX(): Float {

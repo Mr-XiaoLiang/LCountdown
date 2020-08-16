@@ -30,6 +30,8 @@
 
     <color name="curtainCard">#D8D8D8</color>
 
+    <color name="linePlatBackground">#F6F6F6</color>
+
     <color name="splitLine">#919191</color>
 
     <color name="curtainText">#353936</color>

@@ -104,7 +104,7 @@ class GradientDrawable: Drawable() {
             Type.Sweep -> {
                 SweepGradient(startX, startY, colors, null).apply {
                     setLocalMatrix(Matrix().apply {
-                        setRotate(getRotate(startX, startY, endX, endY, radius).toFloat(),
+                        setRotate(getRotate(startX, startY, endX, endY, radius).toFloat() - 90,
                                 bounds.exactCenterX(), bounds.exactCenterY())
                     })
                 }

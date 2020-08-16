@@ -2,6 +2,8 @@ package liang.lollipop.lcountdown.util
 
 import android.app.Activity
 import android.content.Context
+import android.content.res.Resources
+import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -9,6 +11,7 @@ import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -217,6 +220,18 @@ fun Int.toDip(view: View): Float {
 
 fun Int.toDip(context: Context): Float {
     return this.toFloat().toDip(context)
+}
+
+fun Int.findColor(context: Context): Int {
+    try {
+        return ContextCompat.getColor(context, this)
+    } catch (e: Throwable) {
+    }
+    return Color.WHITE
+}
+
+fun Int.findColor(view: View): Int {
+    return this.findColor(view.context)
 }
 
 fun Int.zeroTo(value: () -> Int): Int {

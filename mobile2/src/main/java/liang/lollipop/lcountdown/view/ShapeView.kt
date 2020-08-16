@@ -3,10 +3,8 @@ package liang.lollipop.lcountdown.view
 import android.content.Context
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
-import android.graphics.Outline
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewOutlineProvider
 import android.widget.Checkable
 import liang.lollipop.lcountdown.drawable.GradientDrawable
 
@@ -28,7 +26,11 @@ class ShapeView(context: Context, attr: AttributeSet?,
         setSaturation(0F)
     })
 
-    private var isChecked = false
+    private var isCheckedBtn = false
+        set(value) {
+            field = value
+            invalidate()
+        }
 
     init {
         background = gradientDrawable
@@ -66,24 +68,24 @@ class ShapeView(context: Context, attr: AttributeSet?,
     }
 
     override fun isChecked(): Boolean {
-        return isChecked
+        return isCheckedBtn
     }
 
     override fun toggle() {
-        isChecked = !isChecked
+        isCheckedBtn = !isCheckedBtn
         onCheckedChange()
     }
 
     override fun setChecked(checked: Boolean) {
-        if (checked != isChecked) {
+        if (checked != isCheckedBtn) {
             this.checkedChangeListener?.invoke(this, checked)
-            isChecked = checked
+            isCheckedBtn = checked
             onCheckedChange()
         }
     }
 
     private fun onCheckedChange() {
-        gradientDrawable.colorFilter = if (isChecked) { null } else { grayColorFilter }
+        gradientDrawable.colorFilter = if (isCheckedBtn) { null } else { grayColorFilter }
         invalidate()
     }
 
@@ -112,17 +114,25 @@ class ShapeView(context: Context, attr: AttributeSet?,
             }
         }
 
-        fun add(vararg views: ShapeView) {
+        fun add(vararg views: ShapeView): CheckedGroup {
             views.forEach {
                 it.setOnClickListener(viewClickListener)
                 viewList.add(it)
             }
             checked()
+            return this
         }
 
-        fun select(view: ShapeView) {
-            if (!view.isChecked) {
-                return
+        fun foreach(run: (ShapeView) -> Unit): CheckedGroup {
+            for (view in viewList) {
+                run(view)
+            }
+            return this
+        }
+
+        fun select(view: ShapeView): CheckedGroup {
+            if (view.isChecked) {
+                return this
             }
             view.isChecked = true
             checkedIndex = viewList.indexOf(view)
@@ -132,6 +142,7 @@ class ShapeView(context: Context, attr: AttributeSet?,
                 }
             }
             checkedChangeListener?.invoke(view)
+            return this
         }
 
         private fun checked() {
@@ -139,19 +150,19 @@ class ShapeView(context: Context, attr: AttributeSet?,
             if (checkedIndex < 0) {
                 // 如果没有选中的，那么默认记录第一个选中的
                 for (index in viewList.indices) {
-                    if (viewList[index].isChecked) {
+                    if (viewList[index].isCheckedBtn) {
                         if (checkedIndex < 0) {
                             checkedIndex = index
                         } else {
-                            viewList[index].isChecked = false
+                            viewList[index].isCheckedBtn = false
                         }
                     }
                 }
             } else {
                 // 如果已经有一个选中的，那么关闭其他
                 for (index in viewList.indices) {
-                    if (index != checkedIndex && viewList[index].isChecked) {
-                        viewList[index].isChecked = false
+                    if (index != checkedIndex && viewList[index].isCheckedBtn) {
+                        viewList[index].isCheckedBtn = false
                     }
                 }
             }

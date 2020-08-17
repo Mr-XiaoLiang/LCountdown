@@ -58,9 +58,16 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
         lineView.pointColor = R.color.colorPrimary.findColor(lineView)
         lineView.pointRadius = 10.toDip(lineView)
         lineView.touchRadius = 20.toDip(lineView)
+        lineView.onMoved { startX, startY, endX, endY ->
+            onMovedChange(startX, startY, endX, endY)
+        }
     }
 
     private fun onSelectedTypeChange(type: Int) {
+        // TODO
+    }
+
+    private fun onMovedChange(startX: Float, startY: Float, endX: Float, endY: Float) {
         // TODO
     }
 

@@ -42,40 +42,14 @@
         app:layout_constraintRight_toRightOf="@id/panelRight"
         app:layout_constraintBottom_toBottomOf="@id/panelBottom"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="0px"
-        android:layout_height="wrap_content"
-        android:id="@+id/colorValueGroup"
-        app:layout_constraintTop_toTopOf="@id/panelTop"
-        app:layout_constraintLeft_toLeftOf="@id/panelLeft"
-        app:layout_constraintRight_toLeftOf="@id/huePalette"
-        android:layout_marginEnd="5dp"
-        style="@style/InputLayoutStyle">
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:id="@+id/colorValueView"
-            android:textSize="12dp"
-            style="@style/InputLayoutStyle"
-            android:gravity="center"
-            android:text="FFFFFF"
-            android:singleLine="true"
-            android:maxLines="1"
-            android:maxLength="8"
-            android:digits="0123456789abcdefABCDEF"
-            android:padding="0px"
-            android:inputType="textVisiblePassword"
-            android:imeOptions="actionDone"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
     <liang.lollipop.lcountdown.view.TransparencyPaletteView
         android:id="@+id/transparencyPalette"
         android:layout_width="0px"
         android:layout_height="30dp"
-        app:layout_constraintTop_toBottomOf="@id/colorValueGroup"
+        app:layout_constraintTop_toTopOf="@id/panelTop"
         app:layout_constraintLeft_toLeftOf="@id/panelLeft"
-        app:layout_constraintRight_toRightOf="@id/colorValueGroup"
-        android:layout_marginTop="5dp"/>
+        app:layout_constraintRight_toLeftOf="@id/huePalette"
+        android:layout_marginEnd="5dp"/>
 
     <liang.lollipop.lcountdown.view.SatValPaletteView
         android:id="@+id/satValPalette"
@@ -87,6 +61,47 @@
         app:layout_constraintBottom_toTopOf="@id/panelBottom"
         android:layout_marginTop="5dp"/>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:id="@+id/colorValueGroup"
+        app:layout_constraintTop_toTopOf="@id/colorPointBtn"
+        app:layout_constraintBottom_toBottomOf="@id/colorPointBtn"
+        app:layout_constraintLeft_toLeftOf="@id/panelLeft"
+        app:layout_constraintRight_toLeftOf="@id/colorPointBtn"
+        android:layout_marginEnd="5dp"
+        style="@style/InputLayoutStyle"
+        app:layout_goneMarginEnd="5dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/colorValueView"
+            android:textSize="12dp"
+            style="@style/InputLayoutStyle"
+            android:gravity="center"
+            android:text="FFFFFF"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:maxLength="8"
+            android:digits="0123456789abcdefABCDEF"
+            android:padding="0px"
+            android:inputType="textVisiblePassword"
+            android:imeOptions="actionDone" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <liang.lollipop.lcountdown.view.CirclePointView
+        android:id="@+id/colorPointBtn"
+        android:layout_width="0px"
+        android:layout_height="40dp"
+        android:background="#F00"
+        android:layout_marginTop="10dp"
+        app:layout_constraintLeft_toRightOf="@id/colorValueGroup"
+        app:layout_constraintTop_toBottomOf="@id/panelBottom"
+        app:layout_constraintRight_toRightOf="@id/panelRight"
+        android:layout_marginLeft="5dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="0px"
         android:layout_height="0px"
@@ -95,7 +110,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/panelBottom"
+        app:layout_constraintTop_toBottomOf="@id/colorPointBtn"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"/>

@@ -12,7 +12,7 @@ import liang.lollipop.lcountdown.utils.WidgetUtil
  * 倒计时的小部件
  * @author Lollipop
  */
-class CountdownWidget: AppWidgetProvider() {
+open class CountdownWidget: AppWidgetProvider() {
 
     companion object {
 
@@ -36,7 +36,6 @@ class CountdownWidget: AppWidgetProvider() {
         }
 
         dbUtil.close()
-
     }
 
     override fun onRestored(context: Context?, oldWidgetIds: IntArray?, newWidgetIds: IntArray?) {

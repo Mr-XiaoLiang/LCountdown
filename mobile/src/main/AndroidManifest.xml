@@ -48,6 +48,96 @@
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
 
+        <receiver android:name=".widget.CountdownWidgetWrapper1">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/countdown_widget_provider_info" />
+        </receiver>
+
+        <receiver android:name=".widget.CountdownWidgetWrapper2">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/countdown_widget_provider_info" />
+        </receiver>
+
+        <receiver android:name=".widget.CountdownWidgetWrapper3">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/countdown_widget_provider_info" />
+        </receiver>
+
+        <receiver android:name=".widget.CountdownWidgetWrapper4">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/countdown_widget_provider_info" />
+        </receiver>
+
+        <receiver android:name=".widget.CountdownWidgetWrapper5">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/countdown_widget_provider_info" />
+        </receiver>
+
+        <receiver android:name=".widget.CountdownWidgetWrapper6">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/countdown_widget_provider_info" />
+        </receiver>
+
+        <receiver android:name=".widget.CountdownWidgetWrapper7">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/countdown_widget_provider_info" />
+        </receiver>
+
+        <receiver android:name=".widget.CountdownWidgetWrapper8">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/countdown_widget_provider_info" />
+        </receiver>
+
+        <receiver android:name=".widget.CountdownWidgetWrapper9">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/countdown_widget_provider_info" />
+        </receiver>
+
         <service
             android:name=".service.CountdownService"
             android:enabled="true"

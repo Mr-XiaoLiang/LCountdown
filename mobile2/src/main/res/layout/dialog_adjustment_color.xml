@@ -100,8 +100,14 @@
         app:layout_constraintLeft_toRightOf="@id/colorValueGroup"
         app:layout_constraintTop_toBottomOf="@id/panelBottom"
         app:layout_constraintRight_toRightOf="@id/panelRight"
-        android:layout_marginLeft="5dp"/>
-
+        android:layout_marginLeft="5dp"
+        android:text="@string/confirm"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:shadowColor="@android:color/black"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1"/>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="0px"
         android:layout_height="0px"

@@ -252,3 +252,54 @@ fun Float.range(min: Float, max: Float): Float {
     return this
 }
 
+fun String.parseColor(): Int {
+    val value = this
+    if (value.isEmpty()) {
+        return 0
+    }
+    return when(value.length) {
+        1 -> {
+            val v = (value + value).toInt(16)
+            Color.rgb(v, v, v)
+        }
+        2 -> {
+            val v = value.toInt(16)
+            Color.rgb(v, v, v)
+        }
+        3 -> {
+            val r = value.substring(0, 1)
+            val g = value.substring(1, 2)
+            val b = value.substring(2, 3)
+            Color.rgb((r + r).toInt(16),
+                    (g + g).toInt(16),
+                    (b + b).toInt(16))
+        }
+        4, 5 -> {
+            val a = value.substring(0, 1)
+            val r = value.substring(1, 2)
+            val g = value.substring(2, 3)
+            val b = value.substring(3, 4)
+            Color.argb((a + a).toInt(16),
+                    (r + r).toInt(16),
+                    (g + g).toInt(16),
+                    (b + b).toInt(16))
+        }
+        6, 7 -> {
+            val r = value.substring(0, 2).toInt(16)
+            val g = value.substring(2, 4).toInt(16)
+            val b = value.substring(4, 6).toInt(16)
+            Color.rgb(r, g, b)
+        }
+        8 -> {
+            val a = value.substring(0, 2).toInt(16)
+            val r = value.substring(2, 4).toInt(16)
+            val g = value.substring(4, 6).toInt(16)
+            val b = value.substring(6, 8).toInt(16)
+            Color.argb(a, r, g, b)
+        }
+        else -> {
+            Color.WHITE
+        }
+    }
+}
+

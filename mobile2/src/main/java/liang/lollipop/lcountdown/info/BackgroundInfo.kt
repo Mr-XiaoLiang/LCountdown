@@ -7,31 +7,53 @@ import liang.lollipop.lcountdown.provider.BackgroundColorProvider
  * @date 8/26/20 00:30
  * 背景描述信息
  */
-class BackgroundInfo: JsonInfo() {
+class BackgroundInfo: JsonInfo(), BackgroundColorProvider {
 
     /**
      * 渐变色渲染的起点的X
      */
-    var startX: Float by FloatDelegate(this)
+    override var startX: Float by FloatDelegate(this)
     /**
      * 渐变色渲染的起点的Y
      */
-    var startY: Float by FloatDelegate(this)
+    override var startY: Float by FloatDelegate(this)
 
     /**
      * 渐变色渲染的终点的X
      */
-    var endX: Float by FloatDelegate(this)
+    override var endX: Float by FloatDelegate(this)
     /**
      * 渐变色渲染的终点的Y
      */
-    var endY: Float by FloatDelegate(this)
+    override var endY: Float by FloatDelegate(this)
+
+    /**
+     * 绘制类型
+     */
+    override var gradientType: Int by IntDelegate(this)
 
     /**
      * 颜色的集合
      */
-    var colorList: ColorJsonArray by JsonArrayDelegate(this) {
+    private var colorList: ColorJsonArray by JsonArrayDelegate(this) {
         it.convertTo<JsonArrayInfo, ColorJsonArray>()
+    }
+
+    override val colorCount: Int
+        get() {
+            return colorList.colorCount
+        }
+
+    override fun getColor(index: Int): Int {
+        return colorList.getColor(index)
+    }
+
+    override fun setColor(index: Int, color: Int) {
+        colorList.setColor(index, color)
+    }
+
+    override fun addColor(color: Int) {
+        colorList.addColor(color)
     }
 
     /**
@@ -59,19 +81,19 @@ class BackgroundInfo: JsonInfo() {
      */
     var cornerRightBottom: Float by FloatDelegate(this)
 
-    class ColorJsonArray: JsonArrayInfo(), BackgroundColorProvider {
-        override val colorCount: Int
+    private class ColorJsonArray: JsonArrayInfo() {
+        val colorCount: Int
             get() {
                 return size
             }
 
-        override fun getColor(index: Int): Int {
+        fun getColor(index: Int): Int {
             return get(index, 0)
         }
-        override fun setColor(index: Int, color: Int) {
+        fun setColor(index: Int, color: Int) {
             set(index, color)
         }
-        override fun addColor(color: Int) {
+        fun addColor(color: Int) {
             put(color)
         }
     }

@@ -227,6 +227,13 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
             get() {
                 return provider?.colorCount?:0
             }
+        override var gradientType: Int
+            get() {
+                return provider?.gradientType?:0
+            }
+            set(value) {
+                provider?.gradientType = value
+            }
 
         override fun getColor(index: Int): Int {
             return provider?.getColor(index)?:0
@@ -239,6 +246,38 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
         override fun addColor(color: Int) {
             provider?.addColor(color)
         }
+
+        override var startX: Float
+            get() {
+                return provider?.startX?:0F
+            }
+            set(value) {
+                provider?.startX = value
+            }
+
+        override var startY: Float
+            get() {
+                return provider?.startY?:0F
+            }
+            set(value) {
+                provider?.startY = value
+            }
+
+        override var endX: Float
+            get() {
+                return provider?.endX?:0F
+            }
+            set(value) {
+                provider?.endX = value
+            }
+
+        override var endY: Float
+            get() {
+                return provider?.endY?:0F
+            }
+            set(value) {
+                provider?.endY = value
+            }
 
     }
 

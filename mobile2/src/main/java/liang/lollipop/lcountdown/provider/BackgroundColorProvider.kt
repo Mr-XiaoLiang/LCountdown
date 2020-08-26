@@ -7,10 +7,21 @@ package liang.lollipop.lcountdown.provider
  */
 interface BackgroundColorProvider {
 
+    companion object {
+        const val Linear = 0
+        const val Sweep = 1
+        const val Radial = 2
+    }
+    
     /**
      * 颜色数量
      */
     val colorCount: Int
+
+    /**
+     * 渲染类型
+     */
+    var gradientType: Int
 
     /**
      * 获取一个颜色
@@ -26,4 +37,23 @@ interface BackgroundColorProvider {
      * 添加一个颜色
      */
     fun addColor(color: Int)
+
+    /**
+     * 渐变色渲染的起点的X
+     */
+    var startX: Float
+    /**
+     * 渐变色渲染的起点的Y
+     */
+    var startY: Float
+
+    /**
+     * 渐变色渲染的终点的X
+     */
+    var endX: Float
+    /**
+     * 渐变色渲染的终点的Y
+     */
+    var endY: Float
+
 }

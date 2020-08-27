@@ -1,6 +1,7 @@
 package liang.lollipop.lcountdown.fragment.adjustment
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_adjustment_background_gradient.*
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.dialog.PaletteDialog
 import liang.lollipop.lcountdown.drawable.GradientDrawable
 import liang.lollipop.lcountdown.provider.BackgroundColorProvider
 import liang.lollipop.lcountdown.util.findColor
@@ -32,19 +34,21 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
         get() = R.color.focusGradientAdjust
 
     companion object {
-        private const val Linear = 0
-        private const val Sweep = 1
-        private const val Radial = 2
+        private const val Linear = BackgroundColorProvider.Linear
+        private const val Sweep = BackgroundColorProvider.Sweep
+        private const val Radial = BackgroundColorProvider.Radial
     }
 
     private val backgroundColorProvider = BackgroundColorProviderWrapper(null)
 
     private var backgroundChangeCallback: (() -> Unit)? = null
 
+    private var paletteDialog: PaletteDialog? = null
+
     private val adapter = ColorAdapter(backgroundColorProvider, {
-        // TODO
+        changeColor(it)
     }, {
-        // TODO
+        changeColor(-1)
     })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -106,17 +110,43 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
         backgroundChangeCallback = null
     }
 
+    private fun changeColor(index: Int) {
+        if (paletteDialog == null) {
+            activity?.let {
+                paletteDialog = PaletteDialog(it) { tag, color ->
+                    if (tag < 0) {
+                        backgroundColorProvider.addColor(color)
+                    } else {
+                        backgroundColorProvider.setColor(tag, color)
+                    }
+                    adapter.notifyDataSetChanged()
+                    backgroundChangeCallback?.invoke()
+                }
+            }
+        }
+        paletteDialog?.show(index, if (index < 0) {
+            Color.RED
+        } else {
+            backgroundColorProvider.getColor(index)
+        })
+    }
+
     override fun onResume() {
         super.onResume()
         adapter.notifyDataSetChanged()
     }
 
     private fun onSelectedTypeChange(type: Int) {
-        // TODO
+        backgroundColorProvider.gradientType = type
+        backgroundChangeCallback?.invoke()
     }
 
     private fun onMovedChange(startX: Float, startY: Float, endX: Float, endY: Float) {
-        // TODO
+        backgroundColorProvider.startX = startX
+        backgroundColorProvider.startY = startY
+        backgroundColorProvider.endX = endX
+        backgroundColorProvider.endY = endY
+        backgroundChangeCallback?.invoke()
     }
 
     private fun initShapeBtn(btn: ShapeView) {
@@ -168,7 +198,7 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
         }
 
         private fun itemClick(holder: ColorHolder) {
-            onColorSelected.invoke(colorList.getColor(holder.adapterPosition))
+            onColorSelected.invoke(holder.adapterPosition)
         }
 
         private fun addColor() {

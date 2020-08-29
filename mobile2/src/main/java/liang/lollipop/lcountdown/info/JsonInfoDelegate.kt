@@ -69,7 +69,12 @@ class DoubleDelegate(private val info: JsonInfo, private val def: Double = 0.0) 
 
 class JsonInfoDelegate<T: JsonInfo>(private val info: JsonInfo, private val caseTo: (JsonInfo) -> T) {
     operator fun getValue(thisRef: Any, property: KProperty<*>): T {
-        return caseTo(info.optInfo(property.name))
+        val srcObj = info.optInfo(property.name)
+        val newObj = caseTo(srcObj)
+        if (srcObj != newObj) {
+            info[property.name] = newObj
+        }
+        return newObj
     }
 
     operator fun setValue(thisRef: Any, property: KProperty<*>, value: JsonInfo) {
@@ -79,7 +84,12 @@ class JsonInfoDelegate<T: JsonInfo>(private val info: JsonInfo, private val case
 
 class JsonArrayDelegate<T: JsonArrayInfo>(private val info: JsonInfo, private val caseTo: (JsonArrayInfo) -> T) {
     operator fun getValue(thisRef: Any, property: KProperty<*>): T {
-        return caseTo(info.optArray(property.name))
+        val srcArray = info.optArray(property.name)
+        val newArray = caseTo(srcArray)
+        if (srcArray != newArray) {
+            info[property.name] = newArray
+        }
+        return newArray
     }
 
     operator fun setValue(thisRef: Any, property: KProperty<*>, value: JsonArrayInfo) {

@@ -35,7 +35,7 @@ class BackgroundInfo: JsonInfo(), BackgroundColorProvider {
     /**
      * 颜色的集合
      */
-    private var colorList: ColorJsonArray by JsonArrayDelegate(this) {
+    private val colorList: ColorJsonArray by JsonArrayDelegate(this) {
         it.convertTo<JsonArrayInfo, ColorJsonArray>()
     }
 

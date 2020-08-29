@@ -2,7 +2,10 @@ package liang.lollipop.lcountdown.dialog
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
+import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.util.CurtainDialog
+import liang.lollipop.lcountdown.util.doAsync
+import liang.lollipop.lcountdown.util.onUI
 import liang.lollipop.lcountdown.util.parseColor
 import liang.lollipop.lcountdown.view.*
 import java.util.*
@@ -24,8 +29,14 @@ import kotlin.collections.ArrayList
  * @date 8/26/20 00:12
  */
 class PaletteDialog(
-        activity: Activity,
+        private val activity: Activity,
         private val onColorSelectedListener: (tag: Int, color: Int) -> Unit): InnerDialogProvider() {
+
+    companion object {
+        private const val FLAG = "|"
+        private const val HISTORY_COLOR = "HISTORY_COLOR"
+    }
+
     override val layoutId = R.layout.dialog_adjustment_color
     private val curtainDialog = CurtainDialog.with(activity)
 
@@ -77,6 +88,7 @@ class PaletteDialog(
         }
         colorPointBtn.setOnClickListener {
             onColorSelectedListener.invoke(tag, selectedColor)
+            saveColor(selectedColor)
             dismiss()
         }
 
@@ -110,6 +122,8 @@ class PaletteDialog(
         huePalette?.parser(hsv[0])
         colorValueView?.let { colorToValue(it) }
         colorPointBtn?.setStatusColor(selectedColor)
+
+        readColor()
     }
 
     @SuppressLint("SetTextI18n")
@@ -136,6 +150,46 @@ class PaletteDialog(
         selectedColor = color
         curtainDialog.bindProvider(this)
         curtainDialog.show()
+    }
+
+    private fun saveColor(color: Int) {
+        doAsync {
+            if (historyColorList.contains(color)) {
+                return@doAsync
+            }
+            historyColorList.add(color)
+            val builder = StringBuilder()
+            for (index in historyColorList.indices) {
+                if (index > 0) {
+                    builder.append(FLAG)
+                }
+                builder.append(historyColorList[index])
+            }
+
+            getPreferences().edit().putString(HISTORY_COLOR, builder.toString()).apply()
+        }
+    }
+
+    private fun readColor() {
+        doAsync {
+            historyColorList.clear()
+            val preferences = getPreferences()
+            val colorValue = preferences.getString(HISTORY_COLOR, "") ?: ""
+            if (!TextUtils.isEmpty(colorValue)) {
+                val colors = colorValue.split(FLAG)
+                for (color in colors) {
+                    historyColorList.add(color.toInt())
+                }
+            }
+            onUI {
+                adapter.notifyDataSetChanged()
+            }
+        }
+    }
+
+    private fun getPreferences() : SharedPreferences {
+        return activity.getSharedPreferences(
+                PaletteDialog::class.simpleName, Context.MODE_PRIVATE)
     }
 
     private class ColorAdapter(

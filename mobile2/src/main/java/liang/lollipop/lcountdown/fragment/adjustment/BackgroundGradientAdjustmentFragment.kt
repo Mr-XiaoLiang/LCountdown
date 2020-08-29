@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_adjustment_background_gradient.*
@@ -43,7 +44,17 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
 
     private var backgroundChangeCallback: (() -> Unit)? = null
 
-    private var paletteDialog: PaletteDialog? = null
+    private val paletteDialog: PaletteDialog by lazy {
+        PaletteDialog(activity as FragmentActivity) { tag, color ->
+            if (tag < 0) {
+                backgroundColorProvider.addColor(color)
+            } else {
+                backgroundColorProvider.setColor(tag, color)
+            }
+            adapter.notifyDataSetChanged()
+            backgroundChangeCallback?.invoke()
+        }
+    }
 
     private val adapter = ColorAdapter(backgroundColorProvider, {
         changeColor(it)
@@ -111,20 +122,7 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
     }
 
     private fun changeColor(index: Int) {
-        if (paletteDialog == null) {
-            activity?.let {
-                paletteDialog = PaletteDialog(it) { tag, color ->
-                    if (tag < 0) {
-                        backgroundColorProvider.addColor(color)
-                    } else {
-                        backgroundColorProvider.setColor(tag, color)
-                    }
-                    adapter.notifyDataSetChanged()
-                    backgroundChangeCallback?.invoke()
-                }
-            }
-        }
-        paletteDialog?.show(index, if (index < 0) {
+        paletteDialog.show(index, if (index < 0) {
             Color.RED
         } else {
             backgroundColorProvider.getColor(index)

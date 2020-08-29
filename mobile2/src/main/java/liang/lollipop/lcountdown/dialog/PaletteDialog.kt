@@ -77,6 +77,7 @@ class PaletteDialog(
         }
         colorPointBtn.setOnClickListener {
             onColorSelectedListener.invoke(tag, selectedColor)
+            dismiss()
         }
 
         recycleView.adapter = adapter

@@ -11,8 +11,10 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import kotlinx.android.synthetic.main.activity_widget_adjustment.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.fragment.adjustment.*
+import liang.lollipop.lcountdown.info.BackgroundInfo
 import liang.lollipop.lcountdown.info.TextColor
 import liang.lollipop.lcountdown.info.TextInfoArray
+import liang.lollipop.lcountdown.provider.BackgroundColorProvider
 import liang.lollipop.lcountdown.provider.FontColorProvider
 import liang.lollipop.lcountdown.provider.FontSizeProvider
 import liang.lollipop.lcountdown.provider.TextInfoProvider
@@ -28,7 +30,8 @@ import liang.lollipop.ltabview.LTabView
 class WidgetAdjustmentActivity : BaseActivity(),
         TextAdjustmentFragment.Callback,
         FontAdjustmentFragment.Callback,
-        ColorAdjustmentFragment.Callback{
+        ColorAdjustmentFragment.Callback,
+        BackgroundGradientAdjustmentFragment.Callback{
 
     private var bottomSheetHelper: BottomSheetHelper? = null
 
@@ -45,6 +48,8 @@ class WidgetAdjustmentActivity : BaseActivity(),
     )
 
     private val textInfoArray = TextInfoArray()
+
+    private val backgroundInfo = BackgroundInfo()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -155,6 +160,14 @@ class WidgetAdjustmentActivity : BaseActivity(),
 
     override fun onFontColorChange(index: Int, fontColor: TextColor) {
         // TODO("Not yet implemented")
+    }
+
+    override fun onBackgroundColorChange() {
+        // TODO("Not yet implemented")
+    }
+
+    override fun getBackgroundColorProvider(): BackgroundColorProvider {
+        return backgroundInfo
     }
 
 }

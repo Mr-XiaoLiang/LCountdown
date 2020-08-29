@@ -9,5 +9,6 @@
         android:layout_height="match_parent"
         android:id="@+id/addBtn"
         android:src="@drawable/ic_baseline_add_24"
-        android:scaleType="center"/>
+        android:scaleType="center"
+        android:tint="@color/colorAccent"/>
 </FrameLayout>

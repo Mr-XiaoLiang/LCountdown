@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId "liang.lollipop.lcountdown"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 5_00_00
         versionName "5.0.0"
     }

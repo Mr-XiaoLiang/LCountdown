@@ -52,4 +52,5 @@
     <string name="key_name_time_english">英语时间</string>
     <string name="title_background_image">背景图片</string>
     <string name="confirm">确定</string>
+    <string name="show_background">显示背景</string>
 </resources>

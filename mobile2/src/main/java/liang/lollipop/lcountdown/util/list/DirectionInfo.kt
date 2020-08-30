@@ -5,13 +5,24 @@ package liang.lollipop.lcountdown.util.list
  * @date 8/29/20 23:37
  * 方向的信息
  */
-data class DirectionInfo(val up: Boolean = true, val down: Boolean = true,
-                         val left: Boolean = true, val right: Boolean = true,
-                         val start: Boolean = true, val end: Boolean = true) {
+data class DirectionInfo(val up: Boolean = false, val down: Boolean = false,
+                         val left: Boolean = false, val right: Boolean = false,
+                         val start: Boolean = false, val end: Boolean = false) {
 
     val flag = getFlag(this)
 
     companion object {
+
+        val VERTICAL = DirectionInfo(
+                up = true, down = true,
+                left = false, right = false,
+                start = false, end = false)
+
+        val HORIZONTAL = DirectionInfo(
+                up = false, down = false,
+                left = true, right = true,
+                start = true, end = true)
+
         private fun getFlag(direction: DirectionInfo): Int {
             var flag = 0
             if (direction.down) {

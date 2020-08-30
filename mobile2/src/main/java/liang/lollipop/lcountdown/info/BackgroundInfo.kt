@@ -56,6 +56,10 @@ class BackgroundInfo: JsonInfo(), BackgroundColorProvider {
         colorList.addColor(color)
     }
 
+    override fun removeColor(index: Int) {
+        colorList.removeColor(index)
+    }
+
     /**
      * 图片的路径
      */
@@ -95,6 +99,9 @@ class BackgroundInfo: JsonInfo(), BackgroundColorProvider {
         }
         fun addColor(color: Int) {
             put(color)
+        }
+        fun removeColor(index: Int) {
+            remove(index)
         }
     }
 

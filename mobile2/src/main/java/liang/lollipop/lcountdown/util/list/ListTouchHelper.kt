@@ -24,7 +24,10 @@ class ListTouchHelper private constructor(
         const val VERTICAL = UP and DOWN
         const val HORIZONTAL = LEFT and RIGHT and START and END
 
-        val DEFAULT_DIRECTION = DirectionInfo()
+        val DEFAULT_DIRECTION = DirectionInfo(
+                up = true, down = true,
+                left = true, right = true,
+                start = true, end = true)
 
         fun with(recyclerView: RecyclerView): ListTouchHelper {
             val layoutManager = recyclerView.layoutManager

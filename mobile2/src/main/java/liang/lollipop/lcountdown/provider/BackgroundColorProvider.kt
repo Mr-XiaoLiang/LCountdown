@@ -39,6 +39,11 @@ interface BackgroundColorProvider {
     fun addColor(color: Int)
 
     /**
+     * 移除一个颜色
+     */
+    fun removeColor(index: Int)
+
+    /**
      * 渐变色渲染的起点的X
      */
     var startX: Float

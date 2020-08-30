@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +16,9 @@ import liang.lollipop.lcountdown.dialog.PaletteDialog
 import liang.lollipop.lcountdown.drawable.GradientDrawable
 import liang.lollipop.lcountdown.provider.BackgroundColorProvider
 import liang.lollipop.lcountdown.util.findColor
+import liang.lollipop.lcountdown.util.list.DirectionInfo
+import liang.lollipop.lcountdown.util.list.ListTouchHelper
+import liang.lollipop.lcountdown.util.list.SwipeableHolder
 import liang.lollipop.lcountdown.util.toDip
 import liang.lollipop.lcountdown.view.CirclePointView
 import liang.lollipop.lcountdown.view.ShapeView
@@ -93,7 +97,37 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
 
         colorListView.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
         colorListView.adapter = adapter
+        ListTouchHelper.with(colorListView)
+                .moveOrientation(DirectionInfo.VERTICAL)
+                .swipeOrientation(DirectionInfo(left = true))
+                .onMoved(::onItemMoved)
+                .onSwiped(::onItemSwiped)
         adapter.notifyDataSetChanged()
+    }
+
+    private fun onItemMoved(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder): Boolean {
+        if (target is AddColorHolder || viewHolder is AddColorHolder) {
+            return false
+        }
+        val fromPosition = viewHolder.adapterPosition
+        val toPosition = target.adapterPosition
+        val color = backgroundColorProvider.getColor(fromPosition)
+        backgroundColorProvider.setColor(fromPosition,
+                backgroundColorProvider.getColor(toPosition))
+        backgroundColorProvider.setColor(toPosition, color)
+        adapter.notifyItemMoved(fromPosition, toPosition)
+        return true
+    }
+
+    private fun onItemSwiped(viewHolder: RecyclerView.ViewHolder, direction: ListTouchHelper.Direction) {
+        if (viewHolder is AddColorHolder) {
+            return
+        }
+        backgroundColorProvider.removeColor(viewHolder.adapterPosition)
+        adapter.notifyItemRemoved(viewHolder.adapterPosition)
     }
 
     override fun onAttach(context: Context) {
@@ -207,19 +241,28 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
 
     private class AddColorHolder private constructor(
             view: View,
-            private val onClick: () -> Unit) : RecyclerView.ViewHolder(view) {
+            private val onClick: () -> Unit) : RecyclerView.ViewHolder(view), SwipeableHolder {
 
         companion object {
             fun create(parent: ViewGroup, onClick: () -> Unit): AddColorHolder {
                 return AddColorHolder(LayoutInflater.from(parent.context)
                         .inflate(R.layout.item_gradient_color_add, parent, false), onClick)
             }
+
+            private val NOT_SWIPE = DirectionInfo(
+                    up = false, down = false,
+                    left = false, right = false,
+                    start = false, end = false)
         }
 
         init {
             itemView.setOnClickListener {
                 onClick.invoke()
             }
+        }
+
+        override fun canSwipe(): DirectionInfo {
+            return NOT_SWIPE
         }
 
     }
@@ -235,7 +278,7 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
             }
         }
 
-        private val colorPointBtn: CirclePointView = itemView.findViewById(R.id.colorView)
+        private val colorPointBtn: CardView = itemView.findViewById(R.id.colorView)
 
         init {
             itemView.setOnClickListener {
@@ -244,7 +287,7 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
         }
 
         fun onBind(color: Int) {
-            colorPointBtn.setStatusColor(color)
+            colorPointBtn.setCardBackgroundColor(color)
         }
 
     }
@@ -273,6 +316,10 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
 
         override fun addColor(color: Int) {
             provider?.addColor(color)
+        }
+
+        override fun removeColor(index: Int) {
+            provider?.removeColor(index)
         }
 
         override var startX: Float

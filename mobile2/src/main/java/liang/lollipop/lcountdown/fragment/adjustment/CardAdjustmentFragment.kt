@@ -1,5 +1,8 @@
 package liang.lollipop.lcountdown.fragment.adjustment
 
+import android.os.Bundle
+import android.view.View
+import kotlinx.android.synthetic.main.fragment_adjustment_card.*
 import liang.lollipop.lcountdown.R
 
 /**
@@ -16,4 +19,11 @@ class CardAdjustmentFragment: BaseAdjustmentFragment() {
         get() = R.string.title_card
     override val colorId: Int
         get() = R.color.focusCardAdjust
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        backgroundSwitch.setOnCheckedChangeListener { _, isChecked ->
+            recycleView.visibility = if (isChecked) { View.VISIBLE } else { View.INVISIBLE }
+        }
+    }
 }

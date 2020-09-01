@@ -23,6 +23,11 @@ data class DirectionInfo(val up: Boolean = false, val down: Boolean = false,
                 left = true, right = true,
                 start = true, end = true)
 
+        val NONE = DirectionInfo(
+                up = false, down = false,
+                left = false, right = false,
+                start = false, end = false)
+
         private fun getFlag(direction: DirectionInfo): Int {
             var flag = 0
             if (direction.down) {

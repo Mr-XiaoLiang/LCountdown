@@ -18,6 +18,7 @@ import liang.lollipop.lcountdown.provider.BackgroundColorProvider
 import liang.lollipop.lcountdown.util.findColor
 import liang.lollipop.lcountdown.util.list.DirectionInfo
 import liang.lollipop.lcountdown.util.list.ListTouchHelper
+import liang.lollipop.lcountdown.util.list.MovableHolder
 import liang.lollipop.lcountdown.util.list.SwipeableHolder
 import liang.lollipop.lcountdown.util.toDip
 import liang.lollipop.lcountdown.view.CirclePointView
@@ -241,18 +242,14 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
 
     private class AddColorHolder private constructor(
             view: View,
-            private val onClick: () -> Unit) : RecyclerView.ViewHolder(view), SwipeableHolder {
+            private val onClick: () -> Unit) : RecyclerView.ViewHolder(view),
+            SwipeableHolder, MovableHolder {
 
         companion object {
             fun create(parent: ViewGroup, onClick: () -> Unit): AddColorHolder {
                 return AddColorHolder(LayoutInflater.from(parent.context)
                         .inflate(R.layout.item_gradient_color_add, parent, false), onClick)
             }
-
-            private val NOT_SWIPE = DirectionInfo(
-                    up = false, down = false,
-                    left = false, right = false,
-                    start = false, end = false)
         }
 
         init {
@@ -262,7 +259,11 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
         }
 
         override fun canSwipe(): DirectionInfo {
-            return NOT_SWIPE
+            return DirectionInfo.NONE
+        }
+
+        override fun canMove(): DirectionInfo {
+            return DirectionInfo.NONE
         }
 
     }

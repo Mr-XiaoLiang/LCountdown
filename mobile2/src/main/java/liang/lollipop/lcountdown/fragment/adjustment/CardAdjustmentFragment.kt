@@ -50,7 +50,11 @@ class CardAdjustmentFragment: BaseAdjustmentFragment() {
         private var action: Int = -1
 
         private val nameView: TextView = itemView.findViewById(R.id.textView)
-        private val seekBar: LSeekBar = itemView.findViewById(R.id.seekBar)
+        private val seekBar: LSeekBar = itemView.findViewById<LSeekBar>(R.id.seekBar).apply {
+            onProgressChange { _, progress ->
+                onProgressChange(action, progress)
+            }
+        }
 
         fun bind(option: Option) {
             action = option.action

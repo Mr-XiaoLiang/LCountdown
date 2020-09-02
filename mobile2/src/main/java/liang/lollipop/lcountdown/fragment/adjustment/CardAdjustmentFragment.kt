@@ -1,9 +1,14 @@
 package liang.lollipop.lcountdown.fragment.adjustment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_adjustment_card.*
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.view.LSeekBar
 
 /**
  * @author lollipop
@@ -26,4 +31,36 @@ class CardAdjustmentFragment: BaseAdjustmentFragment() {
             recycleView.visibility = if (isChecked) { View.VISIBLE } else { View.INVISIBLE }
         }
     }
+
+    private class OptionHolder
+        private constructor(view: View,
+         private val valueProvider: (action: Int) -> Float,
+         private val onProgressChange: (action: Int, value: Float) -> Unit) : RecyclerView.ViewHolder(view) {
+
+        companion object {
+            fun create(parent: ViewGroup,
+                       valueProvider: (action: Int) -> Float,
+                       onProgressChange: (action: Int, value: Float) -> Unit): OptionHolder {
+                return OptionHolder(LayoutInflater.from(parent.context)
+                        .inflate(R.layout.item_card_parameter, parent, false),
+                        valueProvider, onProgressChange)
+            }
+        }
+
+        private var action: Int = -1
+
+        private val nameView: TextView = itemView.findViewById(R.id.textView)
+        private val seekBar: LSeekBar = itemView.findViewById(R.id.seekBar)
+
+        fun bind(option: Option) {
+            action = option.action
+            seekBar.setProgress(valueProvider(action), false)
+            seekBar.setTheme(option.color)
+            nameView.text = option.name
+        }
+
+    }
+
+    private data class Option(val action: Int, val name: String, val color: Int)
+
 }

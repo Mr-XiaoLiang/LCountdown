@@ -25,11 +25,19 @@ class CardAdjustmentFragment: BaseAdjustmentFragment() {
     override val colorId: Int
         get() = R.color.focusCardAdjust
 
+    companion object {
+//        private const val action_
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         backgroundSwitch.setOnCheckedChangeListener { _, isChecked ->
             recycleView.visibility = if (isChecked) { View.VISIBLE } else { View.INVISIBLE }
         }
+    }
+
+    private fun onProgressChange(action: Int, progress: Float) {
+
     }
 
     private class OptionHolder
@@ -50,8 +58,10 @@ class CardAdjustmentFragment: BaseAdjustmentFragment() {
         private var action: Int = -1
 
         private val nameView: TextView = itemView.findViewById(R.id.textView)
+        private val sizeValue: TextView = itemView.findViewById(R.id.sizeValue)
         private val seekBar: LSeekBar = itemView.findViewById<LSeekBar>(R.id.seekBar).apply {
             onProgressChange { _, progress ->
+                onValueChange(progress)
                 onProgressChange(action, progress)
             }
         }
@@ -60,11 +70,22 @@ class CardAdjustmentFragment: BaseAdjustmentFragment() {
             action = option.action
             seekBar.setProgress(valueProvider(action), false)
             seekBar.setTheme(option.color)
+            seekBar.max = option.max
+            seekBar.min = option.min
             nameView.text = option.name
+            onValueChange(seekBar.progress)
+        }
+
+        private fun onValueChange(value: Float) {
+            sizeValue.text = value.toInt().toString()
         }
 
     }
 
-    private data class Option(val action: Int, val name: String, val color: Int)
+    private data class Option(val action: Int,
+                              val name: String,
+                              val color: Int,
+                              val min: Float,
+                              val max: Float)
 
 }

@@ -77,7 +77,12 @@ class GradientDrawable: Drawable() {
 
     fun updateGradient() {
         paint.shader = null
-        if (bounds.isEmpty || colorSize == 0) {
+        if (bounds.isEmpty || colorSize < 2) {
+            if (colorSize == 1) {
+                paint.color = colorArray[0]
+            } else {
+                paint.color = Color.WHITE
+            }
             return
         }
         val startX = startPoint.x * bounds.width() + bounds.left

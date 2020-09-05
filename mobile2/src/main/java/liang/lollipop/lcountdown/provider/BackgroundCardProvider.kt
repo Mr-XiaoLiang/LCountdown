@@ -41,4 +41,14 @@ interface BackgroundCardProvider {
      */
     var elevation: Float
 
+    /**
+     * 宽度
+     */
+    var width: Float
+
+    /**
+     * 高度
+     */
+    var height: Float
+
 }

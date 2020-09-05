@@ -120,4 +120,8 @@ class BackgroundInfo: JsonInfo(), BackgroundColorProvider, BackgroundCardProvide
 
     override var elevation by FloatDelegate(this)
 
+    override var width by FloatDelegate(this)
+
+    override var height by FloatDelegate(this)
+
 }

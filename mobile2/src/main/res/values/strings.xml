@@ -53,4 +53,13 @@
     <string name="title_background_image">背景图片</string>
     <string name="confirm">确定</string>
     <string name="show_background">显示背景</string>
+
+    <string name="card_corner">卡片圆角</string>
+    <string name="card_elevation">海拔阴影</string>
+    <string name="card_left">左侧边距</string>
+    <string name="card_top">顶部边距</string>
+    <string name="card_right">右侧边距</string>
+    <string name="card_bottom">底部边距</string>
+    <string name="card_height">卡片高度</string>
+    <string name="card_width">卡片宽度</string>
 </resources>

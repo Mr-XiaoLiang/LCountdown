@@ -1,5 +1,6 @@
 package liang.lollipop.lcountdown.info
 
+import liang.lollipop.lcountdown.provider.BackgroundCardProvider
 import liang.lollipop.lcountdown.provider.BackgroundColorProvider
 
 /**
@@ -7,7 +8,7 @@ import liang.lollipop.lcountdown.provider.BackgroundColorProvider
  * @date 8/26/20 00:30
  * 背景描述信息
  */
-class BackgroundInfo: JsonInfo(), BackgroundColorProvider {
+class BackgroundInfo: JsonInfo(), BackgroundColorProvider, BackgroundCardProvider {
 
     /**
      * 渐变色渲染的起点的X
@@ -104,5 +105,19 @@ class BackgroundInfo: JsonInfo(), BackgroundColorProvider {
             remove(index)
         }
     }
+
+    override var isShow by BooleanDelegate(this)
+
+    override var corner by FloatDelegate(this)
+
+    override var marginLeft by FloatDelegate(this)
+
+    override var marginTop by FloatDelegate(this)
+
+    override var marginRight by FloatDelegate(this)
+
+    override var marginBottom by FloatDelegate(this)
+
+    override var elevation by FloatDelegate(this)
 
 }

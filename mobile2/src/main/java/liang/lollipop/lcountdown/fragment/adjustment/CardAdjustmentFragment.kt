@@ -1,5 +1,6 @@
 package liang.lollipop.lcountdown.fragment.adjustment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,10 +31,9 @@ class CardAdjustmentFragment : BaseAdjustmentFragment() {
 
     private val cardProvider = BackgroundCardProviderWrapper()
 
-    private val optionList = ArrayList<Option>()
+    private var backgroundCardChangeCallback: (() -> Unit)? = null
 
-    companion object {
-    }
+    private val optionList = ArrayList<Option>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -93,7 +93,44 @@ class CardAdjustmentFragment : BaseAdjustmentFragment() {
         val name = getString(nameId)
         val color = StringToColorUtil.format(name)
         val index = optionList.size
-        optionList.add(Option(index, name, color, min, max, provider, callback))
+        optionList.add(Option(index, name, color, min, max, provider, {
+            callback.invoke(it)
+            onCardInfoChange()
+        }))
+    }
+
+    private fun onCardInfoChange() {
+        backgroundCardChangeCallback?.invoke()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        recycleView.adapter?.notifyDataSetChanged()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is Callback) {
+            cardProvider.provider = context.getBackgroundCardProvider()
+            backgroundCardChangeCallback = {
+                context.onBackgroundCardChange()
+            }
+        } else {
+            parentFragment?.let { parent ->
+                if (parent is Callback) {
+                    cardProvider.provider = parent.getBackgroundCardProvider()
+                    backgroundCardChangeCallback = {
+                        parent.onBackgroundCardChange()
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        cardProvider.provider = null
+        backgroundCardChangeCallback = null
     }
 
     private class OptionAdapter(private val optionList: ArrayList<Option>)
@@ -207,6 +244,11 @@ class CardAdjustmentFragment : BaseAdjustmentFragment() {
                 provider?.height = value
             }
 
+    }
+
+    interface Callback {
+        fun onBackgroundCardChange()
+        fun getBackgroundCardProvider(): BackgroundCardProvider
     }
 
 }

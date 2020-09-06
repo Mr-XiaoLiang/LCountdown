@@ -69,19 +69,19 @@ class CardAdjustmentFragment : BaseAdjustmentFragment() {
                 { cardProvider.height },
                 { cardProvider.height = it })
 
-        addOption(R.string.card_left, 1F, 100F,
+        addOption(R.string.card_left, 0F, 100F,
                 { cardProvider.marginLeft },
                 { cardProvider.marginLeft = it })
 
-        addOption(R.string.card_top, 1F, 100F,
+        addOption(R.string.card_top, 0F, 100F,
                 { cardProvider.marginTop },
                 { cardProvider.marginTop = it })
 
-        addOption(R.string.card_right, 1F, 100F,
+        addOption(R.string.card_right, 0F, 100F,
                 { cardProvider.marginRight },
                 { cardProvider.marginRight = it })
 
-        addOption(R.string.card_bottom, 1F, 100F,
+        addOption(R.string.card_bottom, 0F, 100F,
                 { cardProvider.marginBottom },
                 { cardProvider.marginBottom = it })
 
@@ -106,6 +106,7 @@ class CardAdjustmentFragment : BaseAdjustmentFragment() {
     override fun onResume() {
         super.onResume()
         recycleView.adapter?.notifyDataSetChanged()
+        backgroundSwitch.isChecked = cardProvider.isShow
     }
 
     override fun onAttach(context: Context) {

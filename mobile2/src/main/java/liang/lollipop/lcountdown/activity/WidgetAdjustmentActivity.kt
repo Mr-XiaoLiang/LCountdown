@@ -14,10 +14,7 @@ import liang.lollipop.lcountdown.fragment.adjustment.*
 import liang.lollipop.lcountdown.info.BackgroundInfo
 import liang.lollipop.lcountdown.info.TextColor
 import liang.lollipop.lcountdown.info.TextInfoArray
-import liang.lollipop.lcountdown.provider.BackgroundColorProvider
-import liang.lollipop.lcountdown.provider.FontColorProvider
-import liang.lollipop.lcountdown.provider.FontSizeProvider
-import liang.lollipop.lcountdown.provider.TextInfoProvider
+import liang.lollipop.lcountdown.provider.*
 import liang.lollipop.lcountdown.util.BottomSheetHelper
 import liang.lollipop.lcountdown.util.toDip
 import liang.lollipop.lcountdown.util.zeroTo
@@ -31,7 +28,8 @@ class WidgetAdjustmentActivity : BaseActivity(),
         TextAdjustmentFragment.Callback,
         FontAdjustmentFragment.Callback,
         ColorAdjustmentFragment.Callback,
-        BackgroundGradientAdjustmentFragment.Callback{
+        BackgroundGradientAdjustmentFragment.Callback,
+        CardAdjustmentFragment.Callback {
 
     private var bottomSheetHelper: BottomSheetHelper? = null
 
@@ -167,6 +165,14 @@ class WidgetAdjustmentActivity : BaseActivity(),
     }
 
     override fun getBackgroundColorProvider(): BackgroundColorProvider {
+        return backgroundInfo
+    }
+
+    override fun onBackgroundCardChange() {
+        // TODO("Not yet implemented")
+    }
+
+    override fun getBackgroundCardProvider(): BackgroundCardProvider {
         return backgroundInfo
     }
 

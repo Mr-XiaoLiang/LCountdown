@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_box_outline"
+    android:id="@+id/gridGroup">
+
+    <liang.lollipop.lcountdown.view.CheckImageView
+        android:id="@+id/leftTopGrid"
+        style="@style/grid9Btn"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        app:layout_constraintBottom_toTopOf="@id/leftMiddleGrid"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/centerTopGrid"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <liang.lollipop.lcountdown.view.CheckImageView
+        android:id="@+id/centerTopGrid"
+        style="@style/grid9Btn"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        app:layout_constraintBottom_toBottomOf="@id/leftTopGrid"
+        app:layout_constraintLeft_toRightOf="@id/leftTopGrid"
+        app:layout_constraintRight_toLeftOf="@id/rightTopGrid"
+        app:layout_constraintTop_toTopOf="@id/leftTopGrid" />
+
+    <liang.lollipop.lcountdown.view.CheckImageView
+        android:id="@+id/rightTopGrid"
+        style="@style/grid9Btn"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        app:layout_constraintBottom_toBottomOf="@id/centerTopGrid"
+        app:layout_constraintLeft_toRightOf="@id/centerTopGrid"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/centerTopGrid" />
+
+    <liang.lollipop.lcountdown.view.CheckImageView
+        android:id="@+id/leftMiddleGrid"
+        style="@style/grid9Btn"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        app:layout_constraintBottom_toTopOf="@id/leftBottomGrid"
+        app:layout_constraintLeft_toLeftOf="@id/leftTopGrid"
+        app:layout_constraintRight_toLeftOf="@id/centerMiddleGrid"
+        app:layout_constraintTop_toBottomOf="@id/leftTopGrid" />
+
+    <liang.lollipop.lcountdown.view.CheckImageView
+        android:id="@+id/centerMiddleGrid"
+        style="@style/grid9Btn"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        app:layout_constraintBottom_toBottomOf="@id/leftMiddleGrid"
+        app:layout_constraintLeft_toRightOf="@id/leftMiddleGrid"
+        app:layout_constraintRight_toLeftOf="@id/rightMiddleGrid"
+        app:layout_constraintTop_toTopOf="@id/leftMiddleGrid" />
+
+    <liang.lollipop.lcountdown.view.CheckImageView
+        android:id="@+id/rightMiddleGrid"
+        style="@style/grid9Btn"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        app:layout_constraintBottom_toBottomOf="@id/centerMiddleGrid"
+        app:layout_constraintLeft_toRightOf="@id/centerMiddleGrid"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/centerMiddleGrid" />
+
+    <liang.lollipop.lcountdown.view.CheckImageView
+        android:id="@+id/leftBottomGrid"
+        style="@style/grid9Btn"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/leftMiddleGrid"
+        app:layout_constraintRight_toLeftOf="@id/centerBottomGrid"
+        app:layout_constraintTop_toBottomOf="@id/leftMiddleGrid" />
+
+    <liang.lollipop.lcountdown.view.CheckImageView
+        android:id="@+id/centerBottomGrid"
+        style="@style/grid9Btn"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        app:layout_constraintBottom_toBottomOf="@id/leftBottomGrid"
+        app:layout_constraintLeft_toRightOf="@id/leftBottomGrid"
+        app:layout_constraintRight_toLeftOf="@id/rightBottomGrid"
+        app:layout_constraintTop_toTopOf="@id/leftBottomGrid" />
+
+    <liang.lollipop.lcountdown.view.CheckImageView
+        android:id="@+id/rightBottomGrid"
+        style="@style/grid9Btn"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        app:layout_constraintBottom_toBottomOf="@id/centerBottomGrid"
+        app:layout_constraintLeft_toRightOf="@id/centerBottomGrid"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/centerBottomGrid" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0px"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/leftTopGrid"
+        android:background="@color/splitLine"/>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0px"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/centerTopGrid"
+        android:background="@color/splitLine"/>
+
+    <View
+        android:layout_width="0px"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toBottomOf="@id/leftTopGrid"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="@color/splitLine"/>
+
+    <View
+        android:layout_width="0px"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toBottomOf="@id/leftMiddleGrid"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="@color/splitLine"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

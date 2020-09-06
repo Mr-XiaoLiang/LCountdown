@@ -40,4 +40,12 @@
 <!--        <item name="android:colorControlHighlight">@color/inputHintColor</item>-->
 <!--        <item name="android:textColor">@color/inputHintColor</item>-->
     </style>
+
+    <style name="grid9Btn" >
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:tint">@android:color/white</item>
+        <item name="android:src">@drawable/grid_button</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+    </style>
+
 </resources>

@@ -16,6 +16,10 @@ class GravityViewHelper(group: ViewGroup): View.OnClickListener {
 
     private var callback: ((view: View) -> Unit)? = null
 
+    private var gravityCallback: ((gravity: Int) -> Unit)? = null
+
+    private var gravityProvider: ((view: View) -> Int)? = null
+
     init {
         val childCount = group.childCount
         for (index in 0 until childCount) {
@@ -56,10 +60,15 @@ class GravityViewHelper(group: ViewGroup): View.OnClickListener {
         selectedIndex = index
         updateCheckStatus()
         callback?.invoke(v)
+        gravityCallback?.invoke(gravityProvider?.invoke(v)?:0)
     }
 
     fun onCheckedChange(callback: (view: View) -> Unit) {
         this.callback = callback
+    }
+
+    fun viewToGravity(callback: (view: View) -> Int) {
+        this.gravityProvider = callback
     }
 
 }

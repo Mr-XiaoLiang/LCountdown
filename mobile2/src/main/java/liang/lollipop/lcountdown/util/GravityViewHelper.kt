@@ -63,12 +63,19 @@ class GravityViewHelper(group: ViewGroup): View.OnClickListener {
         gravityCallback?.invoke(gravityProvider?.invoke(v)?:0)
     }
 
-    fun onCheckedChange(callback: (view: View) -> Unit) {
+    fun onCheckedChange(callback: (view: View) -> Unit): GravityViewHelper {
         this.callback = callback
+        return this
     }
 
-    fun viewToGravity(callback: (view: View) -> Int) {
+    fun viewToGravity(callback: (view: View) -> Int): GravityViewHelper {
         this.gravityProvider = callback
+        return this
+    }
+
+    fun onGravityChange(callback: (gravity: Int) -> Unit): GravityViewHelper {
+        this.gravityCallback = callback
+        return this
     }
 
 }

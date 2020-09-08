@@ -3,7 +3,9 @@ package liang.lollipop.lcountdown.fragment.adjustment
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import kotlinx.android.synthetic.main.include_gravity.*
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.util.GravityViewHelper
 
 /**
  * @author lollipop
@@ -21,7 +23,17 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        Gravity
+        GravityViewHelper(gridGroup)
+                .viewToGravity(this::viewToGravity)
+                .onGravityChange(this::onGravityChange)
+    }
+
+    private fun onGravityChange(gravity: Int) {
+
+    }
+
+    private fun viewToGravity(view: View): Int {
+        return 0
     }
 
 }

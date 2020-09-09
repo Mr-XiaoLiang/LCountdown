@@ -26,6 +26,7 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
         GravityViewHelper(gridGroup)
                 .viewToGravity(this::viewToGravity)
                 .onGravityChange(this::onGravityChange)
+
     }
 
     private fun onGravityChange(gravity: Int) {

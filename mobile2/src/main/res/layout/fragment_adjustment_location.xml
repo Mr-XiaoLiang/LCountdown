@@ -4,16 +4,55 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/textListView"
+        android:layout_width="84dp"
+        android:layout_height="0px"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <liang.lollipop.lcountdown.view.LSeekBar
+        android:id="@+id/locationYBar"
+        android:layout_width="48dp"
+        android:layout_height="0px"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/locationXBar"
+        app:layout_constraintRight_toRightOf="parent"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        app:min="-1000"
+        app:max="1000"/>
+
+    <liang.lollipop.lcountdown.view.LSeekBar
+        android:id="@+id/locationXBar"
+        android:layout_width="0px"
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/locationYBar"
+        app:layout_constraintLeft_toRightOf="@id/textListView"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:min="-1000"
+        app:max="1000"/>
+
     <FrameLayout
         android:layout_width="0px"
         android:layout_height="0px"
         android:id="@+id/gravityRoot"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintLeft_toRightOf="@id/textListView"
+        app:layout_constraintRight_toLeftOf="@id/locationYBar"
+        app:layout_constraintBottom_toTopOf="@id/locationXBar"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp">
         <include layout="@layout/include_gravity" />
     </FrameLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

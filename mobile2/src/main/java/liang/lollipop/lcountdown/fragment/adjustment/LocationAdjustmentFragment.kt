@@ -1,5 +1,6 @@
 package liang.lollipop.lcountdown.fragment.adjustment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -33,8 +34,20 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
 
     }
 
+    @SuppressLint("RtlHardcoded")
     private fun viewToGravity(view: View): Int {
-        return 0
+        return when(view) {
+            leftTopGrid -> Gravity.LEFT or Gravity.TOP
+            leftMiddleGrid -> Gravity.LEFT or Gravity.CENTER_VERTICAL
+            leftBottomGrid -> Gravity.LEFT or Gravity.BOTTOM
+            centerTopGrid -> Gravity.CENTER_HORIZONTAL or Gravity.TOP
+            centerMiddleGrid -> Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
+            centerBottomGrid -> Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM
+            rightTopGrid -> Gravity.RIGHT or Gravity.TOP
+            rightMiddleGrid -> Gravity.RIGHT or Gravity.CENTER_VERTICAL
+            rightBottomGrid -> Gravity.RIGHT or Gravity.BOTTOM
+            else -> 0
+        }
     }
 
 }

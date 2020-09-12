@@ -31,7 +31,7 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
     }
 
     private fun onGravityChange(gravity: Int) {
-
+        // TODO
     }
 
     @SuppressLint("RtlHardcoded")

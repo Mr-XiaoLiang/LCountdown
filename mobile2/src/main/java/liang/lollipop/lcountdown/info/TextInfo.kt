@@ -9,10 +9,9 @@ interface Text {
 }
 
 interface Location {
-    var left: Int
-    var top: Int
-    var right: Int
-    var bottom: Int
+    var gravity: Int
+    var offsetX: Float
+    var offsetY: Float
 }
 
 interface FontSize {

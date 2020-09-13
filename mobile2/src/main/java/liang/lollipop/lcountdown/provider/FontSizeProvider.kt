@@ -18,12 +18,12 @@ interface FontSizeProvider {
     fun getText(index: Int): String
 
     /**
-     * 获取一个文本信息
+     * 获取一个字体大小
      */
     fun getFontSize(index: Int): Float
 
     /**
-     * 设置一个文本内容
+     * 设置一个字体大小
      */
     fun setFontSize(index: Int, value: Float)
 

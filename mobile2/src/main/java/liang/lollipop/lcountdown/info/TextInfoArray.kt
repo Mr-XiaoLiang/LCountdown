@@ -4,13 +4,16 @@ import android.util.SparseArray
 import liang.lollipop.lcountdown.provider.FontColorProvider
 import liang.lollipop.lcountdown.provider.FontSizeProvider
 import liang.lollipop.lcountdown.provider.TextInfoProvider
+import liang.lollipop.lcountdown.provider.TextLocationProvider
 
 /**
  * @author lollipop
  * @date 2020/6/27 22:47
  * 文字信息的数据集合
  */
-class TextInfoArray: JsonArrayInfo(), TextInfoProvider, FontSizeProvider, FontColorProvider {
+class TextInfoArray: JsonArrayInfo(), TextInfoProvider,
+        FontSizeProvider, FontColorProvider,
+        TextLocationProvider {
 
     private fun optTextInfo(index: Int): TextInfoImpl {
         return optInfo(index).convertTo()
@@ -29,6 +32,30 @@ class TextInfoArray: JsonArrayInfo(), TextInfoProvider, FontSizeProvider, FontCo
 
     override fun getText(index: Int): String {
         return optTextInfo(index).textValue
+    }
+
+    override fun getGravity(index: Int): Int {
+        return optTextInfo(index).gravity
+    }
+
+    override fun setGravity(index: Int, gravity: Int) {
+        optTextInfo(index).gravity = gravity
+    }
+
+    override fun getOffsetX(index: Int): Float {
+        return optTextInfo(index).offsetX
+    }
+
+    override fun setOffsetX(index: Int, offset: Float) {
+        optTextInfo(index).offsetX = offset
+    }
+
+    override fun getOffsetY(index: Int): Float {
+        return optTextInfo(index).offsetY
+    }
+
+    override fun setOffsetY(index: Int, offset: Float) {
+        optTextInfo(index).offsetY = offset
     }
 
     override fun getFontColor(index: Int): TextColor {
@@ -59,14 +86,6 @@ class TextInfoArray: JsonArrayInfo(), TextInfoProvider, FontSizeProvider, FontCo
     private class TextInfoImpl: JsonInfo(), Text, Location, FontSize, TextColor {
 
         override var textValue by StringDelegate(this)
-
-        override var left by IntDelegate(this)
-
-        override var top by IntDelegate(this)
-
-        override var right by IntDelegate(this)
-
-        override var bottom by IntDelegate(this)
 
         override var fontSize by FloatDelegate(this, 16F)
 
@@ -112,6 +131,12 @@ class TextInfoArray: JsonArrayInfo(), TextInfoProvider, FontSizeProvider, FontCo
             colorCache.remove(index)
             colorArray.remove(index)
         }
+
+        override var gravity by IntDelegate(this)
+
+        override var offsetX by FloatDelegate(this)
+
+        override var offsetY by FloatDelegate(this)
 
     }
 

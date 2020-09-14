@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.View
 import kotlinx.android.synthetic.main.include_gravity.*
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.provider.TextLocationProvider
 import liang.lollipop.lcountdown.util.GravityViewHelper
 
 /**
@@ -48,6 +49,42 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
             rightBottomGrid -> Gravity.RIGHT or Gravity.BOTTOM
             else -> 0
         }
+    }
+
+    private class TextLocationProviderWrapper(var provider: TextLocationProvider?): TextLocationProvider {
+        override val textCount: Int
+            get() {
+                return provider?.textCount?:0
+            }
+
+        override fun getText(index: Int): String {
+            return provider?.getText(index)?:""
+        }
+
+        override fun getGravity(index: Int): Int {
+            return provider?.getGravity(index)?:0
+        }
+
+        override fun setGravity(index: Int, gravity: Int) {
+            provider?.setGravity(index, gravity)
+        }
+
+        override fun getOffsetX(index: Int): Float {
+            return provider?.getOffsetX(index)?:0F
+        }
+
+        override fun setOffsetX(index: Int, offset: Float) {
+            provider?.setOffsetX(index, offset)
+        }
+
+        override fun getOffsetY(index: Int): Float {
+            return provider?.getOffsetY(index)?:0F
+        }
+
+        override fun setOffsetY(index: Int, offset: Float) {
+            provider?.setOffsetY(index, offset)
+        }
+
     }
 
 }

@@ -1,11 +1,13 @@
 package liang.lollipop.lcountdown.fragment.adjustment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import kotlinx.android.synthetic.main.include_gravity.*
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.listener.TextFocusProvider
 import liang.lollipop.lcountdown.provider.TextLocationProvider
 import liang.lollipop.lcountdown.util.GravityViewHelper
 
@@ -23,6 +25,15 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
     override val colorId: Int
         get() = R.color.focusLocationAdjust
 
+    private val locationProvider = TextLocationProviderWrapper(null)
+    private var onLocationChangeCallback: ((Int) -> Unit)? = null
+    private var textFocusProvider: TextFocusProvider? = null
+
+    private val focusIndex: Int
+        get() {
+            return textFocusProvider?.getSelectedIndex()?:-1
+        }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         GravityViewHelper(gridGroup)
@@ -31,7 +42,60 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
 
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is Callback) {
+            locationProvider.provider = context.getTextLocationProvider()
+            onLocationChangeCallback = { index ->
+                context.onTextLocationChange(index)
+            }
+        } else {
+            parentFragment?.let { parent ->
+                if (parent is Callback) {
+                    locationProvider.provider = parent.getTextLocationProvider()
+                    onLocationChangeCallback = { index ->
+                        parent.onTextLocationChange(index)
+                    }
+                }
+            }
+        }
+        if (context is TextFocusProvider) {
+            textFocusProvider = context
+        } else {
+            parentFragment?.let { parent ->
+                if (parent is TextFocusProvider) {
+                    textFocusProvider = parent
+                }
+            }
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        locationProvider.provider = null
+        onLocationChangeCallback = null
+        textFocusProvider = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        parse()
+    }
+
+    private fun focusChange(index: Int) {
+        textFocusProvider?.onTextSelected(index)
+        // TODO
+    }
+
     private fun onGravityChange(gravity: Int) {
+        // TODO
+        val index = focusIndex
+        if (index >= 0) {
+            onLocationChangeCallback?.invoke(index)
+        }
+    }
+
+    private fun parse() {
         // TODO
     }
 
@@ -49,6 +113,11 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
             rightBottomGrid -> Gravity.RIGHT or Gravity.BOTTOM
             else -> 0
         }
+    }
+
+    interface Callback {
+        fun getTextLocationProvider(): TextLocationProvider
+        fun onTextLocationChange(index: Int)
     }
 
     private class TextLocationProviderWrapper(var provider: TextLocationProvider?): TextLocationProvider {

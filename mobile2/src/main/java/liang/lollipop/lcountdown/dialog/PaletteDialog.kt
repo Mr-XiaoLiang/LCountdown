@@ -16,10 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import liang.lollipop.lcountdown.R
-import liang.lollipop.lcountdown.util.CurtainDialog
-import liang.lollipop.lcountdown.util.doAsync
-import liang.lollipop.lcountdown.util.onUI
-import liang.lollipop.lcountdown.util.parseColor
+import liang.lollipop.lcountdown.util.*
 import liang.lollipop.lcountdown.view.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -68,23 +65,17 @@ class PaletteDialog(
             colorToValue(colorValueView)
             colorPointBtn.setStatusColor(selectedColor)
         }
-        colorValueView.setOnEditorActionListener { _, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE
-                    || event.keyCode == KeyEvent.KEYCODE_ENTER) {
-                val colorValue = colorValueView.text?.toString()?:""
-                val color = colorValue.parseColor()
-                selectedColor = color
-                transparencyPalette.parser(Color.alpha(color))
-                val hsv = FloatArray(3)
-                Color.colorToHSV(color, hsv)
-                satValPalette.parser(hsv[1], hsv[2])
-                huePalette.parser(hsv[0])
-                colorToValue(colorValueView)
-                colorPointBtn.setStatusColor(selectedColor)
-                true
-            } else {
-                false
-            }
+        colorValueView.onActionDone {
+            val colorValue = text?.toString()?:""
+            val color = colorValue.parseColor()
+            selectedColor = color
+            transparencyPalette.parser(Color.alpha(color))
+            val hsv = FloatArray(3)
+            Color.colorToHSV(color, hsv)
+            satValPalette.parser(hsv[1], hsv[2])
+            huePalette.parser(hsv[0])
+            colorToValue(colorValueView)
+            colorPointBtn.setStatusColor(selectedColor)
         }
         colorPointBtn.setOnClickListener {
             onColorSelectedListener.invoke(tag, selectedColor)

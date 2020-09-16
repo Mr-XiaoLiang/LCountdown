@@ -6,9 +6,12 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
+import android.text.TextUtils
 import android.util.Log
 import android.util.TypedValue
+import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.core.content.ContextCompat
@@ -303,3 +306,24 @@ fun String.parseColor(): Int {
     }
 }
 
+inline fun <reified T: EditText> T.onActionDone(noinline run: T.() -> Unit) {
+    this.setOnEditorActionListener { _, actionId, event ->
+        if (actionId == EditorInfo.IME_ACTION_DONE
+                || event.keyCode == KeyEvent.KEYCODE_ENTER) {
+            run.invoke(this)
+            true
+        } else {
+            false
+        }
+    }
+}
+
+fun String.tryInt(def: Int): Int {
+    try {
+        if (TextUtils.isEmpty(this)) {
+            return def
+        }
+        return this.toInt()
+    } catch (e: Throwable) { }
+    return def
+}

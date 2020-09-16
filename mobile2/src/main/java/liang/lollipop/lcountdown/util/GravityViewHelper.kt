@@ -38,10 +38,15 @@ class GravityViewHelper(group: ViewGroup): View.OnClickListener {
     fun checked(id: Int) {
         for (index in viewList.indices) {
             if (viewList[index].id == id) {
-                selectedIndex == index
+                selectedIndex = index
                 break
             }
         }
+        updateCheckStatus()
+    }
+
+    fun checkNone() {
+        selectedIndex = -1
         updateCheckStatus()
     }
 

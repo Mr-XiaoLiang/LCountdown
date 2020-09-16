@@ -3,13 +3,17 @@ package liang.lollipop.lcountdown.fragment.adjustment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
+import kotlinx.android.synthetic.main.fragment_adjustment_location.*
 import kotlinx.android.synthetic.main.include_gravity.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.listener.TextFocusProvider
 import liang.lollipop.lcountdown.provider.TextLocationProvider
 import liang.lollipop.lcountdown.util.GravityViewHelper
+import liang.lollipop.lcountdown.util.onActionDone
+import liang.lollipop.lcountdown.util.tryInt
 
 /**
  * @author lollipop
@@ -28,6 +32,7 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
     private val locationProvider = TextLocationProviderWrapper(null)
     private var onLocationChangeCallback: ((Int) -> Unit)? = null
     private var textFocusProvider: TextFocusProvider? = null
+    private var gravityViewHelper: GravityViewHelper? = null
 
     private val focusIndex: Int
         get() {
@@ -36,9 +41,23 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        GravityViewHelper(gridGroup)
+        gravityViewHelper = GravityViewHelper(gridGroup)
                 .viewToGravity(this::viewToGravity)
                 .onGravityChange(this::onGravityChange)
+
+        locationYBar.onProgressChange { _, progress ->
+            horizontalValueView.setText(progress.toInt().toString())
+        }
+        horizontalValueView.onActionDone {
+            locationYBar.progress = (text?.toString()?:"").tryInt(0).toFloat()
+        }
+
+        locationXBar.onProgressChange { _, progress ->
+            verticalValueView.setText(progress.toInt().toString())
+        }
+        verticalValueView.onActionDone {
+            locationXBar.progress = (text?.toString()?:"").tryInt(0).toFloat()
+        }
 
     }
 
@@ -84,7 +103,7 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
 
     private fun focusChange(index: Int) {
         textFocusProvider?.onTextSelected(index)
-        // TODO
+        parse()
     }
 
     private fun onGravityChange(gravity: Int) {
@@ -96,7 +115,13 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
     }
 
     private fun parse() {
-        // TODO
+        val selectedIndex = textFocusProvider?.getSelectedIndex()?:-1
+        if (selectedIndex >= 0) {
+
+        } else {
+            gravityViewHelper?.checkNone()
+
+        }
     }
 
     @SuppressLint("RtlHardcoded")

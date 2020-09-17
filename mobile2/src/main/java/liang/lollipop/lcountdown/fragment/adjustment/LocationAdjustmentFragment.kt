@@ -3,7 +3,6 @@ package liang.lollipop.lcountdown.fragment.adjustment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_adjustment_location.*
@@ -38,6 +37,7 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
         get() {
             return textFocusProvider?.getSelectedIndex()?:-1
         }
+    private var uploadLock = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,6 +47,7 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
 
         locationYBar.onProgressChange { _, progress ->
             horizontalValueView.setText(progress.toInt().toString())
+            onProgressChange(progress, false)
         }
         horizontalValueView.onActionDone {
             locationYBar.progress = (text?.toString()?:"").tryInt(0).toFloat()
@@ -54,6 +55,7 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
 
         locationXBar.onProgressChange { _, progress ->
             verticalValueView.setText(progress.toInt().toString())
+            onProgressChange(progress, true)
         }
         verticalValueView.onActionDone {
             locationXBar.progress = (text?.toString()?:"").tryInt(0).toFloat()
@@ -107,21 +109,44 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
     }
 
     private fun onGravityChange(gravity: Int) {
-        // TODO
+        if (uploadLock) {
+            return
+        }
         val index = focusIndex
         if (index >= 0) {
+            locationProvider.setGravity(index, gravity)
+            onLocationChangeCallback?.invoke(index)
+        }
+    }
+
+    private fun onProgressChange(progress: Float, isX: Boolean) {
+        if (uploadLock) {
+            return
+        }
+        val index = focusIndex
+        if (index >= 0) {
+            if (isX) {
+                locationProvider.setOffsetX(index, progress)
+            } else {
+                locationProvider.setOffsetY(index, progress)
+            }
             onLocationChangeCallback?.invoke(index)
         }
     }
 
     private fun parse() {
+        uploadLock = true
         val selectedIndex = textFocusProvider?.getSelectedIndex()?:-1
         if (selectedIndex >= 0) {
-
+            gravityViewHelper?.checkedGravity(locationProvider.getGravity(selectedIndex))
+            locationXBar.progress = locationProvider.getOffsetX(selectedIndex)
+            locationYBar.progress = locationProvider.getOffsetY(selectedIndex)
         } else {
             gravityViewHelper?.checkNone()
-
+            locationXBar.progress = 0F
+            locationYBar.progress = 0F
         }
+        uploadLock = false
     }
 
     @SuppressLint("RtlHardcoded")

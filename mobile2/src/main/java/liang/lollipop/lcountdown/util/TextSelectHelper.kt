@@ -43,7 +43,7 @@ class TextSelectHelper private constructor(private val recyclerView: RecyclerVie
         return textValueProvider?.invoke(index)?:""
     }
 
-    private fun getFocusIndex(): Int {
+    fun getFocusIndex(): Int {
         return textFocusProvider?.getSelectedIndex()?:-1
     }
 

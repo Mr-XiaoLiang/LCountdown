@@ -8,9 +8,9 @@ import android.view.View
 import kotlinx.android.synthetic.main.fragment_adjustment_location.*
 import kotlinx.android.synthetic.main.include_gravity.*
 import liang.lollipop.lcountdown.R
-import liang.lollipop.lcountdown.listener.TextFocusProvider
 import liang.lollipop.lcountdown.provider.TextLocationProvider
 import liang.lollipop.lcountdown.util.GravityViewHelper
+import liang.lollipop.lcountdown.util.TextSelectHelper
 import liang.lollipop.lcountdown.util.onActionDone
 import liang.lollipop.lcountdown.util.tryInt
 
@@ -30,12 +30,12 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
 
     private val locationProvider = TextLocationProviderWrapper(null)
     private var onLocationChangeCallback: ((Int) -> Unit)? = null
-    private var textFocusProvider: TextFocusProvider? = null
     private var gravityViewHelper: GravityViewHelper? = null
+    private var textSelectHelper: TextSelectHelper? = null
 
     private val focusIndex: Int
         get() {
-            return textFocusProvider?.getSelectedIndex()?:-1
+            return textSelectHelper?.getFocusIndex()?:-1
         }
     private var uploadLock = false
 
@@ -61,6 +61,11 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
             locationXBar.progress = (text?.toString()?:"").tryInt(0).toFloat()
         }
 
+        textSelectHelper = TextSelectHelper.with(textListView)
+                .textCount { locationProvider.textCount }
+                .textValue { locationProvider.getText(it) }
+                .onClicked { focusChange(it) }
+
     }
 
     override fun onAttach(context: Context) {
@@ -80,22 +85,15 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
                 }
             }
         }
-        if (context is TextFocusProvider) {
-            textFocusProvider = context
-        } else {
-            parentFragment?.let { parent ->
-                if (parent is TextFocusProvider) {
-                    textFocusProvider = parent
-                }
-            }
-        }
+        textSelectHelper?.onAttach(this)
     }
 
     override fun onDetach() {
         super.onDetach()
         locationProvider.provider = null
         onLocationChangeCallback = null
-        textFocusProvider = null
+        textSelectHelper?.onDetach()
+        textSelectHelper = null
     }
 
     override fun onResume() {
@@ -104,7 +102,6 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
     }
 
     private fun focusChange(index: Int) {
-        textFocusProvider?.onTextSelected(index)
         parse()
     }
 
@@ -136,7 +133,7 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
 
     private fun parse() {
         uploadLock = true
-        val selectedIndex = textFocusProvider?.getSelectedIndex()?:-1
+        val selectedIndex = textSelectHelper?.getFocusIndex()?:-1
         if (selectedIndex >= 0) {
             gravityViewHelper?.checkedGravity(locationProvider.getGravity(selectedIndex))
             locationXBar.progress = locationProvider.getOffsetX(selectedIndex)

@@ -9,9 +9,11 @@ import androidx.fragment.app.Fragment
  * @author lollipop
  * @date 9/22/20 00:44
  */
-class FragmentLifecycleHelper(private val target: Fragment) {
+class FragmentLifecycleHelper {
 
     private val listenerList = ArrayList<FragmentLifecycleListener>()
+
+    private var target: Fragment? = null
 
     fun addLifecycleListener(listener: FragmentLifecycleListener) {
         listenerList.add(listener)
@@ -21,40 +23,61 @@ class FragmentLifecycleHelper(private val target: Fragment) {
         listenerList.remove(listener)
     }
 
+    fun bindFragment(fragment: Fragment) {
+        target = fragment
+    }
+
     fun onAttach(context: Context) {
-        listenerList.forEach { it.onAttach(target, context) }
+        target?.let { fragment ->
+            listenerList.forEach { it.onAttach(fragment, context) }
+        }
     }
 
     fun onDetach() {
-        listenerList.forEach { it.onDetach(target) }
+        target?.let { fragment ->
+            listenerList.forEach { it.onDetach(fragment) }
+        }
     }
 
-    fun onCreate(savedInstanceState: Bundle?) {
-        listenerList.forEach { it.onCreate(target, savedInstanceState) }
+    fun onCreate(fragment: Fragment, savedInstanceState: Bundle?) {
+        bindFragment(fragment)
+        listenerList.forEach { it.onCreate(fragment, savedInstanceState) }
     }
 
     fun onStart() {
-        listenerList.forEach { it.onStart(target) }
+        target?.let { fragment ->
+            listenerList.forEach { it.onStart(fragment) }
+        }
     }
 
     fun onStop() {
-        listenerList.forEach { it.onStop(target) }
+        target?.let { fragment ->
+            listenerList.forEach { it.onStop(fragment) }
+        }
     }
 
     fun onResume() {
-        listenerList.forEach { it.onResume(target) }
+        target?.let { fragment ->
+            listenerList.forEach { it.onResume(fragment) }
+        }
     }
 
     fun onPause() {
-        listenerList.forEach { it.onPause(target) }
+        target?.let { fragment ->
+            listenerList.forEach { it.onPause(fragment) }
+        }
     }
 
     fun onDestroy() {
-        listenerList.forEach { it.onDestroy(target) }
+        target?.let { fragment ->
+            listenerList.forEach { it.onDestroy(fragment) }
+        }
     }
 
     fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        listenerList.forEach { it.onViewCreated(target, view, savedInstanceState) }
+        target?.let { fragment ->
+            listenerList.forEach { it.onViewCreated(fragment, view, savedInstanceState) }
+        }
     }
 
 }

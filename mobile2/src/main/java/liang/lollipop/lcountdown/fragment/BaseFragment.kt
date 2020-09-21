@@ -15,68 +15,68 @@ abstract class BaseFragment: Fragment(),
         BackPressedProvider,
         OnWindowInsetsProvider {
 
-    private var lifecycleHelper: FragmentLifecycleHelper? = null
+    private var lifecycleHelper: FragmentLifecycleHelper = FragmentLifecycleHelper()
 
     abstract val title: Int
 
     abstract val colorId: Int
 
-    private fun supportLifecycle(fragment: Fragment) {
-        lifecycleHelper = FragmentLifecycleHelper(fragment)
+    protected fun supportLifecycle(fragment: Fragment) {
+        lifecycleHelper.bindFragment(fragment)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         supportLifecycle(this)
         super.onCreate(savedInstanceState)
-        lifecycleHelper?.onCreate(savedInstanceState)
+        lifecycleHelper.onCreate(this, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lifecycleHelper?.onViewCreated(view, savedInstanceState)
+        lifecycleHelper.onViewCreated(view, savedInstanceState)
     }
 
     override fun onStart() {
         super.onStart()
-        lifecycleHelper?.onStart()
+        lifecycleHelper.onStart()
     }
 
     override fun onResume() {
         super.onResume()
-        lifecycleHelper?.onResume()
+        lifecycleHelper.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        lifecycleHelper?.onPause()
+        lifecycleHelper.onPause()
     }
 
     override fun onStop() {
         super.onStop()
-        lifecycleHelper?.onStop()
+        lifecycleHelper.onStop()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        lifecycleHelper?.onDestroy()
+        lifecycleHelper.onDestroy()
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        lifecycleHelper?.onAttach(context)
+        lifecycleHelper.onAttach(context)
     }
 
     override fun onDetach() {
         super.onDetach()
-        lifecycleHelper?.onDetach()
+        lifecycleHelper.onDetach()
     }
 
     fun addLifecycleListener(listener: FragmentLifecycleListener) {
-        lifecycleHelper?.addLifecycleListener(listener)
+        lifecycleHelper.addLifecycleListener(listener)
     }
 
     fun removeLifecycleListener(listener: FragmentLifecycleListener) {
-        lifecycleHelper?.removeLifecycleListener(listener)
+        lifecycleHelper.removeLifecycleListener(listener)
     }
 
     private val windowInsetsProviderHelper: WindowInsetsProviderHelper by lazy {

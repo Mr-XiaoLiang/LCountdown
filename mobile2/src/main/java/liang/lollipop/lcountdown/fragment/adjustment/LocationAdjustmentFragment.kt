@@ -62,6 +62,7 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
         }
 
         textSelectHelper = TextSelectHelper.with(textListView)
+                .bindLifecycle(this)
                 .textCount { locationProvider.textCount }
                 .textValue { locationProvider.getText(it) }
                 .onClicked { focusChange(it) }
@@ -85,14 +86,12 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
                 }
             }
         }
-        textSelectHelper?.onAttach(this)
     }
 
     override fun onDetach() {
         super.onDetach()
         locationProvider.provider = null
         onLocationChangeCallback = null
-        textSelectHelper?.onDetach()
         textSelectHelper = null
     }
 

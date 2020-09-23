@@ -5,14 +5,12 @@ import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.fragment_adjustment_location.*
 import kotlinx.android.synthetic.main.include_gravity.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.provider.TextLocationProvider
-import liang.lollipop.lcountdown.util.GravityViewHelper
-import liang.lollipop.lcountdown.util.TextSelectHelper
-import liang.lollipop.lcountdown.util.onActionDone
-import liang.lollipop.lcountdown.util.tryInt
+import liang.lollipop.lcountdown.util.*
 
 /**
  * @author lollipop
@@ -45,20 +43,26 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
                 .viewToGravity(this::viewToGravity)
                 .onGravityChange(this::onGravityChange)
 
+        locationYBar.setTheme(locationYBar.getColor(R.color.colorPrimary))
         locationYBar.onProgressChange { _, progress ->
             horizontalValueView.setText(progress.toInt().toString())
             onProgressChange(progress, false)
         }
         horizontalValueView.onActionDone {
-            locationYBar.progress = (text?.toString()?:"").tryInt(0).toFloat()
+            val value = (text?.toString() ?: "").tryInt(0).range(-1000, 1000)
+            locationYBar.progress = value.toFloat()
+            horizontalValueView.setText(value.toString())
         }
 
+        locationXBar.setTheme(locationXBar.getColor(R.color.colorPrimary))
         locationXBar.onProgressChange { _, progress ->
             verticalValueView.setText(progress.toInt().toString())
             onProgressChange(progress, true)
         }
         verticalValueView.onActionDone {
-            locationXBar.progress = (text?.toString()?:"").tryInt(0).toFloat()
+            val value = (text?.toString() ?: "").tryInt(0).range(-1000, 1000)
+            locationXBar.progress = value.toFloat()
+            verticalValueView.setText(value.toString())
         }
 
         textSelectHelper = TextSelectHelper.with(textListView)
@@ -132,7 +136,7 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
 
     private fun parse() {
         uploadLock = true
-        val selectedIndex = textSelectHelper?.getFocusIndex()?:-1
+        val selectedIndex = focusIndex
         if (selectedIndex >= 0) {
             gravityViewHelper?.checkedGravity(locationProvider.getGravity(selectedIndex))
             locationXBar.progress = locationProvider.getOffsetX(selectedIndex)

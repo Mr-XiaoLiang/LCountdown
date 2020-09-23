@@ -29,7 +29,8 @@ class WidgetAdjustmentActivity : BaseActivity(),
         FontAdjustmentFragment.Callback,
         ColorAdjustmentFragment.Callback,
         BackgroundGradientAdjustmentFragment.Callback,
-        CardAdjustmentFragment.Callback {
+        CardAdjustmentFragment.Callback,
+        LocationAdjustmentFragment.Callback {
 
     private var bottomSheetHelper: BottomSheetHelper? = null
 
@@ -174,6 +175,14 @@ class WidgetAdjustmentActivity : BaseActivity(),
 
     override fun getBackgroundCardProvider(): BackgroundCardProvider {
         return backgroundInfo
+    }
+
+    override fun getTextLocationProvider(): TextLocationProvider {
+        return textInfoArray
+    }
+
+    override fun onTextLocationChange(index: Int) {
+        // TODO("Not yet implemented")
     }
 
 }

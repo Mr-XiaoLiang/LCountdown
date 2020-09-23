@@ -327,3 +327,17 @@ fun String.tryInt(def: Int): Int {
     } catch (e: Throwable) { }
     return def
 }
+
+fun View.getColor(id: Int): Int {
+    return ContextCompat.getColor(this.context, id)
+}
+
+fun Int.range(min: Int, max: Int): Int {
+    if (this < min) {
+        return min
+    }
+    if (this > max) {
+        return max
+    }
+    return this
+}

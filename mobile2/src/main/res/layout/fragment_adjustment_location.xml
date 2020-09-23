@@ -55,18 +55,16 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:id="@+id/verticalValueView"
-            android:textSize="12dp"
+            android:textSize="14sp"
             style="@style/InputLayoutStyle"
             android:gravity="center"
             android:text="FFFFFF"
             android:singleLine="true"
             android:maxLines="1"
             android:maxLength="8"
-            android:digits="0123456789"
-            android:ems="4"
             android:padding="0px"
-            android:inputType="textVisiblePassword"
-            android:imeOptions="actionDone"/>
+            android:inputType="numberSigned"
+            android:imeOptions="actionDone" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -83,17 +81,15 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:id="@+id/horizontalValueView"
-            android:textSize="12dp"
+            android:textSize="14sp"
             style="@style/InputLayoutStyle"
             android:gravity="center"
             android:text="FFFFFF"
             android:singleLine="true"
             android:maxLines="1"
             android:maxLength="8"
-            android:digits="0123456789"
-            android:ems="4"
             android:padding="0px"
-            android:inputType="textVisiblePassword"
+            android:inputType="numberSigned"
             android:imeOptions="actionDone"/>
     </com.google.android.material.textfield.TextInputLayout>
 

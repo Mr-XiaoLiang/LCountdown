@@ -14,7 +14,7 @@ import liang.lollipop.lcountdown.listener.*
 @SuppressLint("Registered")
 open class BaseActivity: AppCompatActivity(),
     BackPressedProvider,
-    OnWindowInsetsProvider{
+    OnWindowInsetsProvider {
 
     private val windowInsetsProviderHelper: WindowInsetsProviderHelper by lazy {
         WindowInsetsProviderHelper()

@@ -170,9 +170,10 @@
                         </option>
                         <option name="values">
                           <map>
+                            <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_baseline_image_24" />
-                            <entry key="sourceFile" value="$USER_HOME$/Downloads/countdown_icon.svg" />
+                            <entry key="outputName" value="ic_logo" />
+                            <entry key="sourceFile" value="$USER_HOME$/Pictures/PSD/Logo.svg" />
                           </map>
                         </option>
                       </PersistentState>

@@ -21,6 +21,9 @@
             app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed|exitUntilCollapsed|snap"
             android:theme="@style/AppTheme.Toolbar"
             app:expandedTitleGravity="center">
+
+            <include layout="@layout/include_header"/>
+
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
@@ -29,7 +32,7 @@
                 app:layout_collapseMode="pin"
                 app:titleTextColor="@color/colorPrimaryText"
                 app:title="@string/app_name"
-                android:theme="@style/AppTheme.Toolbar"/>
+                android:theme="@style/AppTheme.Toolbar" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 

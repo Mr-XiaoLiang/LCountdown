@@ -45,6 +45,7 @@
         android:src="@drawable/ic_logo"
         android:scaleType="fitCenter"
         android:tint="@color/curtainText"
+        android:padding="2dp"
         app:layout_constraintTop_toTopOf="@id/copyrightView"
         app:layout_constraintBottom_toBottomOf="@id/copyrightView"
         app:layout_constraintLeft_toRightOf="@id/copyrightView"/>

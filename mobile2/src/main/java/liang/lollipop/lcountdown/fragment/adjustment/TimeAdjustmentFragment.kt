@@ -28,6 +28,8 @@ class TimeAdjustmentFragment: BaseAdjustmentFragment() {
     private val infoProvider = TimeInfoProviderWrapper()
     private var onTimeInfoChangeCallback: (() -> Unit)? = null
 
+    private var listenerLock = false
+
     private val calendar: Calendar by lazy {
         Calendar.getInstance()
     }
@@ -56,8 +58,29 @@ class TimeAdjustmentFragment: BaseAdjustmentFragment() {
             }, hourIn, minuteIn, false).show()
         }
         timingMethodGroup.setOnCheckedChangeListener { _, checkedId ->
-            infoProvider.isCountdown = (checkedId == R.id.countdownMethodBtn)
-            callInfoChange()
+            if (!listenerLock) {
+                infoProvider.isCountdown = (checkedId == R.id.countdownMethodBtn)
+                callInfoChange()
+            }
+        }
+        cycleModeGroup.setOnCheckedChangeListener { _, checkedId ->
+            if (!listenerLock) {
+                infoProvider.cycleType = when(checkedId) {
+                    R.id.dayCycleBtn -> {
+                        TimeInfoProvider.CycleType.Day
+                    }
+                    R.id.monthCycleBtn -> {
+                        TimeInfoProvider.CycleType.Month
+                    }
+                    R.id.yearCycleBtn -> {
+                        TimeInfoProvider.CycleType.Year
+                    }
+                    else -> {
+                        TimeInfoProvider.CycleType.No
+                    }
+                }
+                callInfoChange()
+            }
         }
     }
 
@@ -67,8 +90,29 @@ class TimeAdjustmentFragment: BaseAdjustmentFragment() {
     }
 
     private fun parse() {
+        listenerLock = true
         calendar.timeInMillis = infoProvider.targetTime
         onTimeChange(false)
+        if (infoProvider.isCountdown) {
+            countdownMethodBtn.isChecked = true
+        } else {
+            timingMethodBtn.isChecked = true
+        }
+        when(infoProvider.cycleType) {
+            TimeInfoProvider.CycleType.Day -> {
+                dayCycleBtn
+            }
+            TimeInfoProvider.CycleType.Month -> {
+                monthCycleBtn
+            }
+            TimeInfoProvider.CycleType.Year -> {
+                yearCycleBtn
+            }
+            else -> {
+                noCycleBtn
+            }
+        }.isChecked = true
+        listenerLock = false
     }
 
     @SuppressLint("SetTextI18n")

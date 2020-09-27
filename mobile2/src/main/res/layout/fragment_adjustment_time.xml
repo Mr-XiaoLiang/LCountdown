@@ -69,6 +69,7 @@
                     android:layout_marginEnd="5dp"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
+                    android:checked="true"
                     android:textColor="@color/radioTextColor"/>
             </RadioGroup>
         </HorizontalScrollView>
@@ -97,6 +98,7 @@
                     android:layout_marginEnd="5dp"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
+                    android:checked="true"
                     android:textColor="@color/radioTextColor"/>
                 <RadioButton
                     android:layout_width="wrap_content"

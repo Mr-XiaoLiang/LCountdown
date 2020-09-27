@@ -82,6 +82,18 @@ class JsonInfoDelegate<T: JsonInfo>(private val info: JsonInfo, private val case
     }
 }
 
+class EnumDelegate<T: Enum<T>>(private val info: JsonInfo,
+                               private val def: T,
+                               private val valueOf: (String) -> T) {
+    operator fun getValue(thisRef: Any, property: KProperty<*>): T {
+        return valueOf(info[property.name, def.name])
+    }
+
+    operator fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
+        info[property.name] = value
+    }
+}
+
 class JsonArrayDelegate<T: JsonArrayInfo>(private val info: JsonInfo, private val caseTo: (JsonArrayInfo) -> T) {
     operator fun getValue(thisRef: Any, property: KProperty<*>): T {
         val srcArray = info.optArray(property.name)

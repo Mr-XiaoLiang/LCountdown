@@ -45,5 +45,18 @@ class WidgetInfo: JsonInfo(), TimeInfoProvider {
     override var cycleType: TimeInfoProvider.CycleType by EnumDelegate(this,
             TimeInfoProvider.CycleType.No) { TimeInfoProvider.CycleType.valueOf(it) }
 
+    /**
+     * 背景信息
+     */
+    val backgroundInfo: BackgroundInfo by JsonInfoDelegate(this) {
+        it.convertTo()
+    }
+
+    /**
+     * 文本信息
+     */
+    val textInfoArray: TextInfoArray by JsonArrayDelegate(this) {
+        it.convertTo()
+    }
 
 }

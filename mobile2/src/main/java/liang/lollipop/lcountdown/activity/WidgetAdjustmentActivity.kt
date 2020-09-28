@@ -14,6 +14,7 @@ import liang.lollipop.lcountdown.fragment.adjustment.*
 import liang.lollipop.lcountdown.info.BackgroundInfo
 import liang.lollipop.lcountdown.info.TextColor
 import liang.lollipop.lcountdown.info.TextInfoArray
+import liang.lollipop.lcountdown.info.WidgetInfo
 import liang.lollipop.lcountdown.provider.*
 import liang.lollipop.lcountdown.util.BottomSheetHelper
 import liang.lollipop.lcountdown.util.toDip
@@ -30,7 +31,8 @@ class WidgetAdjustmentActivity : BaseActivity(),
         ColorAdjustmentFragment.Callback,
         BackgroundGradientAdjustmentFragment.Callback,
         CardAdjustmentFragment.Callback,
-        LocationAdjustmentFragment.Callback {
+        LocationAdjustmentFragment.Callback,
+        TimeAdjustmentFragment.Callback {
 
     private var bottomSheetHelper: BottomSheetHelper? = null
 
@@ -46,9 +48,17 @@ class WidgetAdjustmentActivity : BaseActivity(),
             SettingsAdjustmentFragment()
     )
 
-    private val textInfoArray = TextInfoArray()
+    private val widgetInfo = WidgetInfo()
 
-    private val backgroundInfo = BackgroundInfo()
+    private val textInfoArray: TextInfoArray
+        get() {
+            return widgetInfo.textInfoArray
+        }
+
+    private val backgroundInfo: BackgroundInfo
+        get() {
+            return widgetInfo.backgroundInfo
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -182,6 +192,14 @@ class WidgetAdjustmentActivity : BaseActivity(),
     }
 
     override fun onTextLocationChange(index: Int) {
+        // TODO("Not yet implemented")
+    }
+
+    override fun getTimeInfoProvider(): TimeInfoProvider {
+        return widgetInfo
+    }
+
+    override fun onTimeInfoChange() {
         // TODO("Not yet implemented")
     }
 

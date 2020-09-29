@@ -26,13 +26,13 @@ import liang.lollipop.ltabview.LTabView
  * 小部件的调整页面
  */
 class WidgetAdjustmentActivity : BaseActivity(),
+        TimeAdjustmentFragment.Callback,
         TextAdjustmentFragment.Callback,
         FontAdjustmentFragment.Callback,
         ColorAdjustmentFragment.Callback,
-        BackgroundGradientAdjustmentFragment.Callback,
-        CardAdjustmentFragment.Callback,
         LocationAdjustmentFragment.Callback,
-        TimeAdjustmentFragment.Callback {
+        BackgroundGradientAdjustmentFragment.Callback,
+        CardAdjustmentFragment.Callback {
 
     private var bottomSheetHelper: BottomSheetHelper? = null
 
@@ -204,3 +204,4 @@ class WidgetAdjustmentActivity : BaseActivity(),
     }
 
 }
+

@@ -9,6 +9,9 @@ import android.graphics.Canvas
  */
 abstract class RenderEngine {
 
+    /**
+     * 绘制的方法
+     */
     abstract fun draw(canvas: Canvas)
 
 }

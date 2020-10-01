@@ -24,4 +24,8 @@ abstract class RenderEngine {
                 View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY))
     }
 
+    protected fun draw(view: View, canvas: Canvas) {
+        view.draw(canvas)
+    }
+
 }

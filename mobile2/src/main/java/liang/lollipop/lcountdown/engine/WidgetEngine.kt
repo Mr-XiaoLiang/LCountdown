@@ -3,6 +3,7 @@ package liang.lollipop.lcountdown.engine
 import android.content.Context
 import android.graphics.Canvas
 import android.widget.FrameLayout
+import liang.lollipop.lcountdown.info.WidgetInfo
 
 /**
  * @author lollipop
@@ -18,6 +19,24 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
 
     override fun draw(canvas: Canvas) {
 
+    }
+
+    fun update(widgetInfo: WidgetInfo) {
+        updateCard(widgetInfo)
+        updateBackground(widgetInfo)
+        updateText(widgetInfo)
+    }
+
+    private fun updateCard(widgetInfo: WidgetInfo) {
+        // TODO
+    }
+
+    private fun updateBackground(widgetInfo: WidgetInfo) {
+        // TODO
+    }
+
+    private fun updateText(widgetInfo: WidgetInfo) {
+        // TODO
     }
 
 }

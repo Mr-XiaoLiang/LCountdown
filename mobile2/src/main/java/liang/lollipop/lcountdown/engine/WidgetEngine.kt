@@ -32,6 +32,15 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
     }
 
     private fun updateBackground(widgetInfo: WidgetInfo) {
+        updateBackgroundColor(widgetInfo)
+        updateBackgroundImage(widgetInfo)
+    }
+
+    private fun updateBackgroundColor(widgetInfo: WidgetInfo) {
+        // TODO
+    }
+
+    private fun updateBackgroundImage(widgetInfo: WidgetInfo) {
         // TODO
     }
 

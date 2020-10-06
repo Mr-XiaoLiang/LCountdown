@@ -29,9 +29,34 @@ class WidgetInfo: JsonInfo(), TimeInfoProvider {
      */
     var height: Int by IntDelegate(this, -1)
 
+    /**
+     * 左边距
+     */
+    var marginLeft: Int by IntDelegate(this, 0)
 
+    /**
+     * 上边距
+     */
+    var marginTop: Int by IntDelegate(this, 0)
+
+    /**
+     * 右边距
+     */
+    var marginRight: Int by IntDelegate(this, 0)
+
+    /**
+     * 下边距
+     */
+    var marginBottom: Int by IntDelegate(this, 0)
+
+    /**
+     * 目标时间
+     */
     override var targetTime: Long by LongDelegate(this)
 
+    /**
+     * 约束时间
+     */
     override var limitTime: Long by LongDelegate(this)
 
     /**

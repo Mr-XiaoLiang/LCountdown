@@ -2,7 +2,9 @@ package liang.lollipop.lcountdown.engine
 
 import android.content.Context
 import android.graphics.Canvas
+import android.view.View
 import android.widget.FrameLayout
+import android.widget.TextView
 import liang.lollipop.lcountdown.info.WidgetInfo
 
 /**
@@ -16,6 +18,10 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
             return WidgetEngine(FrameLayout(context))
         }
     }
+
+    private val textViews = ArrayList<TextView>()
+
+    private val recyclerViews = ArrayList<View>()
 
     override fun draw(canvas: Canvas) {
 

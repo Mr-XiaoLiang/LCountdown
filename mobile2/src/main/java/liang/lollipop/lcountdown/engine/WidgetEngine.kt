@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import liang.lollipop.lcountdown.info.WidgetInfo
 
 /**
@@ -18,6 +19,8 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
             return WidgetEngine(FrameLayout(context))
         }
     }
+
+    private val context = widgetRoot.context
 
     private val textViews = ArrayList<TextView>()
 
@@ -52,6 +55,30 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
 
     private fun updateText(widgetInfo: WidgetInfo) {
         // TODO
+    }
+
+    private fun findTextView(): TextView {
+        val iterator = recyclerViews.iterator()
+        while (iterator.hasNext()) {
+            val next = iterator.next()
+            if (next is TextView) {
+                iterator.remove()
+                return next
+            }
+        }
+        return TextView(context)
+    }
+
+    private fun findCardView(): CardView {
+        val iterator = recyclerViews.iterator()
+        while (iterator.hasNext()) {
+            val next = iterator.next()
+            if (next is CardView) {
+                iterator.remove()
+                return next
+            }
+        }
+        return CardView(context)
     }
 
 }

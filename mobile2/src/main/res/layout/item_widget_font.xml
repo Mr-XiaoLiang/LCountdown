@@ -27,6 +27,8 @@
         android:paddingBottom="16dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
+        app:min="8"
+        app:max="500"
         app:layout_constraintTop_toBottomOf="@id/textView"
         app:layout_constraintRight_toRightOf="@id/textView"
         app:layout_constraintLeft_toLeftOf="@id/textView"/>

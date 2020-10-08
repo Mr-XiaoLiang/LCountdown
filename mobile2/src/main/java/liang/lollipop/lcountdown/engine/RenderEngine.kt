@@ -2,6 +2,8 @@ package liang.lollipop.lcountdown.engine
 
 import android.graphics.Canvas
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewManager
 
 /**
  * @author lollipop
@@ -26,6 +28,33 @@ abstract class RenderEngine {
 
     protected fun draw(view: View, canvas: Canvas) {
         view.draw(canvas)
+    }
+
+    protected fun remove(view: View) {
+        val parent = view.parent?:return
+        if (parent is ViewManager) {
+            parent.removeView(view)
+        }
+    }
+
+    protected inline fun <reified T: ViewGroup> add(group: T, view: View) {
+        val parent = view.parent
+        if (parent != group) {
+            remove(view)
+        }
+        group.addView(view)
+    }
+
+    protected inline fun <reified T> findFromList(list: ArrayList<*>, create: () -> T): T {
+        val iterator = list.iterator()
+        while (iterator.hasNext()) {
+            val next = iterator.next()
+            if (next is T) {
+                iterator.remove()
+                return next
+            }
+        }
+        return create()
     }
 
 }

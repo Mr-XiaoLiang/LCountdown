@@ -1,5 +1,7 @@
 package liang.lollipop.lcountdown.provider
 
+import liang.lollipop.lcountdown.drawable.GradientDrawable
+
 /**
  * @author lollipop
  * @date 2020/6/30 00:14

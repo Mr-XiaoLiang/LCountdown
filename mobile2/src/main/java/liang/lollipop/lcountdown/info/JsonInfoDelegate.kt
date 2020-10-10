@@ -1,5 +1,6 @@
 package liang.lollipop.lcountdown.info
 
+import android.text.TextUtils
 import kotlin.reflect.KProperty
 
 /**
@@ -86,7 +87,11 @@ class EnumDelegate<T: Enum<T>>(private val info: JsonInfo,
                                private val def: T,
                                private val valueOf: (String) -> T) {
     operator fun getValue(thisRef: Any, property: KProperty<*>): T {
-        return valueOf(info[property.name, def.name])
+        var value = info[property.name, def.name]
+        if (TextUtils.isEmpty(value)) {
+            value = def.name
+        }
+        return valueOf(value)
     }
 
     operator fun setValue(thisRef: Any, property: KProperty<*>, value: T) {

@@ -1,5 +1,6 @@
 package liang.lollipop.lcountdown.info
 
+import liang.lollipop.lcountdown.drawable.GradientDrawable
 import liang.lollipop.lcountdown.provider.BackgroundCardProvider
 import liang.lollipop.lcountdown.provider.BackgroundColorProvider
 
@@ -34,6 +35,25 @@ class BackgroundInfo: JsonInfo(), BackgroundColorProvider, BackgroundCardProvide
     override var gradientType: Int by IntDelegate(this)
 
     /**
+     * 将int类型的渲染类型转换为GradientDrawable能接受的枚举
+     * 这是一个只读方法
+     */
+    val gradientDrawableType: GradientDrawable.Type
+        get() {
+            return when(gradientType) {
+                BackgroundColorProvider.Sweep -> {
+                    GradientDrawable.Type.Sweep
+                }
+                BackgroundColorProvider.Radial -> {
+                    GradientDrawable.Type.Radial
+                }
+                else -> {
+                    GradientDrawable.Type.Linear
+                }
+            }
+        }
+
+    /**
      * 颜色的集合
      */
     private val colorList: ColorJsonArray by JsonArrayDelegate(this) {
@@ -59,6 +79,10 @@ class BackgroundInfo: JsonInfo(), BackgroundColorProvider, BackgroundCardProvide
 
     override fun removeColor(index: Int) {
         colorList.removeColor(index)
+    }
+
+    fun getColorArray(): IntArray {
+        return colorList.getColorArray()
     }
 
     /**
@@ -87,6 +111,11 @@ class BackgroundInfo: JsonInfo(), BackgroundColorProvider, BackgroundCardProvide
 //    var cornerRightBottom: Float by FloatDelegate(this)
 
     private class ColorJsonArray: JsonArrayInfo() {
+
+        private var colorCacheArray: IntArray? = null
+
+        private var colorChanged = false
+
         val colorCount: Int
             get() {
                 return size
@@ -97,13 +126,33 @@ class BackgroundInfo: JsonInfo(), BackgroundColorProvider, BackgroundCardProvide
         }
         fun setColor(index: Int, color: Int) {
             set(index, color)
+            colorChanged = true
         }
         fun addColor(color: Int) {
             put(color)
+            colorChanged = true
         }
         fun removeColor(index: Int) {
             remove(index)
+            colorChanged = true
         }
+
+        fun getColorArray(): IntArray {
+            var colorCache = colorCacheArray
+            if (colorCache == null || colorCache.size != colorCount) {
+                colorCache = IntArray(colorCount)
+                colorChanged = true
+            }
+            if (colorChanged) {
+                for (index in colorCache.indices) {
+                    colorCache[index] = getColor(index)
+                }
+                colorCacheArray = colorCache
+                colorChanged = false
+            }
+            return colorCache
+        }
+
     }
 
     override var isShow by BooleanDelegate(this)

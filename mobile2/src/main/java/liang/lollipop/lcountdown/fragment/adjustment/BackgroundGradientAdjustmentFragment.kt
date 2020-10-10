@@ -21,7 +21,6 @@ import liang.lollipop.lcountdown.util.list.ListTouchHelper
 import liang.lollipop.lcountdown.util.list.MovableHolder
 import liang.lollipop.lcountdown.util.list.SwipeableHolder
 import liang.lollipop.lcountdown.util.toDip
-import liang.lollipop.lcountdown.view.CirclePointView
 import liang.lollipop.lcountdown.view.ShapeView
 
 /**

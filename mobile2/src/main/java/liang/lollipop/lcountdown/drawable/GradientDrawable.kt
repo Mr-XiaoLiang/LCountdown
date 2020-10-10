@@ -2,6 +2,7 @@ package liang.lollipop.lcountdown.drawable
 
 import android.graphics.*
 import android.graphics.drawable.Drawable
+import kotlin.math.abs
 import kotlin.math.asin
 import kotlin.math.sqrt
 
@@ -12,6 +13,10 @@ import kotlin.math.sqrt
  */
 class GradientDrawable: Drawable() {
 
+    companion object {
+        private const val TOLERANCE = 0.001F
+    }
+
     private val paint = Paint().apply {
         isAntiAlias = true
         isDither = true
@@ -19,6 +24,15 @@ class GradientDrawable: Drawable() {
     }
 
     var gradientType = Type.Linear
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            infoChanged = true
+        }
+
+    private var infoChanged = false
 
     private val startPoint = PointF()
 
@@ -26,7 +40,7 @@ class GradientDrawable: Drawable() {
 
     private val colorArray = ArrayList<Int>()
 
-    val colorSize: Int
+    private val colorSize: Int
         get() {
             return colorArray.size
         }
@@ -38,23 +52,53 @@ class GradientDrawable: Drawable() {
     private val tempRectF = RectF()
 
     fun changeColor(vararg colors: Int) {
-        colorArray.clear()
-        colors.forEach {
-            colorArray.add(it)
+        if (colors.size != colorArray.size) {
+            colorArray.clear()
+            colors.forEach {
+                colorArray.add(it)
+            }
+            infoChanged = true
+        } else {
+            for (index in colors.indices) {
+                if (colors[index] != colorArray[index]) {
+                    colorArray[index] = colors[index]
+                    infoChanged = true
+                }
+            }
         }
     }
 
     fun changeColor(colors: List<Int>) {
-        colorArray.clear()
-        colorArray.addAll(colors)
+        if (colors.size != colorArray.size) {
+            colorArray.clear()
+            colors.forEach {
+                colorArray.add(it)
+            }
+            infoChanged = true
+        } else {
+            for (index in colors.indices) {
+                if (colors[index] != colorArray[index]) {
+                    colorArray[index] = colors[index]
+                    infoChanged = true
+                }
+            }
+        }
     }
 
     fun changeStart(x: Float, y: Float) {
-        startPoint.set(x, y)
+        changePoint(startPoint, x, y)
     }
 
     fun changeEnd(x: Float, y: Float) {
-        endPoint.set(x, y)
+        changePoint(endPoint, x, y)
+    }
+
+    private fun changePoint(point: PointF, x: Float, y: Float) {
+        if (abs(point.x - x) > TOLERANCE
+                || abs(point.y - y) > TOLERANCE) {
+            point.set(x, y)
+            infoChanged = true
+        }
     }
 
     override fun draw(canvas: Canvas) {
@@ -71,11 +115,18 @@ class GradientDrawable: Drawable() {
     }
 
     fun setShape(path: Path?) {
-        this.path = path;
+        this.path = path
         invalidateSelf()
     }
 
     fun updateGradient() {
+        if (infoChanged) {
+            updateShader()
+        }
+        invalidateSelf()
+    }
+
+    private fun updateShader() {
         paint.shader = null
         if (bounds.isEmpty || colorSize < 2) {
             if (colorSize == 1) {
@@ -143,7 +194,7 @@ class GradientDrawable: Drawable() {
 
     override fun onBoundsChange(bounds: Rect?) {
         super.onBoundsChange(bounds)
-        updateGradient()
+        updateShader()
     }
 
     override fun setAlpha(alpha: Int) {

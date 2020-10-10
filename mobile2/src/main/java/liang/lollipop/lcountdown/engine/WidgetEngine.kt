@@ -13,8 +13,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.drawable.GradientDrawable
 import liang.lollipop.lcountdown.info.TextColor
 import liang.lollipop.lcountdown.info.WidgetInfo
+import liang.lollipop.lcountdown.provider.BackgroundColorProvider
 import liang.lollipop.lcountdown.util.toDip
 
 /**
@@ -46,7 +48,7 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
         widgetRoot.draw(canvas)
     }
 
-    fun update(widgetInfo: WidgetInfo) {
+    fun updateAll(widgetInfo: WidgetInfo) {
         updateCard(widgetInfo)
         updateBackground(widgetInfo)
         updateText(widgetInfo)
@@ -58,7 +60,7 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
                 widgetInfo.height.toDip(widgetRoot).toInt())
     }
 
-    private fun updateCard(widgetInfo: WidgetInfo) {
+    fun updateCard(widgetInfo: WidgetInfo) {
         var cardGroup: CardView? = find(R.id.widgetCard)
         if (cardGroup == null) {
             val card = findCardView()
@@ -94,29 +96,44 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
         cardGroup.layoutParams = cardLayoutParams
     }
 
-    private fun updateBackground(widgetInfo: WidgetInfo) {
+    fun updateBackground(widgetInfo: WidgetInfo) {
         var backgroundView: ImageView? = find(R.id.widgetBackground)
-        if (backgroundView == null) {
-            val background = findImageView()
-            background.id = R.id.widgetBackground
-            add(getCardGroup(), background)
-            backgroundView = background
+        if (widgetInfo.backgroundInfo.isShow) {
+            if (backgroundView == null) {
+                val background = findImageView()
+                background.id = R.id.widgetBackground
+                background.scaleType = ImageView.ScaleType.CENTER_CROP
+                add(getCardGroup(), background)
+                backgroundView = background
+            }
+            backgroundView.visibility = View.VISIBLE
+            matchParent(backgroundView)
+            updateBackgroundColor(backgroundView, widgetInfo)
+            updateBackgroundImage(backgroundView, widgetInfo)
+        } else {
+            backgroundView?.visibility = View.GONE
         }
-        matchParent(backgroundView)
-        updateBackgroundColor(backgroundView, widgetInfo)
-        updateBackgroundImage(backgroundView, widgetInfo)
     }
 
     private fun updateBackgroundColor(backgroundView: ImageView, widgetInfo: WidgetInfo) {
-
-        // TODO
+        var background = backgroundView.background
+        if (background == null || background !is GradientDrawable) {
+            background = GradientDrawable()
+            backgroundView.background = background
+        }
+        val backgroundInfo = widgetInfo.backgroundInfo
+        background.changeColor(*backgroundInfo.getColorArray())
+        background.changeStart(backgroundInfo.startX, backgroundInfo.startY)
+        background.changeEnd(backgroundInfo.endX, backgroundInfo.endY)
+        background.gradientType = backgroundInfo.gradientDrawableType
+        background.updateGradient()
     }
 
     private fun updateBackgroundImage(backgroundView: ImageView, widgetInfo: WidgetInfo) {
         // TODO
     }
 
-    private fun updateText(widgetInfo: WidgetInfo) {
+    fun updateText(widgetInfo: WidgetInfo) {
         val textInfoArray = widgetInfo.textInfoArray
         // 需要的文本数量
         val textCount = textInfoArray.textCount
@@ -206,12 +223,6 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
     private fun findCardView(): CardView {
         return findFromList(recyclerViews) {
             CardView(context)
-        }
-    }
-
-    private fun findFrameLayout(): FrameLayout {
-        return findFromList(recyclerViews) {
-            FrameLayout(context)
         }
     }
 

@@ -14,9 +14,10 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.drawable.GradientDrawable
+import liang.lollipop.lcountdown.info.BackgroundInfo
 import liang.lollipop.lcountdown.info.TextColor
+import liang.lollipop.lcountdown.info.TextInfoArray
 import liang.lollipop.lcountdown.info.WidgetInfo
-import liang.lollipop.lcountdown.provider.BackgroundColorProvider
 import liang.lollipop.lcountdown.util.toDip
 
 /**
@@ -49,9 +50,9 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
     }
 
     fun updateAll(widgetInfo: WidgetInfo) {
-        updateCard(widgetInfo)
-        updateBackground(widgetInfo)
-        updateText(widgetInfo)
+        updateCard(widgetInfo.backgroundInfo)
+        updateBackground(widgetInfo.backgroundInfo)
+        updateText(widgetInfo.textInfoArray)
         measure(widgetRoot,
                 widgetInfo.width.toDip(widgetRoot).toInt(),
                 widgetInfo.height.toDip(widgetRoot).toInt())
@@ -60,7 +61,7 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
                 widgetInfo.height.toDip(widgetRoot).toInt())
     }
 
-    fun updateCard(widgetInfo: WidgetInfo) {
+    fun updateCard(backgroundInfo: BackgroundInfo) {
         var cardGroup: CardView? = find(R.id.widgetCard)
         if (cardGroup == null) {
             val card = findCardView()
@@ -68,8 +69,6 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
             add(widgetRoot, card)
             cardGroup = card
         }
-        val backgroundInfo = widgetInfo.backgroundInfo
-
         val show = backgroundInfo.isShow
         if (show) {
             cardGroup.cardElevation = backgroundInfo.elevation.toDip(context)
@@ -96,9 +95,9 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
         cardGroup.layoutParams = cardLayoutParams
     }
 
-    fun updateBackground(widgetInfo: WidgetInfo) {
+    fun updateBackground(backgroundInfo: BackgroundInfo) {
         var backgroundView: ImageView? = find(R.id.widgetBackground)
-        if (widgetInfo.backgroundInfo.isShow) {
+        if (backgroundInfo.isShow) {
             if (backgroundView == null) {
                 val background = findImageView()
                 background.id = R.id.widgetBackground
@@ -108,20 +107,19 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
             }
             backgroundView.visibility = View.VISIBLE
             matchParent(backgroundView)
-            updateBackgroundColor(backgroundView, widgetInfo)
-            updateBackgroundImage(backgroundView, widgetInfo)
+            updateBackgroundColor(backgroundView, backgroundInfo)
+            updateBackgroundImage(backgroundView, backgroundInfo)
         } else {
             backgroundView?.visibility = View.GONE
         }
     }
 
-    private fun updateBackgroundColor(backgroundView: ImageView, widgetInfo: WidgetInfo) {
+    private fun updateBackgroundColor(backgroundView: ImageView, backgroundInfo: BackgroundInfo) {
         var background = backgroundView.background
         if (background == null || background !is GradientDrawable) {
             background = GradientDrawable()
             backgroundView.background = background
         }
-        val backgroundInfo = widgetInfo.backgroundInfo
         background.changeColor(*backgroundInfo.getColorArray())
         background.changeStart(backgroundInfo.startX, backgroundInfo.startY)
         background.changeEnd(backgroundInfo.endX, backgroundInfo.endY)
@@ -129,12 +127,11 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
         background.updateGradient()
     }
 
-    private fun updateBackgroundImage(backgroundView: ImageView, widgetInfo: WidgetInfo) {
+    private fun updateBackgroundImage(backgroundView: ImageView, backgroundInfo: BackgroundInfo) {
         // TODO
     }
 
-    fun updateText(widgetInfo: WidgetInfo) {
-        val textInfoArray = widgetInfo.textInfoArray
+    fun updateText(textInfoArray: TextInfoArray) {
         // 需要的文本数量
         val textCount = textInfoArray.textCount
         // 文本的容器

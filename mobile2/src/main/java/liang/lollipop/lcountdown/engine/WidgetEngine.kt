@@ -34,7 +34,11 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
 
     private val recyclerViews = ArrayList<View>()
 
-    private val textGroup: FrameLayout? = null
+    private var textGroup: FrameLayout? = null
+
+    private var cardGroup: CardView? = null
+
+    private var backgroundView: ImageView? = null
 
     override fun draw(canvas: Canvas) {
         widgetRoot.draw(canvas)
@@ -49,6 +53,9 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
     }
 
     private fun updateCard(widgetInfo: WidgetInfo) {
+        if (cardGroup == null) {
+//            cardGroup =
+        }
         // TODO
     }
 
@@ -148,8 +155,9 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
     }
 
     private fun getTextGroup(): FrameLayout {
-        if (textGroup != null) {
-            return textGroup
+        val group = textGroup
+        if (group != null) {
+            return group
         }
         val frameLayout = findFrameLayout()
         TODO("创建文本容器")
@@ -183,5 +191,15 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
             ImageView(context)
         }
     }
+
+    private inline fun <reified T: View> find(id: Int): T? {
+        try {
+            return widgetRoot.findViewById(id)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
 
 }

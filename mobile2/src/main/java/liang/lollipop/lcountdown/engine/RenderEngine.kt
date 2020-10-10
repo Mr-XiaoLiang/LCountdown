@@ -67,6 +67,18 @@ abstract class RenderEngine {
         view.layoutParams = layoutParams
     }
 
+    protected fun changeMarginIfDiff(layoutParams: ViewGroup.MarginLayoutParams,
+                                     left: Int, top: Int, right: Int, bottom: Int): Boolean {
+        if (layoutParams.leftMargin != left ||
+                layoutParams.topMargin != top ||
+                layoutParams.rightMargin != right ||
+                layoutParams.bottomMargin != bottom) {
+            layoutParams.setMargins(left, top, right, bottom)
+            return true
+        }
+        return false
+    }
+
     protected fun findFrameLayoutParams(view: View): FrameLayout.LayoutParams {
         var layoutParams = view.layoutParams
         if (layoutParams is FrameLayout.LayoutParams) {

@@ -32,7 +32,7 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
         fun create(context: Context): WidgetEngine {
             return WidgetEngine(FrameLayout(context))
         }
-
+        private const val TOLERANCE = 0.001F
     }
 
     private val context = widgetRoot.context
@@ -72,29 +72,39 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
             cardGroup = card
         }
         val show = backgroundInfo.isShow
+        val elevation: Float
+        val corner: Float
         if (show) {
-            cardGroup.cardElevation = backgroundInfo.elevation.toDip(context)
-            cardGroup.radius = backgroundInfo.corner.toDip(context)
+            elevation = backgroundInfo.elevation.toDip(context)
+            corner = backgroundInfo.corner.toDip(context)
             cardGroup.setCardBackgroundColor(Color.WHITE)
         } else {
-            cardGroup.cardElevation = 0F
-            cardGroup.radius = 0F
+            elevation = 0F
+            corner = 0F
             cardGroup.setCardBackgroundColor(Color.TRANSPARENT)
+        }
+        if (abs(cardGroup.cardElevation - elevation) > TOLERANCE) {
+            cardGroup.cardElevation = elevation
+        }
+        if (abs(cardGroup.radius - corner) > TOLERANCE) {
+            cardGroup.radius = corner
         }
 
         matchParent(cardGroup)
         val cardLayoutParams = findFrameLayoutParams(cardGroup)
-        if (show) {
-            cardLayoutParams.setMargins(
+        val layoutChanged = if (show) {
+            changeMarginIfDiff(cardLayoutParams,
                     backgroundInfo.marginLeft.toDip(cardGroup).toInt(),
                     backgroundInfo.marginTop.toDip(cardGroup).toInt(),
                     backgroundInfo.marginRight.toDip(cardGroup).toInt(),
-                    backgroundInfo.marginBottom.toDip(cardGroup).toInt(),
-            )
+                    backgroundInfo.marginBottom.toDip(cardGroup).toInt())
         } else {
-            cardLayoutParams.setMargins(0, 0, 0, 0)
+            changeMarginIfDiff(cardLayoutParams,
+                    0, 0, 0, 0)
         }
-        cardGroup.layoutParams = cardLayoutParams
+        if (layoutChanged) {
+            cardGroup.layoutParams = cardLayoutParams
+        }
     }
 
     fun updateBackground(backgroundInfo: BackgroundInfo) {
@@ -176,13 +186,9 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
             }
             // 判定是否参数发生了变化，如果没有发生变化，
             // 那么可以一定程度的减少重新布局带来的消耗
-            if (layoutParams.leftMargin != left ||
-                    layoutParams.topMargin != top ||
-                    layoutParams.rightMargin != right ||
-                    layoutParams.bottomMargin != bottom ||
-                    layoutParams.gravity != gravity) {
+            if (changeMarginIfDiff(layoutParams, left, top, right, bottom)
+                    || layoutParams.gravity != gravity) {
                 layoutParams.gravity = gravity
-                layoutParams.setMargins(left, top, right, bottom)
                 textView.layoutParams = layoutParams
             }
 
@@ -192,7 +198,7 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
             val fontSize = textInfoArray.getFontSize(index).toSp(textView)
             // 在这里，计算差值，是为了避免浮点计算造成的公差，
             // 同时，认为小于千分之一的修改不生效
-            if (abs(fontSize - textView.textSize) > 0.001) {
+            if (abs(fontSize - textView.textSize) > TOLERANCE) {
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textInfoArray.getFontSize(index))
             }
         }

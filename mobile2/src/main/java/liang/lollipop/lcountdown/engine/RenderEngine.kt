@@ -4,6 +4,8 @@ import android.graphics.Canvas
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewManager
+import android.widget.FrameLayout
+import java.lang.RuntimeException
 
 /**
  * @author lollipop
@@ -56,5 +58,27 @@ abstract class RenderEngine {
         }
         return create()
     }
+
+
+    protected fun matchParent(view: View) {
+        val layoutParams = view.layoutParams
+        layoutParams.width = FrameLayout.LayoutParams.MATCH_PARENT
+        layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
+        view.layoutParams = layoutParams
+    }
+
+    protected fun findFrameLayoutParams(view: View): FrameLayout.LayoutParams {
+        var layoutParams = view.layoutParams
+        if (layoutParams is FrameLayout.LayoutParams) {
+            return layoutParams
+        }
+        layoutParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT)
+        view.layoutParams = layoutParams
+        return layoutParams
+    }
+
+    class EngineException(msg: String, e: Throwable? = null): RuntimeException(msg, e)
 
 }

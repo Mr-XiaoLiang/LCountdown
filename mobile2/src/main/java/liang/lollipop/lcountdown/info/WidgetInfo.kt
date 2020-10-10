@@ -22,12 +22,24 @@ class WidgetInfo: JsonInfo(), TimeInfoProvider {
     /**
      * 宽度
      */
-    var width: Int by IntDelegate(this, -1)
+    var width: Float
+        get() {
+            return backgroundInfo.width
+        }
+        set(value) {
+            backgroundInfo.width = value
+        }
 
     /**
      * 宽度
      */
-    var height: Int by IntDelegate(this, -1)
+    var height: Float
+        get() {
+            return backgroundInfo.height
+        }
+        set(value) {
+            backgroundInfo.height = value
+        }
 
     /**
      * 左边距

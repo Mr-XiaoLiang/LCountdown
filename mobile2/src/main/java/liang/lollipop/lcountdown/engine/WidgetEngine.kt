@@ -8,13 +8,14 @@ import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.util.TypedValue
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.info.TextColor
 import liang.lollipop.lcountdown.info.WidgetInfo
+import liang.lollipop.lcountdown.util.toDip
 
 /**
  * @author lollipop
@@ -26,6 +27,7 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
         fun create(context: Context): WidgetEngine {
             return WidgetEngine(FrameLayout(context))
         }
+
     }
 
     private val context = widgetRoot.context
@@ -34,11 +36,11 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
 
     private val recyclerViews = ArrayList<View>()
 
-    private var textGroup: FrameLayout? = null
-
-    private var cardGroup: CardView? = null
-
-    private var backgroundView: ImageView? = null
+    private val textViewCreator: () -> TextView by lazy {
+        {
+            TextView(context)
+        }
+    }
 
     override fun draw(canvas: Canvas) {
         widgetRoot.draw(canvas)
@@ -48,27 +50,69 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
         updateCard(widgetInfo)
         updateBackground(widgetInfo)
         updateText(widgetInfo)
-        measure(widgetRoot, widgetInfo.width, widgetInfo.height)
-        layout(widgetRoot, widgetInfo.width, widgetInfo.height)
+        measure(widgetRoot,
+                widgetInfo.width.toDip(widgetRoot).toInt(),
+                widgetInfo.height.toDip(widgetRoot).toInt())
+        layout(widgetRoot,
+                widgetInfo.width.toDip(widgetRoot).toInt(),
+                widgetInfo.height.toDip(widgetRoot).toInt())
     }
 
     private fun updateCard(widgetInfo: WidgetInfo) {
+        var cardGroup: CardView? = find(R.id.widgetCard)
         if (cardGroup == null) {
-//            cardGroup =
+            val card = findCardView()
+            card.id = R.id.widgetCard
+            add(widgetRoot, card)
+            cardGroup = card
         }
-        // TODO
+        val backgroundInfo = widgetInfo.backgroundInfo
+
+        val show = backgroundInfo.isShow
+        if (show) {
+            cardGroup.cardElevation = backgroundInfo.elevation.toDip(context)
+            cardGroup.radius = backgroundInfo.corner.toDip(context)
+            cardGroup.setCardBackgroundColor(Color.WHITE)
+        } else {
+            cardGroup.cardElevation = 0F
+            cardGroup.radius = 0F
+            cardGroup.setCardBackgroundColor(Color.TRANSPARENT)
+        }
+
+        matchParent(cardGroup)
+        val cardLayoutParams = findFrameLayoutParams(cardGroup)
+        if (show) {
+            cardLayoutParams.setMargins(
+                    backgroundInfo.marginLeft.toDip(cardGroup).toInt(),
+                    backgroundInfo.marginTop.toDip(cardGroup).toInt(),
+                    backgroundInfo.marginRight.toDip(cardGroup).toInt(),
+                    backgroundInfo.marginBottom.toDip(cardGroup).toInt(),
+            )
+        } else {
+            cardLayoutParams.setMargins(0, 0, 0, 0)
+        }
+        cardGroup.layoutParams = cardLayoutParams
     }
 
     private fun updateBackground(widgetInfo: WidgetInfo) {
-        updateBackgroundColor(widgetInfo)
-        updateBackgroundImage(widgetInfo)
+        var backgroundView: ImageView? = find(R.id.widgetBackground)
+        if (backgroundView == null) {
+            val background = findImageView()
+            background.id = R.id.widgetBackground
+            add(getCardGroup(), background)
+            backgroundView = background
+        }
+        matchParent(backgroundView)
+        updateBackgroundColor(backgroundView, widgetInfo)
+        updateBackgroundImage(backgroundView, widgetInfo)
     }
 
-    private fun updateBackgroundColor(widgetInfo: WidgetInfo) {
+    private fun updateBackgroundColor(backgroundView: ImageView, widgetInfo: WidgetInfo) {
+
         // TODO
     }
 
-    private fun updateBackgroundImage(widgetInfo: WidgetInfo) {
+    private fun updateBackgroundImage(backgroundView: ImageView, widgetInfo: WidgetInfo) {
         // TODO
     }
 
@@ -142,25 +186,12 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
         this.text = builder
     }
 
-    private fun findFrameLayoutParams(view: View): FrameLayout.LayoutParams {
-        var layoutParams = view.layoutParams
-        if (layoutParams is FrameLayout.LayoutParams) {
-            return layoutParams
-        }
-        layoutParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT)
-        view.layoutParams = layoutParams
-        return layoutParams
+    private fun getTextGroup(): FrameLayout {
+        return getCardGroup()
     }
 
-    private fun getTextGroup(): FrameLayout {
-        val group = textGroup
-        if (group != null) {
-            return group
-        }
-        val frameLayout = findFrameLayout()
-        TODO("创建文本容器")
+    private fun getCardGroup(): CardView {
+        return find(R.id.widgetCard)?:throw EngineException("Widget card not found")
     }
 
     private fun recycler(view: View) {
@@ -169,9 +200,7 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
     }
 
     private fun findTextView(): TextView {
-        return findFromList(recyclerViews) {
-            TextView(context)
-        }
+        return findFromList(recyclerViews, textViewCreator)
     }
 
     private fun findCardView(): CardView {

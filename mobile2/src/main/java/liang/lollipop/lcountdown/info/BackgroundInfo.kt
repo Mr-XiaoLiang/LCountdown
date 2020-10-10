@@ -66,25 +66,25 @@ class BackgroundInfo: JsonInfo(), BackgroundColorProvider, BackgroundCardProvide
      */
     var imagePath: String by StringDelegate(this)
 
-    /**
-     * 左上角的圆角
-     */
-    var cornerLeftTop: Float by FloatDelegate(this)
-
-    /**
-     * 右上角的圆角
-     */
-    var cornerRightTop: Float by FloatDelegate(this)
-
-    /**
-     * 左下角的圆角
-     */
-    var cornerLeftBottom: Float by FloatDelegate(this)
-
-    /**
-     * 右下角的圆角
-     */
-    var cornerRightBottom: Float by FloatDelegate(this)
+//    /**
+//     * 左上角的圆角
+//     */
+//    var cornerLeftTop: Float by FloatDelegate(this)
+//
+//    /**
+//     * 右上角的圆角
+//     */
+//    var cornerRightTop: Float by FloatDelegate(this)
+//
+//    /**
+//     * 左下角的圆角
+//     */
+//    var cornerLeftBottom: Float by FloatDelegate(this)
+//
+//    /**
+//     * 右下角的圆角
+//     */
+//    var cornerRightBottom: Float by FloatDelegate(this)
 
     private class ColorJsonArray: JsonArrayInfo() {
         val colorCount: Int

@@ -19,6 +19,8 @@ import liang.lollipop.lcountdown.info.TextColor
 import liang.lollipop.lcountdown.info.TextInfoArray
 import liang.lollipop.lcountdown.info.WidgetInfo
 import liang.lollipop.lcountdown.util.toDip
+import liang.lollipop.lcountdown.util.toSp
+import kotlin.math.abs
 
 /**
  * @author lollipop
@@ -155,7 +157,7 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
             val textView = textViews[index]
             // 寻找或创建LayoutParams
             val layoutParams = findFrameLayoutParams(textView)
-            layoutParams.gravity = textInfoArray.getGravity(index)
+            val gravity = textInfoArray.getGravity(index)
             val offsetX = textInfoArray.getOffsetX(index)
             val offsetY = textInfoArray.getOffsetY(index)
             var left = 0
@@ -172,11 +174,27 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
             } else {
                 bottom = (offsetY * offsetStepY).toInt()
             }
-            layoutParams.setMargins(left, top, right, bottom)
-            textView.layoutParams = layoutParams
+            // 判定是否参数发生了变化，如果没有发生变化，
+            // 那么可以一定程度的减少重新布局带来的消耗
+            if (layoutParams.leftMargin != left ||
+                    layoutParams.topMargin != top ||
+                    layoutParams.rightMargin != right ||
+                    layoutParams.bottomMargin != bottom ||
+                    layoutParams.gravity != gravity) {
+                layoutParams.gravity = gravity
+                layoutParams.setMargins(left, top, right, bottom)
+                textView.layoutParams = layoutParams
+            }
 
-            textView.tintText(textInfoArray.getFontColor(index), textInfoArray.getText(index))
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textInfoArray.getFontSize(index))
+            textView.tintText(textInfoArray.getFontColor(index),
+                    formatInfo(textInfoArray.getText(index)))
+            // 如果字体大小没有发生变化，那么不做修改，这可以避免引发不必要的重新布局
+            val fontSize = textInfoArray.getFontSize(index).toSp(textView)
+            // 在这里，计算差值，是为了避免浮点计算造成的公差，
+            // 同时，认为小于千分之一的修改不生效
+            if (abs(fontSize - textView.textSize) > 0.001) {
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textInfoArray.getFontSize(index))
+            }
         }
     }
 
@@ -198,6 +216,11 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
                     tint.start, tint.start + tint.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         this.text = builder
+    }
+
+    private fun formatInfo(value: String): String {
+        // TODO
+        return value
     }
 
     private fun getTextGroup(): FrameLayout {

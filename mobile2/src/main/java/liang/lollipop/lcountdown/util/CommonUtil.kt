@@ -213,8 +213,18 @@ fun Float.toDip(context: Context): Float {
             context.resources.displayMetrics)
 }
 
+fun Float.toSp(context: Context): Float {
+    return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP, this,
+            context.resources.displayMetrics)
+}
+
 fun Float.toDip(view: View): Float {
     return this.toDip(view.context)
+}
+
+fun Float.toSp(view: View): Float {
+    return this.toSp(view.context)
 }
 
 fun Int.toDip(view: View): Float {

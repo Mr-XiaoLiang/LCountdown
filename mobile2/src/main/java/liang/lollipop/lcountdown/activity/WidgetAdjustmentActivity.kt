@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import kotlinx.android.synthetic.main.activity_widget_adjustment.*
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.engine.WidgetEngine
 import liang.lollipop.lcountdown.fragment.adjustment.*
 import liang.lollipop.lcountdown.info.BackgroundInfo
 import liang.lollipop.lcountdown.info.TextColor
@@ -60,11 +61,19 @@ class WidgetAdjustmentActivity : BaseActivity(),
             return widgetInfo.backgroundInfo
         }
 
+    private var widgetEngine: WidgetEngine? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_widget_adjustment)
         initRootGroup(rootGroup)
         initView()
+        initData()
+    }
+
+    private fun initData() {
+        // TODO("update widget info")
+        widgetEngine?.updateAll(widgetInfo)
     }
 
     private fun initView() {
@@ -106,6 +115,8 @@ class WidgetAdjustmentActivity : BaseActivity(),
             }
             build.setupWithViewPager(panelPager)
         }
+
+        widgetEngine = WidgetEngine(widgetFrame)
     }
 
     override fun onInsetsChange(root: View, left: Int, top: Int, right: Int, bottom: Int) {
@@ -121,6 +132,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
     override fun onDestroy() {
         super.onDestroy()
         bottomSheetHelper?.destroy()
+        widgetEngine = null
     }
 
     @SuppressLint("WrongConstant")
@@ -152,7 +164,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
     }
 
     override fun onTextInfoChange() {
-        // TODO("Not yet implemented")
+        widgetEngine?.updateText(textInfoArray)
     }
 
     override fun getFontSizeProvider(): FontSizeProvider {
@@ -160,7 +172,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
     }
 
     override fun onFontSizeChange(index: Int, fontSize: Float) {
-        // TODO("Not yet implemented")
+        widgetEngine?.updateText(textInfoArray)
     }
 
     override fun getFontColorProvider(): FontColorProvider {
@@ -168,11 +180,11 @@ class WidgetAdjustmentActivity : BaseActivity(),
     }
 
     override fun onFontColorChange(index: Int, fontColor: TextColor) {
-        // TODO("Not yet implemented")
+        widgetEngine?.updateText(textInfoArray)
     }
 
     override fun onBackgroundColorChange() {
-        // TODO("Not yet implemented")
+        widgetEngine?.updateBackground(backgroundInfo)
     }
 
     override fun getBackgroundColorProvider(): BackgroundColorProvider {
@@ -180,7 +192,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
     }
 
     override fun onBackgroundCardChange() {
-        // TODO("Not yet implemented")
+        widgetEngine?.updateCard(backgroundInfo)
     }
 
     override fun getBackgroundCardProvider(): BackgroundCardProvider {
@@ -192,7 +204,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
     }
 
     override fun onTextLocationChange(index: Int) {
-        // TODO("Not yet implemented")
+        widgetEngine?.updateText(textInfoArray)
     }
 
     override fun getTimeInfoProvider(): TimeInfoProvider {
@@ -200,7 +212,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
     }
 
     override fun onTimeInfoChange() {
-        // TODO("Not yet implemented")
+        widgetEngine?.updateText(textInfoArray)
     }
 
 }

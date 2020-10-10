@@ -31,7 +31,6 @@
             android:layout_marginRight="20dp"
             android:layout_width="match_parent"
             android:layout_height="200dp">
-            <include layout="@layout/widget_panel"/>
         </FrameLayout>
 
         <LinearLayout

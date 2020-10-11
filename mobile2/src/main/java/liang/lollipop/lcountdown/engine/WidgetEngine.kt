@@ -12,7 +12,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import com.bumptech.glide.Glide
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.drawable.GradientDrawable
 import liang.lollipop.lcountdown.info.BackgroundInfo

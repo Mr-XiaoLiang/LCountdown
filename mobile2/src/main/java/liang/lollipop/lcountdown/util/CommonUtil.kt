@@ -14,8 +14,10 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
+import com.bumptech.glide.Glide
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -350,4 +352,8 @@ fun Int.range(min: Int, max: Int): Int {
         return max
     }
     return this
+}
+
+fun ImageView.load(url: String) {
+    Glide.with(this).load(url).into(this)
 }

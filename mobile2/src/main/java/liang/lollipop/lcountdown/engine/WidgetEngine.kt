@@ -12,12 +12,14 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import com.bumptech.glide.Glide
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.drawable.GradientDrawable
 import liang.lollipop.lcountdown.info.BackgroundInfo
 import liang.lollipop.lcountdown.info.TextColor
 import liang.lollipop.lcountdown.info.TextInfoArray
 import liang.lollipop.lcountdown.info.WidgetInfo
+import liang.lollipop.lcountdown.util.load
 import liang.lollipop.lcountdown.util.toDip
 import liang.lollipop.lcountdown.util.toSp
 import kotlin.math.abs
@@ -140,7 +142,7 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
     }
 
     private fun updateBackgroundImage(backgroundView: ImageView, backgroundInfo: BackgroundInfo) {
-        // TODO
+        backgroundView.load(backgroundInfo.imagePath)
     }
 
     fun updateText(textInfoArray: TextInfoArray) {

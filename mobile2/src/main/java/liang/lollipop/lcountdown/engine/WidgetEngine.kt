@@ -226,7 +226,7 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
     }
 
     private fun formatInfo(value: String): String {
-        // TODO
+        // TODO nothing update
         return value
     }
 

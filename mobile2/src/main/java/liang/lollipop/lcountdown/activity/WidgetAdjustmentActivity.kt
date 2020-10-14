@@ -1,7 +1,9 @@
 package liang.lollipop.lcountdown.activity
 
 import android.annotation.SuppressLint
+import android.appwidget.AppWidgetManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -35,6 +37,17 @@ class WidgetAdjustmentActivity : BaseActivity(),
         BackgroundGradientAdjustmentFragment.Callback,
         CardAdjustmentFragment.Callback {
 
+    companion object {
+
+        private const val ARG_SHOW = "ARG_SHOW"
+
+        fun createIntent(context: Context): Intent {
+            return Intent(context, WidgetAdjustmentActivity::class.java).apply {
+                putExtra(ARG_SHOW, 1)
+            }
+        }
+    }
+
     private var bottomSheetHelper: BottomSheetHelper? = null
 
     private val fragments: Array<BaseAdjustmentFragment> = arrayOf(
@@ -67,18 +80,26 @@ class WidgetAdjustmentActivity : BaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_widget_adjustment)
         initRootGroup(rootGroup)
-        initView()
         initData()
+        initView()
     }
 
     private fun initData() {
+        widgetInfo.widgetId = intent.getIntExtra(
+                AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID)
+        val isCreateModel = intent.getIntExtra(ARG_SHOW, 0) < 1
+        if (isCreateModel) {
+            bottomSheetHelper?.show(false)
+        } else {
+            bottomSheetHelper?.hide(false)
+        }
         // TODO("update widget info")
         widgetEngine?.updateAll(widgetInfo)
     }
 
     private fun initView() {
         bottomSheetHelper = BottomSheetHelper(sheetPanel, panelGrip, widgetFrame, sheetContent)
-        bottomSheetHelper?.show(false)
         panelGrip.setOnClickListener {
             bottomSheetHelper?.changeStatus()
         }

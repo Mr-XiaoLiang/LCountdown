@@ -40,10 +40,14 @@ class WidgetAdjustmentActivity : BaseActivity(),
     companion object {
 
         private const val ARG_SHOW = "ARG_SHOW"
+        private const val ARG_WIDGET_ID = AppWidgetManager.EXTRA_APPWIDGET_ID
 
-        fun createIntent(context: Context): Intent {
+        private const val INVALID_ID = AppWidgetManager.INVALID_APPWIDGET_ID
+
+        fun createIntent(context: Context, id: Int): Intent {
             return Intent(context, WidgetAdjustmentActivity::class.java).apply {
                 putExtra(ARG_SHOW, 1)
+                putExtra(ARG_WIDGET_ID, id)
             }
         }
     }
@@ -86,8 +90,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
 
     private fun initData() {
         widgetInfo.widgetId = intent.getIntExtra(
-                AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID)
+                ARG_WIDGET_ID, INVALID_ID)
         val isCreateModel = intent.getIntExtra(ARG_SHOW, 0) < 1
         if (isCreateModel) {
             bottomSheetHelper?.show(false)

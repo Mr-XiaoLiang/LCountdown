@@ -1,13 +1,27 @@
 package liang.lollipop.lcountdown.info
 
+import android.content.Context
+import android.view.Gravity
+import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.provider.TimeInfoProvider
+import org.json.JSONObject
 
 /**
  * @author lollipop
  * @date 2020/5/26 23:34
  * 小部件的描述信息
  */
-class WidgetInfo: JsonInfo(), TimeInfoProvider {
+class WidgetInfo(obj: JSONObject = JSONObject()): JsonInfo(obj), TimeInfoProvider {
+
+    companion object {
+        fun createBy(info: String): WidgetInfo {
+            return try {
+                WidgetInfo(JSONObject(info))
+            } catch (e: Throwable) {
+                WidgetInfo()
+            }
+        }
+    }
 
     /**
      * 小部件的ID
@@ -94,6 +108,17 @@ class WidgetInfo: JsonInfo(), TimeInfoProvider {
      */
     val textInfoArray: TextInfoArray by JsonArrayDelegate(this) {
         it.convertTo()
+    }
+
+    /**
+     * 初始化为默认值
+     */
+    fun initWithDefault(context: Context) {
+        limitTime = -1
+        targetTime = System.currentTimeMillis()
+        isCountdown = true
+        textInfoArray.addText(context.getString(R.string.app_name))
+        textInfoArray.setGravity(0, Gravity.CENTER)
     }
 
 }

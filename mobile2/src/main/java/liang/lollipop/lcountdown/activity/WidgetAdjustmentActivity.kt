@@ -19,9 +19,7 @@ import liang.lollipop.lcountdown.info.TextColor
 import liang.lollipop.lcountdown.info.TextInfoArray
 import liang.lollipop.lcountdown.info.WidgetInfo
 import liang.lollipop.lcountdown.provider.*
-import liang.lollipop.lcountdown.util.BottomSheetHelper
-import liang.lollipop.lcountdown.util.toDip
-import liang.lollipop.lcountdown.util.zeroTo
+import liang.lollipop.lcountdown.util.*
 import liang.lollipop.ltabview.LTabHelper
 import liang.lollipop.ltabview.LTabView
 
@@ -41,7 +39,6 @@ class WidgetAdjustmentActivity : BaseActivity(),
 
         private const val ARG_SHOW = "ARG_SHOW"
         private const val ARG_WIDGET_ID = AppWidgetManager.EXTRA_APPWIDGET_ID
-
         private const val INVALID_ID = AppWidgetManager.INVALID_APPWIDGET_ID
 
         fun createIntent(context: Context, id: Int): Intent {
@@ -94,11 +91,20 @@ class WidgetAdjustmentActivity : BaseActivity(),
         val isCreateModel = intent.getIntExtra(ARG_SHOW, 0) < 1
         if (isCreateModel) {
             bottomSheetHelper?.show(false)
+            widgetInfo.initWithDefault(this)
+            widgetEngine?.updateAll(widgetInfo)
         } else {
             bottomSheetHelper?.hide(false)
+            doAsync {
+                WidgetDBUtil.read(this).run {
+                    find(widgetInfo)
+                    close()
+                }
+                onUI {
+                    widgetEngine?.updateAll(widgetInfo)
+                }
+            }
         }
-        // TODO("update widget info")
-        widgetEngine?.updateAll(widgetInfo)
     }
 
     private fun initView() {
@@ -125,7 +131,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
                 val selectedColor = ContextCompat.getColor(
                         this@WidgetAdjustmentActivity, fragment.colorId)
                 val title = getString(fragment.title)
-                val icon = getDrawable(fragment.icon)
+                val icon = ContextCompat.getDrawable(this, fragment.icon)
                 if (icon != null) {
                     build.addItem {
                         this.text = title

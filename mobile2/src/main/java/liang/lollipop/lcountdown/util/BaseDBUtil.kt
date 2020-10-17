@@ -33,7 +33,7 @@ abstract class BaseDBUtil<T: JsonInfo> (context: Context, dbName: String, dbVers
 
     abstract val createSql: String
 
-    class SqlDB<T: JsonInfo> constructor(
+    open class SqlDB<T: JsonInfo> constructor(
             private var databaseHelper: BaseDBUtil<T>?,
             private val tableProvider: TableProvider<T>,
             isWritable: Boolean) {
@@ -48,7 +48,7 @@ abstract class BaseDBUtil<T: JsonInfo> (context: Context, dbName: String, dbVers
             }
         }
 
-        private fun getSqLiteDatabase(): SQLiteDatabase {
+        protected fun getSqLiteDatabase(): SQLiteDatabase {
             if (sqLiteDatabase == null) {
                 throw RuntimeException("SQLiteDatabase was close")
             }

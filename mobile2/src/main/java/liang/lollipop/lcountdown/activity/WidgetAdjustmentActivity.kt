@@ -39,12 +39,13 @@ class WidgetAdjustmentActivity : BaseActivity(),
 
         private const val ARG_SHOW = "ARG_SHOW"
         private const val ARG_WIDGET_ID = AppWidgetManager.EXTRA_APPWIDGET_ID
+        private const val ARG_ID = "id"
         private const val INVALID_ID = AppWidgetManager.INVALID_APPWIDGET_ID
 
         fun createIntent(context: Context, id: Int): Intent {
             return Intent(context, WidgetAdjustmentActivity::class.java).apply {
-                putExtra(ARG_SHOW, 1)
-                putExtra(ARG_WIDGET_ID, id)
+                putExtra(ARG_SHOW, if (id == INVALID_ID) { 0 }  else { 1 } )
+                putExtra(ARG_ID, id)
             }
         }
     }
@@ -88,6 +89,8 @@ class WidgetAdjustmentActivity : BaseActivity(),
     private fun initData() {
         widgetInfo.widgetId = intent.getIntExtra(
                 ARG_WIDGET_ID, INVALID_ID)
+        widgetInfo.id = intent.getIntExtra(
+                ARG_ID, INVALID_ID)
         val isCreateModel = intent.getIntExtra(ARG_SHOW, 0) < 1
         if (isCreateModel) {
             bottomSheetHelper?.show(false)
@@ -97,7 +100,17 @@ class WidgetAdjustmentActivity : BaseActivity(),
             bottomSheetHelper?.hide(false)
             doAsync {
                 WidgetDBUtil.read(this).run {
-                    find(widgetInfo)
+                    when {
+                        widgetInfo.id != INVALID_ID -> {
+                            find(widgetInfo)
+                        }
+                        widgetInfo.widgetId != INVALID_ID -> {
+                            findByWidgetId(widgetInfo)
+                        }
+                        else -> {
+                            widgetInfo.initWithDefault(this@WidgetAdjustmentActivity)
+                        }
+                    }
                     close()
                 }
                 onUI {

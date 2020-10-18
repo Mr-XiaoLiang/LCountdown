@@ -1,8 +1,9 @@
 package liang.lollipop.lcountdown.util
 
-import android.text.TextUtils
 import liang.lollipop.lcountdown.info.WidgetInfo
 import liang.lollipop.lcountdown.provider.TimeInfoProvider
+import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * @author lollipop
@@ -17,14 +18,14 @@ class InfoStuffHelper {
     private val cacheMap = HashMap<String, String>()
 
     /**
-     * 当前时间
+     * 日历类
      */
-    private var now = System.currentTimeMillis()
+    private val calendar = Calendar.getInstance()
 
     /**
      * 目标时间
      */
-    private var targetTime = now
+    private var targetTime = System.currentTimeMillis()
 
     /**
      * 约束时间
@@ -58,7 +59,7 @@ class InfoStuffHelper {
      * 清除缓存
      */
     fun updateTime() {
-        now = System.currentTimeMillis()
+        calendar.timeInMillis = System.currentTimeMillis()
         cacheMap.clear()
     }
 

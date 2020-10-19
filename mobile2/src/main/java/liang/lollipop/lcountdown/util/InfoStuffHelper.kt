@@ -23,9 +23,14 @@ class InfoStuffHelper {
     private val calendar = Calendar.getInstance()
 
     /**
+     * 当前时间
+     */
+    private var now = System.currentTimeMillis()
+
+    /**
      * 目标时间
      */
-    private var targetTime = System.currentTimeMillis()
+    private var targetTime = now
 
     /**
      * 约束时间
@@ -59,12 +64,12 @@ class InfoStuffHelper {
      * 清除缓存
      */
     fun updateTime() {
-        calendar.timeInMillis = System.currentTimeMillis()
+        now = System.currentTimeMillis()
         cacheMap.clear()
     }
 
     fun stuff(value: String): String {
-
+        // TODO
         return value
     }
 

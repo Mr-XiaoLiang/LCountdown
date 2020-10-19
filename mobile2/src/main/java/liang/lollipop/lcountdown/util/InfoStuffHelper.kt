@@ -12,6 +12,15 @@ import kotlin.collections.HashMap
  */
 class InfoStuffHelper {
 
+    companion object {
+        private const val ONE_SECOND = 1000L
+        private const val ONE_MINUTE = ONE_SECOND * 60
+        private const val ONE_HOUR = ONE_MINUTE * 60
+        private const val ONE_DAY = ONE_HOUR * 24
+
+        private const val INVALID_TIME = -1L
+    }
+
     /**
      * 缓存集合
      */
@@ -35,7 +44,7 @@ class InfoStuffHelper {
     /**
      * 约束时间
      */
-    private var limitTime = -1L
+    private var limitTime = INVALID_TIME
 
     /**
      * 是否是倒计时的形式
@@ -82,7 +91,7 @@ class InfoStuffHelper {
             return cacheMap[key] ?: ""
         }
         val value = when(key) {
-            TextFormat.KEY_DAYS -> { "" }
+            TextFormat.KEY_DAYS -> { getDays() }
             TextFormat.KEY_DAY_OF_MONTH -> { "" }
             TextFormat.KEY_DAY_OF_YEAR -> { "" }
             TextFormat.KEY_DAY_OF_WEEK -> { "" }
@@ -113,5 +122,28 @@ class InfoStuffHelper {
         cacheMap[key] = value
         return value
     }
+
+    /**
+     * 获取目标时间到现在的天数
+     */
+    private fun getDays(): String {
+        val zone = timeZone
+        val targetDay = (targetTime + zone) / ONE_DAY
+        val nowDay = if (limitTime == INVALID_TIME) {
+            (now + zone) / ONE_DAY
+        } else {
+            (limitTime + zone) / ONE_DAY
+        }
+        return if (isCountdown) {
+            "${targetDay - nowDay}"
+        } else {
+            "${nowDay - targetDay}"
+        }
+    }
+
+    private val timeZone: Int
+        get() {
+            return calendar.timeZone.rawOffset
+        }
 
 }

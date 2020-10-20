@@ -93,8 +93,8 @@ class InfoStuffHelper {
             return cacheMap[key] ?: ""
         }
         val value = when(key) {
-            TextFormat.KEY_DAYS -> { getDays() }
-            TextFormat.KEY_DAY_OF_MONTH -> { getDayOfMonth() }
+            TextFormat.KEY_DAYS -> { "" }
+            TextFormat.KEY_DAY_OF_MONTH -> { "" }
             TextFormat.KEY_DAY_OF_YEAR -> { "" }
             TextFormat.KEY_DAY_OF_WEEK -> { "" }
             TextFormat.KEY_DAY_WITH_MONTH -> { "" }
@@ -117,6 +117,14 @@ class InfoStuffHelper {
             TextFormat.KEY_MINUTE_FULL -> { "" }
             TextFormat.KEY_TIME_CHINA -> { "" }
             TextFormat.KEY_TIME_ENGLISH -> { "" }
+            TextFormat.KEY_COUNTDOWN_DAYS -> { getCountdownDays() }
+            TextFormat.KEY_COUNTDOWN_DAY_OF_MONTH -> { getCountdownDayOfMonth() }
+            TextFormat.KEY_COUNTDOWN_DAY_OF_YEAR -> { "" }
+            TextFormat.KEY_COUNTDOWN_DAY_OF_WEEK -> { "" }
+            TextFormat.KEY_COUNTDOWN_HOUR -> { "" }
+            TextFormat.KEY_COUNTDOWN_HOUR_FULL -> { "" }
+            TextFormat.KEY_COUNTDOWN_MINUTE -> { "" }
+            TextFormat.KEY_COUNTDOWN_MINUTE_FULL -> { "" }
             else -> {
                 ""
             }
@@ -128,7 +136,7 @@ class InfoStuffHelper {
     /**
      * 获取目标时间到现在的天数
      */
-    private fun getDays(): String {
+    private fun getCountdownDays(): String {
         val zone = timeZone
         val targetDay = (targetTime + zone) / ONE_DAY
         val nowDay = if (limitTime == INVALID_TIME) {
@@ -143,7 +151,7 @@ class InfoStuffHelper {
         }
     }
 
-    private fun getDayOfMonth(): String {
+    private fun getCountdownDayOfMonth(): String {
         val zone = timeZone
         val targetDay = (targetTime + zone) / ONE_DAY
         val nowDay = if (limitTime == INVALID_TIME) {

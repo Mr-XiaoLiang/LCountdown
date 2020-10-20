@@ -75,7 +75,6 @@ object TextFormat {
             Part(R.string.key_name_minute_full, KEY_MINUTE_FULL),
             Part(R.string.key_name_time_china, KEY_TIME_CHINA),
             Part(R.string.key_name_time_english, KEY_TIME_ENGLISH),
-
             Part(R.string.key_name_countdown_days, KEY_COUNTDOWN_DAYS),
             Part(R.string.key_name_countdown_day_of_month, KEY_COUNTDOWN_DAY_OF_MONTH),
             Part(R.string.key_name_countdown_day_of_year, KEY_COUNTDOWN_DAY_OF_YEAR),

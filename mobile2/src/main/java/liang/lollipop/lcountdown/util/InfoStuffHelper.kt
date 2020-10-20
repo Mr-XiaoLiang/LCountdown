@@ -4,6 +4,8 @@ import liang.lollipop.lcountdown.info.WidgetInfo
 import liang.lollipop.lcountdown.provider.TimeInfoProvider
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * @author lollipop
@@ -92,7 +94,7 @@ class InfoStuffHelper {
         }
         val value = when(key) {
             TextFormat.KEY_DAYS -> { getDays() }
-            TextFormat.KEY_DAY_OF_MONTH -> { "" }
+            TextFormat.KEY_DAY_OF_MONTH -> { getDayOfMonth() }
             TextFormat.KEY_DAY_OF_YEAR -> { "" }
             TextFormat.KEY_DAY_OF_WEEK -> { "" }
             TextFormat.KEY_DAY_WITH_MONTH -> { "" }
@@ -138,6 +140,28 @@ class InfoStuffHelper {
             "${targetDay - nowDay}"
         } else {
             "${nowDay - targetDay}"
+        }
+    }
+
+    private fun getDayOfMonth(): String {
+        val zone = timeZone
+        val targetDay = (targetTime + zone) / ONE_DAY
+        val nowDay = if (limitTime == INVALID_TIME) {
+            (now + zone) / ONE_DAY
+        } else {
+            (limitTime + zone) / ONE_DAY
+        }
+        calendar.timeInMillis = now
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
+        val monthStart = (calendar.timeInMillis + zone) / ONE_DAY
+        calendar.timeInMillis = now
+        calendar.add(Calendar.MONTH, 1)
+        calendar.add(Calendar.DAY_OF_MONTH, -1)
+        val monthEnd = (calendar.timeInMillis + zone) / ONE_DAY
+        return if (isCountdown) {
+            "${min(monthEnd, targetDay) - max(monthStart, nowDay)}"
+        } else {
+            "${max(monthEnd, nowDay) - min(monthStart, targetDay)}"
         }
     }
 

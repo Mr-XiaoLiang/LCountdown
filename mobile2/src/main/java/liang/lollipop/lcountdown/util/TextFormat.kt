@@ -41,6 +41,15 @@ object TextFormat {
     const val KEY_TIME_CHINA = "#TC#"
     const val KEY_TIME_ENGLISH = "#TE#"
 
+    const val KEY_COUNTDOWN_DAYS = "#CD#"
+    const val KEY_COUNTDOWN_DAY_OF_MONTH = "#CDM#"
+    const val KEY_COUNTDOWN_DAY_OF_YEAR = "#CDY#"
+    const val KEY_COUNTDOWN_DAY_OF_WEEK = "#CDW#"
+    const val KEY_COUNTDOWN_HOUR = "#CH#"
+    const val KEY_COUNTDOWN_HOUR_FULL = "#CHF#"
+    const val KEY_COUNTDOWN_MINUTE = "#CM#"
+    const val KEY_COUNTDOWN_MINUTE_FULL = "#CMF#"
+
     val KEYS = ReadOnlyArray.create(
             Part(R.string.key_name_days, KEY_DAYS),
             Part(R.string.key_name_day_of_month, KEY_DAY_OF_MONTH),
@@ -65,7 +74,16 @@ object TextFormat {
             Part(R.string.key_name_minute, KEY_MINUTE),
             Part(R.string.key_name_minute_full, KEY_MINUTE_FULL),
             Part(R.string.key_name_time_china, KEY_TIME_CHINA),
-            Part(R.string.key_name_time_english, KEY_TIME_ENGLISH)
+            Part(R.string.key_name_time_english, KEY_TIME_ENGLISH),
+
+            Part(R.string.key_name_countdown_days, KEY_COUNTDOWN_DAYS),
+            Part(R.string.key_name_countdown_day_of_month, KEY_COUNTDOWN_DAY_OF_MONTH),
+            Part(R.string.key_name_countdown_day_of_year, KEY_COUNTDOWN_DAY_OF_YEAR),
+            Part(R.string.key_name_countdown_day_of_week, KEY_COUNTDOWN_DAY_OF_WEEK),
+            Part(R.string.key_name_countdown_hour, KEY_COUNTDOWN_HOUR),
+            Part(R.string.key_name_countdown_hour_full, KEY_COUNTDOWN_HOUR_FULL),
+            Part(R.string.key_name_countdown_minute, KEY_COUNTDOWN_MINUTE),
+            Part(R.string.key_name_countdown_minute_full, KEY_COUNTDOWN_MINUTE_FULL),
     )
 
     data class Part(val name: Int, val value: String)

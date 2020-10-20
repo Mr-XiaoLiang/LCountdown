@@ -63,4 +63,12 @@
     <string name="card_height">卡片高度</string>
     <string name="card_width">卡片宽度</string>
     <string name="copyright">Make by Lollipop</string>
+    <string name="key_name_countdown_days">倒计时天数</string>
+    <string name="key_name_countdown_day_of_month">按月倒计天数</string>
+    <string name="key_name_countdown_day_of_year">按年倒计天数</string>
+    <string name="key_name_countdown_day_of_week">按周倒计天数</string>
+    <string name="key_name_countdown_hour">倒计小时</string>
+    <string name="key_name_countdown_hour_full">定长倒计小时</string>
+    <string name="key_name_countdown_minute">倒计分钟</string>
+    <string name="key_name_countdown_minute_full">定长倒计分钟</string>
 </resources>

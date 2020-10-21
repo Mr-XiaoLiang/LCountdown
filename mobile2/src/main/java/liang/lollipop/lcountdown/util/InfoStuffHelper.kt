@@ -1,5 +1,7 @@
 package liang.lollipop.lcountdown.util
 
+import android.content.Context
+import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.info.WidgetInfo
 import liang.lollipop.lcountdown.provider.TimeInfoProvider
 import java.util.*
@@ -12,7 +14,7 @@ import kotlin.math.min
  * @date 10/18/20 21:15
  * 内容填充工具
  */
-class InfoStuffHelper {
+class InfoStuffHelper(private val context: Context) {
 
     companion object {
         private const val ONE_SECOND = 1000L
@@ -93,17 +95,15 @@ class InfoStuffHelper {
             return cacheMap[key] ?: ""
         }
         val value = when(key) {
-            TextFormat.KEY_DAYS -> { "" }
-            TextFormat.KEY_DAY_OF_MONTH -> { "" }
-            TextFormat.KEY_DAY_OF_YEAR -> { "" }
-            TextFormat.KEY_DAY_OF_WEEK -> { "" }
-            TextFormat.KEY_DAY_WITH_MONTH -> { "" }
-            TextFormat.KEY_DAY_WITH_YEAR -> { "" }
-            TextFormat.KEY_DAY_WITH_WEEK -> { "" }
+            TextFormat.KEY_DAY_WITH_MONTH -> { getDayOfMonth() }
+            TextFormat.KEY_DAY_WITH_YEAR -> { getDayOfYear() }
+            TextFormat.KEY_DAY_WITH_WEEK -> { getDayOfWeek() }
             TextFormat.KEY_MONTH -> { "" }
             TextFormat.KEY_MONTH_FULL -> { "" }
             TextFormat.KEY_MONTH_JAPAN -> { "" }
             TextFormat.KEY_MONTH_ENGLISH -> { "" }
+            TextFormat.KEY_MONTH_CHINA -> { "" }
+            TextFormat.KEY_MONTH_TRADITIONAL -> { "" }
             TextFormat.KEY_YEAR -> { "" }
             TextFormat.KEY_YEAR_FULL -> { "" }
             TextFormat.KEY_WEEK -> { "" }
@@ -119,8 +119,8 @@ class InfoStuffHelper {
             TextFormat.KEY_TIME_ENGLISH -> { "" }
             TextFormat.KEY_COUNTDOWN_DAYS -> { getCountdownDays() }
             TextFormat.KEY_COUNTDOWN_DAY_OF_MONTH -> { getCountdownDayOfMonth() }
-            TextFormat.KEY_COUNTDOWN_DAY_OF_YEAR -> { "" }
-            TextFormat.KEY_COUNTDOWN_DAY_OF_WEEK -> { "" }
+            TextFormat.KEY_COUNTDOWN_DAY_OF_YEAR -> { getCountdownDayOfYear() }
+            TextFormat.KEY_COUNTDOWN_DAY_OF_WEEK -> { getCountdownDayOfWeek() }
             TextFormat.KEY_COUNTDOWN_HOUR -> { "" }
             TextFormat.KEY_COUNTDOWN_HOUR_FULL -> { "" }
             TextFormat.KEY_COUNTDOWN_MINUTE -> { "" }
@@ -133,9 +133,36 @@ class InfoStuffHelper {
         return value
     }
 
-    /**
-     * 获取目标时间到现在的天数
-     */
+    private fun getMonth(): String {
+        return (getData(Calendar.MONTH) + 1).toString()
+    }
+
+    private fun getMonthFull(): String {
+        return (getData(Calendar.MONTH) + 1).fullNumber()
+    }
+
+    private fun getMonthJapan(): String {
+        val month = getData(Calendar.MONTH)
+        return context.resources.getStringArray(R.array.month_jp)[month]
+    }
+
+    private fun getDayOfMonth(): String {
+        return getData(Calendar.DAY_OF_MONTH).toString()
+    }
+
+    private fun getDayOfYear(): String {
+        return getData(Calendar.DAY_OF_YEAR).toString()
+    }
+
+    private fun getDayOfWeek(): String {
+        return getData(Calendar.DAY_OF_WEEK).toString()
+    }
+
+    private fun getData(type: Int): Int {
+        calendar.timeInMillis = now
+        return calendar.get(type)
+    }
+
     private fun getCountdownDays(): String {
         val zone = timeZone
         val targetDay = (targetTime + zone) / ONE_DAY
@@ -152,24 +179,26 @@ class InfoStuffHelper {
     }
 
     private fun getCountdownDayOfMonth(): String {
-        val zone = timeZone
-        val targetDay = (targetTime + zone) / ONE_DAY
-        val nowDay = if (limitTime == INVALID_TIME) {
-            (now + zone) / ONE_DAY
-        } else {
-            (limitTime + zone) / ONE_DAY
-        }
+        return getCountdownDayOfStandard(Calendar.DAY_OF_MONTH).toString()
+    }
+
+    private fun getCountdownDayOfYear(): String {
+        return getCountdownDayOfStandard(Calendar.DAY_OF_YEAR).toString()
+    }
+
+    private fun getCountdownDayOfWeek(): String {
+        return getCountdownDayOfStandard(Calendar.DAY_OF_WEEK).toString()
+    }
+
+    private fun getCountdownDayOfStandard(standard: Int): Int{
+        calendar.timeInMillis = targetTime
+        val targetDay = calendar.get(standard)
         calendar.timeInMillis = now
-        calendar.set(Calendar.DAY_OF_MONTH, 1)
-        val monthStart = (calendar.timeInMillis + zone) / ONE_DAY
-        calendar.timeInMillis = now
-        calendar.add(Calendar.MONTH, 1)
-        calendar.add(Calendar.DAY_OF_MONTH, -1)
-        val monthEnd = (calendar.timeInMillis + zone) / ONE_DAY
+        val nowDay = calendar.get(standard)
         return if (isCountdown) {
-            "${min(monthEnd, targetDay) - max(monthStart, nowDay)}"
+            targetDay - nowDay
         } else {
-            "${max(monthEnd, nowDay) - min(monthStart, targetDay)}"
+            nowDay - targetDay
         }
     }
 
@@ -177,5 +206,13 @@ class InfoStuffHelper {
         get() {
             return calendar.timeZone.rawOffset
         }
+
+    private fun Int.fullNumber(): String {
+        return if (this < 10) {
+            "0$this"
+        } else {
+            this.toString()
+        }
+    }
 
 }

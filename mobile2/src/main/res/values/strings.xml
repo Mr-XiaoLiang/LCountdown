@@ -19,11 +19,6 @@
     <string name="title_card">卡片调整</string>
     <string name="title_location">位置调整</string>
 
-    <string name="key_name_days">所有天</string>
-    <string name="key_name_day_of_month">按月天数</string>
-    <string name="key_name_day_of_year">按年天数</string>
-    <string name="key_name_day_of_week">按周天数</string>
-
     <string name="key_name_day_with_month">月日期</string>
     <string name="key_name_day_with_year">年日期</string>
     <string name="key_name_day_with_week">周日期</string>
@@ -73,5 +68,7 @@
     <string name="card_height">卡片高度</string>
     <string name="card_width">卡片宽度</string>
     <string name="copyright">Make by Lollipop</string>
+    <string name="key_name_month_traditional">繁体月份</string>
+    <string name="key_name_month_china">中文月份</string>
 
 </resources>

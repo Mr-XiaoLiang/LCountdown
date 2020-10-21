@@ -34,8 +34,10 @@
     <string name="key_name_week">星期</string>
     <string name="key_name_week_japan">日语星期</string>
     <string name="key_name_week_english">英语星期</string>
-    <string name="key_name_week_china">汉语星期</string>
-    <string name="key_name_week_num">数字星期</string>
+    <string name="key_name_month_traditional">繁体月份</string>
+    <string name="key_name_month_china">中文月份</string>
+    <string name="key_name_week_traditional">繁体星期</string>
+    <string name="key_name_week_chinese">汉语星期</string>
 
     <string name="key_name_hour">小时</string>
     <string name="key_name_hour_full">定长小时</string>
@@ -68,7 +70,6 @@
     <string name="card_height">卡片高度</string>
     <string name="card_width">卡片宽度</string>
     <string name="copyright">Make by Lollipop</string>
-    <string name="key_name_month_traditional">繁体月份</string>
-    <string name="key_name_month_china">中文月份</string>
+
 
 </resources>

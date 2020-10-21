@@ -6,8 +6,6 @@ import liang.lollipop.lcountdown.info.WidgetInfo
 import liang.lollipop.lcountdown.provider.TimeInfoProvider
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.math.max
-import kotlin.math.min
 
 /**
  * @author lollipop
@@ -98,19 +96,19 @@ class InfoStuffHelper(private val context: Context) {
             TextFormat.KEY_DAY_WITH_MONTH -> { getDayOfMonth() }
             TextFormat.KEY_DAY_WITH_YEAR -> { getDayOfYear() }
             TextFormat.KEY_DAY_WITH_WEEK -> { getDayOfWeek() }
-            TextFormat.KEY_MONTH -> { "" }
-            TextFormat.KEY_MONTH_FULL -> { "" }
-            TextFormat.KEY_MONTH_JAPAN -> { "" }
-            TextFormat.KEY_MONTH_ENGLISH -> { "" }
-            TextFormat.KEY_MONTH_CHINA -> { "" }
-            TextFormat.KEY_MONTH_TRADITIONAL -> { "" }
+            TextFormat.KEY_MONTH -> { getMonth() }
+            TextFormat.KEY_MONTH_FULL -> { getMonthFull() }
+            TextFormat.KEY_MONTH_JAPAN -> { getMonthJapan() }
+            TextFormat.KEY_MONTH_ENGLISH -> { getMonthEnglish() }
+            TextFormat.KEY_MONTH_CHINESE -> { getMonthChinese() }
+            TextFormat.KEY_MONTH_TRADITIONAL -> { getMonthTraditional() }
             TextFormat.KEY_YEAR -> { "" }
             TextFormat.KEY_YEAR_FULL -> { "" }
-            TextFormat.KEY_WEEK -> { "" }
-            TextFormat.KEY_WEEK_JAPAN -> { "" }
-            TextFormat.KEY_WEEK_US -> { "" }
-            TextFormat.KEY_WEEK_NUM -> { "" }
-            TextFormat.KEY_WEEK_CHINA -> { "" }
+            TextFormat.KEY_WEEK -> { getWeek() }
+            TextFormat.KEY_WEEK_JAPAN -> { getWeekJapan() }
+            TextFormat.KEY_WEEK_ENGLISH -> { getWeekEnglish() }
+            TextFormat.KEY_WEEK_CHINESE -> { getWeekChinese() }
+            TextFormat.KEY_WEEK_TRADITIONAL -> { getWeekTraditional() }
             TextFormat.KEY_HOUR -> { "" }
             TextFormat.KEY_HOUR_FULL -> { "" }
             TextFormat.KEY_MINUTE -> { "" }
@@ -142,12 +140,53 @@ class InfoStuffHelper(private val context: Context) {
     }
 
     private fun getMonthJapan(): String {
+        return getMonthWithTranslate(R.array.month_jp)
+    }
+
+    private fun getMonthEnglish(): String {
+        return getMonthWithTranslate(R.array.month_en)
+    }
+
+    private fun getMonthChinese(): String {
+        return getMonthWithTranslate(R.array.month_cn)
+    }
+
+    private fun getMonthTraditional(): String {
+        return getMonthWithTranslate(R.array.month_tr)
+    }
+
+    private fun getMonthWithTranslate(id: Int): String {
         val month = getData(Calendar.MONTH)
-        return context.resources.getStringArray(R.array.month_jp)[month]
+        return context.resources.getStringArray(id)[month]
+    }
+
+    private fun getWeek(): String {
+        return (getData(Calendar.DAY_OF_WEEK)).toString()
+    }
+
+    private fun getWeekJapan(): String {
+        return getWeekWithTranslate(R.array.day_of_week_jp)
+    }
+
+    private fun getWeekEnglish(): String {
+        return getWeekWithTranslate(R.array.day_of_week_en)
+    }
+
+    private fun getWeekChinese(): String {
+        return getWeekWithTranslate(R.array.day_of_week_cn)
+    }
+
+    private fun getWeekTraditional(): String {
+        return getWeekWithTranslate(R.array.day_of_week_tr)
+    }
+
+    private fun getWeekWithTranslate(id: Int): String {
+        val month = getData(Calendar.DAY_OF_WEEK) - 1
+        return context.resources.getStringArray(id)[month]
     }
 
     private fun getDayOfMonth(): String {
-        return getData(Calendar.DAY_OF_MONTH).toString()
+        return (getData(Calendar.DAY_OF_MONTH) + 1).toString()
     }
 
     private fun getDayOfYear(): String {

@@ -17,7 +17,7 @@ object TextFormat {
     const val KEY_MONTH_FULL = "#MF#"
     const val KEY_MONTH_JAPAN = "#MJ#"
     const val KEY_MONTH_ENGLISH = "#ME#"
-    const val KEY_MONTH_CHINA = "#MC#"
+    const val KEY_MONTH_CHINESE = "#MC#"
     const val KEY_MONTH_TRADITIONAL = "#MT#"
 
     const val KEY_YEAR = "#YY#"
@@ -25,9 +25,9 @@ object TextFormat {
 
     const val KEY_WEEK = "#WW#"
     const val KEY_WEEK_JAPAN = "#WJ#"
-    const val KEY_WEEK_US = "#WU#"
-    const val KEY_WEEK_NUM = "#WN#"
-    const val KEY_WEEK_CHINA = "#WC#"
+    const val KEY_WEEK_ENGLISH = "#WE#"
+    const val KEY_WEEK_CHINESE = "#WC#"
+    const val KEY_WEEK_TRADITIONAL = "#WT#"
 
     const val KEY_HOUR = "#HH#"
     const val KEY_HOUR_FULL = "#HF#"
@@ -55,15 +55,15 @@ object TextFormat {
             Part(R.string.key_name_month_full, KEY_MONTH_FULL),
             Part(R.string.key_name_month_japan, KEY_MONTH_JAPAN),
             Part(R.string.key_name_month_english, KEY_MONTH_ENGLISH),
-            Part(R.string.key_name_month_china, KEY_MONTH_CHINA),
+            Part(R.string.key_name_month_china, KEY_MONTH_CHINESE),
             Part(R.string.key_name_month_traditional, KEY_MONTH_TRADITIONAL),
             Part(R.string.key_name_year, KEY_YEAR),
             Part(R.string.key_name_year_full, KEY_YEAR_FULL),
             Part(R.string.key_name_week, KEY_WEEK),
             Part(R.string.key_name_week_japan, KEY_WEEK_JAPAN),
-            Part(R.string.key_name_week_china, KEY_WEEK_US),
-            Part(R.string.key_name_week_num, KEY_WEEK_NUM),
-            Part(R.string.key_name_week_china, KEY_WEEK_CHINA),
+            Part(R.string.key_name_week_english, KEY_WEEK_ENGLISH),
+            Part(R.string.key_name_week_chinese, KEY_WEEK_CHINESE),
+            Part(R.string.key_name_week_traditional, KEY_WEEK_TRADITIONAL),
             Part(R.string.key_name_hour, KEY_HOUR),
             Part(R.string.key_name_hour_full, KEY_HOUR_FULL),
             Part(R.string.key_name_minute, KEY_MINUTE),

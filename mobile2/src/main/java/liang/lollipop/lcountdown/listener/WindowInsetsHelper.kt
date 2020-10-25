@@ -27,6 +27,9 @@ class WindowInsetsHelper (private val self: View) {
     private var insetsCallback: (WindowInsetsHelper.(Rect) -> Unit)? = null
 
     init {
+        self.post {
+            self.requestLayout()
+        }
         if (self.isAttachedToWindow) {
             rootParent = findRootParent(self)
         }

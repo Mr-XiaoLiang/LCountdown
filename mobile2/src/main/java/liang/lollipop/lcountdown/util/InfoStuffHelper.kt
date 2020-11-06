@@ -102,15 +102,15 @@ class InfoStuffHelper(private val context: Context) {
             TextFormat.KEY_MONTH_ENGLISH -> { getMonthEnglish() }
             TextFormat.KEY_MONTH_CHINESE -> { getMonthChinese() }
             TextFormat.KEY_MONTH_TRADITIONAL -> { getMonthTraditional() }
-            TextFormat.KEY_YEAR -> { "" }
-            TextFormat.KEY_YEAR_FULL -> { "" }
+            TextFormat.KEY_YEAR -> { (getYear() % 100).toString() }
+            TextFormat.KEY_YEAR_FULL -> { getYear().toString() }
             TextFormat.KEY_WEEK -> { getWeek() }
             TextFormat.KEY_WEEK_JAPAN -> { getWeekJapan() }
             TextFormat.KEY_WEEK_ENGLISH -> { getWeekEnglish() }
             TextFormat.KEY_WEEK_CHINESE -> { getWeekChinese() }
             TextFormat.KEY_WEEK_TRADITIONAL -> { getWeekTraditional() }
-            TextFormat.KEY_HOUR -> { "" }
-            TextFormat.KEY_HOUR_FULL -> { "" }
+            TextFormat.KEY_HOUR -> { getHour() }
+            TextFormat.KEY_HOUR_FULL -> { getHourFull() }
             TextFormat.KEY_MINUTE -> { "" }
             TextFormat.KEY_MINUTE_FULL -> { "" }
             TextFormat.KEY_TIME_CHINA -> { "" }
@@ -185,6 +185,10 @@ class InfoStuffHelper(private val context: Context) {
         return context.resources.getStringArray(id)[month]
     }
 
+    private fun getYear(): Int {
+        return getData(Calendar.YEAR)
+    }
+
     private fun getDayOfMonth(): String {
         return (getData(Calendar.DAY_OF_MONTH) + 1).toString()
     }
@@ -195,6 +199,18 @@ class InfoStuffHelper(private val context: Context) {
 
     private fun getDayOfWeek(): String {
         return getData(Calendar.DAY_OF_WEEK).toString()
+    }
+
+    private fun getHour(): String {
+        return getData(Calendar.HOUR_OF_DAY).toString()
+    }
+
+    private fun getHourFull(): String {
+        val hour = getHour()
+        if (hour.length < 2) {
+            return "0$hour"
+        }
+        return hour
     }
 
     private fun getData(type: Int): Int {

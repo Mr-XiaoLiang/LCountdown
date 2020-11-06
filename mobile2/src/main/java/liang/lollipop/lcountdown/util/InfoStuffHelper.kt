@@ -1,9 +1,11 @@
 package liang.lollipop.lcountdown.util
 
 import android.content.Context
+import android.text.TextUtils
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.info.WidgetInfo
 import liang.lollipop.lcountdown.provider.TimeInfoProvider
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -58,6 +60,20 @@ class InfoStuffHelper(private val context: Context) {
      */
     private var cycleType = TimeInfoProvider.CycleType.No
 
+    /**
+     * 汉语格式化日期
+     */
+    private val chineseFormat: SimpleDateFormat by lazy {
+        SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)
+    }
+
+    /**
+     * 英语格式化日期
+     */
+    private val englishFormat: SimpleDateFormat by lazy {
+        SimpleDateFormat("MMM d, yyyy HH:mm", Locale.US)
+    }
+
     fun updateTarget(info: WidgetInfo) {
         updateTarget(info.targetTime, info.limitTime, info.isCountdown, info.cycleType)
     }
@@ -90,7 +106,10 @@ class InfoStuffHelper(private val context: Context) {
 
     private fun getValueByKey(key: String): String {
         if (cacheMap.containsKey(key)) {
-            return cacheMap[key] ?: ""
+            val s = cacheMap[key]
+            if (s != null && s.isNotEmpty()) {
+                return s
+            }
         }
         val value = when(key) {
             TextFormat.KEY_DAY_WITH_MONTH -> { getDayOfMonth() }
@@ -111,10 +130,10 @@ class InfoStuffHelper(private val context: Context) {
             TextFormat.KEY_WEEK_TRADITIONAL -> { getWeekTraditional() }
             TextFormat.KEY_HOUR -> { getHour() }
             TextFormat.KEY_HOUR_FULL -> { getHourFull() }
-            TextFormat.KEY_MINUTE -> { "" }
-            TextFormat.KEY_MINUTE_FULL -> { "" }
-            TextFormat.KEY_TIME_CHINA -> { "" }
-            TextFormat.KEY_TIME_ENGLISH -> { "" }
+            TextFormat.KEY_MINUTE -> { getMinute() }
+            TextFormat.KEY_MINUTE_FULL -> { getMinuteFull() }
+            TextFormat.KEY_TIME_CHINA -> { chineseFormat.format(Date(System.currentTimeMillis())) }
+            TextFormat.KEY_TIME_ENGLISH -> { englishFormat.format(Date(System.currentTimeMillis())) }
             TextFormat.KEY_COUNTDOWN_DAYS -> { getCountdownDays() }
             TextFormat.KEY_COUNTDOWN_DAY_OF_MONTH -> { getCountdownDayOfMonth() }
             TextFormat.KEY_COUNTDOWN_DAY_OF_YEAR -> { getCountdownDayOfYear() }
@@ -123,9 +142,7 @@ class InfoStuffHelper(private val context: Context) {
             TextFormat.KEY_COUNTDOWN_HOUR_FULL -> { "" }
             TextFormat.KEY_COUNTDOWN_MINUTE -> { "" }
             TextFormat.KEY_COUNTDOWN_MINUTE_FULL -> { "" }
-            else -> {
-                ""
-            }
+            else -> { "" }
         }
         cacheMap[key] = value
         return value
@@ -211,6 +228,18 @@ class InfoStuffHelper(private val context: Context) {
             return "0$hour"
         }
         return hour
+    }
+
+    private fun getMinute(): String {
+        return getData(Calendar.MINUTE).toString()
+    }
+
+    private fun getMinuteFull(): String {
+        val minute = getMinute()
+        if (minute.length < 2) {
+            return "0$minute"
+        }
+        return minute
     }
 
     private fun getData(type: Int): Int {

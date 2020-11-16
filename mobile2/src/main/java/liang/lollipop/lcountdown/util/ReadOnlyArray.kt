@@ -19,4 +19,7 @@ class ReadOnlyArray<out T> private constructor(private val values: Array<T>) {
 
     val size = values.size
 
+    val indices: IntRange
+        get() = 0 until size
+
 }

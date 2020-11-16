@@ -1,7 +1,6 @@
 package liang.lollipop.lcountdown.util
 
 import android.content.Context
-import android.text.TextUtils
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.info.WidgetInfo
 import liang.lollipop.lcountdown.provider.TimeInfoProvider
@@ -35,30 +34,23 @@ class InfoStuffHelper(private val context: Context) {
      */
     private val calendar = Calendar.getInstance()
 
-    /**
-     * 当前时间
-     */
-    private var now = System.currentTimeMillis()
-
-    /**
-     * 目标时间
-     */
-    private var targetTime = now
-
-    /**
-     * 约束时间
-     */
-    private var limitTime = INVALID_TIME
+    private val timeInfo = TimeInfo()
 
     /**
      * 是否是倒计时的形式
      */
-    private var isCountdown = true
+    private val isCountdown: Boolean
+        get() {
+            return timeInfo.isCountdown
+        }
 
     /**
      * 循环模式
      */
-    private var cycleType = TimeInfoProvider.CycleType.No
+    private val cycleType: TimeInfoProvider.CycleType
+        get() {
+            return timeInfo.cycleType
+        }
 
     /**
      * 汉语格式化日期
@@ -74,15 +66,33 @@ class InfoStuffHelper(private val context: Context) {
         SimpleDateFormat("MMM d, yyyy HH:mm", Locale.US)
     }
 
+    private val startTime: Long
+        get() {
+            return if (timeInfo.targetTime == INVALID_TIME) {
+                timeInfo.now
+            } else {
+                timeInfo.targetTime
+            }
+        }
+
+    private val endTime: Long
+        get() {
+            return if (timeInfo.limitTime == INVALID_TIME) {
+                timeInfo.now
+            } else {
+                timeInfo.limitTime
+            }
+        }
+
     fun updateTarget(info: WidgetInfo) {
         updateTarget(info.targetTime, info.limitTime, info.isCountdown, info.cycleType)
     }
 
     fun updateTarget(target: Long, limit: Long, countdown: Boolean, cycle: TimeInfoProvider.CycleType) {
-        this.targetTime = target
-        this.limitTime = limit
-        this.isCountdown = countdown
-        this.cycleType = cycle
+        timeInfo.targetTime = target
+        timeInfo.limitTime = limit
+        timeInfo.isCountdown = countdown
+        timeInfo.cycleType = cycle
         updateTime()
     }
 
@@ -91,17 +101,32 @@ class InfoStuffHelper(private val context: Context) {
      * 清除缓存
      */
     fun updateTime() {
-        now = System.currentTimeMillis()
+        timeInfo.now = System.currentTimeMillis()
         cacheMap.clear()
     }
 
     fun stuff(value: String): String {
-        // TODO
-        return value
+        val keys = TextFormat.KEYS
+        val builder = StringBuilder(value)
+        for (index in keys.indices) {
+            val key = keys[index]
+            replace(builder, key.value)
+        }
+        return builder.toString()
     }
 
-    private fun replace(value: String, key: String): String {
-        return value.replace(key, getValueByKey(key))
+    private fun replace(builder: StringBuilder, key: String) {
+        var index = builder.indexOf(key)
+        if (index < 0) {
+            return
+        }
+        val keyLength = key.length
+        val value = getValueByKey(key)
+        while (index >= 0) {
+            val end = index + keyLength
+            builder.replace(index, end, value)
+            index = builder.indexOf(key, end)
+        }
     }
 
     private fun getValueByKey(key: String): String {
@@ -138,10 +163,14 @@ class InfoStuffHelper(private val context: Context) {
             TextFormat.KEY_COUNTDOWN_DAY_OF_MONTH -> { getCountdownDayOfMonth() }
             TextFormat.KEY_COUNTDOWN_DAY_OF_YEAR -> { getCountdownDayOfYear() }
             TextFormat.KEY_COUNTDOWN_DAY_OF_WEEK -> { getCountdownDayOfWeek() }
-            TextFormat.KEY_COUNTDOWN_HOUR -> { "" }
-            TextFormat.KEY_COUNTDOWN_HOUR_FULL -> { "" }
+            TextFormat.KEY_COUNTDOWN_HOUR -> { getCountdownHour().toString() }
+            TextFormat.KEY_COUNTDOWN_HOUR_FULL -> { getCountdownHourFull() }
+            TextFormat.KEY_COUNTDOWN_HOUR_DAY -> { getCountdownHourOfDay().toString() }
+            TextFormat.KEY_COUNTDOWN_HOUR_DAY_FULL -> { getCountdownHourOfDayFull() }
             TextFormat.KEY_COUNTDOWN_MINUTE -> { "" }
             TextFormat.KEY_COUNTDOWN_MINUTE_FULL -> { "" }
+            TextFormat.KEY_COUNTDOWN_MINUTE_HOUR -> { "" }
+            TextFormat.KEY_COUNTDOWN_MINUTE_HOUR_FULL -> { "" }
             else -> { "" }
         }
         cacheMap[key] = value
@@ -243,18 +272,14 @@ class InfoStuffHelper(private val context: Context) {
     }
 
     private fun getData(type: Int): Int {
-        calendar.timeInMillis = now
+        calendar.timeInMillis = endTime
         return calendar.get(type)
     }
 
     private fun getCountdownDays(): String {
         val zone = timeZone
-        val targetDay = (targetTime + zone) / ONE_DAY
-        val nowDay = if (limitTime == INVALID_TIME) {
-            (now + zone) / ONE_DAY
-        } else {
-            (limitTime + zone) / ONE_DAY
-        }
+        val targetDay = (startTime + zone) / ONE_DAY
+        val nowDay = (endTime + zone) / ONE_DAY
         return if (isCountdown) {
             "${targetDay - nowDay}"
         } else {
@@ -275,9 +300,9 @@ class InfoStuffHelper(private val context: Context) {
     }
 
     private fun getCountdownDayOfStandard(standard: Int): Int{
-        calendar.timeInMillis = targetTime
+        calendar.timeInMillis = startTime
         val targetDay = calendar.get(standard)
-        calendar.timeInMillis = now
+        calendar.timeInMillis = endTime
         val nowDay = calendar.get(standard)
         return if (isCountdown) {
             targetDay - nowDay
@@ -285,6 +310,37 @@ class InfoStuffHelper(private val context: Context) {
             nowDay - targetDay
         }
     }
+
+    private fun getCountdownHourOfDay(): Int {
+        calendar.timeInMillis = startTime
+        val targetHour = calendar.get(Calendar.HOUR_OF_DAY)
+        calendar.timeInMillis = endTime
+        val nowHour = calendar.get(Calendar.HOUR_OF_DAY)
+        return if (isCountdown) {
+            targetHour - nowHour
+        } else {
+            nowHour - targetHour
+        }
+    }
+
+    private fun getCountdownHourOfDayFull(): String {
+        return getCountdownHourOfDay().fullNumber()
+    }
+
+    private fun getCountdownHour(): Long {
+        val diff = if (isCountdown) {
+            startTime - endTime
+        } else {
+            endTime - startTime
+        }
+        return diff / ONE_HOUR
+    }
+
+    private fun getCountdownHourFull(): String {
+        return getCountdownHour().fullNumber()
+    }
+
+
 
     private val timeZone: Int
         get() {
@@ -298,5 +354,19 @@ class InfoStuffHelper(private val context: Context) {
             this.toString()
         }
     }
+
+    private fun Long.fullNumber(): String {
+        return if (this < 10) {
+            "0$this"
+        } else {
+            this.toString()
+        }
+    }
+
+    private class TimeInfo(var now: Long = System.currentTimeMillis(),
+                           var targetTime: Long = now,
+                           var limitTime: Long = INVALID_TIME,
+                           var isCountdown: Boolean = true,
+                           var cycleType: TimeInfoProvider.CycleType = TimeInfoProvider.CycleType.No)
 
 }

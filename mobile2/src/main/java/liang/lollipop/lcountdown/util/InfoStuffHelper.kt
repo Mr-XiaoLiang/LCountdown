@@ -167,10 +167,10 @@ class InfoStuffHelper(private val context: Context) {
             TextFormat.KEY_COUNTDOWN_HOUR_FULL -> { getCountdownHourFull() }
             TextFormat.KEY_COUNTDOWN_HOUR_DAY -> { getCountdownHourOfDay().toString() }
             TextFormat.KEY_COUNTDOWN_HOUR_DAY_FULL -> { getCountdownHourOfDayFull() }
-            TextFormat.KEY_COUNTDOWN_MINUTE -> { "" }
-            TextFormat.KEY_COUNTDOWN_MINUTE_FULL -> { "" }
-            TextFormat.KEY_COUNTDOWN_MINUTE_HOUR -> { "" }
-            TextFormat.KEY_COUNTDOWN_MINUTE_HOUR_FULL -> { "" }
+            TextFormat.KEY_COUNTDOWN_MINUTE -> { getCountdownMinute().toString() }
+            TextFormat.KEY_COUNTDOWN_MINUTE_FULL -> { getCountdownMinuteFull() }
+            TextFormat.KEY_COUNTDOWN_MINUTE_HOUR -> { getCountdownMinuteOfHour().toString() }
+            TextFormat.KEY_COUNTDOWN_MINUTE_HOUR_FULL -> { getCountdownMinuteOfHourFull() }
             else -> { "" }
         }
         cacheMap[key] = value
@@ -340,7 +340,36 @@ class InfoStuffHelper(private val context: Context) {
         return getCountdownHour().fullNumber()
     }
 
+    private fun getCountdownMinuteOfHour(): Int {
+        calendar.timeInMillis = startTime
+        val targetMinute = calendar.get(Calendar.MINUTE)
+        calendar.timeInMillis = endTime
+        val nowMinute = calendar.get(Calendar.MINUTE)
+        return if (isCountdown) {
+            targetMinute - nowMinute
+        } else {
+            nowMinute - targetMinute
+        }
+    }
 
+    private fun getCountdownMinuteOfHourFull(): String {
+        return getCountdownMinuteOfHour().fullNumber()
+    }
+
+    private fun getCountdownMinute(): Long {
+        val targetMinute = startTime
+        val nowMinute = endTime
+        val diff = if (isCountdown) {
+            targetMinute - nowMinute
+        } else {
+            nowMinute - targetMinute
+        }
+        return diff / ONE_MINUTE
+    }
+
+    private fun getCountdownMinuteFull(): String {
+        return getCountdownMinute().fullNumber()
+    }
 
     private val timeZone: Int
         get() {

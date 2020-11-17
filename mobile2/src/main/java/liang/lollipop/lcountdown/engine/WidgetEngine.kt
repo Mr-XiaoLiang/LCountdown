@@ -18,6 +18,7 @@ import liang.lollipop.lcountdown.info.BackgroundInfo
 import liang.lollipop.lcountdown.info.TextColor
 import liang.lollipop.lcountdown.info.TextInfoArray
 import liang.lollipop.lcountdown.info.WidgetInfo
+import liang.lollipop.lcountdown.util.InfoStuffHelper
 import liang.lollipop.lcountdown.util.load
 import liang.lollipop.lcountdown.util.toDip
 import liang.lollipop.lcountdown.util.toSp
@@ -42,10 +43,10 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
 
     private val recyclerViews = ArrayList<View>()
 
+    private val infoStuffHelper = InfoStuffHelper(context)
+
     private val textViewCreator: () -> TextView by lazy {
-        {
-            TextView(context)
-        }
+        { TextView(context) }
     }
 
     override fun draw(canvas: Canvas) {
@@ -53,6 +54,7 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
     }
 
     fun updateAll(widgetInfo: WidgetInfo) {
+        infoStuffHelper.updateTarget(widgetInfo)
         updateCard(widgetInfo.backgroundInfo)
         updateBackground(widgetInfo.backgroundInfo)
         updateText(widgetInfo.textInfoArray)
@@ -226,8 +228,7 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
     }
 
     private fun formatInfo(value: String): String {
-        // TODO nothing update
-        return value
+        return infoStuffHelper.stuff(value)
     }
 
     private fun getTextGroup(): FrameLayout {

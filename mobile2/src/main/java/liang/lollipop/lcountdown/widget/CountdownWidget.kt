@@ -8,7 +8,7 @@ import android.content.Context
  * @author lollipop
  * @date 11/18/20 21:28
  */
-class CountdownWidgetProvider: AppWidgetProvider() {
+open class CountdownWidget: AppWidgetProvider() {
 
     companion object {
 

@@ -21,10 +21,6 @@ import liang.lollipop.lcountdown.util.WidgetDBUtil
  */
 open class CountdownWidget: AppWidgetProvider() {
 
-    companion object {
-        const val WIDGET_SHOW = "WIDGET_SHOW"
-    }
-
     override fun onUpdate(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
         context?:return

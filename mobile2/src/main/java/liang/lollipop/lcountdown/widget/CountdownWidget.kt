@@ -4,7 +4,6 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.widget.FrameLayout
@@ -14,6 +13,7 @@ import liang.lollipop.lcountdown.activity.WidgetAdjustmentActivity
 import liang.lollipop.lcountdown.engine.WidgetEngine
 import liang.lollipop.lcountdown.info.WidgetInfo
 import liang.lollipop.lcountdown.util.WidgetDBUtil
+import liang.lollipop.lcountdown.util.doAsync
 
 /**
  * @author lollipop
@@ -60,12 +60,37 @@ open class CountdownWidget: AppWidgetProvider() {
         dbUtil.close()
     }
 
+    private fun updateWidgetId(
+            context: Context, oldWidgetIds: IntArray, newWidgetIds: IntArray) {
+        val dbUtil = WidgetDBUtil.read(context)
+        doAsync {
+            for (idIndex in oldWidgetIds.indices) {
+                try {
+                    // 更新为新id
+                    dbUtil.updateWidgetId(oldWidgetIds[idIndex], newWidgetIds[idIndex])
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                }
+            }
+        }.finally {
+            dbUtil.close()
+        }
+    }
+
     override fun onRestored(context: Context?, oldWidgetIds: IntArray?, newWidgetIds: IntArray?) {
         super.onRestored(context, oldWidgetIds, newWidgetIds)
+        context?:return
+        oldWidgetIds?:return
+        newWidgetIds?:return
+        updateWidgetId(context, oldWidgetIds, newWidgetIds)
     }
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
         super.onDeleted(context, appWidgetIds)
+        context?:return
+        appWidgetIds?:return
+        updateWidgetId(context, appWidgetIds,
+                IntArray(appWidgetIds.size) { AppWidgetManager.INVALID_APPWIDGET_ID })
     }
 
     override fun onEnabled(context: Context?) {

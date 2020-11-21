@@ -109,6 +109,15 @@ class WidgetDBUtil private constructor(context: Context): BaseDBUtil<WidgetInfo>
             return isRight
         }
 
+        fun updateWidgetId(oldWidgetId: Int, newWidgetId: Int): Boolean {
+            val sql = getSqLiteDatabase()
+            val values = ContentValues()
+            values.put(WidgetTable.WIDGET, newWidgetId)
+            val result = sql.update(tableProvider.tableName, values,
+                    " ${WidgetTable.WIDGET} = ? ", arrayOf("$oldWidgetId"))
+            return result > 0
+        }
+
         fun getAllWidget(list: ArrayList<WidgetInfo>): Boolean {
             list.clear()
             val sql = getSqLiteDatabase()

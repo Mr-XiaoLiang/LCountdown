@@ -99,11 +99,15 @@ object CommonUtil {
             private val err: ((Throwable) -> Unit) = {},
             private val run: T.() -> Unit) {
 
+        private var finallyCallback: (T.() -> Unit)? = null
+
         val runnable = Runnable {
             try {
                 run(target)
             } catch (e: Throwable) {
                 err(e)
+            } finally {
+                finallyCallback?.invoke(target)
             }
         }
 
@@ -121,6 +125,10 @@ object CommonUtil {
 
         fun delay(time: Long) {
             delay(time, this)
+        }
+
+        fun finally(run: T.() -> Unit) {
+            this.finallyCallback = run
         }
 
     }

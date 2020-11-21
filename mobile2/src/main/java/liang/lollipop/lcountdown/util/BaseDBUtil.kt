@@ -35,7 +35,7 @@ abstract class BaseDBUtil<T: JsonInfo> (context: Context, dbName: String, dbVers
 
     open class SqlDB<T: JsonInfo> constructor(
             private var databaseHelper: BaseDBUtil<T>?,
-            private val tableProvider: TableProvider<T>,
+            val tableProvider: TableProvider<T>,
             isWritable: Boolean) {
 
         private var sqLiteDatabase: SQLiteDatabase? = null

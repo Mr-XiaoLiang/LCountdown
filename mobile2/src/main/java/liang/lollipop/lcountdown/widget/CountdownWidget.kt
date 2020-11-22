@@ -21,6 +21,37 @@ import liang.lollipop.lcountdown.util.doAsync
  */
 open class CountdownWidget: AppWidgetProvider() {
 
+    companion object {
+
+        const val LAYOUT_ID = R.layout.widget_desktop
+
+        fun updateWidget(
+                widgetEngine: WidgetEngine,
+                bitmapProvider: BitmapProvider,
+                widgetInfo: WidgetInfo,
+                context: Context,
+                appWidgetManager: AppWidgetManager) {
+
+            val bitmap = bitmapProvider.new(
+                    widgetInfo.width.toInt(), widgetInfo.height.toInt())
+            val canvas = Canvas(bitmap)
+            widgetEngine.draw(canvas)
+
+            val remoteViews = RemoteViews(context.packageName, LAYOUT_ID)
+            remoteViews.setImageViewBitmap(R.id.widgetPanel, bitmap)
+            val widgetId = widgetInfo.widgetId
+            //创建点击意图
+            val intent = WidgetAdjustmentActivity.createIntent(context, widgetId)
+            //请求ID重复会导致延时意图被覆盖，刷新模式表示覆盖的方式
+            val pendingIntent = PendingIntent.getActivity(context, widgetId,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            //为小部件设置点击事件
+            remoteViews.setOnClickPendingIntent(R.id.widgetPanel, pendingIntent)
+
+            appWidgetManager.updateAppWidget(widgetId, remoteViews)
+        }
+    }
+
     override fun onUpdate(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
         context?:return
@@ -30,28 +61,14 @@ open class CountdownWidget: AppWidgetProvider() {
         val widgetInfo = WidgetInfo()
         val widgetEngine = WidgetEngine(FrameLayout(context))
         val bitmapProvider = BitmapProvider()
-        val layoutId = R.layout.widget_desktop
         for (id in appWidgetIds) {
             try {
                 widgetInfo.widgetId = id
                 dbUtil.findByWidgetId(widgetInfo)
                 widgetEngine.updateAll(widgetInfo)
 
-                val bitmap = bitmapProvider.new(widgetInfo.width.toInt(), widgetInfo.height.toInt())
-                val canvas = Canvas(bitmap)
-                widgetEngine.draw(canvas)
-
-                val remoteViews = RemoteViews(context.packageName, layoutId)
-                remoteViews.setImageViewBitmap(R.id.widgetPanel, bitmap)
-                //创建点击意图
-                val intent = WidgetAdjustmentActivity.createIntent(context, id)
-                //请求ID重复会导致延时意图被覆盖，刷新模式表示覆盖的方式
-                val pendingIntent = PendingIntent.getActivity(context, id,
-                        intent, PendingIntent.FLAG_UPDATE_CURRENT)
-                //为小部件设置点击事件
-                remoteViews.setOnClickPendingIntent(R.id.widgetPanel, pendingIntent)
-
-                appWidgetManager.updateAppWidget(id, remoteViews)
+                updateWidget(widgetEngine, bitmapProvider,
+                        widgetInfo, context, appWidgetManager)
             } catch (e: Throwable) {
                 e.printStackTrace()
             }
@@ -101,7 +118,7 @@ open class CountdownWidget: AppWidgetProvider() {
         super.onDisabled(context)
     }
 
-    private class BitmapProvider {
+    class BitmapProvider {
         private val bitmapList = ArrayList<Bitmap>()
 
         fun get(width: Int, height: Int): Bitmap {

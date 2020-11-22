@@ -1,6 +1,7 @@
 package liang.lollipop.lcountdown.activity
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
@@ -20,6 +21,7 @@ import liang.lollipop.lcountdown.info.TextInfoArray
 import liang.lollipop.lcountdown.info.WidgetInfo
 import liang.lollipop.lcountdown.provider.*
 import liang.lollipop.lcountdown.util.*
+import liang.lollipop.lcountdown.widget.CountdownWidget
 import liang.lollipop.ltabview.LTabHelper
 import liang.lollipop.ltabview.LTabView
 
@@ -40,12 +42,21 @@ class WidgetAdjustmentActivity : BaseActivity(),
         private const val ARG_SHOW = "ARG_SHOW"
         private const val ARG_WIDGET_ID = AppWidgetManager.EXTRA_APPWIDGET_ID
         private const val ARG_ID = "id"
+        private const val ARG_ADD_ONLY = "ARG_ADD_ONLY"
         private const val INVALID_ID = AppWidgetManager.INVALID_APPWIDGET_ID
 
         fun createIntent(context: Context, id: Int): Intent {
             return Intent(context, WidgetAdjustmentActivity::class.java).apply {
                 putExtra(ARG_SHOW, if (id == INVALID_ID) { 0 }  else { 1 } )
                 putExtra(ARG_ID, id)
+            }
+        }
+
+        fun addLocalWidget(context: Context): Intent {
+            return Intent(context, WidgetAdjustmentActivity::class.java).apply {
+                putExtra(ARG_SHOW, 0)
+                putExtra(ARG_ID, INVALID_ID)
+                putExtra(ARG_ADD_ONLY, 1)
             }
         }
     }
@@ -78,6 +89,16 @@ class WidgetAdjustmentActivity : BaseActivity(),
 
     private var widgetEngine: WidgetEngine? = null
 
+    private val isAddOnly: Boolean
+        get() {
+            return intent.getIntExtra(ARG_ADD_ONLY, 0) > 0
+        }
+
+    private val isCreateModel: Boolean
+        get() {
+            return intent.getIntExtra(ARG_SHOW, 0) < 1
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_widget_adjustment)
@@ -91,8 +112,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
                 ARG_WIDGET_ID, INVALID_ID)
         widgetInfo.id = intent.getIntExtra(
                 ARG_ID, INVALID_ID)
-        val isCreateModel = intent.getIntExtra(ARG_SHOW, 0) < 1
-        if (isCreateModel) {
+        if (isCreateModel || isAddOnly) {
             bottomSheetHelper?.show(false)
             widgetInfo.initWithDefault(this)
             widgetEngine?.updateAll(widgetInfo)
@@ -133,6 +153,10 @@ class WidgetAdjustmentActivity : BaseActivity(),
             }
         }
 
+        saveBtn.setOnClickListener {
+            saveWidget()
+        }
+
         panelPager.offscreenPageLimit = fragments.size
         panelPager.adapter = Adapter(supportFragmentManager, fragments, this)
         tabView.style = LTabView.Style.Start
@@ -160,6 +184,36 @@ class WidgetAdjustmentActivity : BaseActivity(),
         }
 
         widgetEngine = WidgetEngine(widgetFrame)
+    }
+
+    private fun saveWidget() {
+        if (isAddOnly) {
+            // TODO
+        } else {
+            WidgetDBUtil.write(this).apply {
+                try {
+                    if (isCreateModel) {
+                        add(widgetInfo)
+                    } else {
+                        update(widgetInfo)
+                    }
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                }
+            }.close()
+
+            widgetEngine?.let {
+                val bitmapProvider = CountdownWidget.BitmapProvider()
+                CountdownWidget.updateWidget(
+                        it, bitmapProvider, widgetInfo, this,
+                        AppWidgetManager.getInstance(this))
+                bitmapProvider.recycle()
+            }
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetInfo.widgetId)
+            })
+            onBackPressed()
+        }
     }
 
     override fun onInsetsChange(root: View, left: Int, top: Int, right: Int, bottom: Int) {

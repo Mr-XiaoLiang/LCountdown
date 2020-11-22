@@ -19,6 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".activity.WidgetListActivity"></activity>
         <activity android:name=".activity.AboutActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,13 +30,11 @@
         </activity>
         <activity
             android:name=".activity.WidgetAdjustmentActivity"
-            android:windowSoftInputMode="stateAlwaysVisible|adjustNothing">
-
-        </activity>
+            android:windowSoftInputMode="stateAlwaysVisible|adjustNothing"></activity>
         <activity
             android:name=".activity.TimerListActivity"
-            android:label="@string/app_name">
-        </activity>
+            android:label="@string/app_name"></activity>
+
         <receiver android:name=".widget.CountdownWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -45,7 +44,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
-
         <receiver android:name=".widget.CountdownWidgetWrapper1">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -55,7 +53,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
-
         <receiver android:name=".widget.CountdownWidgetWrapper2">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -65,7 +62,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
-
         <receiver android:name=".widget.CountdownWidgetWrapper3">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -75,7 +71,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
-
         <receiver android:name=".widget.CountdownWidgetWrapper4">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -85,7 +80,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
-
         <receiver android:name=".widget.CountdownWidgetWrapper5">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -95,7 +89,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
-
         <receiver android:name=".widget.CountdownWidgetWrapper6">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -105,7 +98,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
-
         <receiver android:name=".widget.CountdownWidgetWrapper7">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -115,7 +107,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
-
         <receiver android:name=".widget.CountdownWidgetWrapper8">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -125,7 +116,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
-
         <receiver android:name=".widget.CountdownWidgetWrapper9">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

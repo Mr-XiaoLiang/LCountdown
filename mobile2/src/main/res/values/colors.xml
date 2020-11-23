@@ -36,4 +36,8 @@
 
     <color name="curtainText">#353936</color>
     <color name="curtainTextSecondary">#585C59</color>
+
+    <color name="toastBackground">#FFFFFF</color>
+    <color name="toastAction">#df9fb4</color>
+    <color name="toastText">#333333</color>
 </resources>

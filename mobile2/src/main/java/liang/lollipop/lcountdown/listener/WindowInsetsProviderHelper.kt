@@ -16,6 +16,9 @@ class WindowInsetsProviderHelper: OnWindowInsetsProvider, OnWindowInsetsListener
     private val windowInsetsListenerList = ArrayList<OnWindowInsetsListener>()
 
     override fun addOnWindowInsetsProvider(listener: OnWindowInsetsListener) {
+        if (windowInsetsListenerList.contains(listener)) {
+            return
+        }
         windowInsetsListenerList.add(listener)
         rootView?.get()?.let { root ->
             listener.onInsetsChange(root, lastWindowInsets.left, lastWindowInsets.top,

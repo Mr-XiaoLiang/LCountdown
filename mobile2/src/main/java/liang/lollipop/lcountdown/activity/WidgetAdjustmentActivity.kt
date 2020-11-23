@@ -187,33 +187,33 @@ class WidgetAdjustmentActivity : BaseActivity(),
     }
 
     private fun saveWidget() {
+        WidgetDBUtil.write(this).apply {
+            try {
+                if (isCreateModel || isAddOnly) {
+                    add(widgetInfo)
+                } else {
+                    update(widgetInfo)
+                }
+            } catch (e: Throwable) {
+                e.printStackTrace()
+            }
+        }.close()
+
         if (isAddOnly) {
             // TODO
-        } else {
-            WidgetDBUtil.write(this).apply {
-                try {
-                    if (isCreateModel) {
-                        add(widgetInfo)
-                    } else {
-                        update(widgetInfo)
-                    }
-                } catch (e: Throwable) {
-                    e.printStackTrace()
-                }
-            }.close()
-
-            widgetEngine?.let {
-                val bitmapProvider = CountdownWidget.BitmapProvider()
-                CountdownWidget.updateWidget(
-                        it, bitmapProvider, widgetInfo, this,
-                        AppWidgetManager.getInstance(this))
-                bitmapProvider.recycle()
-            }
-            setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetInfo.widgetId)
-            })
-            onBackPressed()
+            return
         }
+        widgetEngine?.let {
+            val bitmapProvider = CountdownWidget.BitmapProvider()
+            CountdownWidget.updateWidget(
+                    it, bitmapProvider, widgetInfo, this,
+                    AppWidgetManager.getInstance(this))
+            bitmapProvider.recycle()
+        }
+        setResult(Activity.RESULT_OK, Intent().apply {
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetInfo.widgetId)
+        })
+        onBackPressed()
     }
 
     override fun onInsetsChange(root: View, left: Int, top: Int, right: Int, bottom: Int) {

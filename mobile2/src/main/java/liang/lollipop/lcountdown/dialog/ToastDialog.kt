@@ -54,14 +54,25 @@ class ToastDialog: OnWindowInsetsListener {
 
     private var toastView: View? = null
 
-//    private var
+    private var thisToast: ToastTask? = null
+
+    private var pendingToast: ToastTask? = null
+
+    private var progress = 0F
 
     fun show(activity: Activity,
              text: Int, action: Int, callback: (DismissEvent) -> Unit) {
         val rootView = toastView?:createView(activity)
-        if (rootView.isShown) {
-
+        val shownToast = thisToast
+        if (shownToast != null) {
+            pendingToast = ToastTask(text, action, callback)
+            dismiss()
+            return
         }
+        // TODO
+    }
+
+    fun dismiss() {
         // TODO
     }
 
@@ -94,7 +105,7 @@ class ToastDialog: OnWindowInsetsListener {
     }
 
     enum class DismissEvent {
-        TimeOut, Action, Swipe
+        TimeOut, Action, Swipe, Replace
     }
 
 }

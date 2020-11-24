@@ -17,7 +17,6 @@ open class InnerDialogProvider: BackPressedListener {
     open val layoutId = 0
 
     private var view: View? = null
-        private set
 
     fun bindCallback(callback: Callback?) {
         this.callback = callback

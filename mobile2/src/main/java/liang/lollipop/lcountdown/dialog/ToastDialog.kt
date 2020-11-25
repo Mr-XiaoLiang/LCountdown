@@ -119,13 +119,16 @@ class ToastDialog: OnWindowInsetsListener,
             return
         }
         thisToast = task
-        rootView.findViewById<TextView>(TEXT_ID).setText(task.text)
-        val actionBtn = rootView.findViewById<TextView>(ACTION_ID)
-        if (task.action == CONTENT_NONE) {
-            actionBtn.visibility = View.GONE
-        } else {
-            actionBtn.visibility = View.VISIBLE
-            actionBtn.setText(task.action)
+        find<TextView>(TEXT_ID) {
+            setText(task.text)
+        }
+        find<TextView>(ACTION_ID) {
+            if (task.action == CONTENT_NONE) {
+                visibility = View.GONE
+            } else {
+                visibility = View.VISIBLE
+                setText(task.action)
+            }
         }
         doAnimation(true, task.delay)
     }
@@ -159,6 +162,11 @@ class ToastDialog: OnWindowInsetsListener,
         val self = activity.layoutInflater.inflate(
                 LAYOUT_ID, null, false)
         toastView = self
+        find<View>(ACTION_ID) {
+            setOnClickListener {
+                dismiss(DismissEvent.Action)
+            }
+        }
         self.visibility = View.INVISIBLE
         rootGroup.addView(self,
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -168,7 +176,20 @@ class ToastDialog: OnWindowInsetsListener,
     }
 
     private fun onAnimationEnd(isOpen: Boolean) {
-        // TODO
+        if (!isOpen) {
+            val pending = pendingToast
+            if (pending != null) {
+                pendingToast = null
+                thisToast = null
+                showToast(pending)
+            } else {
+                toastView?.visibility = View.INVISIBLE
+            }
+        }
+    }
+
+    private fun <T: View> find(id: Int, run: T.() -> Unit) {
+        toastView?.findViewById<T>(id)?.let(run)
     }
 
     fun destroy() {
@@ -194,9 +215,9 @@ class ToastDialog: OnWindowInsetsListener,
     override fun onAnimationUpdate(animation: ValueAnimator?) {
         if (animation == animator) {
             progress = animation.animatedValue as Float
-            val contentView = toastView?.findViewById<View>(CONTENT_ID)?:return
-            val height = contentView.top + contentView.height
-            contentView.translationY = height * (1 - progress)
+            find<View>(CONTENT_ID) {
+                translationY = (top + height) * (1 - progress)
+            }
         }
     }
 

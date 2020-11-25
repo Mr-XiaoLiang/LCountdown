@@ -12,6 +12,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
         app:cardCornerRadius="10dp"
+        android:id="@+id/toastCard"
         app:cardBackgroundColor="@color/toastBackground">
 
         <androidx.constraintlayout.widget.ConstraintLayout

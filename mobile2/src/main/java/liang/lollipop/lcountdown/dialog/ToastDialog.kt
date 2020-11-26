@@ -30,8 +30,6 @@ class ToastDialog: OnWindowInsetsListener,
         private const val ACTION_ID = R.id.actionBtn
         private const val CONTENT_ID = R.id.toastCard
 
-        private const val TIMEOUT_OFF = -1L
-
         private const val CONTENT_NONE = 0
 
         private const val ANIMATION_DURATION = 300L
@@ -50,6 +48,18 @@ class ToastDialog: OnWindowInsetsListener,
          * 进度的阈值
          */
         private const val PROGRESS_THRESHOLD = 0.5F
+
+        /**
+         * 短时间显示
+         */
+        const val DELAY_SHORT = 2500L
+
+        /**
+         * 长时间显示
+         */
+        const val DELAY_LONE = 3500L
+
+        private const val TIMEOUT_OFF = -1L
 
         private fun findGroup(rootGroup: View?): ViewGroup? {
             rootGroup?:return null
@@ -102,6 +112,18 @@ class ToastDialog: OnWindowInsetsListener,
 
     private val timeoutTask = task {
         dismiss(DismissEvent.TimeOut)
+    }
+
+    fun show(activity: Activity, text: Int) {
+        show(activity, text, DELAY_SHORT, CONTENT_NONE) {}
+    }
+
+    fun show(activity: Activity, text: Int, action: Int, callback: (DismissEvent) -> Unit) {
+        show(activity, text, TIMEOUT_OFF, action, callback)
+    }
+
+    fun show(activity: Activity, text: Int, delay: Long) {
+        show(activity, text, delay, CONTENT_NONE) {}
     }
 
     private fun show(activity: Activity,

@@ -154,7 +154,8 @@ class WidgetAdjustmentActivity : BaseActivity(),
         }
 
         saveBtn.setOnClickListener {
-            saveWidget()
+            toast(R.string.app_name)
+//            saveWidget()
         }
 
         panelPager.offscreenPageLimit = fragments.size

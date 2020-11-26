@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import liang.lollipop.lcountdown.dialog.ToastDialog
 import liang.lollipop.lcountdown.listener.*
 
 /**
@@ -22,6 +23,10 @@ open class BaseActivity: AppCompatActivity(),
 
     private val backPressedProviderHelper: BackPressedProviderHelper by lazy {
         BackPressedProviderHelper()
+    }
+
+    private val toastDialog: ToastDialog by lazy {
+        ToastDialog()
     }
 
     protected fun initRootGroup(group: View) {
@@ -80,6 +85,18 @@ open class BaseActivity: AppCompatActivity(),
             return
         }
         super.onBackPressed()
+    }
+
+    fun toast(text: Int) {
+        toastDialog.show(this, text)
+    }
+
+    fun toast(text: Int, delay: Int) {
+        toastDialog.show(this, delay)
+    }
+
+    fun toast(text: Int, action: Int, callback: (ToastDialog.DismissEvent) -> Unit) {
+        toastDialog.show(this, text, action, callback)
     }
 
 }

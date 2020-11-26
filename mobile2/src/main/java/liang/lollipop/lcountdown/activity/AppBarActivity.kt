@@ -1,6 +1,7 @@
 package liang.lollipop.lcountdown.activity
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.activity_app_bar.*
 import liang.lollipop.lcountdown.R
@@ -26,6 +27,7 @@ abstract class AppBarActivity : BaseActivity() {
         setContentView(R.layout.activity_app_bar)
         layoutInflater.inflate(layoutId, contentGroup)
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         updateHeadHeight()
         initRootGroup(rootGroup)
         title = getString(R.string.app_name)
@@ -41,10 +43,22 @@ abstract class AppBarActivity : BaseActivity() {
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            onUpClick()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onInsetsChange(root: View, left: Int, top: Int, right: Int, bottom: Int) {
         headGroupInsetsHelper.updateByPadding(root, left, top, right, bottom)
         contentGroupInsetsHelper.setInsetsByPadding(left, 0, right, 0)
         contentGroupInsetsHelper.setInsetsByMargin(0, 0, 0, bottom)
+    }
+
+    protected open fun onUpClick() {
+        onBackPressed()
     }
 
 }

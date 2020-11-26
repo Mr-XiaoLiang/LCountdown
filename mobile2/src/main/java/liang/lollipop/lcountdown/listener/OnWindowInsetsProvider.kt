@@ -7,8 +7,8 @@ package liang.lollipop.lcountdown.listener
  */
 interface OnWindowInsetsProvider {
 
-    fun addOnWindowInsetsProvider(listener: OnWindowInsetsListener)
+    fun addOnWindowInsetsListener(listener: OnWindowInsetsListener)
 
-    fun removeOnWindowInsetsProvider(listener: OnWindowInsetsListener)
+    fun removeOnWindowInsetsListener(listener: OnWindowInsetsListener)
 
 }

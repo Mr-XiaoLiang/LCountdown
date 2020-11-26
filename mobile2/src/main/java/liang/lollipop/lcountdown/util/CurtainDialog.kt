@@ -138,7 +138,7 @@ class CurtainDialog private constructor(
             }
             rootGroup.addView(dialogView)
             windowInsetsHelper.baseMarginFromNow()
-            onWindowInsetsProvider?.addOnWindowInsetsProvider(this)
+            onWindowInsetsProvider?.addOnWindowInsetsListener(this)
         }
         dialogView.post {
             innerDialogProvider?.onStart()
@@ -171,7 +171,7 @@ class CurtainDialog private constructor(
                 }
             }
         }
-        onWindowInsetsProvider?.removeOnWindowInsetsProvider(this)
+        onWindowInsetsProvider?.removeOnWindowInsetsListener(this)
     }
 
     private fun doAnimation(open: Boolean) {

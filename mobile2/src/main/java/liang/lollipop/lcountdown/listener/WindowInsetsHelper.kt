@@ -187,4 +187,20 @@ class WindowInsetsHelper (private val self: View) {
                                      val right: Int, val bottom: Int,
                                      val isPadding: Boolean)
 
+    class SimpleInsetsCallback(view: View,
+                               private val useMargin: Boolean = true): OnWindowInsetsListener {
+
+        private val insetsHelper = WindowInsetsHelper(view)
+
+        override fun onInsetsChange(
+                root: View, left: Int, top: Int, right: Int, bottom: Int) {
+            if (useMargin) {
+                insetsHelper.updateByMargin(root, left, top, right, bottom)
+            } else {
+                insetsHelper.updateByPadding(root, left, top, right, bottom)
+            }
+        }
+
+    }
+
 }

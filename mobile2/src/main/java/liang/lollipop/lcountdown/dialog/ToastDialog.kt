@@ -10,9 +10,11 @@ import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.listener.OnWindowInsetsListener
+import liang.lollipop.lcountdown.listener.OnWindowInsetsProvider
 import liang.lollipop.lcountdown.listener.WindowInsetsHelper
+import liang.lollipop.lcountdown.listener.WindowInsetsProviderHelper
+import liang.lollipop.lcountdown.util.onUI
 import liang.lollipop.lcountdown.util.task
-import java.lang.RuntimeException
 import java.util.*
 import kotlin.math.abs
 
@@ -20,7 +22,8 @@ import kotlin.math.abs
  * @author lollipop
  * @date 11/23/20 21:50
  */
-class ToastDialog: OnWindowInsetsListener,
+class ToastDialog(private var insetsProvider: OnWindowInsetsProvider?):
+        OnWindowInsetsListener,
         ValueAnimator.AnimatorUpdateListener,
         Animator.AnimatorListener {
 
@@ -94,8 +97,6 @@ class ToastDialog: OnWindowInsetsListener,
 
     private var toastView: View? = null
 
-    private var insetsHelper: WindowInsetsHelper? = null
-
     private var thisToast: ToastTask? = null
 
     private var pendingToast: ToastTask? = null
@@ -103,6 +104,8 @@ class ToastDialog: OnWindowInsetsListener,
     private var progress = 0F
 
     private var touchable = false
+
+    private val selfInsetsProviderHelper = WindowInsetsProviderHelper()
 
     private val animator = ValueAnimator().apply {
         duration = ANIMATION_DURATION
@@ -112,6 +115,10 @@ class ToastDialog: OnWindowInsetsListener,
 
     private val timeoutTask = task {
         dismiss(DismissEvent.TimeOut)
+    }
+
+    init {
+        insetsProvider?.addOnWindowInsetsListener(this)
     }
 
     fun show(activity: Activity, text: Int) {
@@ -126,6 +133,10 @@ class ToastDialog: OnWindowInsetsListener,
         show(activity, text, delay, CONTENT_NONE) {}
     }
 
+    fun preload(activity: Activity) {
+        toastView?:createView(activity)
+    }
+
     private fun show(activity: Activity,
              text: Int, delay: Long, action: Int, callback: (DismissEvent) -> Unit) {
         toastView?:createView(activity)
@@ -133,7 +144,7 @@ class ToastDialog: OnWindowInsetsListener,
     }
 
     private fun showToast(task: ToastTask) {
-        val rootView = toastView?:return
+        toastView?:return
         val shownToast = thisToast
         if (shownToast != null) {
             pendingToast = task
@@ -156,7 +167,10 @@ class ToastDialog: OnWindowInsetsListener,
     }
 
     private fun dismiss(event: DismissEvent) {
-        thisToast?.callback?.invoke(event)
+        val callback = thisToast?.callback
+        onUI {
+            callback?.invoke(event)
+        }
         thisToast = null
         doAnimation(false)
     }
@@ -190,10 +204,15 @@ class ToastDialog: OnWindowInsetsListener,
             }
         }
         self.visibility = View.INVISIBLE
+        self.post {
+            progress = 0F
+            updateCard()
+        }
         rootGroup.addView(self,
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT)
-        insetsHelper = WindowInsetsHelper(self)
+        selfInsetsProviderHelper.addOnWindowInsetsListener(
+                WindowInsetsHelper.SimpleInsetsCallback(self, false))
         return self
     }
 
@@ -217,11 +236,20 @@ class ToastDialog: OnWindowInsetsListener,
     fun destroy() {
         animator.cancel()
         timeoutTask.cancel()
+        insetsProvider?.removeOnWindowInsetsListener(this)
+        insetsProvider = null
+        selfInsetsProviderHelper.destroy()
         // TODO
     }
 
     override fun onInsetsChange(root: View, left: Int, top: Int, right: Int, bottom: Int) {
-        insetsHelper?.updateByPadding(root, left, top, right, bottom)
+        selfInsetsProviderHelper.onInsetsChange(root, left, top, right, bottom)
+    }
+
+    private fun updateCard() {
+        find<View>(CONTENT_ID) {
+            translationY = (top + height) * (progress - 1)
+        }
     }
 
     private data class ToastTask(
@@ -237,9 +265,7 @@ class ToastDialog: OnWindowInsetsListener,
     override fun onAnimationUpdate(animation: ValueAnimator?) {
         if (animation == animator) {
             progress = animation.animatedValue as Float
-            find<View>(CONTENT_ID) {
-                translationY = (top + height) * (1 - progress)
-            }
+            updateCard()
         }
     }
 

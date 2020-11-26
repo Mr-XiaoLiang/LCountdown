@@ -99,11 +99,11 @@ abstract class BaseFragment: Fragment(),
         backPressedProviderHelper.removeBackPressedListener(listener)
     }
 
-    override fun addOnWindowInsetsProvider(listener: OnWindowInsetsListener) {
-        windowInsetsProviderHelper.addOnWindowInsetsProvider(listener)
+    override fun addOnWindowInsetsListener(listener: OnWindowInsetsListener) {
+        windowInsetsProviderHelper.addOnWindowInsetsListener(listener)
     }
 
-    override fun removeOnWindowInsetsProvider(listener: OnWindowInsetsListener) {
-        windowInsetsProviderHelper.removeOnWindowInsetsProvider(listener)
+    override fun removeOnWindowInsetsListener(listener: OnWindowInsetsListener) {
+        windowInsetsProviderHelper.removeOnWindowInsetsListener(listener)
     }
 }

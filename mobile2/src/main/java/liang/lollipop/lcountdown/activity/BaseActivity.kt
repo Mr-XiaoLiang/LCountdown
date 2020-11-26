@@ -25,9 +25,7 @@ open class BaseActivity: AppCompatActivity(),
         BackPressedProviderHelper()
     }
 
-    private val toastDialog: ToastDialog by lazy {
-        ToastDialog()
-    }
+    private val toastDialog = ToastDialog(this)
 
     protected fun initRootGroup(group: View) {
         val attributes = window.attributes
@@ -66,18 +64,24 @@ open class BaseActivity: AppCompatActivity(),
         backPressedProviderHelper.removeBackPressedListener(listener)
     }
 
-    override fun addOnWindowInsetsProvider(listener: OnWindowInsetsListener) {
-        windowInsetsProviderHelper.addOnWindowInsetsProvider(listener)
+    override fun addOnWindowInsetsListener(listener: OnWindowInsetsListener) {
+        windowInsetsProviderHelper.addOnWindowInsetsListener(listener)
     }
 
-    override fun removeOnWindowInsetsProvider(listener: OnWindowInsetsListener) {
-        windowInsetsProviderHelper.removeOnWindowInsetsProvider(listener)
+    override fun removeOnWindowInsetsListener(listener: OnWindowInsetsListener) {
+        windowInsetsProviderHelper.removeOnWindowInsetsListener(listener)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        toastDialog.preload(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         windowInsetsProviderHelper.destroy()
         backPressedProviderHelper.destroy()
+        toastDialog.destroy()
     }
 
     override fun onBackPressed() {

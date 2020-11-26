@@ -154,7 +154,9 @@ class WidgetAdjustmentActivity : BaseActivity(),
         }
 
         saveBtn.setOnClickListener {
-            toast(R.string.app_name)
+            toast(R.string.app_name, R.string.save) {
+                toast(R.string.copyright)
+            }
 //            saveWidget()
         }
 

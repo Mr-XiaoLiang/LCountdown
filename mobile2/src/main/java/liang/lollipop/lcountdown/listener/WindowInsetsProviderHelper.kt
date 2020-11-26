@@ -15,7 +15,7 @@ class WindowInsetsProviderHelper: OnWindowInsetsProvider, OnWindowInsetsListener
 
     private val windowInsetsListenerList = ArrayList<OnWindowInsetsListener>()
 
-    override fun addOnWindowInsetsProvider(listener: OnWindowInsetsListener) {
+    override fun addOnWindowInsetsListener(listener: OnWindowInsetsListener) {
         if (windowInsetsListenerList.contains(listener)) {
             return
         }
@@ -26,7 +26,7 @@ class WindowInsetsProviderHelper: OnWindowInsetsProvider, OnWindowInsetsListener
         }
     }
 
-    override fun removeOnWindowInsetsProvider(listener: OnWindowInsetsListener) {
+    override fun removeOnWindowInsetsListener(listener: OnWindowInsetsListener) {
         windowInsetsListenerList.remove(listener)
     }
 

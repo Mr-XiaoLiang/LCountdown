@@ -21,6 +21,11 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".activity.WidgetListActivity"></activity>
         <activity android:name=".activity.AboutActivity">
+
+        </activity>
+        <activity
+            android:name=".activity.WidgetAdjustmentActivity"
+            android:windowSoftInputMode="stateAlwaysVisible|adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,9 +33,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.WidgetAdjustmentActivity"
-            android:windowSoftInputMode="stateAlwaysVisible|adjustNothing"></activity>
         <activity
             android:name=".activity.TimerListActivity"
             android:label="@string/app_name"></activity>

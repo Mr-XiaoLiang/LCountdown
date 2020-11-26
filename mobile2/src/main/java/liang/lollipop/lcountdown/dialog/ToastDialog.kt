@@ -2,7 +2,10 @@ package liang.lollipop.lcountdown.dialog
 
 import android.animation.Animator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.graphics.PointF
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -13,14 +16,17 @@ import liang.lollipop.lcountdown.listener.OnWindowInsetsListener
 import liang.lollipop.lcountdown.listener.OnWindowInsetsProvider
 import liang.lollipop.lcountdown.listener.WindowInsetsHelper
 import liang.lollipop.lcountdown.listener.WindowInsetsProviderHelper
+import liang.lollipop.lcountdown.util.SingleTouchHelper
 import liang.lollipop.lcountdown.util.onUI
 import liang.lollipop.lcountdown.util.task
 import java.util.*
 import kotlin.math.abs
+import kotlin.math.min
 
 /**
  * @author lollipop
  * @date 11/23/20 21:50
+ * 一个用于Toast显示的dialog
  */
 class ToastDialog(private var insetsProvider: OnWindowInsetsProvider?):
         OnWindowInsetsListener,
@@ -204,10 +210,20 @@ class ToastDialog(private var insetsProvider: OnWindowInsetsProvider?):
             }
         }
         self.visibility = View.INVISIBLE
-        self.post {
-            progress = 0F
-            updateCard()
-        }
+        DragHelper.bind(self, CONTENT_ID,
+                { touchable },
+                { find<View>(CONTENT_ID) {
+                        val allHeight = height + top
+                        if (allHeight * -0.3 > translationY) {
+                            // 关闭
+                            progress = translationY / allHeight + 1
+                            dismiss(DismissEvent.Swipe)
+                        } else {
+                            // 打开
+                            doAnimation(true, thisToast?.delay?:0)
+                        }
+                    }
+                })
         rootGroup.addView(self,
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT)
@@ -226,6 +242,8 @@ class ToastDialog(private var insetsProvider: OnWindowInsetsProvider?):
             } else {
                 toastView?.visibility = View.INVISIBLE
             }
+        } else {
+            touchable = thisToast?.delay != TIMEOUT_OFF
         }
     }
 
@@ -239,7 +257,6 @@ class ToastDialog(private var insetsProvider: OnWindowInsetsProvider?):
         insetsProvider?.removeOnWindowInsetsListener(this)
         insetsProvider = null
         selfInsetsProviderHelper.destroy()
-        // TODO
     }
 
     override fun onInsetsChange(root: View, left: Int, top: Int, right: Int, bottom: Int) {
@@ -297,6 +314,107 @@ class ToastDialog(private var insetsProvider: OnWindowInsetsProvider?):
 
     override fun onAnimationRepeat(animation: Animator?) {
         // 动画重复播放，不做处理
+    }
+
+    private class DragHelper private constructor(
+            private val targetId: Int,
+            private val dragEnable: () -> Boolean,
+            private val onUp: () -> Unit): View.OnTouchListener {
+
+        companion object {
+            fun bind(viewGroup: View,
+                     targetId: Int,
+                     dragEnable: () -> Boolean,
+                     onUp: () -> Unit) {
+                viewGroup.setOnTouchListener(DragHelper(targetId, dragEnable, onUp))
+            }
+        }
+
+        private val touchDown = PointF()
+        private val firstLocation = PointF()
+
+        private val singleTouchHelper = SingleTouchHelper(this::onSingleTouch)
+
+        private fun onSingleTouch(
+                view: View, type: SingleTouchHelper.Event, x: Float, y: Float): Boolean {
+            if (view is ViewGroup) {
+                return onGroupTouch(view, type, x, y)
+            }
+            return false
+        }
+
+        @SuppressLint("ClickableViewAccessibility")
+        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+            event?:return false
+            v?:return false
+            if (!dragEnable.invoke()) {
+                return false
+            }
+            return singleTouchHelper.onTouch(v, event)
+        }
+
+        private fun onGroupTouch(
+                group: ViewGroup, type: SingleTouchHelper.Event, x: Float, y: Float): Boolean {
+            when (type) {
+                SingleTouchHelper.Event.Down -> {
+                    val isTouched = touchOnTarget(group, x, y)
+                    if (!isTouched) {
+                        return false
+                    }
+                    touchDown.set(x, y)
+                    updateTargetLocation(group)
+                }
+                SingleTouchHelper.Event.Move -> {
+                    // 只移动Y轴
+                    val offsetY = y - touchDown.y
+                    target(group)?.let {
+                        val translationY = offsetY + firstLocation.y
+                        it.translationY = min(translationY, 0F)
+                    }
+                }
+                SingleTouchHelper.Event.Up -> {
+                    onUp.invoke()
+                }
+                SingleTouchHelper.Event.Change -> {
+                    if (!touchOnTarget(group, x, y)) {
+                        onUp.invoke()
+                        return false
+                    }
+                }
+                SingleTouchHelper.Event.Cancel -> {
+                    onUp.invoke()
+                }
+            }
+            return true
+        }
+
+        private fun touchOnTarget(group: ViewGroup, x: Float, y: Float): Boolean {
+            if (x > group.width || y > group.height) {
+                return false
+            }
+            val child = target(group)?:return false
+            val left = child.left + child.translationX
+            val top = child.top + child.translationY
+            val right = child.right + child.translationX
+            val bottom = child.bottom + child.translationY
+            return left < x && top < y && right > x && bottom > y
+        }
+
+        private fun updateTargetLocation(group: ViewGroup) {
+            val child = target(group)
+            if (child == null) {
+                firstLocation.set(0F, 0F)
+                return
+            }
+            val left = child.translationX
+            val top = child.translationY
+            firstLocation.set(left, top)
+        }
+
+        private fun target(group: ViewGroup): View? {
+            return group.findViewById(targetId)
+        }
+
     }
 
 }

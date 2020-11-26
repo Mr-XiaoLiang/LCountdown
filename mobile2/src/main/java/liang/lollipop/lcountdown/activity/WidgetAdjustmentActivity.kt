@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import kotlinx.android.synthetic.main.activity_widget_adjustment.*
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.dialog.ToastDialog
 import liang.lollipop.lcountdown.engine.WidgetEngine
 import liang.lollipop.lcountdown.fragment.adjustment.*
 import liang.lollipop.lcountdown.info.BackgroundInfo
@@ -155,7 +156,9 @@ class WidgetAdjustmentActivity : BaseActivity(),
 
         saveBtn.setOnClickListener {
             toast(R.string.app_name, R.string.save) {
-                toast(R.string.copyright)
+                if (it == ToastDialog.DismissEvent.Action) {
+                    toast(R.string.copyright)
+                }
             }
 //            saveWidget()
         }

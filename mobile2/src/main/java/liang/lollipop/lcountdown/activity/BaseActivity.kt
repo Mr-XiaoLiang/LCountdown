@@ -95,8 +95,8 @@ open class BaseActivity: AppCompatActivity(),
         toastDialog.show(this, text)
     }
 
-    fun toast(text: Int, delay: Int) {
-        toastDialog.show(this, delay)
+    fun toast(text: Int, outTime: Long) {
+        toastDialog.show(this, text, outTime)
     }
 
     fun toast(text: Int, action: Int, callback: (ToastDialog.DismissEvent) -> Unit) {

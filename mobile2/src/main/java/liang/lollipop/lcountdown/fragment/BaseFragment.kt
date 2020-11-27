@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import liang.lollipop.lcountdown.activity.BaseActivity
+import liang.lollipop.lcountdown.dialog.ToastDialog
 import liang.lollipop.lcountdown.listener.*
 
 /**
@@ -106,4 +108,29 @@ abstract class BaseFragment: Fragment(),
     override fun removeOnWindowInsetsListener(listener: OnWindowInsetsListener) {
         windowInsetsProviderHelper.removeOnWindowInsetsListener(listener)
     }
+
+    fun toast(text: Int) {
+        activity?.let {
+            if (it is BaseActivity) {
+                it.toast(text)
+            }
+        }
+    }
+
+    fun toast(text: Int, outTime: Long) {
+        activity?.let {
+            if (it is BaseActivity) {
+                it.toast(text, outTime)
+            }
+        }
+    }
+
+    fun toast(text: Int, action: Int, callback: (ToastDialog.DismissEvent) -> Unit) {
+        activity?.let {
+            if (it is BaseActivity) {
+                it.toast(text, action, callback)
+            }
+        }
+    }
+
 }

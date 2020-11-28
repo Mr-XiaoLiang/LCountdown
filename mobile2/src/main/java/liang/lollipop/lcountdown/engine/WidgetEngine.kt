@@ -58,12 +58,19 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
         updateCard(widgetInfo.backgroundInfo)
         updateBackground(widgetInfo.backgroundInfo)
         updateText(widgetInfo.textInfoArray)
-        measure(widgetRoot,
-                widgetInfo.width.toDip(widgetRoot).toInt(),
-                widgetInfo.height.toDip(widgetRoot).toInt())
-        layout(widgetRoot,
-                widgetInfo.width.toDip(widgetRoot).toInt(),
-                widgetInfo.height.toDip(widgetRoot).toInt())
+
+        val width = widgetInfo.width.toDip(widgetRoot).toInt()
+        val height = widgetInfo.height.toDip(widgetRoot).toInt()
+
+        val layoutParams = widgetRoot.layoutParams
+        if (layoutParams != null) {
+            layoutParams.width = width
+            layoutParams.height = height
+            widgetRoot.layoutParams = layoutParams
+        } else {
+            measure(widgetRoot, width, height)
+            layout(widgetRoot, width, height)
+        }
     }
 
     fun updateCard(backgroundInfo: BackgroundInfo) {

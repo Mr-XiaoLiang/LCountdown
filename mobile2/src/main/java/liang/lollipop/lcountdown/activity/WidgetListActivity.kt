@@ -31,10 +31,29 @@ class WidgetListActivity : AppBarActivity() {
     override val layoutId: Int
         get() = R.layout.activity_widget_list
 
-    private class WidgetListFragment(private val type: Int): Fragment() {
+    private class WidgetListFragment: Fragment() {
+
+        companion object {
+            private const val ARG_TYPE = "TYPE"
+
+            fun create(type: Int): WidgetListFragment {
+                val fragment = WidgetListFragment()
+                val arguments = fragment.arguments?:Bundle()
+                arguments.putInt(ARG_TYPE, type)
+                fragment.arguments = arguments
+                return fragment
+            }
+        }
 
         private val widgetData = ArrayList<WidgetInfo>()
         private val adapter = WidgetAdapter(widgetData, ::onItemClick)
+
+        private var type = TYPE_ALL
+
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            type = arguments?.getInt(ARG_TYPE)?:TYPE_ALL
+        }
 
         override fun onCreateView(
                 inflater: LayoutInflater,
@@ -55,6 +74,11 @@ class WidgetListActivity : AppBarActivity() {
                         .onSwiped(::onItemSwipe)
                 adapter.notifyDataSetChanged()
             }
+        }
+
+        override fun onStart() {
+            super.onStart()
+            loadData()
         }
 
         private fun loadData() {

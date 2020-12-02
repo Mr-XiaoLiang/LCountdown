@@ -1,14 +1,18 @@
 package liang.lollipop.lcountdown.activity
 
 import android.appwidget.AppWidgetManager
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.activity_widget_list.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.engine.WidgetEngine
 import liang.lollipop.lcountdown.info.WidgetInfo
@@ -30,6 +34,38 @@ class WidgetListActivity : AppBarActivity() {
 
     override val layoutId: Int
         get() = R.layout.activity_widget_list
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val widgetPageAdapter = WidgetPageAdapter(supportFragmentManager, resources)
+        viewPager.adapter = widgetPageAdapter
+        viewPager.offscreenPageLimit = widgetPageAdapter.count
+        tabLayout.setupWithViewPager(viewPager, true)
+    }
+
+    private class WidgetPageAdapter(fragmentManager: FragmentManager,
+                                    private val res: Resources)
+        : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+
+        private val fragmentArray = arrayOf(
+                WidgetListFragment.create(TYPE_ALL),
+                WidgetListFragment.create(TYPE_SHOWN),
+                WidgetListFragment.create(TYPE_HIDE),
+        )
+
+        override fun getCount(): Int {
+            return fragmentArray.size
+        }
+
+        override fun getItem(position: Int): Fragment {
+            return fragmentArray[position]
+        }
+
+        override fun getPageTitle(position: Int): CharSequence {
+            return res.getString(fragmentArray[position].title)
+        }
+
+    }
 
     private class WidgetListFragment: Fragment() {
 
@@ -81,6 +117,15 @@ class WidgetListActivity : AppBarActivity() {
             loadData()
         }
 
+        val title: Int
+            get() {
+                return when (type) {
+                    TYPE_SHOWN -> { R.string.widget_list_shown }
+                    TYPE_HIDE -> { R.string.widget_list_hide }
+                    else -> { R.string.widget_list_all }
+                }
+            }
+
         private fun loadData() {
             // TODO
         }
@@ -121,7 +166,7 @@ class WidgetListActivity : AppBarActivity() {
 
     private class WidgetHolder
         private constructor(view: View,
-            private val onClick: (WidgetHolder) -> Unit): RecyclerView.ViewHolder(view), SwipeableHolder {
+                            private val onClick: (WidgetHolder) -> Unit): RecyclerView.ViewHolder(view), SwipeableHolder {
 
             companion object {
                 fun create(

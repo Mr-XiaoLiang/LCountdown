@@ -75,5 +75,8 @@
     <string name="card_width">卡片宽度</string>
     <string name="copyright">Make by Lollipop</string>
 
+    <string name="widget_list_all">全部</string>
+    <string name="widget_list_shown">已展示</string>
+    <string name="widget_list_hide">未展示</string>
 
 </resources>

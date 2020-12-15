@@ -41,13 +41,17 @@ class WidgetDBUtil private constructor(context: Context): BaseDBUtil<WidgetInfo>
                 " $INFO VARCHAR " +
                 " );"
 
-        const val FIND_BY_ID = " select $ID, $WIDGET, $INFO from $NAME WHERE $ID = ? ;"
+        private const val ALL_COLUMN = "$ID, $WIDGET, $INFO"
 
-        const val SELECT_ALL_WIDGET = " select $ID, $WIDGET, $INFO from $NAME WHERE $WIDGET <> 0 ;"
+        const val FIND_BY_ID = " select $ALL_COLUMN from $NAME WHERE $ID = ? ;"
 
-        const val FIND_BY_WIDGET = " select $ID, $WIDGET, $INFO from $NAME WHERE $WIDGET = ? ;"
+        const val SELECT_SHOWN_WIDGET = " select $ALL_COLUMN from $NAME WHERE $WIDGET <> 0 ;"
 
-        const val SELECT_ALL = " select $ID, $WIDGET, $INFO from $NAME ;"
+        const val SELECT_HIDE_WIDGET = " select $ALL_COLUMN from $NAME WHERE $WIDGET == 0 ;"
+
+        const val FIND_BY_WIDGET = " select $ALL_COLUMN from $NAME WHERE $WIDGET = ? ;"
+
+        const val SELECT_ALL = " select $ALL_COLUMN from $NAME ;"
     }
 
     override val createSql: String = WidgetTable.CREATE_TABLE
@@ -118,10 +122,21 @@ class WidgetDBUtil private constructor(context: Context): BaseDBUtil<WidgetInfo>
             return result > 0
         }
 
-        fun getAllWidget(list: ArrayList<WidgetInfo>): Boolean {
+        fun getShownWidget(list: ArrayList<WidgetInfo>): Boolean {
             list.clear()
             val sql = getSqLiteDatabase()
-            val c = sql.rawQuery(WidgetTable.SELECT_ALL_WIDGET, null)
+            val c = sql.rawQuery(WidgetTable.SELECT_SHOWN_WIDGET, null)
+            while (c.moveToNext()) {
+                list.add(WidgetTableProvider.createWidgetInfo(c))
+            }
+            c.close()
+            return true
+        }
+
+        fun getHideWidget(list: ArrayList<WidgetInfo>): Boolean {
+            list.clear()
+            val sql = getSqLiteDatabase()
+            val c = sql.rawQuery(WidgetTable.SELECT_HIDE_WIDGET, null)
             while (c.moveToNext()) {
                 list.add(WidgetTableProvider.createWidgetInfo(c))
             }

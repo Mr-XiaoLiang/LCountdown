@@ -1,6 +1,7 @@
 package liang.lollipop.lcountdown.activity
 
 import android.appwidget.AppWidgetManager
+import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,12 +14,16 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_widget_list.*
+import kotlinx.android.synthetic.main.fragment_widget_list.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.engine.WidgetEngine
 import liang.lollipop.lcountdown.info.WidgetInfo
+import liang.lollipop.lcountdown.util.WidgetDBUtil
+import liang.lollipop.lcountdown.util.doAsync
 import liang.lollipop.lcountdown.util.list.DirectionInfo
 import liang.lollipop.lcountdown.util.list.ListTouchHelper
 import liang.lollipop.lcountdown.util.list.SwipeableHolder
+import liang.lollipop.lcountdown.util.onUI
 
 /**
  * 小部件列表
@@ -86,29 +91,42 @@ class WidgetListActivity : AppBarActivity() {
 
         private var type = TYPE_ALL
 
+        private var dbUtil: WidgetDBUtil.WidgetSqlDB? = null
+
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             type = arguments?.getInt(ARG_TYPE)?:TYPE_ALL
+        }
+
+        override fun onAttach(context: Context) {
+            super.onAttach(context)
+            dbUtil = WidgetDBUtil.write(context)
+        }
+
+        override fun onDetach() {
+            super.onDetach()
+            dbUtil = null
         }
 
         override fun onCreateView(
                 inflater: LayoutInflater,
                 container: ViewGroup?,
                 savedInstanceState: Bundle?): View? {
-            container?:return null
-            return RecyclerView(container.context)
+            return inflater.inflate(R.layout.fragment_widget_list, container, false)
         }
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
-            if (view is RecyclerView) {
-                view.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
-                view.adapter = adapter
-                ListTouchHelper.with(view)
-                        .moveOrientation(DirectionInfo.NONE)
-                        .swipeOrientation(DirectionInfo.HORIZONTAL)
-                        .onSwiped(::onItemSwipe)
-                adapter.notifyDataSetChanged()
+            recyclerView.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
+            recyclerView.adapter = adapter
+            ListTouchHelper.with(recyclerView)
+                    .moveOrientation(DirectionInfo.NONE)
+                    .swipeOrientation(DirectionInfo.HORIZONTAL)
+                    .onSwiped(::onItemSwipe)
+            adapter.notifyDataSetChanged()
+
+            refreshLayout.setOnRefreshListener {
+                loadData()
             }
         }
 
@@ -127,7 +145,31 @@ class WidgetListActivity : AppBarActivity() {
             }
 
         private fun loadData() {
-            // TODO
+            val db = dbUtil
+            if (db == null) {
+                refreshLayout.isRefreshing = false
+                return
+            }
+            refreshLayout.isRefreshing = true
+            doAsync {
+                when (type) {
+                    TYPE_SHOWN -> {
+                        db.getShownWidget(widgetData)
+                    }
+                    TYPE_HIDE -> {
+                        db.getHideWidget(widgetData)
+                    }
+                    else -> {
+                        db.getAll(widgetData)
+                    }
+                }
+                onUI {
+                    if (!isDetached) {
+                        adapter.notifyDataSetChanged()
+                        refreshLayout.isRefreshing = false
+                    }
+                }
+            }
         }
 
         private fun onItemClick(index: Int) {

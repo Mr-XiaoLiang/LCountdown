@@ -173,7 +173,8 @@ class WidgetListActivity : AppBarActivity() {
         }
 
         private fun onItemClick(index: Int) {
-            // TODO
+            val ctx = context?:return
+            startActivity(WidgetAdjustmentActivity.createIntent(ctx, widgetData[index].id))
         }
 
         private fun onItemSwipe(

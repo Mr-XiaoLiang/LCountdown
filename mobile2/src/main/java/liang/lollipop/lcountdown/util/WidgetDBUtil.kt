@@ -34,24 +34,28 @@ class WidgetDBUtil private constructor(context: Context): BaseDBUtil<WidgetInfo>
         const val ID = "ID"
         const val INFO = "INFO"
         const val WIDGET = "WIDGET"
+        const val REMOVE = "IS_REMOVE"
 
         const val CREATE_TABLE = "CREATE TABLE $NAME ( " +
                 " $ID INTEGER PRIMARY KEY AUTOINCREMENT , " +
                 " $WIDGET INTEGER , " +
-                " $INFO VARCHAR " +
+                " $INFO VARCHAR , " +
+                " $REMOVE INTEGER " +
                 " );"
 
-        private const val ALL_COLUMN = "$ID, $WIDGET, $INFO"
+        private const val ALL_COLUMN = "$ID, $WIDGET, $INFO, $REMOVE"
 
         const val FIND_BY_ID = " select $ALL_COLUMN from $NAME WHERE $ID = ? ;"
 
-        const val SELECT_SHOWN_WIDGET = " select $ALL_COLUMN from $NAME WHERE $WIDGET <> 0 ;"
+        const val SELECT_SHOWN_WIDGET = " select $ALL_COLUMN from $NAME WHERE $WIDGET <> 0 AND $REMOVE == 0 ;"
 
-        const val SELECT_HIDE_WIDGET = " select $ALL_COLUMN from $NAME WHERE $WIDGET == 0 ;"
+        const val SELECT_HIDE_WIDGET = " select $ALL_COLUMN from $NAME WHERE $WIDGET == 0 AND $REMOVE == 0 ;"
 
         const val FIND_BY_WIDGET = " select $ALL_COLUMN from $NAME WHERE $WIDGET = ? ;"
 
-        const val SELECT_ALL = " select $ALL_COLUMN from $NAME ;"
+        const val SELECT_ALL = " select $ALL_COLUMN from $NAME WHERE $REMOVE == 0 ;"
+
+        const val SELECT_ASHCAN = " select $ALL_COLUMN from $NAME WHERE $REMOVE <> 0 ;"
     }
 
     override val createSql: String = WidgetTable.CREATE_TABLE

@@ -126,10 +126,10 @@ class WidgetDBUtil private constructor(context: Context): BaseDBUtil<WidgetInfo>
             return result > 0
         }
 
-        fun getShownWidget(list: ArrayList<WidgetInfo>): Boolean {
+        private fun getWidgetBySql(sqlStr: String, list: ArrayList<WidgetInfo>): Boolean {
             list.clear()
             val sql = getSqLiteDatabase()
-            val c = sql.rawQuery(WidgetTable.SELECT_SHOWN_WIDGET, null)
+            val c = sql.rawQuery(sqlStr, null)
             while (c.moveToNext()) {
                 list.add(WidgetTableProvider.createWidgetInfo(c))
             }
@@ -137,15 +137,16 @@ class WidgetDBUtil private constructor(context: Context): BaseDBUtil<WidgetInfo>
             return true
         }
 
+        fun getShownWidget(list: ArrayList<WidgetInfo>): Boolean {
+            return getWidgetBySql(WidgetTable.SELECT_SHOWN_WIDGET, list)
+        }
+
         fun getHideWidget(list: ArrayList<WidgetInfo>): Boolean {
-            list.clear()
-            val sql = getSqLiteDatabase()
-            val c = sql.rawQuery(WidgetTable.SELECT_HIDE_WIDGET, null)
-            while (c.moveToNext()) {
-                list.add(WidgetTableProvider.createWidgetInfo(c))
-            }
-            c.close()
-            return true
+            return getWidgetBySql(WidgetTable.SELECT_HIDE_WIDGET, list)
+        }
+
+        fun getAshcanWidget(list: ArrayList<WidgetInfo>): Boolean {
+            return getWidgetBySql(WidgetTable.SELECT_ASHCAN, list)
         }
 
     }

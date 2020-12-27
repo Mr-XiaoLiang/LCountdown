@@ -91,6 +91,11 @@ class WidgetInfo(obj: JSONObject = JSONObject()): JsonInfo(obj), TimeInfoProvide
     override var isCountdown: Boolean by BooleanDelegate(this)
 
     /**
+     * 是否被移除
+     */
+    var isRemove: Boolean by BooleanDelegate(this, false)
+
+    /**
      * 循环模式
      */
     override var cycleType: TimeInfoProvider.CycleType by EnumDelegate(this,

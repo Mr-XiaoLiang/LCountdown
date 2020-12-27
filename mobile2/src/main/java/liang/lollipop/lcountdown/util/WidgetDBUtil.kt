@@ -87,6 +87,7 @@ class WidgetDBUtil private constructor(context: Context): BaseDBUtil<WidgetInfo>
             contentValues.apply {
                 put(WidgetTable.WIDGET, info.widgetId)
                 put(WidgetTable.INFO, info.toString())
+                put(WidgetTable.REMOVE, if (info.isRemove) { 1 } else { 0 } )
             }
         }
 
@@ -147,6 +148,24 @@ class WidgetDBUtil private constructor(context: Context): BaseDBUtil<WidgetInfo>
 
         fun getAshcanWidget(list: ArrayList<WidgetInfo>): Boolean {
             return getWidgetBySql(WidgetTable.SELECT_ASHCAN, list)
+        }
+
+        fun removeByWidgetId(widgetId: Int): Boolean {
+            val sql = getSqLiteDatabase()
+            val values = ContentValues()
+            values.put(WidgetTable.REMOVE, 1)
+            val result = sql.update(tableProvider.tableName, values,
+                    " ${WidgetTable.WIDGET} = ? ", arrayOf("$widgetId"))
+            return result > 0
+        }
+
+        fun removeById(id: Int): Boolean {
+            val sql = getSqLiteDatabase()
+            val values = ContentValues()
+            values.put(WidgetTable.REMOVE, 1)
+            val result = sql.update(tableProvider.tableName, values,
+                    " ${WidgetTable.ID} = ? ", arrayOf("$id"))
+            return result > 0
         }
 
     }

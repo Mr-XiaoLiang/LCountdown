@@ -180,7 +180,15 @@ class WidgetListActivity : AppBarActivity() {
         private fun onItemSwipe(
                 viewHolder: RecyclerView.ViewHolder,
                 direction: ListTouchHelper.Direction) {
-            // TODO
+            val adapterPosition = viewHolder.adapterPosition
+            val widgetInfo = widgetData[adapterPosition]
+            widgetData.remove(widgetInfo)
+            adapter.notifyItemRemoved(adapterPosition)
+            dbUtil?.let { db ->
+                doAsync {
+                    db.removeById(widgetInfo.id)
+                }
+            }
         }
 
     }

@@ -150,15 +150,6 @@ class WidgetDBUtil private constructor(context: Context): BaseDBUtil<WidgetInfo>
             return getWidgetBySql(WidgetTable.SELECT_ASHCAN, list)
         }
 
-        fun removeByWidgetId(widgetId: Int): Boolean {
-            val sql = getSqLiteDatabase()
-            val values = ContentValues()
-            values.put(WidgetTable.REMOVE, 1)
-            val result = sql.update(tableProvider.tableName, values,
-                    " ${WidgetTable.WIDGET} = ? ", arrayOf("$widgetId"))
-            return result > 0
-        }
-
         fun removeById(id: Int): Boolean {
             val sql = getSqLiteDatabase()
             val values = ContentValues()

@@ -151,9 +151,17 @@ class WidgetDBUtil private constructor(context: Context): BaseDBUtil<WidgetInfo>
         }
 
         fun removeById(id: Int): Boolean {
+            return setRemoveFlagById(id, 1)
+        }
+
+        fun recycleById(id: Int): Boolean {
+            return setRemoveFlagById(id, 0)
+        }
+
+        private fun setRemoveFlagById(id: Int, flag: Int): Boolean {
             val sql = getSqLiteDatabase()
             val values = ContentValues()
-            values.put(WidgetTable.REMOVE, 1)
+            values.put(WidgetTable.REMOVE, flag)
             val result = sql.update(tableProvider.tableName, values,
                     " ${WidgetTable.ID} = ? ", arrayOf("$id"))
             return result > 0

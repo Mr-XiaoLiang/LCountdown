@@ -78,5 +78,6 @@
     <string name="widget_list_all">全部</string>
     <string name="widget_list_shown">已展示</string>
     <string name="widget_list_hide">未展示</string>
+    <string name="add_widget">添加小部件</string>
 
 </resources>

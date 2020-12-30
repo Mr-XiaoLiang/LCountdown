@@ -4,9 +4,7 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -46,6 +44,21 @@ class WidgetListActivity : AppBarActivity() {
         viewPager.adapter = widgetPageAdapter
         viewPager.offscreenPageLimit = widgetPageAdapter.count
         tabLayout.setupWithViewPager(viewPager, true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_widget_list, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.addWidget -> {
+                // TODO
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private class WidgetPageAdapter(fragmentManager: FragmentManager,

@@ -6,6 +6,7 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.view.*
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -55,6 +56,7 @@ class WidgetListActivity : AppBarActivity() {
         when (item.itemId) {
             R.id.addWidget -> {
                 // TODO
+                Toast.makeText(this, "待开发", Toast.LENGTH_SHORT).show()
                 return true
             }
         }

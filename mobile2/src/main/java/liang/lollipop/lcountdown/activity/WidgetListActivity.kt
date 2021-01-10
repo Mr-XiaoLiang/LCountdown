@@ -87,13 +87,14 @@ class WidgetListActivity : AppBarActivity() {
 
     }
 
-    private class WidgetListFragment: Fragment() {
+    class WidgetListFragment: Fragment() {
 
         companion object {
             private const val ARG_TYPE = "TYPE"
 
             fun create(type: Int): WidgetListFragment {
                 val fragment = WidgetListFragment()
+                fragment.type = type
                 val arguments = fragment.arguments?:Bundle()
                 arguments.putInt(ARG_TYPE, type)
                 fragment.arguments = arguments
@@ -143,6 +144,7 @@ class WidgetListActivity : AppBarActivity() {
             refreshLayout.setOnRefreshListener {
                 loadData()
             }
+            refreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary)
         }
 
         override fun onStart() {

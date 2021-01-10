@@ -155,12 +155,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
         }
 
         saveBtn.setOnClickListener {
-            toast(R.string.app_name, R.string.save) {
-                if (it == ToastDialog.DismissEvent.Action) {
-                    toast(R.string.copyright)
-                }
-            }
-//            saveWidget()
+            saveWidget()
         }
 
         panelPager.offscreenPageLimit = fragments.size
@@ -207,6 +202,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
 
         if (isAddOnly) {
             // TODO
+            onBackPressed()
             return
         }
         widgetEngine?.let {

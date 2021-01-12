@@ -55,8 +55,7 @@ class WidgetListActivity : AppBarActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.addWidget -> {
-                // TODO
-                Toast.makeText(this, "待开发", Toast.LENGTH_SHORT).show()
+                WidgetAdjustmentActivity.addLocalWidget(this)
                 return true
             }
         }

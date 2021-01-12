@@ -104,8 +104,8 @@ class WidgetAdjustmentActivity : BaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_widget_adjustment)
         initRootGroup(rootGroup)
-        initData()
         initView()
+        initData()
     }
 
     private fun initData() {

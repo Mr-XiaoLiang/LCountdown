@@ -248,7 +248,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
             return fragments.size
         }
 
-        override fun getPageTitle(position: Int): CharSequence? {
+        override fun getPageTitle(position: Int): CharSequence {
             val titleId = fragments[position].title
             if (titleId != 0) {
                 return context.getString(titleId)

@@ -200,7 +200,6 @@ class WidgetAdjustmentActivity : BaseActivity(),
         }.close()
 
         if (isAddOnly) {
-            // TODO
             onBackPressed()
             return
         }

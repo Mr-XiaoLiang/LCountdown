@@ -1,3 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimary">#3D5059</color>
+    <color name="colorPrimaryDark">#1A2B32</color>
+    <color name="colorPrimaryLight">#5C6F78</color>
+    <color name="colorAccent">#61464F</color>
+    <color name="colorPrimaryText">#DDA3A3A3</color>
+    <color name="windowBackground">#1A2B32</color>
+    <color name="contentBackground">#000000</color>
+
+    <color name="toolbarIcon">#DDA3A3A3</color>
+    <color name="toolbarTitle">#DDA3A3A3</color>
+
+    <color name="fabIcon">#DDA3A3A3</color>
+    <color name="fabBackground">#61464F</color>
+
+    <color name="radioTextColor">#424242</color>
+
+    <color name="focusTimeAdjust">#A86D6D</color>
+    <color name="focusTextAdjust">#558580</color>
+    <color name="focusFontAdjust">#93586C</color>
+    <color name="focusColorAdjust">#658366</color>
+    <color name="focusLocationAdjust">#87618E</color>
+    <color name="focusGradientAdjust">#7E8F6A</color>
+    <color name="focusImageAdjust">#695C80</color>
+    <color name="focusCardAdjust">#808557</color>
+    <color name="focusSettingsAdjust">#636887</color>
+
+    <color name="tabUnselectedColor">#DDA3A3A3</color>
+
+    <color name="curtainCard">#DDA3A3A3</color>
+
+    <color name="linePlatBackground">#DDA3A3A3</color>
+
+    <color name="splitLine">#333333</color>
+
+    <color name="curtainText">#A5A5A5</color>
+    <color name="curtainTextSecondary">#858484</color>
+
+    <color name="toastBackground">#3D5059</color>
+    <color name="toastAction">#61464F</color>
+    <color name="toastText">#A5A5A5</color>
 </resources>

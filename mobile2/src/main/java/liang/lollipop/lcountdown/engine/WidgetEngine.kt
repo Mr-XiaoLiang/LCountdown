@@ -166,6 +166,7 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
         while (textViews.size < textCount) {
             val view = findTextView()
             add(textGroup, view)
+            textViews.add(view)
         }
 
         // 获取偏移量的步长

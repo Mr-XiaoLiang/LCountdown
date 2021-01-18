@@ -19,6 +19,7 @@ import liang.lollipop.lcountdown.info.BackgroundInfo
 import liang.lollipop.lcountdown.info.TextColor
 import liang.lollipop.lcountdown.info.TextInfoArray
 import liang.lollipop.lcountdown.info.WidgetInfo
+import liang.lollipop.lcountdown.listener.WidgetInfoStatusListener
 import liang.lollipop.lcountdown.provider.*
 import liang.lollipop.lcountdown.util.*
 import liang.lollipop.lcountdown.widget.CountdownWidget
@@ -29,6 +30,7 @@ import liang.lollipop.ltabview.LTabView
  * 小部件的调整页面
  */
 class WidgetAdjustmentActivity : BaseActivity(),
+        WidgetInfoStatusProvider,
         TimeAdjustmentFragment.Callback,
         TextAdjustmentFragment.Callback,
         FontAdjustmentFragment.Callback,
@@ -98,6 +100,8 @@ class WidgetAdjustmentActivity : BaseActivity(),
         get() {
             return intent.getIntExtra(ARG_SHOW, 0) < 1
         }
+
+    private val infoStatusListenerList = ArrayList<WidgetInfoStatusListener>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -216,6 +220,12 @@ class WidgetAdjustmentActivity : BaseActivity(),
         onBackPressed()
     }
 
+    private fun callWidgetInfoChanged() {
+        for (listener in infoStatusListenerList) {
+            listener.onWidgetInfoChange()
+        }
+    }
+
     override fun onInsetsChange(root: View, left: Int, top: Int, right: Int, bottom: Int) {
         tabGroup.setPadding(left, 0, right, bottom.zeroTo{ 10F.toDip(root).toInt() })
         bottomSheetHelper?.paddingBottom = bottom
@@ -262,6 +272,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
 
     override fun onTextInfoChange() {
         widgetEngine?.updateText(textInfoArray)
+        callWidgetInfoChanged()
     }
 
     override fun getFontSizeProvider(): FontSizeProvider {
@@ -270,6 +281,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
 
     override fun onFontSizeChange(index: Int, fontSize: Float) {
         widgetEngine?.updateText(textInfoArray)
+        callWidgetInfoChanged()
     }
 
     override fun getFontColorProvider(): FontColorProvider {
@@ -278,10 +290,12 @@ class WidgetAdjustmentActivity : BaseActivity(),
 
     override fun onFontColorChange(index: Int, fontColor: TextColor) {
         widgetEngine?.updateText(textInfoArray)
+        callWidgetInfoChanged()
     }
 
     override fun onBackgroundColorChange() {
         widgetEngine?.updateBackground(backgroundInfo)
+        callWidgetInfoChanged()
     }
 
     override fun getBackgroundColorProvider(): BackgroundColorProvider {
@@ -290,6 +304,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
 
     override fun onBackgroundCardChange() {
         widgetEngine?.updateCard(backgroundInfo)
+        callWidgetInfoChanged()
     }
 
     override fun getBackgroundCardProvider(): BackgroundCardProvider {
@@ -302,6 +317,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
 
     override fun onTextLocationChange(index: Int) {
         widgetEngine?.updateText(textInfoArray)
+        callWidgetInfoChanged()
     }
 
     override fun getTimeInfoProvider(): TimeInfoProvider {
@@ -310,6 +326,18 @@ class WidgetAdjustmentActivity : BaseActivity(),
 
     override fun onTimeInfoChange() {
         widgetEngine?.updateText(textInfoArray)
+        callWidgetInfoChanged()
+    }
+
+    override fun registerWidgetInfoStatusListener(listener: WidgetInfoStatusListener) {
+        if (infoStatusListenerList.contains(listener)) {
+            return
+        }
+        infoStatusListenerList.add(listener)
+    }
+
+    override fun unregisterWidgetInfoStatusListener(listener: WidgetInfoStatusListener) {
+        infoStatusListenerList.remove(listener)
     }
 
 }

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import liang.lollipop.lcountdown.activity.BaseActivity
 import liang.lollipop.lcountdown.dialog.ToastDialog
 import liang.lollipop.lcountdown.listener.*
+import liang.lollipop.lcountdown.provider.WidgetInfoStatusProvider
 
 /**
  * @author lollipop
@@ -15,7 +16,8 @@ import liang.lollipop.lcountdown.listener.*
 abstract class BaseFragment: Fragment(),
         BackPressedListener,
         BackPressedProvider,
-        OnWindowInsetsProvider {
+        OnWindowInsetsProvider,
+        WidgetInfoStatusListener{
 
     private var lifecycleHelper: FragmentLifecycleHelper = FragmentLifecycleHelper()
 
@@ -66,11 +68,30 @@ abstract class BaseFragment: Fragment(),
     override fun onAttach(context: Context) {
         super.onAttach(context)
         lifecycleHelper.onAttach(context)
+        if (context is WidgetInfoStatusProvider) {
+            context.registerWidgetInfoStatusListener(this)
+        } else {
+            parentFragment?.let { it ->
+                if (it is WidgetInfoStatusProvider) {
+                    it.registerWidgetInfoStatusListener(this)
+                }
+            }
+        }
     }
 
     override fun onDetach() {
         super.onDetach()
         lifecycleHelper.onDetach()
+        context?.let {
+            if (it is WidgetInfoStatusProvider) {
+                it.unregisterWidgetInfoStatusListener(this)
+            }
+        }
+        parentFragment?.let { it ->
+            if (it is WidgetInfoStatusProvider) {
+                it.unregisterWidgetInfoStatusListener(this)
+            }
+        }
     }
 
     fun addLifecycleListener(listener: FragmentLifecycleListener) {
@@ -108,6 +129,8 @@ abstract class BaseFragment: Fragment(),
     override fun removeOnWindowInsetsListener(listener: OnWindowInsetsListener) {
         windowInsetsProviderHelper.removeOnWindowInsetsListener(listener)
     }
+
+    override fun onWidgetInfoChange() { }
 
     fun toast(text: Int) {
         activity?.let {

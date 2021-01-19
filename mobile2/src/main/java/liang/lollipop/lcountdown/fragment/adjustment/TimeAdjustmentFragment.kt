@@ -89,6 +89,11 @@ class TimeAdjustmentFragment: BaseAdjustmentFragment() {
         parse()
     }
 
+    override fun onWidgetInfoChange() {
+        super.onWidgetInfoChange()
+        parse()
+    }
+
     private fun parse() {
         listenerLock = true
         calendar.timeInMillis = infoProvider.targetTime

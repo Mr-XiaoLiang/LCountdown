@@ -105,6 +105,15 @@ class CardAdjustmentFragment : BaseAdjustmentFragment() {
 
     override fun onResume() {
         super.onResume()
+        update()
+    }
+
+    override fun onWidgetInfoChange() {
+        super.onWidgetInfoChange()
+        update()
+    }
+
+    private fun update() {
         recycleView.adapter?.notifyDataSetChanged()
         backgroundSwitch.isChecked = cardProvider.isShow
     }

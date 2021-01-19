@@ -163,6 +163,15 @@ class ColorAdjustmentFragment: BaseAdjustmentFragment() {
 
     override fun onResume() {
         super.onResume()
+        update()
+    }
+
+    override fun onWidgetInfoChange() {
+        super.onWidgetInfoChange()
+        update()
+    }
+
+    private fun update() {
         focusItemAdapter.notifyDataSetChanged()
         parser(textFocusProvider?.let { getColorByIndex(it.getSelectedIndex()) }?:Color.WHITE)
     }

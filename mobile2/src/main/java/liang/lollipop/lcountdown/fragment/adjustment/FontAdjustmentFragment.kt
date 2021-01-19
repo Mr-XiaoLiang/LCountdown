@@ -59,6 +59,11 @@ class FontAdjustmentFragment: BaseAdjustmentFragment() {
         fontSizeProvider.setFontSize(position, size)
     }
 
+    override fun onWidgetInfoChange() {
+        super.onWidgetInfoChange()
+        adapter.notifyDataSetChanged()
+    }
+
     private class AdjustmentProvider: InnerDialogProvider() {
         override val layoutId = R.layout.dialog_adjustment_font
     }

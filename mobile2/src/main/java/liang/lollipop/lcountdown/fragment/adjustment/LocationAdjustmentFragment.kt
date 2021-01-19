@@ -108,6 +108,11 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
         parse()
     }
 
+    override fun onWidgetInfoChange() {
+        super.onWidgetInfoChange()
+        parse()
+    }
+
     private fun onGravityChange(gravity: Int) {
         if (uploadLock) {
             return

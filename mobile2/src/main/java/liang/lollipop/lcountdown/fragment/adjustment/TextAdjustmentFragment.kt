@@ -112,6 +112,11 @@ class TextAdjustmentFragment: BaseAdjustmentFragment() {
         adapter.notifyDataSetChanged()
     }
 
+    override fun onWidgetInfoChange() {
+        super.onWidgetInfoChange()
+        adapter.notifyDataSetChanged()
+    }
+
     private fun addText() {
         adjustmentProvider.show("", AdjustmentProvider.ID_NONE)
     }

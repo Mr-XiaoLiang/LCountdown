@@ -168,6 +168,11 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
         adapter.notifyDataSetChanged()
     }
 
+    override fun onWidgetInfoChange() {
+        super.onWidgetInfoChange()
+        adapter.notifyDataSetChanged()
+    }
+
     private fun onSelectedTypeChange(type: Int) {
         backgroundColorProvider.gradientType = type
         backgroundChangeCallback?.invoke()

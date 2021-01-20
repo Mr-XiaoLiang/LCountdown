@@ -66,6 +66,16 @@ class FontAdjustmentFragment: BaseAdjustmentFragment() {
 
     private class AdjustmentProvider: InnerDialogProvider() {
         override val layoutId = R.layout.dialog_adjustment_font
+
+        override fun onViewCreated(view: View) {
+            super.onViewCreated(view)
+        }
+
+        override fun onStart() {
+            super.onStart()
+
+        }
+
     }
 
     private class FontItemAdapter(

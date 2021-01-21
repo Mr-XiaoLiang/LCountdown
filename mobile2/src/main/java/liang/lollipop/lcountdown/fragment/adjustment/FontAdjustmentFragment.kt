@@ -127,11 +127,11 @@ class FontAdjustmentFragment: BaseAdjustmentFragment() {
         }
 
         private val nameView: TextView by lazy {
-            itemView.findViewById<TextView>(R.id.textView)
+            itemView.findViewById(R.id.textView)
         }
 
         private val fontSizeView: TextView by lazy {
-            itemView.findViewById<TextView>(R.id.fontSizeValue)
+            itemView.findViewById(R.id.fontSizeValue)
         }
 
         fun bind(name: String, color: Int, size: Float) {

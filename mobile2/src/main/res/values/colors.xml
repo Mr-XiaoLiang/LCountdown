@@ -40,4 +40,6 @@
     <color name="toastBackground">#FFFFFF</color>
     <color name="toastAction">#df9fb4</color>
     <color name="toastText">#333333</color>
+
+    <color name="sheet_arrow">#FFFFFF</color>
 </resources>

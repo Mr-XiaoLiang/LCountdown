@@ -48,7 +48,8 @@
                 android:layout_gravity="center"
                 android:id="@+id/panelGrip"
                 android:src="@drawable/ic_baseline_keyboard_arrow_up_24"
-                android:scaleType="centerInside"/>
+                android:scaleType="centerInside"
+                app:tint="@color/sheet_arrow"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

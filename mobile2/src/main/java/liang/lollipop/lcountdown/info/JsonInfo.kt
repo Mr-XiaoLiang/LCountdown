@@ -186,7 +186,7 @@ open class JsonInfo (val infoObject: JSONObject = JSONObject()) {
             }
         }
         // 移除缓存
-        cache.remove(key)
+        cache[key] = value
     }
 
     val size: Int

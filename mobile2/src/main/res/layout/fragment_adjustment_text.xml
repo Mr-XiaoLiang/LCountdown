@@ -11,7 +11,7 @@
         android:src="@drawable/ic_baseline_add_24"
         android:scaleType="centerInside"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:tint="@color/colorAccent"
+        app:tint="@color/colorAccent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:id="@+id/addTextBtn"/>

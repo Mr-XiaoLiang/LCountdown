@@ -129,7 +129,7 @@ class TimeAdjustmentFragment: BaseAdjustmentFragment() {
         timeBtn.text = "${hourIn.formatNumber()}:${minuteIn.formatNumber()}"
 
         val yearIn = calendar.get(Calendar.YEAR)
-        val monthIn = calendar.get(Calendar.MONTH)
+        val monthIn = calendar.get(Calendar.MONTH) + 1
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         dateBtn.text = "${yearIn.formatNumber()}-${monthIn.formatNumber()}-${day.formatNumber()}"
 

@@ -167,13 +167,13 @@
         <item>Saturday</item>
     </string-array>
     <string-array name="day_of_week_cn" translatable="false">
-        <item>周日</item>
-        <item>周一</item>
-        <item>周二</item>
-        <item>周三</item>
-        <item>周四</item>
-        <item>周五</item>
-        <item>周六</item>
+        <item>星期日</item>
+        <item>星期一</item>
+        <item>星期二</item>
+        <item>星期三</item>
+        <item>星期四</item>
+        <item>星期五</item>
+        <item>星期六</item>
     </string-array>
     <string-array name="day_of_week_tr" translatable="false">
         <item>日曜日</item>

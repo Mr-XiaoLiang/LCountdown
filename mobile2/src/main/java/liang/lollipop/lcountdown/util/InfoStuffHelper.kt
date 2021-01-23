@@ -237,7 +237,7 @@ class InfoStuffHelper (private var context: Context? = null) {
     }
 
     private fun getDayOfMonth(): String {
-        return (getData(Calendar.DAY_OF_MONTH) + 1).toString()
+        return (getData(Calendar.DAY_OF_MONTH)).toString()
     }
 
     private fun getDayOfYear(): String {

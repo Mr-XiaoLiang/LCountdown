@@ -1,6 +1,7 @@
 package liang.lollipop.lcountdown.fragment.adjustment
 
 import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,10 +16,7 @@ import kotlinx.android.synthetic.main.fragment_adjustment_text.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.info.WidgetPart
 import liang.lollipop.lcountdown.provider.TextInfoProvider
-import liang.lollipop.lcountdown.util.CurtainDialog
-import liang.lollipop.lcountdown.util.InfoStuffHelper
-import liang.lollipop.lcountdown.util.TextFormat
-import liang.lollipop.lcountdown.util.closeBoard
+import liang.lollipop.lcountdown.util.*
 import liang.lollipop.lcountdown.view.InnerDialogProvider
 
 /**
@@ -214,6 +212,10 @@ class TextAdjustmentFragment: BaseAdjustmentFragment() {
                 recyclerView.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
 
                 recyclerView.adapter = adapter
+
+                recyclerView.addItemDecoration(DefaultItemDecoration(
+                        recyclerView.resources.getDimensionPixelSize(
+                                R.dimen.time_key_list_decoration)))
 
                 adapter.notifyDataSetChanged()
             }

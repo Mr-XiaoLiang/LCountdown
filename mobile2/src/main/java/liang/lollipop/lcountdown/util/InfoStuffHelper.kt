@@ -7,13 +7,14 @@ import liang.lollipop.lcountdown.provider.TimeInfoProvider
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.math.abs
 
 /**
  * @author lollipop
  * @date 10/18/20 21:15
  * 内容填充工具
  */
-class InfoStuffHelper(private val context: Context) {
+class InfoStuffHelper (private var context: Context? = null) {
 
     companion object {
         private const val ONE_SECOND = 1000L
@@ -136,7 +137,7 @@ class InfoStuffHelper(private val context: Context) {
                 return s
             }
         }
-        val value = when(key) {
+        val value: String = when(key) {
             TextFormat.KEY_DAY_WITH_MONTH -> { getDayOfMonth() }
             TextFormat.KEY_DAY_WITH_YEAR -> { getDayOfYear() }
             TextFormat.KEY_DAY_WITH_WEEK -> { getDayOfWeek() }
@@ -153,9 +154,9 @@ class InfoStuffHelper(private val context: Context) {
             TextFormat.KEY_WEEK_ENGLISH -> { getWeekEnglish() }
             TextFormat.KEY_WEEK_CHINESE -> { getWeekChinese() }
             TextFormat.KEY_WEEK_TRADITIONAL -> { getWeekTraditional() }
-            TextFormat.KEY_HOUR -> { getHour() }
+            TextFormat.KEY_HOUR -> { getHour().toString() }
             TextFormat.KEY_HOUR_FULL -> { getHourFull() }
-            TextFormat.KEY_MINUTE -> { getMinute() }
+            TextFormat.KEY_MINUTE -> { getMinute().toString() }
             TextFormat.KEY_MINUTE_FULL -> { getMinuteFull() }
             TextFormat.KEY_TIME_CHINA -> { chineseFormat.format(Date(System.currentTimeMillis())) }
             TextFormat.KEY_TIME_ENGLISH -> { englishFormat.format(Date(System.currentTimeMillis())) }
@@ -203,7 +204,7 @@ class InfoStuffHelper(private val context: Context) {
 
     private fun getMonthWithTranslate(id: Int): String {
         val month = getData(Calendar.MONTH)
-        return context.resources.getStringArray(id)[month]
+        return context?.resources?.getStringArray(id)?.get(month)?:""
     }
 
     private fun getWeek(): String {
@@ -227,8 +228,8 @@ class InfoStuffHelper(private val context: Context) {
     }
 
     private fun getWeekWithTranslate(id: Int): String {
-        val month = getData(Calendar.DAY_OF_WEEK) - 1
-        return context.resources.getStringArray(id)[month]
+        val week = getData(Calendar.DAY_OF_WEEK) - 1
+        return context?.resources?.getStringArray(id)?.get(week)?:""
     }
 
     private fun getYear(): Int {
@@ -247,28 +248,20 @@ class InfoStuffHelper(private val context: Context) {
         return getData(Calendar.DAY_OF_WEEK).toString()
     }
 
-    private fun getHour(): String {
-        return getData(Calendar.HOUR_OF_DAY).toString()
+    private fun getHour(): Int {
+        return getData(Calendar.HOUR_OF_DAY)
     }
 
     private fun getHourFull(): String {
-        val hour = getHour()
-        if (hour.length < 2) {
-            return "0$hour"
-        }
-        return hour
+        return getHour().fullNumber()
     }
 
-    private fun getMinute(): String {
-        return getData(Calendar.MINUTE).toString()
+    private fun getMinute(): Int {
+        return getData(Calendar.MINUTE)
     }
 
     private fun getMinuteFull(): String {
-        val minute = getMinute()
-        if (minute.length < 2) {
-            return "0$minute"
-        }
-        return minute
+        return getMinute().fullNumber()
     }
 
     private fun getData(type: Int): Int {
@@ -377,16 +370,24 @@ class InfoStuffHelper(private val context: Context) {
         }
 
     private fun Int.fullNumber(): String {
-        return if (this < 10) {
-            "0$this"
+        return if (this < 10 || this > -10) {
+            if (this >= 0) {
+                "0$this"
+            } else {
+                "-0${abs(this)}"
+            }
         } else {
             this.toString()
         }
     }
 
     private fun Long.fullNumber(): String {
-        return if (this < 10) {
-            "0$this"
+        return if (this < 10 || this > -10) {
+            if (this >= 0) {
+                "0$this"
+            } else {
+                "-0${abs(this)}"
+            }
         } else {
             this.toString()
         }
@@ -397,5 +398,13 @@ class InfoStuffHelper(private val context: Context) {
                            var limitTime: Long = INVALID_TIME,
                            var isCountdown: Boolean = true,
                            var cycleType: TimeInfoProvider.CycleType = TimeInfoProvider.CycleType.No)
+
+    fun attach(context: Context) {
+        this.context = context
+    }
+
+    fun detach() {
+        this.context = null
+    }
 
 }

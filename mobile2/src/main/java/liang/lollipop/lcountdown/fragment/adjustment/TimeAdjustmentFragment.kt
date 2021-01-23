@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_adjustment_time.*
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.info.WidgetPart
 import liang.lollipop.lcountdown.provider.TimeInfoProvider
 import java.util.*
 
@@ -21,12 +22,13 @@ class TimeAdjustmentFragment: BaseAdjustmentFragment() {
 
     override val icon = R.drawable.ic_baseline_access_time_24
 
+    override val adjustmentPart = WidgetPart.Time
+
     override val title = R.string.title_time
 
     override val colorId = R.color.focusTimeAdjust
 
     private val infoProvider = TimeInfoProviderWrapper()
-    private var onTimeInfoChangeCallback: (() -> Unit)? = null
 
     private var listenerLock = false
 
@@ -137,7 +139,7 @@ class TimeAdjustmentFragment: BaseAdjustmentFragment() {
     }
 
     private fun callInfoChange() {
-        onTimeInfoChangeCallback?.invoke()
+        callChangeWidgetInfo()
     }
 
     private fun Int.formatNumber(): String {
@@ -149,32 +151,18 @@ class TimeAdjustmentFragment: BaseAdjustmentFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is Callback) {
-            infoProvider.provider = context.getTimeInfoProvider()
-            onTimeInfoChangeCallback = {
-                context.onTimeInfoChange()
-            }
-        } else {
-            parentFragment?.let { parent ->
-                if (parent is Callback) {
-                    infoProvider.provider = parent.getTimeInfoProvider()
-                    onTimeInfoChangeCallback = {
-                        parent.onTimeInfoChange()
-                    }
-                }
-            }
+        attachCallback<Callback>(context) {
+            infoProvider.provider = it.getTimeInfoProvider()
         }
     }
 
     override fun onDetach() {
         super.onDetach()
         infoProvider.provider = null
-        onTimeInfoChangeCallback = null
     }
 
     interface Callback {
         fun getTimeInfoProvider(): TimeInfoProvider
-        fun onTimeInfoChange()
     }
 
     private class TimeInfoProviderWrapper(var provider: TimeInfoProvider? = null): TimeInfoProvider {

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_adjustment_font.*
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.info.WidgetPart
 import liang.lollipop.lcountdown.provider.FontSizeProvider
 import liang.lollipop.lcountdown.util.CacheMap
 import liang.lollipop.lcountdown.util.FontSizeHelper
@@ -28,12 +29,9 @@ class FontAdjustmentFragment: BaseAdjustmentFragment() {
     override val layoutId = R.layout.fragment_adjustment_font
 
     override val icon = R.drawable.ic_baseline_format_size_24
-
+    override val adjustmentPart = WidgetPart.FontSize
     override val title = R.string.title_font
-
     override val colorId = R.color.focusFontAdjust
-
-    private var onFontSizeChangeCallback: ((Int, Float) -> Unit)? = null
 
     private val fontSizeProvider = FontSizeProviderWrapper(null)
 
@@ -149,32 +147,18 @@ class FontAdjustmentFragment: BaseAdjustmentFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is Callback) {
-            fontSizeProvider.provider = context.getFontSizeProvider()
-            onFontSizeChangeCallback = { index, fontSize ->
-                context.onFontSizeChange(index, fontSize)
-            }
-        } else {
-            parentFragment?.let { parent ->
-                if (parent is Callback) {
-                    fontSizeProvider.provider = parent.getFontSizeProvider()
-                    onFontSizeChangeCallback = { index, fontSize ->
-                        parent.onFontSizeChange(index, fontSize)
-                    }
-                }
-            }
+        attachCallback<Callback>(context) {
+            fontSizeProvider.provider = it.getFontSizeProvider()
         }
     }
 
     override fun onDetach() {
         super.onDetach()
         fontSizeProvider.provider = null
-        onFontSizeChangeCallback = null
     }
 
-    interface Callback {
+    interface Callback: CallChangeInfoCallback {
         fun getFontSizeProvider(): FontSizeProvider
-        fun onFontSizeChange(index: Int, fontSize: Float)
     }
 
     private class FontSizeProviderWrapper(var provider: FontSizeProvider?): FontSizeProvider {

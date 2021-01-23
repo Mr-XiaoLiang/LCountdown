@@ -1,6 +1,7 @@
 package liang.lollipop.lcountdown.fragment.adjustment
 
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.info.WidgetPart
 
 /**
  * @author lollipop
@@ -12,6 +13,8 @@ class BackgroundImageAdjustmentFragment: BaseAdjustmentFragment() {
         get() = R.layout.fragment_adjustment_background_image
     override val icon: Int
         get() = R.drawable.ic_baseline_image_24
+    override val adjustmentPart: WidgetPart
+        get() = WidgetPart.BackgroundImage
     override val title: Int
         get() = R.string.title_background_image
     override val colorId: Int

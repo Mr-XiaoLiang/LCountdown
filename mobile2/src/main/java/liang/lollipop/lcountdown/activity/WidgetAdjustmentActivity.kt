@@ -15,10 +15,7 @@ import kotlinx.android.synthetic.main.activity_widget_adjustment.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.engine.WidgetEngine
 import liang.lollipop.lcountdown.fragment.adjustment.*
-import liang.lollipop.lcountdown.info.BackgroundInfo
-import liang.lollipop.lcountdown.info.TextColor
-import liang.lollipop.lcountdown.info.TextInfoArray
-import liang.lollipop.lcountdown.info.WidgetInfo
+import liang.lollipop.lcountdown.info.*
 import liang.lollipop.lcountdown.listener.WidgetInfoStatusListener
 import liang.lollipop.lcountdown.provider.*
 import liang.lollipop.lcountdown.util.*
@@ -220,8 +217,11 @@ class WidgetAdjustmentActivity : BaseActivity(),
         onBackPressed()
     }
 
-    private fun callWidgetInfoChanged() {
+    private fun callWidgetInfoChanged(requestOwner: WidgetInfoStatusListener) {
         for (listener in infoStatusListenerList) {
+            if (requestOwner == listener) {
+                continue
+            }
             listener.onWidgetInfoChange()
         }
     }
@@ -270,63 +270,58 @@ class WidgetAdjustmentActivity : BaseActivity(),
         return textInfoArray
     }
 
-    override fun onTextInfoChange() {
-        widgetEngine?.updateText(textInfoArray)
-        callWidgetInfoChanged()
+    override fun updateInfoStuffHelper(helper: InfoStuffHelper) {
+        helper.updateTarget(widgetInfo)
     }
 
     override fun getFontSizeProvider(): FontSizeProvider {
         return textInfoArray
     }
 
-    override fun onFontSizeChange(index: Int, fontSize: Float) {
-        widgetEngine?.updateText(textInfoArray)
-        callWidgetInfoChanged()
-    }
-
     override fun getFontColorProvider(): FontColorProvider {
         return textInfoArray
-    }
-
-    override fun onFontColorChange(index: Int, fontColor: TextColor) {
-        widgetEngine?.updateText(textInfoArray)
-        callWidgetInfoChanged()
-    }
-
-    override fun onBackgroundColorChange() {
-        widgetEngine?.updateBackground(backgroundInfo)
-        callWidgetInfoChanged()
     }
 
     override fun getBackgroundColorProvider(): BackgroundColorProvider {
         return backgroundInfo
     }
 
-    override fun onBackgroundCardChange() {
-        widgetEngine?.updateCard(backgroundInfo)
-        callWidgetInfoChanged()
-    }
-
     override fun getBackgroundCardProvider(): BackgroundCardProvider {
         return backgroundInfo
     }
+
+    override fun notifyInfoChanged(part: WidgetPart, listener: WidgetInfoStatusListener) {
+        when (part) {
+            WidgetPart.Text,
+            WidgetPart.Time,
+            WidgetPart.Location,
+            WidgetPart.FontColor,
+            WidgetPart.FontSize -> {
+                widgetEngine?.updateText(textInfoArray)
+            }
+            WidgetPart.BackgroundImage,
+            WidgetPart.BackgroundColor -> {
+                widgetEngine?.updateBackground(backgroundInfo)
+            }
+            WidgetPart.Card -> {
+                widgetEngine?.updateCard(backgroundInfo)
+            }
+            WidgetPart.NONE -> {
+                // do nothing
+            }
+        }
+        if (part != WidgetPart.NONE) {
+            callWidgetInfoChanged(listener)
+        }
+    }
+
 
     override fun getTextLocationProvider(): TextLocationProvider {
         return textInfoArray
     }
 
-    override fun onTextLocationChange(index: Int) {
-        widgetEngine?.updateText(textInfoArray)
-        callWidgetInfoChanged()
-    }
-
     override fun getTimeInfoProvider(): TimeInfoProvider {
         return widgetInfo
-    }
-
-    override fun onTimeInfoChange() {
-        widgetEngine?.updateText(textInfoArray)
-        callWidgetInfoChanged()
     }
 
     override fun registerWidgetInfoStatusListener(listener: WidgetInfoStatusListener) {

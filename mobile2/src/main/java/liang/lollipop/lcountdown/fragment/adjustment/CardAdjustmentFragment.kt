@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_adjustment_card.*
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.info.WidgetPart
 import liang.lollipop.lcountdown.provider.BackgroundCardProvider
 import liang.lollipop.lcountdown.view.LSeekBar
 import liang.lollipop.lpunch.utils.StringToColorUtil
@@ -24,14 +25,14 @@ class CardAdjustmentFragment : BaseAdjustmentFragment() {
         get() = R.layout.fragment_adjustment_card
     override val icon: Int
         get() = R.drawable.ic_baseline_crop_24
+    override val adjustmentPart: WidgetPart
+        get() = WidgetPart.Card
     override val title: Int
         get() = R.string.title_card
     override val colorId: Int
         get() = R.color.focusCardAdjust
 
     private val cardProvider = BackgroundCardProviderWrapper()
-
-    private var backgroundCardChangeCallback: (() -> Unit)? = null
 
     private val optionList = ArrayList<Option>()
 
@@ -100,7 +101,7 @@ class CardAdjustmentFragment : BaseAdjustmentFragment() {
     }
 
     private fun onCardInfoChange() {
-        backgroundCardChangeCallback?.invoke()
+        callChangeWidgetInfo()
     }
 
     override fun onResume() {
@@ -120,27 +121,14 @@ class CardAdjustmentFragment : BaseAdjustmentFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is Callback) {
-            cardProvider.provider = context.getBackgroundCardProvider()
-            backgroundCardChangeCallback = {
-                context.onBackgroundCardChange()
-            }
-        } else {
-            parentFragment?.let { parent ->
-                if (parent is Callback) {
-                    cardProvider.provider = parent.getBackgroundCardProvider()
-                    backgroundCardChangeCallback = {
-                        parent.onBackgroundCardChange()
-                    }
-                }
-            }
+        attachCallback<Callback>(context) {
+            cardProvider.provider = it.getBackgroundCardProvider()
         }
     }
 
     override fun onDetach() {
         super.onDetach()
         cardProvider.provider = null
-        backgroundCardChangeCallback = null
     }
 
     private class OptionAdapter(private val optionList: ArrayList<Option>)
@@ -256,8 +244,7 @@ class CardAdjustmentFragment : BaseAdjustmentFragment() {
 
     }
 
-    interface Callback {
-        fun onBackgroundCardChange()
+    interface Callback: CallChangeInfoCallback {
         fun getBackgroundCardProvider(): BackgroundCardProvider
     }
 

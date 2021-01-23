@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.fragment_adjustment_location.*
 import kotlinx.android.synthetic.main.include_gravity.*
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.info.WidgetPart
 import liang.lollipop.lcountdown.provider.TextLocationProvider
 import liang.lollipop.lcountdown.util.*
 
@@ -21,13 +22,14 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
         get() = R.layout.fragment_adjustment_location
     override val icon: Int
         get() = R.drawable.ic_baseline_format_shapes_24
+    override val adjustmentPart: WidgetPart
+        get() = WidgetPart.Location
     override val title: Int
         get() = R.string.title_location
     override val colorId: Int
         get() = R.color.focusLocationAdjust
 
     private val locationProvider = TextLocationProviderWrapper(null)
-    private var onLocationChangeCallback: ((Int) -> Unit)? = null
     private var gravityViewHelper: GravityViewHelper? = null
     private var textSelectHelper: TextSelectHelper? = null
 
@@ -75,27 +77,14 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is Callback) {
-            locationProvider.provider = context.getTextLocationProvider()
-            onLocationChangeCallback = { index ->
-                context.onTextLocationChange(index)
-            }
-        } else {
-            parentFragment?.let { parent ->
-                if (parent is Callback) {
-                    locationProvider.provider = parent.getTextLocationProvider()
-                    onLocationChangeCallback = { index ->
-                        parent.onTextLocationChange(index)
-                    }
-                }
-            }
+        attachCallback<Callback>(context) {
+            locationProvider.provider = it.getTextLocationProvider()
         }
     }
 
     override fun onDetach() {
         super.onDetach()
         locationProvider.provider = null
-        onLocationChangeCallback = null
         textSelectHelper = null
     }
 
@@ -120,7 +109,7 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
         val index = focusIndex
         if (index >= 0) {
             locationProvider.setGravity(index, gravity)
-            onLocationChangeCallback?.invoke(index)
+            callChangeWidgetInfo()
         }
     }
 
@@ -135,7 +124,7 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
             } else {
                 locationProvider.setOffsetY(index, progress)
             }
-            onLocationChangeCallback?.invoke(index)
+            callChangeWidgetInfo()
         }
     }
 
@@ -170,9 +159,8 @@ class LocationAdjustmentFragment: BaseAdjustmentFragment() {
         }
     }
 
-    interface Callback {
+    interface Callback: CallChangeInfoCallback {
         fun getTextLocationProvider(): TextLocationProvider
-        fun onTextLocationChange(index: Int)
     }
 
     private class TextLocationProviderWrapper(var provider: TextLocationProvider?): TextLocationProvider {

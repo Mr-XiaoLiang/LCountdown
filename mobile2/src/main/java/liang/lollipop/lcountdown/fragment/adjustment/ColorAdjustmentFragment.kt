@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.fragment_adjustment_color.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.info.TextColor
 import liang.lollipop.lcountdown.info.TextTint
+import liang.lollipop.lcountdown.info.WidgetPart
 import liang.lollipop.lcountdown.listener.TextFocusProvider
 import liang.lollipop.lcountdown.provider.FontColorProvider
 import liang.lollipop.lcountdown.util.parseColor
@@ -31,13 +32,14 @@ class ColorAdjustmentFragment: BaseAdjustmentFragment() {
         get() = R.layout.fragment_adjustment_color
     override val icon: Int
         get() = R.drawable.ic_baseline_color_lens_24
+    override val adjustmentPart: WidgetPart
+        get() = WidgetPart.FontColor
     override val title: Int
         get() = R.string.title_color
     override val colorId: Int
         get() = R.color.focusColorAdjust
 
     private val fontColorProvider = FontColorProviderWrapper(null)
-    private var onFontColorChangeCallback: ((Int, TextColor) -> Unit)? = null
     private var textFocusProvider: TextFocusProvider? = null
 
     private val focusIndex: Int
@@ -140,7 +142,7 @@ class ColorAdjustmentFragment: BaseAdjustmentFragment() {
             return
         }
         val fontColor = setColorByIndex(index, targetColor)
-        onFontColorChangeCallback?.invoke(index, fontColor)
+        callChangeWidgetInfo()
     }
 
     private fun getColorByIndex(index: Int): Int {
@@ -178,29 +180,11 @@ class ColorAdjustmentFragment: BaseAdjustmentFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is Callback) {
-            fontColorProvider.provider = context.getFontColorProvider()
-            onFontColorChangeCallback = { index, fontColor ->
-                context.onFontColorChange(index, fontColor)
-            }
-        } else {
-            parentFragment?.let { parent ->
-                if (parent is Callback) {
-                    fontColorProvider.provider = parent.getFontColorProvider()
-                    onFontColorChangeCallback = { index, fontColor ->
-                        parent.onFontColorChange(index, fontColor)
-                    }
-                }
-            }
+        attachCallback<Callback>(context) {
+            fontColorProvider.provider = it.getFontColorProvider()
         }
-        if (context is TextFocusProvider) {
-            textFocusProvider = context
-        } else {
-            parentFragment?.let { parent ->
-                if (parent is TextFocusProvider) {
-                    textFocusProvider = parent
-                }
-            }
+        attachCallback<TextFocusProvider>(context) {
+            textFocusProvider = it
         }
     }
 
@@ -295,7 +279,6 @@ class ColorAdjustmentFragment: BaseAdjustmentFragment() {
 
     interface Callback {
         fun getFontColorProvider(): FontColorProvider
-        fun onFontColorChange(index: Int, fontColor: TextColor)
     }
 
 }

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.fragment.BaseFragment
+import liang.lollipop.lcountdown.info.WidgetPart
 import liang.lollipop.lcountdown.listener.WidgetInfoStatusListener
 import liang.lollipop.lcountdown.provider.WidgetInfoStatusProvider
 
@@ -19,6 +20,10 @@ abstract class BaseAdjustmentFragment: BaseFragment(), WidgetInfoStatusListener 
     abstract val layoutId: Int
 
     abstract val icon: Int
+
+    private var widgetInfoChangeListener: CallChangeInfoCallback? = null
+
+    protected abstract val adjustmentPart: WidgetPart
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -33,14 +38,11 @@ abstract class BaseAdjustmentFragment: BaseFragment(), WidgetInfoStatusListener 
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is WidgetInfoStatusProvider) {
-            context.registerWidgetInfoStatusListener(this)
-        } else {
-            parentFragment?.let { it ->
-                if (it is WidgetInfoStatusProvider) {
-                    it.registerWidgetInfoStatusListener(this)
-                }
-            }
+        attachCallback<WidgetInfoStatusProvider>(context) {
+            it.registerWidgetInfoStatusListener(this)
+        }
+        attachCallback<CallChangeInfoCallback>(context) {
+            widgetInfoChangeListener = it
         }
     }
 
@@ -56,9 +58,29 @@ abstract class BaseAdjustmentFragment: BaseFragment(), WidgetInfoStatusListener 
                 it.unregisterWidgetInfoStatusListener(this)
             }
         }
+        widgetInfoChangeListener = null
     }
 
     override fun onWidgetInfoChange() { }
 
+    interface CallChangeInfoCallback {
+        fun notifyInfoChanged(part: WidgetPart, listener: WidgetInfoStatusListener)
+    }
+
+    protected fun callChangeWidgetInfo() {
+        widgetInfoChangeListener?.notifyInfoChanged(adjustmentPart, this)
+    }
+
+    protected inline fun <reified T: Any> attachCallback(context: Context, run: (T) -> Unit) {
+        if (context is T) {
+            run(context)
+        } else {
+            parentFragment?.let { parent ->
+                if (parent is T) {
+                    run(parent)
+                }
+            }
+        }
+    }
 
 }

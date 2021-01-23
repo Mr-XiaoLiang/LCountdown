@@ -10,12 +10,13 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexboxLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import kotlinx.android.synthetic.main.fragment_adjustment_text.*
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.info.WidgetPart
 import liang.lollipop.lcountdown.provider.TextInfoProvider
 import liang.lollipop.lcountdown.util.CurtainDialog
+import liang.lollipop.lcountdown.util.InfoStuffHelper
 import liang.lollipop.lcountdown.util.TextFormat
 import liang.lollipop.lcountdown.util.closeBoard
 import liang.lollipop.lcountdown.view.InnerDialogProvider
@@ -30,13 +31,15 @@ class TextAdjustmentFragment: BaseAdjustmentFragment() {
 
     override val icon = R.drawable.ic_baseline_short_text_24
 
+    override val adjustmentPart = WidgetPart.Text
+
     override val title = R.string.title_text
 
     override val colorId = R.color.focusTextAdjust
 
     private val textInfoProvider: TextInfoProviderWrapper = TextInfoProviderWrapper(null)
 
-    private var textChangeCallback: (() -> Unit)? = null
+    private var infoStuffUpdateCallback: ((InfoStuffHelper) -> Unit)? = null
 
     private val adapter = TextItemAdapter(textInfoProvider, { _, it ->
         adjustmentProvider.show(textInfoProvider.getText(it), it)
@@ -49,8 +52,10 @@ class TextAdjustmentFragment: BaseAdjustmentFragment() {
         } else {
             a.notifyDataSetChanged()
         }
-        textChangeCallback?.invoke()
+        callChangeWidgetInfo()
     })
+
+    private val infoStuffHelper = InfoStuffHelper()
 
     private val onTextChangeListener: ((String, Int) -> Unit) = { value, index ->
         if (index == AdjustmentProvider.ID_NONE) {
@@ -66,11 +71,11 @@ class TextAdjustmentFragment: BaseAdjustmentFragment() {
             textInfoProvider.setText(index, value)
             adapter.notifyItemChanged(index)
         }
-        textChangeCallback?.invoke()
+        callChangeWidgetInfo()
     }
 
     private val adjustmentProvider: AdjustmentProvider by lazy {
-        AdjustmentProvider(activity as FragmentActivity, onTextChangeListener)
+        AdjustmentProvider(activity as FragmentActivity, infoStuffHelper, onTextChangeListener)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -84,27 +89,20 @@ class TextAdjustmentFragment: BaseAdjustmentFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is Callback) {
-            textInfoProvider.parent = context.getTextInfoProvider()
-            textChangeCallback = {
-                context.onTextInfoChange()
-            }
-        } else {
-            parentFragment?.let { parent ->
-                if (parent is Callback) {
-                    textInfoProvider.parent = parent.getTextInfoProvider()
-                    textChangeCallback = {
-                        parent.onTextInfoChange()
-                    }
-                }
+        attachCallback<Callback>(context) { callback ->
+            textInfoProvider.parent = callback.getTextInfoProvider()
+            infoStuffUpdateCallback = {
+                callback.updateInfoStuffHelper(it)
             }
         }
+        infoStuffHelper.attach(context)
     }
 
     override fun onDetach() {
         super.onDetach()
         textInfoProvider.parent = null
-        textChangeCallback = null
+        infoStuffUpdateCallback = null
+        infoStuffHelper.detach()
     }
 
     override fun onResume() {
@@ -115,6 +113,7 @@ class TextAdjustmentFragment: BaseAdjustmentFragment() {
     override fun onWidgetInfoChange() {
         super.onWidgetInfoChange()
         adapter.notifyDataSetChanged()
+        infoStuffUpdateCallback?.invoke(infoStuffHelper)
     }
 
     private fun addText() {
@@ -184,6 +183,7 @@ class TextAdjustmentFragment: BaseAdjustmentFragment() {
 
     private class AdjustmentProvider(
             activity: FragmentActivity,
+            private val infoStuffHelper: InfoStuffHelper,
             private val onTextChangeListener: ((value: String, index: Int) -> Unit)):
             InnerDialogProvider() {
 
@@ -207,12 +207,11 @@ class TextAdjustmentFragment: BaseAdjustmentFragment() {
             }
 
             find<RecyclerView>(R.id.recycleView)?.let { recyclerView ->
-                val adapter = TimeKeyAdapter { key ->
+                val adapter = TimeKeyAdapter(infoStuffHelper) { key ->
                     find<EditText>(R.id.inputView)?.append(key)
                 }
 
-                recyclerView.layoutManager = FlexboxLayoutManager(recyclerView.context,
-                        FlexDirection.ROW)
+                recyclerView.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
 
                 recyclerView.adapter = adapter
 
@@ -233,6 +232,7 @@ class TextAdjustmentFragment: BaseAdjustmentFragment() {
             find<TextView>(R.id.inputView)?.let { view ->
                 view.text = pendingValue
             }
+            find<RecyclerView>(R.id.recycleView)?.adapter?.notifyDataSetChanged()
         }
 
         override fun onStop() {
@@ -242,7 +242,9 @@ class TextAdjustmentFragment: BaseAdjustmentFragment() {
 
     }
 
-    private class TimeKeyAdapter(private val clickListener: (String) -> Unit):
+    private class TimeKeyAdapter(
+            private val infoStuffHelper: InfoStuffHelper,
+            private val clickListener: (String) -> Unit):
             RecyclerView.Adapter<TimeKeyHolder>() {
 
         private val data = TextFormat.KEYS
@@ -257,7 +259,7 @@ class TextAdjustmentFragment: BaseAdjustmentFragment() {
 
         override fun onBindViewHolder(holder: TimeKeyHolder, position: Int) {
             val key = data[position]
-            holder.bind(key.name, key.value)
+            holder.bind(key.name, key.value, infoStuffHelper.stuff(key.value))
         }
 
     }
@@ -277,11 +279,15 @@ class TextAdjustmentFragment: BaseAdjustmentFragment() {
         }
 
         private val nameView: TextView by lazy {
-            itemView.findViewById<TextView>(R.id.keyNameView)
+            itemView.findViewById(R.id.keyNameView)
         }
 
         private val valueView: TextView by lazy {
-            itemView.findViewById<TextView>(R.id.keyValueView)
+            itemView.findViewById(R.id.keyValueView)
+        }
+
+        private val previewView: TextView by lazy {
+            itemView.findViewById(R.id.keyPreviewView)
         }
 
         init {
@@ -290,9 +296,10 @@ class TextAdjustmentFragment: BaseAdjustmentFragment() {
             }
         }
 
-        fun bind(name: Int, value: String) {
+        fun bind(name: Int, value: String, preview: String) {
             nameView.setText(name)
             valueView.text = value
+            previewView.text = preview
         }
 
     }
@@ -323,7 +330,7 @@ class TextAdjustmentFragment: BaseAdjustmentFragment() {
 
     interface Callback {
         fun getTextInfoProvider(): TextInfoProvider
-        fun onTextInfoChange()
+        fun updateInfoStuffHelper(helper: InfoStuffHelper)
     }
 
 }

@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.fragment_adjustment_background_gradient.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.dialog.PaletteDialog
 import liang.lollipop.lcountdown.drawable.GradientDrawable
+import liang.lollipop.lcountdown.info.WidgetPart
 import liang.lollipop.lcountdown.provider.BackgroundColorProvider
 import liang.lollipop.lcountdown.util.findColor
 import liang.lollipop.lcountdown.util.list.DirectionInfo
@@ -33,6 +34,8 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
         get() = R.layout.fragment_adjustment_background_gradient
     override val icon: Int
         get() = R.drawable.ic_baseline_gradient_24
+    override val adjustmentPart: WidgetPart
+        get() = WidgetPart.BackgroundColor
     override val title: Int
         get() = R.string.title_background_gradient
     override val colorId: Int
@@ -46,8 +49,6 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
 
     private val backgroundColorProvider = BackgroundColorProviderWrapper(null)
 
-    private var backgroundChangeCallback: (() -> Unit)? = null
-
     private val paletteDialog: PaletteDialog by lazy {
         PaletteDialog(activity as FragmentActivity) { tag, color ->
             if (tag < 0) {
@@ -56,7 +57,7 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
                 backgroundColorProvider.setColor(tag, color)
             }
             adapter.notifyDataSetChanged()
-            backgroundChangeCallback?.invoke()
+            callChangeWidgetInfo()
         }
     }
 
@@ -132,27 +133,14 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is Callback) {
-            backgroundColorProvider.provider = context.getBackgroundColorProvider()
-            backgroundChangeCallback = {
-                context.onBackgroundColorChange()
-            }
-        } else {
-            parentFragment?.let { parent ->
-                if (parent is Callback) {
-                    backgroundColorProvider.provider = parent.getBackgroundColorProvider()
-                    backgroundChangeCallback = {
-                        parent.onBackgroundColorChange()
-                    }
-                }
-            }
+        attachCallback<Callback>(context) {
+            backgroundColorProvider.provider = it.getBackgroundColorProvider()
         }
     }
 
     override fun onDetach() {
         super.onDetach()
         backgroundColorProvider.provider = null
-        backgroundChangeCallback = null
     }
 
     private fun changeColor(index: Int) {
@@ -175,7 +163,7 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
 
     private fun onSelectedTypeChange(type: Int) {
         backgroundColorProvider.gradientType = type
-        backgroundChangeCallback?.invoke()
+        callChangeWidgetInfo()
     }
 
     private fun onMovedChange(startX: Float, startY: Float, endX: Float, endY: Float) {
@@ -183,7 +171,7 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
         backgroundColorProvider.startY = startY
         backgroundColorProvider.endX = endX
         backgroundColorProvider.endY = endY
-        backgroundChangeCallback?.invoke()
+        callChangeWidgetInfo()
     }
 
     private fun initShapeBtn(btn: ShapeView) {
@@ -361,8 +349,7 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
 
     }
 
-    interface Callback {
-        fun onBackgroundColorChange()
+    interface Callback: CallChangeInfoCallback {
         fun getBackgroundColorProvider(): BackgroundColorProvider
     }
 

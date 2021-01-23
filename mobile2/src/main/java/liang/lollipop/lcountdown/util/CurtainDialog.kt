@@ -2,6 +2,7 @@ package liang.lollipop.lcountdown.util
 
 import android.animation.Animator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.view.*
 import android.widget.FrameLayout
@@ -105,7 +106,7 @@ class CurtainDialog private constructor(
         valueAnimator.addListener(this)
         dialogView.setOnClickListener(this)
         closeBtn.setOnClickListener(this)
-        contentGroup.setOnClickListener{}
+        contentGroup.setOnTouchListener(EmptyTouchListener())
         dialogView.visibility = View.INVISIBLE
     }
 
@@ -281,6 +282,13 @@ class CurtainDialog private constructor(
 
     override fun callDismiss() {
         dismiss()
+    }
+
+    private class EmptyTouchListener: View.OnTouchListener {
+        @SuppressLint("ClickableViewAccessibility")
+        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+            return true
+        }
     }
 
 }

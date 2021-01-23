@@ -27,7 +27,7 @@
         </activity>
         <activity
             android:name=".activity.WidgetAdjustmentActivity"
-            android:windowSoftInputMode="stateAlwaysVisible|adjustNothing">
+            android:windowSoftInputMode="stateHidden|adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

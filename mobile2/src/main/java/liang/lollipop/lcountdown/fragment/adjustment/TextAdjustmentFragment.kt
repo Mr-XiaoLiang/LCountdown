@@ -160,7 +160,7 @@ class TextAdjustmentFragment: BaseAdjustmentFragment() {
         }
 
         private val nameView: TextView by lazy {
-            itemView.findViewById<TextView>(R.id.textView)
+            itemView.findViewById(R.id.textView)
         }
 
         init {

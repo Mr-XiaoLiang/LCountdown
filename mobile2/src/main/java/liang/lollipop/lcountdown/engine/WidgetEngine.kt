@@ -199,6 +199,7 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
             // 那么可以一定程度的减少重新布局带来的消耗
             if (changeMarginIfDiff(layoutParams, left, top, right, bottom)
                     || layoutParams.gravity != gravity) {
+                // TODO 此处存在疑问
                 layoutParams.gravity = gravity
                 textView.layoutParams = layoutParams
             }

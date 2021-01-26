@@ -8,6 +8,7 @@ import android.graphics.PointF
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewManager
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -99,6 +100,30 @@ class ToastDialog(private var insetsProvider: OnWindowInsetsProvider?):
             }
             return null
         }
+
+        fun once(activity: Activity, text: Int) {
+            showOnce(activity, text, DELAY_SHORT, CONTENT_NONE) {}
+        }
+
+        fun once(activity: Activity, text: Int, action: Int, callback: (DismissEvent) -> Unit) {
+            showOnce(activity, text, TIMEOUT_OFF, action, callback)
+        }
+
+        fun once(activity: Activity, text: Int, delay: Long) {
+            showOnce(activity, text, delay, CONTENT_NONE) {}
+        }
+
+        private fun showOnce(activity: Activity,
+                     text: Int, delay: Long, action: Int, callback: (DismissEvent) -> Unit) {
+            val insetsProvider: OnWindowInsetsProvider? = if (activity is OnWindowInsetsProvider) {
+                activity
+            } else {
+                null
+            }
+            val toastDialog = ToastDialog(insetsProvider)
+            toastDialog.removeWhenDismiss = true
+            toastDialog.show(activity, text, delay, action, callback)
+        }
     }
 
     private var toastView: View? = null
@@ -112,6 +137,8 @@ class ToastDialog(private var insetsProvider: OnWindowInsetsProvider?):
     private var touchable = false
 
     private val selfInsetsProviderHelper = WindowInsetsProviderHelper()
+
+    private var removeWhenDismiss = false
 
     private val animator = ValueAnimator().apply {
         duration = ANIMATION_DURATION
@@ -241,6 +268,9 @@ class ToastDialog(private var insetsProvider: OnWindowInsetsProvider?):
                 showToast(pending)
             } else {
                 toastView?.visibility = View.INVISIBLE
+                if (removeWhenDismiss) {
+                    remove()
+                }
             }
         } else {
             touchable = thisToast?.delay != TIMEOUT_OFF
@@ -249,6 +279,15 @@ class ToastDialog(private var insetsProvider: OnWindowInsetsProvider?):
 
     private fun <T: View> find(id: Int, run: T.() -> Unit) {
         toastView?.findViewById<T>(id)?.let(run)
+    }
+
+    private fun remove() {
+        toastView?.let {
+            val parent = it.parent
+            if (parent != null && parent is ViewManager) {
+                parent.removeView(it)
+            }
+        }
     }
 
     fun destroy() {

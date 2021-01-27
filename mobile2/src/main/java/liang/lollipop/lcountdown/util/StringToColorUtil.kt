@@ -10,11 +10,7 @@ import java.security.MessageDigest
  */
 object StringToColorUtil {
 
-    fun format(text: String): Int{
-        return format(text,true)
-    }
-
-    fun format(text: String,alphaLimit: Boolean): Int{
+    fun format(text: String,alphaLimit: Boolean = true): Int{
         return try {
             if (TextUtils.isEmpty(text)) {
                 return Color.WHITE

@@ -6,8 +6,8 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import liang.lollipop.lcountdown.util.dp2px
 import liang.lollipop.lcountdown.util.range
-import liang.lollipop.lcountdown.util.toDip
 import kotlin.math.asin
 import kotlin.math.sqrt
 
@@ -75,7 +75,7 @@ class LineSegmentView(context: Context, attr: AttributeSet?,
 
     init {
         background = lineDrawable
-        pointRadius = 10F.toDip(this)
+        pointRadius = 10F.dp2px()
         setLocation(0.2F, 0.2F, 0.8F, 0.8F)
     }
 

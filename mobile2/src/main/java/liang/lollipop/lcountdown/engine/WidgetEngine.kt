@@ -19,9 +19,9 @@ import liang.lollipop.lcountdown.info.TextColor
 import liang.lollipop.lcountdown.info.TextInfoArray
 import liang.lollipop.lcountdown.info.WidgetInfo
 import liang.lollipop.lcountdown.util.InfoStuffHelper
+import liang.lollipop.lcountdown.util.dp2px
 import liang.lollipop.lcountdown.util.load
-import liang.lollipop.lcountdown.util.toDip
-import liang.lollipop.lcountdown.util.toSp
+import liang.lollipop.lcountdown.util.sp2px
 import kotlin.math.abs
 
 /**
@@ -59,8 +59,8 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
         updateBackground(widgetInfo.backgroundInfo)
         updateText(widgetInfo.textInfoArray)
 
-        val width = widgetInfo.width.toDip(widgetRoot).toInt()
-        val height = widgetInfo.height.toDip(widgetRoot).toInt()
+        val width = widgetInfo.width.dp2px().toInt()
+        val height = widgetInfo.height.dp2px().toInt()
 
         val layoutParams = widgetRoot.layoutParams
         if (layoutParams != null) {
@@ -85,8 +85,8 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
         val elevation: Float
         val corner: Float
         if (show) {
-            elevation = backgroundInfo.elevation.toDip(context)
-            corner = backgroundInfo.corner.toDip(context)
+            elevation = backgroundInfo.elevation.dp2px()
+            corner = backgroundInfo.corner.dp2px()
             cardGroup.setCardBackgroundColor(Color.WHITE)
         } else {
             elevation = 0F
@@ -104,10 +104,10 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
         val cardLayoutParams = findFrameLayoutParams(cardGroup)
         val layoutChanged = if (show) {
             changeMarginIfDiff(cardLayoutParams,
-                    backgroundInfo.marginLeft.toDip(cardGroup).toInt(),
-                    backgroundInfo.marginTop.toDip(cardGroup).toInt(),
-                    backgroundInfo.marginRight.toDip(cardGroup).toInt(),
-                    backgroundInfo.marginBottom.toDip(cardGroup).toInt())
+                    backgroundInfo.marginLeft.dp2px().toInt(),
+                    backgroundInfo.marginTop.dp2px().toInt(),
+                    backgroundInfo.marginRight.dp2px().toInt(),
+                    backgroundInfo.marginBottom.dp2px().toInt())
         } else {
             changeMarginIfDiff(cardLayoutParams,
                     0, 0, 0, 0)
@@ -207,7 +207,7 @@ class WidgetEngine(private val widgetRoot: FrameLayout): RenderEngine() {
             textView.tintText(textInfoArray.getFontColor(index),
                     formatInfo(textInfoArray.getText(index)))
             // 如果字体大小没有发生变化，那么不做修改，这可以避免引发不必要的重新布局
-            val fontSize = textInfoArray.getFontSize(index).toSp(textView)
+            val fontSize = textInfoArray.getFontSize(index).sp2px()
             // 在这里，计算差值，是为了避免浮点计算造成的公差，
             // 同时，认为小于千分之一的修改不生效
             if (abs(fontSize - textView.textSize) > TOLERANCE) {

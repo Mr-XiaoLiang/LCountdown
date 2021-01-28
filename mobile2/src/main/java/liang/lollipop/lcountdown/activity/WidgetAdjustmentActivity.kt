@@ -227,7 +227,7 @@ class WidgetAdjustmentActivity : BaseActivity(),
     }
 
     override fun onInsetsChange(root: View, left: Int, top: Int, right: Int, bottom: Int) {
-        tabGroup.setPadding(left, 0, right, bottom.zeroTo{ 10F.toDip(root).toInt() })
+        tabGroup.setPadding(left, 0, right, bottom.zeroTo{ 10F.dp2px().toInt() })
         bottomSheetHelper?.paddingBottom = bottom
     }
 

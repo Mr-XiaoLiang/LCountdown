@@ -16,12 +16,12 @@ import liang.lollipop.lcountdown.dialog.PaletteDialog
 import liang.lollipop.lcountdown.drawable.GradientDrawable
 import liang.lollipop.lcountdown.info.WidgetPart
 import liang.lollipop.lcountdown.provider.BackgroundColorProvider
+import liang.lollipop.lcountdown.util.dp2px
 import liang.lollipop.lcountdown.util.findColor
 import liang.lollipop.lcountdown.util.list.DirectionInfo
 import liang.lollipop.lcountdown.util.list.ListTouchHelper
 import liang.lollipop.lcountdown.util.list.MovableHolder
 import liang.lollipop.lcountdown.util.list.SwipeableHolder
-import liang.lollipop.lcountdown.util.toDip
 import liang.lollipop.lcountdown.view.ShapeView
 
 /**
@@ -90,8 +90,8 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
         }
         lineView.color = R.color.linePlatBackground.findColor(lineView)
         lineView.pointColor = R.color.colorPrimary.findColor(lineView)
-        lineView.pointRadius = 10.toDip(lineView)
-        lineView.touchRadius = 20.toDip(lineView)
+        lineView.pointRadius = 10.dp2px()
+        lineView.touchRadius = 20.dp2px()
         lineView.onMoved { startX, startY, endX, endY ->
             onMovedChange(startX, startY, endX, endY)
         }
@@ -175,7 +175,7 @@ class BackgroundGradientAdjustmentFragment: BaseAdjustmentFragment() {
     }
 
     private fun initShapeBtn(btn: ShapeView) {
-        btn.setCorner(10.toDip(btn))
+        btn.setCorner(10.dp2px())
         btn.changeColor(R.color.colorAccent.findColor(btn), R.color.colorPrimary.findColor(btn))
         when (btn) {
             linearShapeBtn -> {

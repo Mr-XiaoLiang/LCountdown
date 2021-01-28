@@ -217,32 +217,25 @@ fun Int.alpha(f: Float): Int {
     return this.alpha(a)
 }
 
-fun Float.toDip(context: Context): Float {
+fun Float.dp2px(): Float {
     return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, this,
-            context.resources.displayMetrics)
+            Resources.getSystem().displayMetrics)
 }
 
-fun Float.toSp(context: Context): Float {
+fun Float.sp2px(): Float {
     return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_SP, this,
-            context.resources.displayMetrics)
+            Resources.getSystem().displayMetrics)
 }
 
-fun Float.toDip(view: View): Float {
-    return this.toDip(view.context)
+
+fun Int.dp2px(): Float {
+    return this.toFloat().dp2px()
 }
 
-fun Float.toSp(view: View): Float {
-    return this.toSp(view.context)
-}
-
-fun Int.toDip(view: View): Float {
-    return this.toFloat().toDip(view.context)
-}
-
-fun Int.toDip(context: Context): Float {
-    return this.toFloat().toDip(context)
+fun Int.sp2px(): Float {
+    return this.toFloat().sp2px()
 }
 
 fun Int.findColor(context: Context): Int {

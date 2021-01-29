@@ -4,19 +4,17 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Checkable
-import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 
 /**
  * @date: 2019-06-29 16:36
  * @author: lollipop
  * 带有点击功能的 ImageView
  */
-class CheckImageView(context: Context, attr: AttributeSet?,
-                     defStyleAttr: Int, defStyleRes: Int):
-        ImageView(context, attr, defStyleAttr, defStyleRes),
+class CheckImageView(context: Context, attr: AttributeSet?, defStyleAttr: Int):
+        AppCompatImageView(context, attr, defStyleAttr),
         Checkable {
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context) : this(context, null)
 

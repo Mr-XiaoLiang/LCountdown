@@ -41,7 +41,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2020-04-26\n21:24:01.234"
+            tools:text="2020-04-26\n21:24:01.234"
             android:gravity="center"
             android:textColor="#CFFF"
             android:textSize="36sp"
@@ -62,13 +62,13 @@
             app:layout_constraintBottom_toTopOf="@id/endTimeView"
             android:id="@+id/timeJoiner"
             android:src="@drawable/ic_link_black_24dp"
-            android:tint="#AFFF"
+            app:tint="#AFFF"
             android:layout_margin="6dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2020-04-26\n21:24:01.234"
+            tools:text="2020-04-26\n21:24:01.234"
             android:gravity="center"
             android:textColor="#CFFF"
             android:textSize="36sp"
@@ -88,7 +88,7 @@
             app:layout_constraintBottom_toBottomOf="@id/startTimeView"
             android:id="@+id/startTimeCopyBtn"
             android:src="@drawable/ic_content_copy_black_24dp"
-            android:tint="#AFFF"
+            app:tint="#AFFF"
             android:scaleType="centerInside"
             android:layout_margin="6dp"/>
 
@@ -101,7 +101,7 @@
             app:layout_constraintBottom_toBottomOf="@id/endTimeView"
             android:id="@+id/endTimeCopyBtn"
             android:src="@drawable/ic_content_copy_black_24dp"
-            android:tint="#AFFF"
+            app:tint="#AFFF"
             android:scaleType="centerInside"
             android:layout_margin="6dp"/>
 
@@ -125,7 +125,7 @@
             android:layout_marginStart="10dp"
             android:textSize="18sp"
             android:textColor="#AFFF"
-            android:text="100.00天"
+            tools:text="100.00天"
             android:gravity="end"
             app:layout_constraintRight_toLeftOf="@id/refreshResultBtn"/>
 
@@ -135,7 +135,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:src="@drawable/ic_refresh_black_24dp"
-            android:tint="@android:color/white"
+            app:tint="@android:color/white"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/resultView"
             app:layout_constraintBottom_toBottomOf="@id/resultView"
@@ -156,7 +156,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <include layout="@layout/content_time_calculator"/>
+                <include layout="@layout/content_time_calculator"
+                    android:id="@+id/content"/>
 
             </androidx.core.widget.NestedScrollView>
 

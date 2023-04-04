@@ -7,9 +7,10 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_countdown_unit.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.bean.WidgetBean
+import liang.lollipop.lcountdown.databinding.FragmentCountdownUnitBinding
+import liang.lollipop.lcountdown.utils.lazyBind
 
 /**
  * @date: 2018/6/21 21:02
@@ -17,7 +18,9 @@ import liang.lollipop.lcountdown.bean.WidgetBean
  *
  * 自定义单位的Fragment
  */
-class CountdownUnitFragment: LTabFragment() {
+class CountdownUnitFragment : LTabFragment() {
+
+    private val binding: FragmentCountdownUnitBinding by lazyBind()
 
     private lateinit var callback: Callback
 
@@ -35,15 +38,19 @@ class CountdownUnitFragment: LTabFragment() {
         return R.color.unitTabSelected
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_countdown_unit,container,false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return binding.root
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if(context is Callback){
+        if (context is Callback) {
             callback = context
-        }else{
+        } else {
             throw RuntimeException("Can't find CountdownUnitFragment.Callback")
         }
     }
@@ -56,13 +63,13 @@ class CountdownUnitFragment: LTabFragment() {
 
     }
 
-    fun reset(widgetBean: WidgetBean){
+    fun reset(widgetBean: WidgetBean) {
 
-        arguments = (arguments?:Bundle()).apply {
+        arguments = (arguments ?: Bundle()).apply {
 
-            putString(ARG_PREFIX_NAME,widgetBean.prefixName)
-            putString(ARG_SUFFIX_NAME,widgetBean.suffixName)
-            putString(ARG_DAY_UNIT,widgetBean.dayUnit)
+            putString(ARG_PREFIX_NAME, widgetBean.prefixName)
+            putString(ARG_SUFFIX_NAME, widgetBean.suffixName)
+            putString(ARG_DAY_UNIT, widgetBean.dayUnit)
 
         }
 
@@ -70,18 +77,18 @@ class CountdownUnitFragment: LTabFragment() {
 
     }
 
-    private fun initView(){
-        if(!isReady){
+    private fun initView() {
+        if (!isReady) {
             return
         }
 
         arguments?.let {
 
-            prefixNameInputView.setText(it.getString(ARG_PREFIX_NAME,""))
+            binding.prefixNameInputView.setText(it.getString(ARG_PREFIX_NAME, ""))
 
-            suffixNameInputView.setText(it.getString(ARG_SUFFIX_NAME,""))
+            binding.suffixNameInputView.setText(it.getString(ARG_SUFFIX_NAME, ""))
 
-            dayUnitInputView.setText(it.getString(ARG_DAY_UNIT,""))
+            binding.dayUnitInputView.setText(it.getString(ARG_DAY_UNIT, ""))
 
         }
 
@@ -90,35 +97,35 @@ class CountdownUnitFragment: LTabFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        prefixNameInputView.addTextChangedListener(object : TextWatcher {
+        binding.prefixNameInputView.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                callback.onPrefixNameChange(s?:"")
+                callback.onPrefixNameChange(s ?: "")
             }
 
         })
 
-        suffixNameInputView.addTextChangedListener(object :TextWatcher{
+        binding.suffixNameInputView.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                callback.onSuffixNameChange(s?:"")
+                callback.onSuffixNameChange(s ?: "")
             }
 
         })
 
-        dayUnitInputView.addTextChangedListener(object :TextWatcher{
+        binding.dayUnitInputView.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                callback.onDayUnitChange(s?:"")
+                callback.onDayUnitChange(s ?: "")
             }
 
         })
@@ -133,7 +140,7 @@ class CountdownUnitFragment: LTabFragment() {
         isReady = false
     }
 
-    interface Callback{
+    interface Callback {
 
         fun onPrefixNameChange(name: CharSequence)
         fun onSuffixNameChange(name: CharSequence)

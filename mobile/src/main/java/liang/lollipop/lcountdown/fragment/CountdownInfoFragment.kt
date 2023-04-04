@@ -1,5 +1,6 @@
 package liang.lollipop.lcountdown.fragment
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
@@ -10,14 +11,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import kotlinx.android.synthetic.main.fragment_countdown_info.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.bean.RepeatType
 import liang.lollipop.lcountdown.bean.WidgetBean
 import liang.lollipop.lcountdown.bean.WidgetStyle
+import liang.lollipop.lcountdown.databinding.FragmentCountdownInfoBinding
 import liang.lollipop.lcountdown.drawable.StyleSelectedForeDrawable
 import liang.lollipop.lcountdown.utils.CountdownUtil
-import java.util.*
+import liang.lollipop.lcountdown.utils.lazyBind
+import java.util.Calendar
 import kotlin.math.abs
 
 /**
@@ -42,6 +44,8 @@ class CountdownInfoFragment : LTabFragment(), CompoundButton.OnCheckedChangeList
     private var isReady = false
 
     private var repeatType = RepeatType.None
+
+    private val binding: FragmentCountdownInfoBinding by lazyBind()
 
     override fun getTitleId(): Int {
         return R.string.title_base_fragment
@@ -92,29 +96,32 @@ class CountdownInfoFragment : LTabFragment(), CompoundButton.OnCheckedChangeList
 
         arguments?.let {
 
-            nameInputView.setText(it.getString(ARG_NAME, ""))
+            binding.nameInputView.setText(it.getString(ARG_NAME, ""))
 
-            signInputView.setText(it.getString(ARG_SIGN, ""))
+            binding.signInputView.setText(it.getString(ARG_SIGN, ""))
 
             calendar.timeInMillis = it.getLong(ARG_TIME, System.currentTimeMillis())
             onEndTimeChange()
 
-            noTimeCheckBox.isChecked = it.getBoolean(ARG_NO_TIME, false)
-            timingTypeCheckBox.isChecked = it.getBoolean(ARG_NO_COUNTDOWN, false)
+            binding.noTimeCheckBox.isChecked = it.getBoolean(ARG_NO_TIME, false)
+            binding.timingTypeCheckBox.isChecked = it.getBoolean(ARG_NO_COUNTDOWN, false)
 
             repeatType = RepeatType.values()[it.getInt(ARG_REPEAT_TYPE, RepeatType.None.ordinal)]
             when (repeatType) {
                 RepeatType.None -> {
-                    notRepeatBtn.isChecked = true
+                    binding.notRepeatBtn.isChecked = true
                 }
+
                 RepeatType.Day -> {
-                    dayRepeatBtn.isChecked = true
+                    binding.dayRepeatBtn.isChecked = true
                 }
+
                 RepeatType.Month -> {
-                    monthRepeatBtn.isChecked = true
+                    binding.monthRepeatBtn.isChecked = true
                 }
+
                 RepeatType.Week -> {
-                    weekRepeatBtn.isChecked = true
+                    binding.weekRepeatBtn.isChecked = true
                 }
             }
 
@@ -131,8 +138,12 @@ class CountdownInfoFragment : LTabFragment(), CompoundButton.OnCheckedChangeList
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_countdown_info, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return binding.root
     }
 
     override fun onAttach(context: Context) {
@@ -146,7 +157,7 @@ class CountdownInfoFragment : LTabFragment(), CompoundButton.OnCheckedChangeList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        nameInputView.addTextChangedListener(object : TextWatcher {
+        binding.nameInputView.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -156,7 +167,7 @@ class CountdownInfoFragment : LTabFragment(), CompoundButton.OnCheckedChangeList
             }
         })
 
-        signInputView.addTextChangedListener(object : TextWatcher {
+        binding.signInputView.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -166,26 +177,28 @@ class CountdownInfoFragment : LTabFragment(), CompoundButton.OnCheckedChangeList
             }
         })
 
-        dateSelectView.setOnClickListener(this)
-        timeSelectView.setOnClickListener(this)
+        binding.dateSelectView.setOnClickListener(this)
+        binding.timeSelectView.setOnClickListener(this)
 
-        style1BtnBG = StyleSelectedForeDrawable(context!!)
-        style2BtnBG = StyleSelectedForeDrawable(context!!)
-        style3BtnBG = StyleSelectedForeDrawable(context!!, R.drawable.bg_black)
-        style4BtnBG = StyleSelectedForeDrawable(context!!, R.drawable.bg_white)
+        val c = view.context
 
-        style1Btn.setOnClickListener(this)
-        style1Btn.background = style1BtnBG
-        style2Btn.setOnClickListener(this)
-        style2Btn.background = style2BtnBG
-        style3Btn.setOnClickListener(this)
-        style3Btn.background = style3BtnBG
-        style4Btn.setOnClickListener(this)
-        style4Btn.background = style4BtnBG
+        style1BtnBG = StyleSelectedForeDrawable(c)
+        style2BtnBG = StyleSelectedForeDrawable(c)
+        style3BtnBG = StyleSelectedForeDrawable(c, R.drawable.bg_black)
+        style4BtnBG = StyleSelectedForeDrawable(c, R.drawable.bg_white)
 
-        noTimeCheckBox.setOnCheckedChangeListener(this)
-        timingTypeCheckBox.setOnCheckedChangeListener(this)
-        repeatGroup.setOnCheckedChangeListener { _, checkedId ->
+        binding.style1Btn.setOnClickListener(this)
+        binding.style1Btn.background = style1BtnBG
+        binding.style2Btn.setOnClickListener(this)
+        binding.style2Btn.background = style2BtnBG
+        binding.style3Btn.setOnClickListener(this)
+        binding.style3Btn.background = style3BtnBG
+        binding.style4Btn.setOnClickListener(this)
+        binding.style4Btn.background = style4BtnBG
+
+        binding.noTimeCheckBox.setOnCheckedChangeListener(this)
+        binding.timingTypeCheckBox.setOnCheckedChangeListener(this)
+        binding.repeatGroup.setOnCheckedChangeListener { _, checkedId ->
             val type = when (checkedId) {
                 R.id.dayRepeatBtn -> RepeatType.Day
                 R.id.weekRepeatBtn -> RepeatType.Week
@@ -193,7 +206,7 @@ class CountdownInfoFragment : LTabFragment(), CompoundButton.OnCheckedChangeList
                 else -> RepeatType.None
             }
             repeatType = type
-            dateSelectView.isEnabled = type != RepeatType.Day
+            binding.dateSelectView.isEnabled = type != RepeatType.Day
             callback.onRepeatTypeChange(type)
             onEndTimeChange()
         }
@@ -210,10 +223,11 @@ class CountdownInfoFragment : LTabFragment(), CompoundButton.OnCheckedChangeList
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         when (buttonView) {
-            noTimeCheckBox -> {
+            binding.noTimeCheckBox -> {
                 callback.onTimeTypeChange(isChecked)
             }
-            timingTypeCheckBox -> {
+
+            binding.timingTypeCheckBox -> {
                 callback.onTimingTypeChange(isChecked)
             }
         }
@@ -221,41 +235,53 @@ class CountdownInfoFragment : LTabFragment(), CompoundButton.OnCheckedChangeList
 
     override fun onClick(v: View?) {
         when (v) {
-            dateSelectView -> {
+            binding.dateSelectView -> {
                 val yearIn = calendar.get(Calendar.YEAR)
                 val monthIn = calendar.get(Calendar.MONTH)
                 val day = calendar.get(Calendar.DAY_OF_MONTH)
-                DatePickerDialog(context!!, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-                    calendar.set(Calendar.YEAR, year)
-                    calendar.set(Calendar.MONTH, month)
-                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                    onEndTimeChange()
-                }, yearIn, monthIn, day).show()
+                DatePickerDialog(
+                    v.context,
+                    { _, year, month, dayOfMonth ->
+                        calendar.set(Calendar.YEAR, year)
+                        calendar.set(Calendar.MONTH, month)
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                        onEndTimeChange()
+                    },
+                    yearIn,
+                    monthIn,
+                    day
+                ).show()
             }
 
-            timeSelectView -> {
+            binding.timeSelectView -> {
                 val hourIn = calendar.get(Calendar.HOUR_OF_DAY)
                 val minuteIn = calendar.get(Calendar.MINUTE)
-                TimePickerDialog(context, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-                    calendar.set(Calendar.MINUTE, minute)
-                    onEndTimeChange()
-                }, hourIn, minuteIn, false).show()
+                TimePickerDialog(
+                    v.context,
+                    { _, hourOfDay, minute ->
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                        calendar.set(Calendar.MINUTE, minute)
+                        onEndTimeChange()
+                    },
+                    hourIn,
+                    minuteIn,
+                    false
+                ).show()
             }
 
-            style1Btn -> {
+            binding.style1Btn -> {
                 onStyleChange(WidgetStyle.LIGHT)
             }
 
-            style2Btn -> {
+            binding.style2Btn -> {
                 onStyleChange(WidgetStyle.DARK)
             }
 
-            style3Btn -> {
+            binding.style3Btn -> {
                 onStyleChange(WidgetStyle.BLACK)
             }
 
-            style4Btn -> {
+            binding.style4Btn -> {
                 onStyleChange(WidgetStyle.WHITE)
             }
 
@@ -263,6 +289,7 @@ class CountdownInfoFragment : LTabFragment(), CompoundButton.OnCheckedChangeList
 
     }
 
+    @SuppressLint("SetTextI18n")
     private fun onEndTimeChange() {
 
         val year = calendar.get(Calendar.YEAR)
@@ -271,7 +298,7 @@ class CountdownInfoFragment : LTabFragment(), CompoundButton.OnCheckedChangeList
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
 
-        dateSelectView.text = when (repeatType) {
+        binding.dateSelectView.text = when (repeatType) {
             RepeatType.Week -> {
                 resources.getStringArray(R.array.week_name)[CountdownUtil.timeToWeekDay(calendar.timeInMillis) - 1]
             }
@@ -284,7 +311,7 @@ class CountdownInfoFragment : LTabFragment(), CompoundButton.OnCheckedChangeList
                 ("${year.formatNumber()}-${month.formatNumber()}-${day.formatNumber()}")
             }
         }
-        timeSelectView.text = ("${hour.formatNumber()} : ${minute.formatNumber()}")
+        binding.timeSelectView.text = ("${hour.formatNumber()} : ${minute.formatNumber()}")
 
         callback.onTimeInfoChange(calendar.timeInMillis)
 

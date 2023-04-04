@@ -16,20 +16,19 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.bottom_sheet_main.*
-import kotlinx.android.synthetic.main.content_main.*
-import kotlinx.android.synthetic.main.widget_countdown.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.base.BaseActivity
 import liang.lollipop.lcountdown.bean.PhotoInfo
 import liang.lollipop.lcountdown.bean.RepeatType
 import liang.lollipop.lcountdown.bean.WidgetBean
 import liang.lollipop.lcountdown.bean.WidgetStyle
+import liang.lollipop.lcountdown.databinding.ActivityMainBinding
 import liang.lollipop.lcountdown.fragment.*
 import liang.lollipop.lcountdown.utils.*
 import liang.lollipop.lcountdown.widget.CountdownWidget
@@ -42,14 +41,14 @@ import kotlin.math.abs
  * @author Lollipop
  */
 class MainActivity : BaseActivity(),
-        CountdownInfoFragment.Callback,
-        CountdownUnitFragment.Callback,
-        CountdownFontSizeFragment.Callback,
-        CountdownLocationFragment.OnLocationChangeListener,
-        CountdownLocationFragment.LocationInfoProvider,
-        CountdownColorFragment.Callback,
-        CountdownColorFragment.Provider,
-        CountdownImageFragment.Callback {
+    CountdownInfoFragment.Callback,
+    CountdownUnitFragment.Callback,
+    CountdownFontSizeFragment.Callback,
+    CountdownLocationFragment.OnLocationChangeListener,
+    CountdownLocationFragment.LocationInfoProvider,
+    CountdownColorFragment.Callback,
+    CountdownColorFragment.Provider,
+    CountdownImageFragment.Callback {
     companion object {
 
         private const val WHAT_UPDATE = 99
@@ -75,13 +74,16 @@ class MainActivity : BaseActivity(),
     private val countdownImageFragment = CountdownImageFragment()
 
     private val fragments: Array<LTabFragment> = arrayOf(
-            countdownInfoFragment, countdownUnitFragment,
-            countdownFontSizeFragment, countdownLocationFragment,
-            countdownColorFragment, countdownImageFragment)
+        countdownInfoFragment, countdownUnitFragment,
+        countdownFontSizeFragment, countdownLocationFragment,
+        countdownColorFragment, countdownImageFragment
+    )
+
+    private val binding: ActivityMainBinding by lazyBind()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
         initView()
         initData()
 
@@ -94,26 +96,33 @@ class MainActivity : BaseActivity(),
 
     private fun initView() {
         widgetBean.widgetId = intent.getIntExtra(
-                AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID)
+            AppWidgetManager.EXTRA_APPWIDGET_ID,
+            AppWidgetManager.INVALID_APPWIDGET_ID
+        )
 
-        sheetHelper = BottomSheetHelper(sheetGroup, widgetFrame, resources.getDimension(R.dimen.peekHeight))
+        sheetHelper =
+            BottomSheetHelper(
+                binding.bottomSheet.sheetGroup,
+                binding.content.widgetFrame,
+                resources.getDimension(R.dimen.peekHeight)
+            )
         sheetHelper.onStateChange {
             updateButton(it)
         }
-        sheetBtn.setOnClickListener {
+        binding.bottomSheet.sheetBtn.setOnClickListener {
             sheetHelper.reverse()
         }
 
-        updateBtn.setOnClickListener {
+        binding.bottomSheet.updateBtn.setOnClickListener {
             updateWidget()
         }
 
-        viewPager.offscreenPageLimit = fragments.size
-        viewPager.adapter = Adapter(supportFragmentManager, fragments, this)
-        val tabViewBuilder = LTabHelper.withExpandItem(tabLayout)
+        binding.bottomSheet.viewPager.offscreenPageLimit = fragments.size
+        binding.bottomSheet.viewPager.adapter = Adapter(supportFragmentManager, fragments, this)
+        val tabViewBuilder = LTabHelper.withExpandItem(binding.bottomSheet.tabLayout)
         tabViewBuilder.let { build ->
-            val tabUnselectedColor = ContextCompat.getColor(this@MainActivity, R.color.tabUnselectedColor)
+            val tabUnselectedColor =
+                ContextCompat.getColor(this@MainActivity, R.color.tabUnselectedColor)
             fragments.forEach { fragment ->
                 val selectedColor = if (fragment.getSelectedColorId() == 0) {
                     fragment.getSelectedColor()
@@ -126,7 +135,7 @@ class MainActivity : BaseActivity(),
                 }
                 var icon = fragment.getIcon()
                 if (icon == null) {
-                    icon = getDrawable(fragment.getIconId())
+                    icon = AppCompatResources.getDrawable(this, fragment.getIconId())
                 }
                 if (icon != null) {
                     build.addItem {
@@ -139,13 +148,13 @@ class MainActivity : BaseActivity(),
                     }
                 }
             }
-            build.setupWithViewPager(viewPager)
+            build.setupWithViewPager(binding.bottomSheet.viewPager)
         }
         tabViewBuilder.onSelected { index ->
             changeViewFocus(index == fragments.indexOf(countdownLocationFragment))
         }
-        tabLayout.style = LTabView.Style.Start
-        viewPager.adapter?.notifyDataSetChanged()
+        binding.bottomSheet.tabLayout.style = LTabView.Style.Start
+        binding.bottomSheet.viewPager.adapter?.notifyDataSetChanged()
 
         isCreateModel = intent.getIntExtra(CountdownWidget.WIDGET_SHOW, 0) < 1
         if (isCreateModel) {
@@ -157,15 +166,19 @@ class MainActivity : BaseActivity(),
 
     private fun updateButton(newState: BottomSheetHelper.State) {
         if (BottomSheetHelper.State.EXPANDED == newState) {
-            updateBtn.show()
-            sheetBtn.animate().let {
+            binding.bottomSheet.updateBtn.show()
+            binding.bottomSheet.sheetBtn.animate().let {
                 it.cancel()
                 it.rotation(180F).start()
             }
-            changeViewFocus(viewPager.currentItem == fragments.indexOf(countdownLocationFragment))
+            changeViewFocus(
+                binding.bottomSheet.viewPager.currentItem == fragments.indexOf(
+                    countdownLocationFragment
+                )
+            )
         } else {
-            updateBtn.hide()
-            sheetBtn.animate().let {
+            binding.bottomSheet.updateBtn.hide()
+            binding.bottomSheet.sheetBtn.animate().let {
                 it.cancel()
                 it.rotation(0F).start()
             }
@@ -175,7 +188,7 @@ class MainActivity : BaseActivity(),
 
     override fun onResumeFragments() {
         super.onResumeFragments()
-        viewPager.requestLayout()
+        binding.bottomSheet.viewPager.requestLayout()
     }
 
     private fun initData() {
@@ -191,41 +204,43 @@ class MainActivity : BaseActivity(),
             } else {
                 WidgetDBUtil.read(this@MainActivity).get(widgetBean).close()
             }
-            rootGroup.post {
+            binding.rootGroup.post {
                 syncData()
             }
         }
     }
 
     private fun checkClipboard() {
-       val value = ClipboardHelper.get(this)
+        val value = ClipboardHelper.get(this)
         if (TextUtils.isEmpty(value)) {
             return
         }
         try {
             val times = ClipboardHelper.decodeTimestamp(value)
             alert().setMessage(R.string.found_copy_times)
-                    .setPositiveButton(R.string.use) { dialog, _ ->
-                        widgetBean.endTime = times
-                        rootGroup.post {
-                            syncData()
-                        }
-                        dialog.dismiss()
+                .setPositiveButton(R.string.use) { dialog, _ ->
+                    widgetBean.endTime = times
+                    binding.rootGroup.post {
+                        syncData()
                     }
-                    .setNeutralButton(R.string.clear) { dialog, _ ->
-                        ClipboardHelper.clear(this)
-                        dialog.dismiss()
+                    dialog.dismiss()
+                }
+                .setNeutralButton(R.string.clear) { dialog, _ ->
+                    ClipboardHelper.clear(this)
+                    dialog.dismiss()
+                }
+                .setNegativeButton(R.string.use_and_clear) { dialog, _ ->
+                    widgetBean.endTime = times
+                    binding.rootGroup.post {
+                        syncData()
                     }
-                    .setNegativeButton(R.string.use_and_clear) { dialog, _ ->
-                        widgetBean.endTime = times
-                        rootGroup.post {
-                            syncData()
-                        }
-                        ClipboardHelper.clear(this)
-                        dialog.dismiss()
-                    }
-                    .show()
-        } catch (e: Throwable) { }
+                    ClipboardHelper.clear(this)
+                    dialog.dismiss()
+                }
+                .show()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
     }
 
     private fun syncData() {
@@ -301,12 +316,12 @@ class MainActivity : BaseActivity(),
 
     private fun countdown() {
         val bean = widgetBean.getTimerInfo()
-        dayView.text = bean.days
-        timeView.text = bean.time
-        if (widgetBean.repeatType == RepeatType.Day && dayGroup.visibility != View.GONE) {
-            dayGroup.visibility = View.GONE
-        } else if (widgetBean.repeatType != RepeatType.Day && dayGroup.visibility != View.VISIBLE) {
-            dayGroup.visibility = View.VISIBLE
+        binding.content.widget.dayView.text = bean.days
+        binding.content.widget.timeView.text = bean.time
+        if (widgetBean.repeatType == RepeatType.Day) {
+            binding.content.widget.dayGroup.isVisible = false
+        } else if (widgetBean.repeatType != RepeatType.Day) {
+            binding.content.widget.dayGroup.isVisible = true
         }
     }
 
@@ -320,24 +335,24 @@ class MainActivity : BaseActivity(),
         super.onStart()
         val delayed = (System.currentTimeMillis() / DELAYED + 1) * DELAYED
         handler.sendEmptyMessageDelayed(WHAT_UPDATE, delayed)
-        rootGroup.post {
+        binding.rootGroup.post {
             checkClipboard()
         }
     }
 
     override fun onNameInfoChange(name: CharSequence) {
         widgetBean.countdownName = name.toString()
-        nameView.text = name
+        binding.content.widget.nameView.text = name
     }
 
     override fun onSignInfoChange(sign: CharSequence) {
         widgetBean.signValue = sign.toString()
-        signView.text = sign
+        binding.content.widget.signView.text = sign
     }
 
     override fun onTimeTypeChange(noTime: Boolean) {
         widgetBean.noTime = noTime
-        timeView.visibility = if (noTime) {
+        binding.content.widget.timeView.visibility = if (noTime) {
             View.GONE
         } else {
             View.VISIBLE
@@ -373,63 +388,74 @@ class MainActivity : BaseActivity(),
             Color.BLACK
         }
 
-        widgetFrame.setCardBackgroundColor(bgColor)
-        changeTextViewColor(widgetFrame, textColor)
+        binding.content.widgetFrame.setCardBackgroundColor(bgColor)
+        changeTextViewColor(binding.content.widgetFrame, textColor)
         widgetBean.widgetStyle = style
     }
 
     override fun onPrefixNameChange(name: CharSequence) {
         widgetBean.prefixName = name.toString()
-        nameFrontView.text = name
+        binding.content.widget.nameFrontView.text = name
     }
 
     override fun onSuffixNameChange(name: CharSequence) {
         widgetBean.suffixName = name.toString()
-        nameBehindView.text = name
+        binding.content.widget.nameBehindView.text = name
     }
 
     override fun onDayUnitChange(name: CharSequence) {
         widgetBean.dayUnit = name.toString()
-        dayUnitView.text = name
+        binding.content.widget.dayUnitView.text = name
     }
 
     override fun onPrefixFontSizeChange(sizeDip: Int) {
         widgetBean.prefixFontSize = sizeDip
-        nameFrontView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeDip.toFloat())
+        binding.content.widget.nameFrontView.setTextSize(
+            TypedValue.COMPLEX_UNIT_SP,
+            sizeDip.toFloat()
+        )
     }
 
     override fun onNameFontSizeChange(sizeDip: Int) {
         widgetBean.nameFontSize = sizeDip
-        nameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeDip.toFloat())
+        binding.content.widget.nameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeDip.toFloat())
     }
 
     override fun onSuffixFontSizeChange(sizeDip: Int) {
         widgetBean.suffixFontSize = sizeDip
-        nameBehindView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeDip.toFloat())
+        binding.content.widget.nameBehindView.setTextSize(
+            TypedValue.COMPLEX_UNIT_SP,
+            sizeDip.toFloat()
+        )
     }
 
     override fun onDayFontSizeChange(sizeDip: Int) {
         widgetBean.dayFontSize = sizeDip
-        dayView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeDip.toFloat())
+        binding.content.widget.dayView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeDip.toFloat())
     }
 
     override fun onDayUnitFontSizeChange(sizeDip: Int) {
         widgetBean.dayUnitFontSize = sizeDip
-        dayUnitView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeDip.toFloat())
+        binding.content.widget.dayUnitView.setTextSize(
+            TypedValue.COMPLEX_UNIT_SP,
+            sizeDip.toFloat()
+        )
     }
 
     override fun onTimeFontSizeChange(sizeDip: Int) {
         widgetBean.timeFontSize = sizeDip
-        timeView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeDip.toFloat())
+        binding.content.widget.timeView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeDip.toFloat())
     }
 
     override fun onSignFontSizeChange(sizeDip: Int) {
         widgetBean.signFontSize = sizeDip
-        signView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeDip.toFloat())
+        binding.content.widget.signView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeDip.toFloat())
     }
 
-    override fun onLocationChange(target: WidgetUtil.Target, gravity: Int,
-                                  verticalMargin: Float, horizontalMargin: Float) {
+    override fun onLocationChange(
+        target: WidgetUtil.Target, gravity: Int,
+        verticalMargin: Float, horizontalMargin: Float
+    ) {
 
         if (gravity == Gravity.NO_GRAVITY) {
             resetViewLocation(target)
@@ -449,23 +475,23 @@ class MainActivity : BaseActivity(),
 
     private fun updateViewLocation(target: WidgetUtil.Target, isShowBorder: Boolean = true) {
         val view = when (target) {
-            WidgetUtil.Target.Name -> nameGroup
-            WidgetUtil.Target.Prefix -> nameFrontView
-            WidgetUtil.Target.Suffix -> nameBehindView
-            WidgetUtil.Target.Days -> dayGroup
-            WidgetUtil.Target.Unit -> dayUnitView
-            WidgetUtil.Target.Time -> timeView
-            WidgetUtil.Target.Inscription -> signView
+            WidgetUtil.Target.Name -> binding.content.widget.nameGroup
+            WidgetUtil.Target.Prefix -> binding.content.widget.nameFrontView
+            WidgetUtil.Target.Suffix -> binding.content.widget.nameBehindView
+            WidgetUtil.Target.Days -> binding.content.widget.dayGroup
+            WidgetUtil.Target.Unit -> binding.content.widget.dayUnitView
+            WidgetUtil.Target.Time -> binding.content.widget.timeView
+            WidgetUtil.Target.Inscription -> binding.content.widget.signView
             else -> null
         }
         val locationGroup = when (target) {
-            WidgetUtil.Target.Name -> nameLocationGroup
-            WidgetUtil.Target.Prefix -> prefixLocationGroup
-            WidgetUtil.Target.Suffix -> suffixLocationGroup
-            WidgetUtil.Target.Days -> dayLocationGroup
-            WidgetUtil.Target.Unit -> unitLocationGroup
-            WidgetUtil.Target.Time -> timeLocationGroup
-            WidgetUtil.Target.Inscription -> signLocationGroup
+            WidgetUtil.Target.Name -> binding.content.widget.nameLocationGroup
+            WidgetUtil.Target.Prefix -> binding.content.widget.prefixLocationGroup
+            WidgetUtil.Target.Suffix -> binding.content.widget.suffixLocationGroup
+            WidgetUtil.Target.Days -> binding.content.widget.dayLocationGroup
+            WidgetUtil.Target.Unit -> binding.content.widget.unitLocationGroup
+            WidgetUtil.Target.Time -> binding.content.widget.timeLocationGroup
+            WidgetUtil.Target.Inscription -> binding.content.widget.signLocationGroup
             else -> null
         }
         if (selectedView != view) {
@@ -512,32 +538,39 @@ class MainActivity : BaseActivity(),
         val view: TextView? = when (target) {
             WidgetUtil.Target.Name -> {
                 widgetBean.nameColor = color
-                nameView
+                binding.content.widget.nameView
             }
+
             WidgetUtil.Target.Prefix -> {
                 widgetBean.prefixColor = color
-                nameFrontView
+                binding.content.widget.nameFrontView
             }
+
             WidgetUtil.Target.Suffix -> {
                 widgetBean.suffixColor = color
-                nameBehindView
+                binding.content.widget.nameBehindView
             }
+
             WidgetUtil.Target.Days -> {
                 widgetBean.daysColor = color
-                dayView
+                binding.content.widget.dayView
             }
+
             WidgetUtil.Target.Unit -> {
                 widgetBean.unitColor = color
-                dayUnitView
+                binding.content.widget.dayUnitView
             }
+
             WidgetUtil.Target.Time -> {
                 widgetBean.timeColor = color
-                timeView
+                binding.content.widget.timeView
             }
+
             WidgetUtil.Target.Inscription -> {
                 widgetBean.inscriptionColor = color
-                signView
+                binding.content.widget.signView
             }
+
             else -> null
         }
         view?.setTextColor(color)
@@ -557,23 +590,23 @@ class MainActivity : BaseActivity(),
     }
 
     override fun onImageSelected(info: PhotoInfo) {
-        info.loadTo(backgroundImage)
+        info.loadTo(binding.content.widget.backgroundImage)
         if (info == PhotoInfo.Empty) {
             FileUtil.removeWidgetImage(this, widgetBean.widgetId)
-            info.loadTo(fullBgView)
+            info.loadTo(binding.content.fullBgView)
             return
         }
         doAsync {
             FileUtil.copyWidget(this, info.path, widgetBean.widgetId)
-            onUI{
+            onUI {
                 updateImage()
             }
         }
     }
 
     private fun updateImage() {
-        FileUtil.loadWidgetImage(backgroundImage, widgetBean.widgetId)
-        FileUtil.loadWidgetImage(fullBgView, widgetBean.widgetId, true)
+        FileUtil.loadWidgetImage(binding.content.widget.backgroundImage, widgetBean.widgetId)
+        FileUtil.loadWidgetImage(binding.content.fullBgView, widgetBean.widgetId, true)
     }
 
     override fun onDestroy() {
@@ -613,14 +646,19 @@ class MainActivity : BaseActivity(),
     }
 
     private fun dp(value: Float): Float {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, resources.displayMetrics)
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            value,
+            resources.displayMetrics
+        )
     }
 
     @SuppressLint("WrongConstant")
-    private class Adapter(fragmentManager: FragmentManager,
-                          private val fragments: Array<LTabFragment>,
-                          private val context: Context)
-        : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+    private class Adapter(
+        fragmentManager: FragmentManager,
+        private val fragments: Array<LTabFragment>,
+        private val context: Context
+    ) : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
         override fun getItem(position: Int): Fragment {
             return fragments[position]
@@ -644,11 +682,13 @@ class MainActivity : BaseActivity(),
 
     }
 
-    private class BottomSheetHelper(private val sheetView: View,
-                                    private val contentView: View,
-                                    private val peekHeight: Float) :
-            ValueAnimator.AnimatorUpdateListener,
-            Animator.AnimatorListener {
+    private class BottomSheetHelper(
+        private val sheetView: View,
+        private val contentView: View,
+        private val peekHeight: Float
+    ) :
+        ValueAnimator.AnimatorUpdateListener,
+        Animator.AnimatorListener {
 
         private val valueAnimator = ValueAnimator().apply {
             addUpdateListener(this@BottomSheetHelper)
@@ -743,28 +783,30 @@ class MainActivity : BaseActivity(),
             contentView.translationY = offsetMax * value * -0.5F
         }
 
-        override fun onAnimationUpdate(animation: ValueAnimator?) {
+        override fun onAnimationUpdate(animation: ValueAnimator) {
             if (animation == valueAnimator) {
                 onProgressChange(animation.animatedValue as Float)
             }
         }
 
-        override fun onAnimationRepeat(animation: Animator?) {}
+        override fun onAnimationRepeat(animation: Animator) {}
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
             if (animation == valueAnimator) {
-                changeState(if (isOpen) {
-                    State.EXPANDED
-                } else {
-                    State.COLLAPSED
-                })
+                changeState(
+                    if (isOpen) {
+                        State.EXPANDED
+                    } else {
+                        State.COLLAPSED
+                    }
+                )
             }
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
         }
 
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
             if (animation == valueAnimator) {
                 changeState(State.SCROLLING)
             }

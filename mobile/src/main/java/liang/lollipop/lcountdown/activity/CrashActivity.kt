@@ -7,12 +7,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_crash.*
-import liang.lollipop.lcountdown.base.BaseActivity
 import liang.lollipop.lcountdown.LApplication
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.base.BaseActivity
+import liang.lollipop.lcountdown.databinding.ActivityCrashBinding
 import liang.lollipop.lcountdown.utils.LogHelper
 import liang.lollipop.lcountdown.utils.MailUtil
+import liang.lollipop.lcountdown.utils.lazyBind
 import java.io.File
 
 
@@ -28,22 +29,24 @@ class CrashActivity : BaseActivity() {
 
     private var logFile: File? = null
 
+    private val binding: ActivityCrashBinding by lazyBind()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_crash)
+        setContentView(binding.root)
         initView()
-        initData(intent.getStringExtra(ARG_LOG_PATH)?:"")
+        initData(intent.getStringExtra(ARG_LOG_PATH) ?: "")
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        initData(intent?.getStringExtra(ARG_LOG_PATH)?:"")
+        initData(intent?.getStringExtra(ARG_LOG_PATH) ?: "")
     }
 
     private fun initView() {
-        setToolbar(toolbar)
-        errorView.movementMethod = ScrollingMovementMethod.getInstance()
-        sendMailBtn.setOnClickListener {
+        setToolbar(binding.toolbar)
+        binding.errorView.movementMethod = ScrollingMovementMethod.getInstance()
+        binding.sendMailBtn.setOnClickListener {
             MailUtil.to(getString(R.string.lollipop_email)) {
                 subject = getString(R.string.log_mail_title)
                 content = getString(R.string.log_mail_centent)
@@ -56,14 +59,14 @@ class CrashActivity : BaseActivity() {
                 file = logFile
             }.send(this)
         }
-        copyAddress.setOnClickListener {
+        binding.copyAddress.setOnClickListener {
             //获取剪贴板管理器：
             val cm = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             // 创建普通字符型ClipData
             val clipData = ClipData.newPlainText("email", getString(R.string.lollipop_email))
             // 将ClipData内容放到系统剪贴板里。
             cm.setPrimaryClip(clipData)
-            Snackbar.make(mailAddress,R.string.copy_completed,Snackbar.LENGTH_LONG).show()
+            Snackbar.make(binding.mailAddress, R.string.copy_completed, Snackbar.LENGTH_LONG).show()
         }
     }
 
@@ -84,7 +87,7 @@ class CrashActivity : BaseActivity() {
         } else {
             errorInfo.append(LogHelper.printLog(logFile!!))
         }
-        errorView.text = errorInfo.toString()
+        binding.errorView.text = errorInfo.toString()
     }
 
 }

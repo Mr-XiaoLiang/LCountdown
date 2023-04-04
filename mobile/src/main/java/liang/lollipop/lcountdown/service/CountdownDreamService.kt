@@ -174,26 +174,26 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
         shownHolders.clear()
     }
 
-    override fun onAnimationUpdate(animation: ValueAnimator?) {
+    override fun onAnimationUpdate(animation: ValueAnimator) {
         if (animation === hiddenAnimator || animation === showAnimator) {
             val value = animation.animatedValue as Float
             dreamBody.alpha = value
         }
     }
 
-    override fun onAnimationRepeat(animation: Animator?) {
+    override fun onAnimationRepeat(animation: Animator) {
     }
 
-    override fun onAnimationEnd(animation: Animator?) {
+    override fun onAnimationEnd(animation: Animator) {
         if (animation == hiddenAnimator) {//如果是隐藏的动画
             showAnimator.start()//启动显示的动画
         }
     }
 
-    override fun onAnimationCancel(animation: Animator?) {
+    override fun onAnimationCancel(animation: Animator) {
     }
 
-    override fun onAnimationStart(animation: Animator?) {
+    override fun onAnimationStart(animation: Animator) {
         if (animation == showAnimator) {
             layoutAgain()
         }
@@ -302,7 +302,7 @@ class CountdownDreamService: DreamService(),ValueAnimator.AnimatorUpdateListener
                 val holder: IconHolder = if (waitHolders.size > 0) {
                     waitHolders.removeAt(0)
                 } else {
-                    IconHolder.getInstance(inflater, iconGroup)
+                    IconHolder.getInstance(iconGroup)
                 }
                 holder.addTo(iconGroup)
                 holder.onBind(iconBean)

@@ -6,9 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
-import kotlinx.android.synthetic.main.fragment_countdown_font_size.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.bean.WidgetBean
+import liang.lollipop.lcountdown.databinding.FragmentCountdownFontSizeBinding
+import liang.lollipop.lcountdown.utils.lazyBind
 
 /**
  * @date: 2018/6/21 21:28
@@ -16,15 +17,20 @@ import liang.lollipop.lcountdown.bean.WidgetBean
  *
  * 字体大小设置的Fragment
  */
-class CountdownFontSizeFragment: LTabFragment(),SeekBar.OnSeekBarChangeListener {
+class CountdownFontSizeFragment : LTabFragment(), SeekBar.OnSeekBarChangeListener {
 
     private lateinit var callback: Callback
 
     private var isReady = false
 
+    private val binding: FragmentCountdownFontSizeBinding by lazyBind()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_countdown_font_size,container,false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return binding.root
     }
 
     override fun getTitleId(): Int {
@@ -41,13 +47,13 @@ class CountdownFontSizeFragment: LTabFragment(),SeekBar.OnSeekBarChangeListener 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        prefixFontSizeBar.setOnSeekBarChangeListener(this)
-        nameFontSizeBar.setOnSeekBarChangeListener(this)
-        suffixFontSizeBar.setOnSeekBarChangeListener(this)
-        dayFontSizeBar.setOnSeekBarChangeListener(this)
-        dayUnitFontSizeBar.setOnSeekBarChangeListener(this)
-        timeFontSizeBar.setOnSeekBarChangeListener(this)
-        signFontSizeBar.setOnSeekBarChangeListener(this)
+        binding.prefixFontSizeBar.setOnSeekBarChangeListener(this)
+        binding.nameFontSizeBar.setOnSeekBarChangeListener(this)
+        binding.suffixFontSizeBar.setOnSeekBarChangeListener(this)
+        binding.dayFontSizeBar.setOnSeekBarChangeListener(this)
+        binding.dayUnitFontSizeBar.setOnSeekBarChangeListener(this)
+        binding.timeFontSizeBar.setOnSeekBarChangeListener(this)
+        binding.signFontSizeBar.setOnSeekBarChangeListener(this)
         isReady = true
         initView()
     }
@@ -59,9 +65,9 @@ class CountdownFontSizeFragment: LTabFragment(),SeekBar.OnSeekBarChangeListener 
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if(context is Callback){
+        if (context is Callback) {
             callback = context
-        }else{
+        } else {
             throw RuntimeException("Can't find CountdownFontSizeFragment.Callback")
         }
     }
@@ -78,17 +84,17 @@ class CountdownFontSizeFragment: LTabFragment(),SeekBar.OnSeekBarChangeListener 
 
     }
 
-    fun reset(widgetBean: WidgetBean){
+    fun reset(widgetBean: WidgetBean) {
 
-        arguments = (arguments?:Bundle()).apply {
+        arguments = (arguments ?: Bundle()).apply {
 
-            putInt(ARG_PREFIX_FONT_SIZE,widgetBean.prefixFontSize)
-            putInt(ARG_NAME_FONT_SIZE,widgetBean.nameFontSize)
-            putInt(ARG_SUFFIX_FONT_SIZE,widgetBean.suffixFontSize)
-            putInt(ARG_DAY_FONT_SIZE,widgetBean.dayFontSize)
-            putInt(ARG_DAY_UNIT_FONT_SIZE,widgetBean.dayUnitFontSize)
-            putInt(ARG_TIME_FONT_SIZE,widgetBean.timeFontSize)
-            putInt(ARG_SIGN_FONT_SIZE,widgetBean.signFontSize)
+            putInt(ARG_PREFIX_FONT_SIZE, widgetBean.prefixFontSize)
+            putInt(ARG_NAME_FONT_SIZE, widgetBean.nameFontSize)
+            putInt(ARG_SUFFIX_FONT_SIZE, widgetBean.suffixFontSize)
+            putInt(ARG_DAY_FONT_SIZE, widgetBean.dayFontSize)
+            putInt(ARG_DAY_UNIT_FONT_SIZE, widgetBean.dayUnitFontSize)
+            putInt(ARG_TIME_FONT_SIZE, widgetBean.timeFontSize)
+            putInt(ARG_SIGN_FONT_SIZE, widgetBean.signFontSize)
 
         }
 
@@ -96,72 +102,79 @@ class CountdownFontSizeFragment: LTabFragment(),SeekBar.OnSeekBarChangeListener 
 
     }
 
-    private fun initView(){
-        if(!isReady){
+    private fun initView() {
+        if (!isReady) {
             return
         }
 
         arguments?.run {
 
-            prefixFontSizeBar.progress = getInt(ARG_PREFIX_FONT_SIZE,0)
-            nameFontSizeBar.progress = getInt(ARG_NAME_FONT_SIZE,0)
-            suffixFontSizeBar.progress = getInt(ARG_SUFFIX_FONT_SIZE,0)
-            dayFontSizeBar.progress = getInt(ARG_DAY_FONT_SIZE,0)
-            dayUnitFontSizeBar.progress = getInt(ARG_DAY_UNIT_FONT_SIZE,0)
-            timeFontSizeBar.progress = getInt(ARG_TIME_FONT_SIZE,0)
-            signFontSizeBar.progress = getInt(ARG_SIGN_FONT_SIZE,0)
+            binding.prefixFontSizeBar.progress = getInt(ARG_PREFIX_FONT_SIZE, 0)
+            binding.nameFontSizeBar.progress = getInt(ARG_NAME_FONT_SIZE, 0)
+            binding.suffixFontSizeBar.progress = getInt(ARG_SUFFIX_FONT_SIZE, 0)
+            binding.dayFontSizeBar.progress = getInt(ARG_DAY_FONT_SIZE, 0)
+            binding.dayUnitFontSizeBar.progress = getInt(ARG_DAY_UNIT_FONT_SIZE, 0)
+            binding.timeFontSizeBar.progress = getInt(ARG_TIME_FONT_SIZE, 0)
+            binding.signFontSizeBar.progress = getInt(ARG_SIGN_FONT_SIZE, 0)
 
-            prefixFontSizeBar.callProgressChanged()
-            nameFontSizeBar.callProgressChanged()
-            suffixFontSizeBar.callProgressChanged()
-            dayFontSizeBar.callProgressChanged()
-            dayUnitFontSizeBar.callProgressChanged()
-            timeFontSizeBar.callProgressChanged()
-            signFontSizeBar.callProgressChanged()
+            binding.prefixFontSizeBar.callProgressChanged()
+            binding.nameFontSizeBar.callProgressChanged()
+            binding.suffixFontSizeBar.callProgressChanged()
+            binding.dayFontSizeBar.callProgressChanged()
+            binding.dayUnitFontSizeBar.callProgressChanged()
+            binding.timeFontSizeBar.callProgressChanged()
+            binding.signFontSizeBar.callProgressChanged()
         }
 
     }
 
-    private fun SeekBar.callProgressChanged(){
-        onProgressChanged(this,progress,false)
+    private fun SeekBar.callProgressChanged() {
+        onProgressChanged(this, progress, false)
     }
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
 
-        when(seekBar){
+        when (seekBar) {
 
-            prefixFontSizeBar -> {
-                prefixFontSizeView.text = String.format(getString(R.string.prefix_font_size),progress)
+            binding.prefixFontSizeBar -> {
+                binding.prefixFontSizeView.text =
+                    String.format(getString(R.string.prefix_font_size), progress)
                 callback.onPrefixFontSizeChange(progress)
             }
 
-            nameFontSizeBar -> {
-                nameFontSizeView.text = String.format(getString(R.string.name_font_size),progress)
+            binding.nameFontSizeBar -> {
+                binding.nameFontSizeView.text =
+                    String.format(getString(R.string.name_font_size), progress)
                 callback.onNameFontSizeChange(progress)
             }
 
-            suffixFontSizeBar -> {
-                suffixFontSizeView.text = String.format(getString(R.string.suffix_font_size),progress)
+            binding.suffixFontSizeBar -> {
+                binding.suffixFontSizeView.text =
+                    String.format(getString(R.string.suffix_font_size), progress)
                 callback.onSuffixFontSizeChange(progress)
             }
 
-            dayFontSizeBar -> {
-                dayFontSizeView.text = String.format(getString(R.string.day_font_size),progress)
+            binding.dayFontSizeBar -> {
+                binding.dayFontSizeView.text =
+                    String.format(getString(R.string.day_font_size), progress)
                 callback.onDayFontSizeChange(progress)
             }
 
-            dayUnitFontSizeBar -> {
-                dayUnitFontSizeView.text = String.format(getString(R.string.day_unit_font_size),progress)
+            binding.dayUnitFontSizeBar -> {
+                binding.dayUnitFontSizeView.text =
+                    String.format(getString(R.string.day_unit_font_size), progress)
                 callback.onDayUnitFontSizeChange(progress)
             }
 
-            timeFontSizeBar -> {
-                timeFontSizeView.text = String.format(getString(R.string.time_font_size),progress)
+            binding.timeFontSizeBar -> {
+                binding.timeFontSizeView.text =
+                    String.format(getString(R.string.time_font_size), progress)
                 callback.onTimeFontSizeChange(progress)
             }
 
-            signFontSizeBar -> {
-                signFontSizeView.text = String.format(getString(R.string.sign_font_size),progress)
+            binding.signFontSizeBar -> {
+                binding.signFontSizeView.text =
+                    String.format(getString(R.string.sign_font_size), progress)
                 callback.onSignFontSizeChange(progress)
             }
 
@@ -173,7 +186,7 @@ class CountdownFontSizeFragment: LTabFragment(),SeekBar.OnSeekBarChangeListener 
 
     override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 
-    interface Callback{
+    interface Callback {
 
         /**
          * 前缀名的字体大小

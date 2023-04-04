@@ -2,16 +2,15 @@ package liang.lollipop.lcountdown.holder
 
 import android.app.AlertDialog
 import android.text.TextUtils
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.base.BaseHolder
 import liang.lollipop.lcountdown.bean.CountdownBean
 import liang.lollipop.lcountdown.bean.TimingBean
+import liang.lollipop.lcountdown.databinding.ItemTimingBinding
 import liang.lollipop.lcountdown.drawable.LinearGradientDrawable
 import liang.lollipop.lcountdown.utils.*
 import java.text.SimpleDateFormat
@@ -21,34 +20,23 @@ import java.util.*
  * 计时的显示Holder
  * @author Lollipop
  */
-class TimingHolder(itemView: View) : BaseHolder<TimingBean>(itemView) {
+class TimingHolder(private val binding: ItemTimingBinding) : BaseHolder<TimingBean>(binding.root) {
 
-    //标题文字
-    private val titleIconView: TextView = find(R.id.titleIconView)
-
-    //标题View
-    private val timingTitleView: TextView = find(R.id.timingTitleView)
-
-    //开始时间
-    private val startTimeView: TextView = find(R.id.startTimeView)
-
-    //时长
-    private val timeLengthView: TextView = find(R.id.timeLengthView)
-
-    //结束时间
-    private val endTimeView: TextView = find(R.id.endTimeView)
 
     // 开启悬浮窗的按钮
-    val floatingBtn: ImageView = find(R.id.floatingBtn)
+    val floatingBtn: ImageView
+        get() {
+            return binding.floatingBtn
+        }
 
-    // 背景图
-    private val backImageView: ImageView = find(R.id.backImageView)
+    val stopBtn: Button
+        get() {
+            return binding.stopBtn
+        }
+
 
     //头部的颜色
     private val headColorDrawable = LinearGradientDrawable()
-
-    //停止按钮
-    val stopBtn: Button = find(R.id.stopBtn)
 
     private var lastBean: TimingBean? = null
 
@@ -60,19 +48,19 @@ class TimingHolder(itemView: View) : BaseHolder<TimingBean>(itemView) {
     }
 
     //时间格式化
-    private val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS", Locale.ENGLISH).apply {
-        timeZone = TimeZone.getDefault()
-    }
+    private val simpleDateFormat =
+        SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS", Locale.ENGLISH).apply {
+            timeZone = TimeZone.getDefault()
+        }
 
     private val countdownBean = CountdownBean()
 
     init {
         //头部的颜色
-        val headColorView: ImageView = find(R.id.headColorView)
-        headColorView.setImageDrawable(headColorDrawable)
+        binding.headColorView.setImageDrawable(headColorDrawable)
 
         itemView.setOnClickListener(this)
-        stopBtn.setOnClickListener(this)
+        binding.stopBtn.setOnClickListener(this)
         floatingBtn.setOnClickListener(this)
 
         canSwipe = true
@@ -81,11 +69,11 @@ class TimingHolder(itemView: View) : BaseHolder<TimingBean>(itemView) {
             lastBean?.let { bean ->
                 ClipboardHelper.put(view.context, ClipboardHelper.encodeTimestamp(bean.startTime))
                 AlertDialog.Builder(view.context).setTitle(R.string.title_copy_times)
-                        .setMessage(R.string.msg_copy_times)
-                        .setPositiveButton(R.string.understood) { dialog, _ ->
-                            dialog.dismiss()
-                        }
-                        .show()
+                    .setMessage(R.string.msg_copy_times)
+                    .setPositiveButton(R.string.understood) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
             }
             true
         }
@@ -93,8 +81,8 @@ class TimingHolder(itemView: View) : BaseHolder<TimingBean>(itemView) {
 
     companion object {
 
-        fun new(layoutInflater: LayoutInflater, parent: ViewGroup): TimingHolder {
-            return TimingHolder(layoutInflater.inflate(R.layout.item_timing, parent, false))
+        fun new(parent: ViewGroup): TimingHolder {
+            return TimingHolder(parent.bind(false))
         }
 
     }
@@ -107,24 +95,24 @@ class TimingHolder(itemView: View) : BaseHolder<TimingBean>(itemView) {
         headColorDrawable.alpha = 128
         headColorDrawable.callUpdate()
 
-        titleIconView.text = bean.name.let {
+        binding.titleIconView.text = bean.name.let {
             if (TextUtils.isEmpty(it)) {
                 ""
             } else {
-                it.substring(0, 1).toUpperCase(Locale.getDefault())
+                it.substring(0, 1).uppercase(Locale.getDefault())
             }
         }
 
-        timingTitleView.text = bean.name
-        timingTitleView.visibility = if (TextUtils.isEmpty(bean.name)) {
+        binding.timingTitleView.text = bean.name
+        binding.timingTitleView.visibility = if (TextUtils.isEmpty(bean.name)) {
             View.GONE
         } else {
             View.VISIBLE
         }
 
-        startTimeView.text = simpleDateFormat.format(Date(bean.startTime))
+        binding.startTimeView.text = simpleDateFormat.format(Date(bean.startTime))
 
-        endTimeView.text = bean.endTime.let {
+        binding.endTimeView.text = bean.endTime.let {
             if (it == 0L) {
                 context.getString(R.string.now)
             } else {
@@ -149,7 +137,7 @@ class TimingHolder(itemView: View) : BaseHolder<TimingBean>(itemView) {
             -90F
         }
 
-        FileUtil.loadTimerImage(backImageView, bean.id)
+        FileUtil.loadTimerImage(binding.backImageView, bean.id)
     }
 
     private fun onTimeChange() {
@@ -168,10 +156,10 @@ class TimingHolder(itemView: View) : BaseHolder<TimingBean>(itemView) {
             endTime = temp
         }
 
-        timeLengthView.text = CountdownUtil.timer(
-                countdownBean,
-                startTime,
-                endTime
+        binding.timeLengthView.text = CountdownUtil.timer(
+            countdownBean,
+            startTime,
+            endTime
         ).getTimerValue()
 
         removeTask(timerTask)

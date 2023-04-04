@@ -8,11 +8,12 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_countdown_location.*
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.bean.WidgetBean
+import liang.lollipop.lcountdown.databinding.FragmentCountdownLocationBinding
 import liang.lollipop.lcountdown.utils.CheckedButtonHelper
 import liang.lollipop.lcountdown.utils.WidgetUtil
+import liang.lollipop.lcountdown.utils.lazyBind
 import liang.lollipop.lcountdown.view.AutoSeekBar
 import liang.lollipop.lcountdown.view.CheckImageView
 import liang.lollipop.lcountdown.view.ExpandButton
@@ -23,7 +24,10 @@ import kotlin.math.abs
  * @author: lollipop
  * 位置调整的 Fragment
  */
-class CountdownLocationFragment: LTabFragment() {
+class CountdownLocationFragment : LTabFragment() {
+
+    private val binding: FragmentCountdownLocationBinding by lazyBind()
+
     override fun getTitleId(): Int {
         return R.string.title_loca_fragment
     }
@@ -50,8 +54,12 @@ class CountdownLocationFragment: LTabFragment() {
 
     private var checkedButtonHelper: CheckedButtonHelper? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_countdown_location,container,false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,54 +69,55 @@ class CountdownLocationFragment: LTabFragment() {
 
     private fun initView() {
         isReady = true
-        expandBtnGroup.onSelectedBtnChange {
+        binding.expandBtnGroup.onSelectedBtnChange {
             onTargetChange(it)
             onLocationChange()
         }
-        expandBtnGroup.onExpandStateChange { _, isOpen ->
+        binding.expandBtnGroup.onExpandStateChange { _, isOpen ->
             if (isOpen) {
-                hideView(gridGroup)
-                hideView(horizontalSeekBar)
-                hideView(verticalSeekBar)
+                hideView(binding.gridGroup)
+                hideView(binding.horizontalSeekBar)
+                hideView(binding.verticalSeekBar)
             } else {
-                showView(gridGroup)
-                showView(horizontalSeekBar)
-                showView(verticalSeekBar)
+                showView(binding.gridGroup)
+                showView(binding.horizontalSeekBar)
+                showView(binding.verticalSeekBar)
             }
         }
-        checkedButtonHelper = CheckedButtonHelper.bind(gridGroup)
+        checkedButtonHelper = CheckedButtonHelper.bind(binding.gridGroup)
         checkedButtonHelper?.onChecked { checkImageView, _ ->
             onGravityChange(checkImageView)
             onLocationChange()
         }
-        val seekBarTouchListener = object: AutoSeekBar.OnTouchStateChangeListener {
+        val seekBarTouchListener = object : AutoSeekBar.OnTouchStateChangeListener {
             override fun onTouchStateChange(view: AutoSeekBar, isTouch: Boolean) {
-                if (floatText.visibility != View.VISIBLE) {
-                    floatText.alpha = 0F
-                    floatText.scaleX = 0F
-                    floatText.scaleY = 0F
-                    floatText.visibility = View.VISIBLE
+                if (binding.floatText.visibility != View.VISIBLE) {
+                    binding.floatText.alpha = 0F
+                    binding.floatText.scaleX = 0F
+                    binding.floatText.scaleY = 0F
+                    binding.floatText.visibility = View.VISIBLE
                 }
-                val anim = floatText.animate()
+                val anim = binding.floatText.animate()
                 anim.cancel()
                 if (isTouch) {
                     anim.alpha(1F).scaleX(1F).scaleY(1F).start()
-                } else if (!verticalSeekBar.isPressed && !horizontalSeekBar.isPressed) {
+                } else if (!binding.verticalSeekBar.isPressed && !binding.horizontalSeekBar.isPressed) {
                     anim.alpha(0F).scaleX(0F).scaleY(0F).start()
                 }
             }
         }
-        val seekBarChangeListener = object: AutoSeekBar.OnProgressChangeListener {
+        val seekBarChangeListener = object : AutoSeekBar.OnProgressChangeListener {
             @SuppressLint("SetTextI18n")
             override fun onProgressChange(view: AutoSeekBar, progress: Float) {
-                floatText.text = "${abs(horizontalSeekBar.progress).format()}\n${abs(verticalSeekBar.progress).format()}"
+                binding.floatText.text =
+                    "${abs(binding.horizontalSeekBar.progress).format()}\n${abs(binding.verticalSeekBar.progress).format()}"
                 onLocationChange()
             }
         }
-        verticalSeekBar.onTouchStateChangeListener = seekBarTouchListener
-        horizontalSeekBar.onTouchStateChangeListener = seekBarTouchListener
-        verticalSeekBar.onProgressChangeListener = seekBarChangeListener
-        horizontalSeekBar.onProgressChangeListener = seekBarChangeListener
+        binding.verticalSeekBar.onTouchStateChangeListener = seekBarTouchListener
+        binding.horizontalSeekBar.onTouchStateChangeListener = seekBarTouchListener
+        binding.verticalSeekBar.onProgressChangeListener = seekBarChangeListener
+        binding.horizontalSeekBar.onProgressChangeListener = seekBarChangeListener
     }
 
     private fun hideView(view: View) {
@@ -135,10 +144,10 @@ class CountdownLocationFragment: LTabFragment() {
 
     override fun onStop() {
         super.onStop()
-        expandBtnGroup.closeAll()
-        showView(gridGroup, false)
-        showView(horizontalSeekBar, false)
-        showView(verticalSeekBar, false)
+        binding.expandBtnGroup.closeAll()
+        showView(binding.gridGroup, false)
+        showView(binding.horizontalSeekBar, false)
+        showView(binding.verticalSeekBar, false)
     }
 
     override fun onAttach(context: Context) {
@@ -155,15 +164,15 @@ class CountdownLocationFragment: LTabFragment() {
     private fun setCheckedByGravity(value: Int) {
         this.targetGravity = value
         val btn = when (value) {
-            (Gravity.LEFT or Gravity.TOP) -> leftTopGrid
-            (Gravity.CENTER or Gravity.TOP) -> centerTopGrid
-            (Gravity.RIGHT or Gravity.TOP) -> rightTopGrid
-            (Gravity.LEFT or Gravity.CENTER) -> leftMiddleGrid
-            (Gravity.CENTER) -> centerMiddleGrid
-            (Gravity.RIGHT or Gravity.CENTER) -> rightMiddleGrid
-            (Gravity.LEFT or Gravity.BOTTOM) -> leftBottomGrid
-            (Gravity.BOTTOM or Gravity.CENTER) -> centerBottomGrid
-            (Gravity.RIGHT or Gravity.BOTTOM) -> rightBottomGrid
+            (Gravity.LEFT or Gravity.TOP) -> binding.leftTopGrid
+            (Gravity.CENTER or Gravity.TOP) -> binding.centerTopGrid
+            (Gravity.RIGHT or Gravity.TOP) -> binding.rightTopGrid
+            (Gravity.LEFT or Gravity.CENTER) -> binding.leftMiddleGrid
+            (Gravity.CENTER) -> binding.centerMiddleGrid
+            (Gravity.RIGHT or Gravity.CENTER) -> binding.rightMiddleGrid
+            (Gravity.LEFT or Gravity.BOTTOM) -> binding.leftBottomGrid
+            (Gravity.BOTTOM or Gravity.CENTER) -> binding.centerBottomGrid
+            (Gravity.RIGHT or Gravity.BOTTOM) -> binding.rightBottomGrid
             else -> null
         }
         checkedButtonHelper?.setChecked(btn, isChecked = true, cellListener = false)
@@ -171,64 +180,78 @@ class CountdownLocationFragment: LTabFragment() {
 
     @SuppressLint("RtlHardcoded")
     private fun onGravityChange(checkImageView: CheckImageView?) {
-        targetGravity = when(checkImageView) {
-            leftTopGrid -> {
+        targetGravity = when (checkImageView) {
+            binding.leftTopGrid -> {
                 Gravity.LEFT or Gravity.TOP
             }
-            centerTopGrid -> {
+
+            binding.centerTopGrid -> {
                 Gravity.CENTER or Gravity.TOP
             }
-            rightTopGrid -> {
+
+            binding.rightTopGrid -> {
                 Gravity.RIGHT or Gravity.TOP
             }
-            leftMiddleGrid -> {
+
+            binding.leftMiddleGrid -> {
                 Gravity.LEFT or Gravity.CENTER
             }
-            centerMiddleGrid -> {
+
+            binding.centerMiddleGrid -> {
                 Gravity.CENTER
             }
-            rightMiddleGrid -> {
+
+            binding.rightMiddleGrid -> {
                 Gravity.RIGHT or Gravity.CENTER
             }
-            leftBottomGrid -> {
+
+            binding.leftBottomGrid -> {
                 Gravity.LEFT or Gravity.BOTTOM
             }
-            centerBottomGrid -> {
+
+            binding.centerBottomGrid -> {
                 Gravity.BOTTOM or Gravity.CENTER
             }
-            rightBottomGrid -> {
+
+            binding.rightBottomGrid -> {
                 Gravity.RIGHT or Gravity.BOTTOM
             }
+
             else -> {
                 Gravity.NO_GRAVITY
             }
         }
-        verticalSeekBar.setProgress(0F, false)
-        horizontalSeekBar.setProgress(0F, false)
+        binding.verticalSeekBar.setProgress(0F, false)
+        binding.horizontalSeekBar.setProgress(0F, false)
     }
 
     private fun onTargetChange(view: ExpandButton) {
         selectedTarget = when (view) {
-            titleModeBtn -> WidgetUtil.Target.Name
-            prefixModeBtn -> WidgetUtil.Target.Prefix
-            suffixModeBtn -> WidgetUtil.Target.Suffix
-            daysModeBtn -> WidgetUtil.Target.Days
-            unitModeBtn -> WidgetUtil.Target.Unit
-            timeModeBtn -> WidgetUtil.Target.Time
-            signModeBtn -> WidgetUtil.Target.Inscription
+            binding.titleModeBtn -> WidgetUtil.Target.Name
+            binding.prefixModeBtn -> WidgetUtil.Target.Prefix
+            binding.suffixModeBtn -> WidgetUtil.Target.Suffix
+            binding.daysModeBtn -> WidgetUtil.Target.Days
+            binding.unitModeBtn -> WidgetUtil.Target.Unit
+            binding.timeModeBtn -> WidgetUtil.Target.Time
+            binding.signModeBtn -> WidgetUtil.Target.Inscription
             else -> WidgetUtil.Target.Nothing
         }
-        val info = locationInfoProvider?.getLocationInfo(selectedTarget)?:emptyInfo
+        val info = locationInfoProvider?.getLocationInfo(selectedTarget) ?: emptyInfo
         setCheckedByGravity(info.gravity)
-        verticalSeekBar.setProgress(info.verticalMargin, false)
-        Log.d("Lollipop", "info.verticalMargin: ${info.verticalMargin}, verticalSeekBar: ${verticalSeekBar.progress}")
-        horizontalSeekBar.setProgress(info.horizontalMargin, false)
+        binding.verticalSeekBar.setProgress(info.verticalMargin, false)
+        Log.d(
+            "Lollipop",
+            "info.verticalMargin: ${info.verticalMargin}, verticalSeekBar: ${binding.verticalSeekBar.progress}"
+        )
+        binding.horizontalSeekBar.setProgress(info.horizontalMargin, false)
     }
 
     private fun onLocationChange() {
         onLocationChangeListener?.onLocationChange(
-                selectedTarget, targetGravity,
-                verticalSeekBar.progress, horizontalSeekBar.progress)
+            selectedTarget, targetGravity,
+            binding.verticalSeekBar.progress,
+            binding.horizontalSeekBar.progress
+        )
     }
 
     fun requestFocus() {
@@ -236,7 +259,12 @@ class CountdownLocationFragment: LTabFragment() {
     }
 
     interface OnLocationChangeListener {
-        fun onLocationChange(target: WidgetUtil.Target, gravity: Int, verticalMargin: Float, horizontalMargin: Float)
+        fun onLocationChange(
+            target: WidgetUtil.Target,
+            gravity: Int,
+            verticalMargin: Float,
+            horizontalMargin: Float
+        )
     }
 
     interface LocationInfoProvider {

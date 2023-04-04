@@ -2,6 +2,7 @@ package liang.lollipop.lcountdown.activity
 
 import android.animation.Animator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -13,14 +14,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_timing_list.*
-import kotlinx.android.synthetic.main.content_timing_list.*
 import liang.lollipop.lcountdown.LApplication
 import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.adapter.TimingListAdapter
 import liang.lollipop.lcountdown.base.BaseActivity
 import liang.lollipop.lcountdown.bean.PhotoInfo
 import liang.lollipop.lcountdown.bean.TimingBean
+import liang.lollipop.lcountdown.databinding.ActivityTimingListBinding
 import liang.lollipop.lcountdown.fragment.CountdownImageFragment
 import liang.lollipop.lcountdown.holder.TimingHolder
 import liang.lollipop.lcountdown.service.FloatingService
@@ -32,7 +32,7 @@ import liang.lollipop.lcountdown.utils.*
  * @author Lollipop
  */
 class TimingListActivity : BaseActivity(),
-        CountdownImageFragment.Callback{
+    CountdownImageFragment.Callback {
 
     private lateinit var timingUtil: TimingUtil
 
@@ -50,37 +50,44 @@ class TimingListActivity : BaseActivity(),
 
     }
 
+    private val binding: ActivityTimingListBinding by lazyBind()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_timing_list)
-        setToolbar(toolbar)
+        setContentView(binding.root)
+        setToolbar(binding.toolbar)
 
         timingUtil = TimingUtil.write(this)
 
         initView()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initView() {
 
-        sheetHelper = BottomSheetHelper(imagePanel)
+        sheetHelper = BottomSheetHelper(binding.imagePanel)
         sheetHelper.onStateChange {
             if (it == BottomSheetHelper.State.COLLAPSED) {
                 selectedInfo = 0
             }
             updateButton(it)
         }
-        sheetBtn.setOnClickListener(this)
+        binding.sheetBtn.setOnClickListener(this)
         sheetHelper.close(false)
-        quickTimingBtn.setOnClickListener(this)
+        binding.quickTimingBtn.setOnClickListener(this)
 
-        refreshLayout.setOnRefreshListener(this)
-        refreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent)
+        binding.content.refreshLayout.setOnRefreshListener(this)
+        binding.content.refreshLayout.setColorSchemeResources(
+            R.color.colorPrimary,
+            R.color.colorAccent
+        )
 
-        recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        val helper = getTouchHelper(recyclerView)
+        binding.content.recyclerView.layoutManager =
+            LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        val helper = getTouchHelper(binding.content.recyclerView)
         helper.setCanSwipe(true)
-        adapter = TimingListAdapter(dataList, layoutInflater, helper)
-        recyclerView.adapter = adapter
+        adapter = TimingListAdapter(dataList, helper)
+        binding.content.recyclerView.adapter = adapter
 
         adapter.notifyDataSetChanged()
     }
@@ -96,7 +103,7 @@ class TimingListActivity : BaseActivity(),
         } else {
             0F
         }
-        sheetBtn.animate().let {
+        binding.sheetBtn.animate().let {
             it.cancel()
             it.rotation(rotation).start()
         }
@@ -113,27 +120,36 @@ class TimingListActivity : BaseActivity(),
                 startActivity(Intent(this, WidgetListActivity::class.java))
                 return true
             }
+
             R.id.menuCalculator -> {
                 startActivity(Intent(this, TimeCalculatorActivity::class.java))
                 return true
             }
+
             R.id.clearLog -> {
                 val file = (application as LApplication).logDir
                 val size = file.let {
                     if (it.exists() && it.isDirectory && it.canRead()) {
-                        it.listFiles()?.size?:0
+                        it.listFiles()?.size ?: 0
                     } else {
                         0
                     }
                 }
                 AlertDialog.Builder(this)
-                        .setMessage(String.format(
-                                getString(R.string.clear_log_message), size))
-                        .setNegativeButton(R.string.clear_log_enter) { dialog, _ ->
-                            LogHelper.clearLog((application as LApplication).logDir)
-                            Snackbar.make(recyclerView, R.string.clear_log_end, Snackbar.LENGTH_SHORT).show()
-                            dialog.dismiss()
-                        }.show()
+                    .setMessage(
+                        String.format(
+                            getString(R.string.clear_log_message), size
+                        )
+                    )
+                    .setNegativeButton(R.string.clear_log_enter) { dialog, _ ->
+                        LogHelper.clearLog((application as LApplication).logDir)
+                        Snackbar.make(
+                            binding.content.recyclerView,
+                            R.string.clear_log_end,
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                        dialog.dismiss()
+                    }.show()
                 return true
             }
         }
@@ -149,17 +165,18 @@ class TimingListActivity : BaseActivity(),
         val bean = dataList.removeAt(adapterPosition)
         adapter.notifyItemRemoved(adapterPosition)
 
-        Snackbar.make(recyclerView, R.string.deleted, Snackbar.LENGTH_LONG)
-                .setAction(R.string.undo) {
-                    dataList.add(adapterPosition, bean)
-                    adapter.notifyItemInserted(adapterPosition)
-                }
-                .addCallback(OnSwipedHelper(timingUtil, bean)).show()
+        Snackbar.make(binding.content.recyclerView, R.string.deleted, Snackbar.LENGTH_LONG)
+            .setAction(R.string.undo) {
+                dataList.add(adapterPosition, bean)
+                adapter.notifyItemInserted(adapterPosition)
+            }
+            .addCallback(OnSwipedHelper(timingUtil, bean)).show()
     }
 
     private class OnSwipedHelper(
-            private val timingUtil: TimingUtil,
-            private val bean: TimingBean) : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+        private val timingUtil: TimingUtil,
+        private val bean: TimingBean
+    ) : BaseTransientBottomBar.BaseCallback<Snackbar>() {
 
         override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
             super.onDismissed(transientBottomBar, event)
@@ -178,15 +195,16 @@ class TimingListActivity : BaseActivity(),
         super.onClick(v)
 
         when (v) {
-            quickTimingBtn -> {
+            binding.quickTimingBtn -> {
                 startActivityForResult(
-                        Intent(this, QuickTimingActivity::class.java),
-                        REQUEST_NEW_TIMING,
-                        androidx.core.util.Pair.create(v, QuickTimingActivity.QUIET_BTN_TRANSITION))
+                    Intent(this, QuickTimingActivity::class.java),
+                    REQUEST_NEW_TIMING,
+                    androidx.core.util.Pair.create(v, QuickTimingActivity.QUIET_BTN_TRANSITION)
+                )
 //                CurtainDialog.with(this).showOnce()
             }
 
-            sheetBtn -> {
+            binding.sheetBtn -> {
                 sheetHelper.reverse()
             }
 
@@ -194,6 +212,7 @@ class TimingListActivity : BaseActivity(),
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun getData() {
 
         doAsync {
@@ -201,7 +220,7 @@ class TimingListActivity : BaseActivity(),
             timingUtil.selectAll(dataList)
             onUI {
                 adapter.notifyDataSetChanged()
-                refreshLayout.isRefreshing = false
+                binding.content.refreshLayout.isRefreshing = false
             }
 
         }
@@ -254,6 +273,7 @@ class TimingListActivity : BaseActivity(),
                     val bean = dataList[holder.adapterPosition]
                     FloatingService.start(this, bean, false)
                 }
+
                 holder.itemView -> {
                     selectedItem(holder.adapterPosition)
                 }
@@ -263,8 +283,8 @@ class TimingListActivity : BaseActivity(),
     }
 
     private class BottomSheetHelper(private val sheetView: View) :
-            ValueAnimator.AnimatorUpdateListener,
-            Animator.AnimatorListener {
+        ValueAnimator.AnimatorUpdateListener,
+        Animator.AnimatorListener {
 
         private val valueAnimator = ValueAnimator().apply {
             addUpdateListener(this@BottomSheetHelper)
@@ -358,27 +378,29 @@ class TimingListActivity : BaseActivity(),
             sheetView.translationY = offsetMax * (1 - value)
         }
 
-        override fun onAnimationUpdate(animation: ValueAnimator?) {
+        override fun onAnimationUpdate(animation: ValueAnimator) {
             if (animation == valueAnimator) {
                 onProgressChange(animation.animatedValue as Float)
             }
         }
 
-        override fun onAnimationRepeat(animation: Animator?) {}
+        override fun onAnimationRepeat(animation: Animator) {}
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
             if (animation == valueAnimator) {
-                changeState(if (isOpen) {
-                    State.EXPANDED
-                } else {
-                    State.COLLAPSED
-                })
+                changeState(
+                    if (isOpen) {
+                        State.EXPANDED
+                    } else {
+                        State.COLLAPSED
+                    }
+                )
             }
         }
 
-        override fun onAnimationCancel(animation: Animator?) {  }
+        override fun onAnimationCancel(animation: Animator) {}
 
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
             if (animation == valueAnimator) {
                 changeState(State.SCROLLING)
             }

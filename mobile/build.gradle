@@ -1,16 +1,15 @@
-apply plugin: 'com.android.application'
-
-apply plugin: 'kotlin-android'
-
-apply plugin: 'kotlin-android-extensions'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
 
 android {
-    buildToolsVersion "30.0.3"
-    compileSdkVersion 30
+    namespace "liang.lollipop.lcountdown"
+    compileSdk 33
     defaultConfig {
         applicationId "liang.lollipop.lcountdown"
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdk 21
+        targetSdk 33
         versionCode 4_03_01
         versionName "4.3.1"
     }
@@ -26,16 +25,26 @@ android {
         // but continue the build even when errors are found:
         abortOnError false
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    viewBinding {
+        enable = true
+    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72"
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0'
-    implementation 'com.google.android.material:material:1.3.0-alpha02'
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.android.material:material:1.7.0'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
-    implementation 'com.google.android:flexbox:2.0.0'
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation project(':ltabview')
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation 'com.github.bumptech.glide:glide:4.15.0'
 }

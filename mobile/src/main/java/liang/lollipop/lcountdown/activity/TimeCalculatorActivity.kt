@@ -10,11 +10,11 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import com.google.android.material.textfield.TextInputEditText
-import kotlinx.android.synthetic.main.activity_time_calculator.*
-import kotlinx.android.synthetic.main.content_time_calculator.*
-import liang.lollipop.lcountdown.base.BaseActivity
 import liang.lollipop.lcountdown.R
+import liang.lollipop.lcountdown.base.BaseActivity
+import liang.lollipop.lcountdown.databinding.ActivityTimeCalculatorBinding
 import liang.lollipop.lcountdown.utils.ClipboardHelper
+import liang.lollipop.lcountdown.utils.lazyBind
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -63,15 +63,19 @@ class TimeCalculatorActivity : BaseActivity() {
     // 返回值格式化类型
     private var resultFormat = RESULT_FORMAT
 
+    private val binding: ActivityTimeCalculatorBinding by lazyBind()
+
     // 输入的view
     private val inputViewArray: Array<TextInputEditText> by lazy {
-        arrayOf(yearInputView,
-                monthInputView,
-                dayInputView,
-                hourInputView,
-                minuteInputView,
-                secondsInputView,
-                millisecondInputView)
+        arrayOf(
+            binding.content.yearInputView,
+            binding.content.monthInputView,
+            binding.content.dayInputView,
+            binding.content.hourInputView,
+            binding.content.minuteInputView,
+            binding.content.secondsInputView,
+            binding.content.millisecondInputView
+        )
     }
 
     // 输入框锁
@@ -99,27 +103,40 @@ class TimeCalculatorActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_time_calculator)
-        setToolbar(toolbar)
+        setContentView(binding.root)
+        setToolbar(binding.toolbar)
         initView()
     }
 
     private fun initView() {
-        bindClick(startTimeCopyBtn, endTimeCopyBtn,
-                refreshResultBtn, restoreBtn, startTimeView, endTimeView)
+        bindClick(
+            binding.startTimeCopyBtn,
+            binding.endTimeCopyBtn,
+            binding.refreshResultBtn,
+            binding.content.restoreBtn,
+            binding.startTimeView,
+            binding.endTimeView
+        )
         inputViewArray.forEach {
             it.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     onInputChange()
                 }
 
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             })
         }
-        restoreBtn.callOnClick()
-        startTimeView.updateTime(startTime)
-        endTimeView.updateTime(endTime)
+        binding.content.restoreBtn.callOnClick()
+        binding.startTimeView.updateTime(startTime)
+        binding.endTimeView.updateTime(endTime)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -142,18 +159,21 @@ class TimeCalculatorActivity : BaseActivity() {
     override fun onClick(v: View?) {
         super.onClick(v)
         when (v) {
-            startTimeCopyBtn -> {
+            binding.startTimeCopyBtn -> {
                 copyTimes(startTime)
             }
-            endTimeCopyBtn -> {
+
+            binding.endTimeCopyBtn -> {
                 copyTimes(endTime)
             }
-            refreshResultBtn -> {
+
+            binding.refreshResultBtn -> {
                 resultFormat++
                 resultFormat %= FORMAT_COUNT
                 onResultValueChange()
             }
-            restoreBtn -> {
+
+            binding.content.restoreBtn -> {
                 inputLock = true
                 inputViewArray.forEach {
                     it.setText("0")
@@ -162,13 +182,15 @@ class TimeCalculatorActivity : BaseActivity() {
                 inputLock = false
                 onInputChange()
             }
-            startTimeView -> {
+
+            binding.startTimeView -> {
                 if (!selectedStart) {
                     selectedStart = true
                     onSelectChange()
                 }
             }
-            endTimeView -> {
+
+            binding.endTimeView -> {
                 if (selectedStart) {
                     selectedStart = false
                     onSelectChange()
@@ -187,21 +209,21 @@ class TimeCalculatorActivity : BaseActivity() {
             endTime
         }
         calendar.timeInMillis = targetTime
-        calendar.add(Calendar.YEAR, yearInputView.getInt())
-        calendar.add(Calendar.MONTH, monthInputView.getInt())
-        calendar.add(Calendar.DAY_OF_MONTH, dayInputView.getInt())
-        calendar.add(Calendar.HOUR_OF_DAY, hourInputView.getInt())
-        calendar.add(Calendar.MINUTE, minuteInputView.getInt())
-        calendar.add(Calendar.SECOND, secondsInputView.getInt())
-        calendar.add(Calendar.MILLISECOND, millisecondInputView.getInt())
+        calendar.add(Calendar.YEAR, binding.content.yearInputView.getInt())
+        calendar.add(Calendar.MONTH, binding.content.monthInputView.getInt())
+        calendar.add(Calendar.DAY_OF_MONTH, binding.content.dayInputView.getInt())
+        calendar.add(Calendar.HOUR_OF_DAY, binding.content.hourInputView.getInt())
+        calendar.add(Calendar.MINUTE, binding.content.minuteInputView.getInt())
+        calendar.add(Calendar.SECOND, binding.content.secondsInputView.getInt())
+        calendar.add(Calendar.MILLISECOND, binding.content.millisecondInputView.getInt())
         val resultTime = calendar.timeInMillis
         if (selectedStart) {
             endTime = resultTime
         } else {
             startTime = resultTime
         }
-        startTimeView.updateTime(startTime)
-        endTimeView.updateTime(endTime)
+        binding.startTimeView.updateTime(startTime)
+        binding.endTimeView.updateTime(endTime)
         onResultValueChange()
     }
 
@@ -227,27 +249,35 @@ class TimeCalculatorActivity : BaseActivity() {
             RESULT_YEAR -> {
                 v(offset * 1.0 / ONE_YEAR) + getString(R.string.year)
             }
+
             RESULT_MONTH -> {
                 v(offset * 1.0 / ONE_MONTH) + getString(R.string.month)
             }
+
             RESULT_WEEK -> {
                 v(offset * 1.0 / ONE_WEEK) + getString(R.string.week)
             }
+
             RESULT_DAY -> {
                 v(offset * 1.0 / ONE_DAY) + getString(R.string.day)
             }
+
             RESULT_HOUR -> {
                 v(offset * 1.0 / ONE_HOUR) + getString(R.string.hour)
             }
+
             RESULT_MINUTE -> {
                 v(offset * 1.0 / ONE_MINUTE) + getString(R.string.minute)
             }
+
             RESULT_SECONDS -> {
                 v(offset * 1.0 / ONE_SECONDS) + getString(R.string.seconds)
             }
+
             RESULT_MILLISECOND -> {
                 v(offset * 1.0) + getString(R.string.millisecond)
             }
+
             else -> {
                 val builder = StringBuilder()
                 builder.append(v(offset / ONE_YEAR))
@@ -273,23 +303,23 @@ class TimeCalculatorActivity : BaseActivity() {
                 builder.toString()
             }
         }
-        resultView.text = value
+        binding.resultView.text = value
     }
 
     private fun copyTimes(time: Long) {
         if (ClipboardHelper.put(this, ClipboardHelper.encodeTimestamp(time))) {
             alert().setTitle(R.string.title_copy_times)
-                    .setMessage(R.string.msg_copy_times)
-                    .setPositiveButton(R.string.understood) { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .show()
+                .setMessage(R.string.msg_copy_times)
+                .setPositiveButton(R.string.understood) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
         } else {
             alert().setMessage(R.string.copy_error)
-                    .setPositiveButton(R.string.understood) { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .show()
+                .setPositiveButton(R.string.understood) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
         }
     }
 
@@ -312,17 +342,17 @@ class TimeCalculatorActivity : BaseActivity() {
         }
 
         inputLock = true
-        dayInputView.setText((offset / ONE_DAY).toString())
-        hourInputView.setText((offset % ONE_DAY / ONE_HOUR).toString())
-        minuteInputView.setText((offset % ONE_HOUR / ONE_MINUTE).toString())
-        secondsInputView.setText((offset % ONE_MINUTE / ONE_SECONDS).toString())
-        millisecondInputView.setText((offset % ONE_SECONDS / ONE_MILLISECOND).toString())
+        binding.content.dayInputView.setText((offset / ONE_DAY).toString())
+        binding.content.hourInputView.setText((offset % ONE_DAY / ONE_HOUR).toString())
+        binding.content.minuteInputView.setText((offset % ONE_HOUR / ONE_MINUTE).toString())
+        binding.content.secondsInputView.setText((offset % ONE_MINUTE / ONE_SECONDS).toString())
+        binding.content.millisecondInputView.setText((offset % ONE_SECONDS / ONE_MILLISECOND).toString())
         inputLock = false
     }
 
     private fun updateBorderLocation() {
-        val height = endTimeView.top - startTimeView.top
-        selectedBorder.translationY = height * selectedBorderProgress
+        val height = binding.endTimeView.top - binding.startTimeView.top
+        binding.selectedBorder.translationY = height * selectedBorderProgress
     }
 
     override fun onDestroy() {

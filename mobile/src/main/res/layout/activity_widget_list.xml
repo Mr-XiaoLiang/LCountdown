@@ -35,7 +35,8 @@
         app:cardElevation="3dp"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <include layout="@layout/content_widget_list" />
+        <include layout="@layout/content_widget_list"
+            android:id="@+id/content"/>
 
     </com.google.android.material.card.MaterialCardView>
 

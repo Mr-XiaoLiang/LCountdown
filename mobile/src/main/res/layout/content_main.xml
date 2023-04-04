@@ -33,7 +33,8 @@
         android:layout_width="match_parent"
         android:layout_height="200dp">
 
-        <include layout="@layout/widget_countdown"/>
+        <include layout="@layout/widget_countdown"
+            android:id="@+id/widget"/>
 
     </com.google.android.material.card.MaterialCardView>
 

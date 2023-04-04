@@ -34,7 +34,8 @@
         app:cardElevation="3dp"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <include layout="@layout/content_timing_list" />
+        <include layout="@layout/content_timing_list"
+            android:id="@+id/content"/>
 
         <LinearLayout
             app:elevation="26dp"
@@ -56,7 +57,7 @@
                     android:layout_gravity="center"
                     android:scaleType="center"
                     android:src="@drawable/ic_keyboard_arrow_up_white_24dp"
-                    android:tint="@color/bottomSheetCard" />
+                    app:tint="@color/bottomSheetCard" />
             </FrameLayout>
 
             <fragment

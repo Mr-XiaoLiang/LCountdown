@@ -11,6 +11,7 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.DrawableCompat
 
 /**
@@ -21,11 +22,11 @@ import androidx.core.graphics.drawable.DrawableCompat
 object TintUtil {
 
     fun tintText(view:TextView,vararg beans: TintBean){
-        TintUtil.TintTextBuilder.with(view).addAll(*beans).tint()
+        TintTextBuilder.with(view).addAll(*beans).tint()
     }
 
     fun tintWith(view: TextView): TintTextBuilder {
-        return TintUtil.TintTextBuilder.with(view)
+        return TintTextBuilder.with(view)
     }
 
     class TintBean(private val str:CharSequence,private val color:Int){
@@ -60,7 +61,7 @@ object TintUtil {
         val startColor = start.splitColor()
         val endColor = end.splitColor()
         val difference = IntArray(startColor.size) { i -> (endColor[i] - startColor[i]) }
-        for (i in 0 until difference.size) {
+        for (i in difference.indices) {
             difference[i] = (difference[i] * progress + startColor[i]).toInt()
         }
         if (ignoreAlpha) {
@@ -136,12 +137,7 @@ object TintUtil {
         companion object {
 
             fun whitResId(context: Context,resId:Int): TintDrawableBuilder {
-                val wrappedDrawable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    context.resources.getDrawable(resId, context.theme)
-                } else {
-                    context.resources.getDrawable(resId)
-                }
-                return TintDrawableBuilder(wrappedDrawable)
+                return TintDrawableBuilder(AppCompatResources.getDrawable(context, resId)!!)
             }
 
             fun whitBitmap(context: Context,bitmap: Bitmap): TintDrawableBuilder {

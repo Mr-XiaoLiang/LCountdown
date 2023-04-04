@@ -40,8 +40,4 @@ abstract class BaseHolder<in T: BaseBean>(itemView: View): RecyclerView.ViewHold
         touch = helper
     }
 
-    protected fun <T: View> find(id: Int): T{
-        return itemView.findViewById(id)
-    }
-
 }

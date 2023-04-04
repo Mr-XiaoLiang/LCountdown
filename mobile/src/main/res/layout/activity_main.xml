@@ -9,12 +9,14 @@
     android:background="@color/windowBackground"
     android:id="@+id/rootGroup">
 
-    <include layout="@layout/content_main" />
+    <include layout="@layout/content_main"
+        android:id="@+id/content"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <include layout="@layout/bottom_sheet_main"
+            android:id="@+id/bottomSheet"
             android:layout_width="match_parent"
             android:layout_height="0px"
             app:layout_constraintHeight_percent="0.5"

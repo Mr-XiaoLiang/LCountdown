@@ -1,29 +1,35 @@
 package liang.lollipop.lcountdown.holder
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import liang.lollipop.lcountdown.R
 import liang.lollipop.lcountdown.bean.IconBean
+import liang.lollipop.lcountdown.databinding.DreamIconBinding
+import liang.lollipop.lcountdown.utils.bind
 
 /**
  * Icon显示的Holder
  * @author Lollipop
  */
-class IconHolder(private val body: View) {
+class IconHolder(private val binding: DreamIconBinding) {
 
 
-    private val iconView: ImageView = body.findViewById(R.id.iconImage)
+    private val iconView: ImageView
+        get() {
+            return binding.iconImage
+        }
+
+    private val body: View
+        get() {
+            return binding.root
+        }
 
     var bean: IconBean? = null
 
     companion object {
 
-        private const val LAYOUT_ID = R.layout.dream_icon
-
-        fun getInstance(inflater: LayoutInflater, viewGroup: ViewGroup): IconHolder {
-            return IconHolder(inflater.inflate(LAYOUT_ID, viewGroup, false))
+        fun getInstance(viewGroup: ViewGroup): IconHolder {
+            return IconHolder(viewGroup.bind(false))
         }
 
     }
@@ -45,6 +51,7 @@ class IconHolder(private val body: View) {
                 group.removeView(body)
             }
         } catch (e: Exception) {
+            e.printStackTrace()
         }
 
     }

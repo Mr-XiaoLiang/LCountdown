@@ -23,7 +23,7 @@
                 android:layout_gravity="center"
                 android:scaleType="center"
                 android:src="@drawable/ic_keyboard_arrow_up_white_24dp"
-                android:tint="@color/bottomSheetCard" />
+                app:tint="@color/bottomSheetCard" />
         </FrameLayout>
 
         <androidx.cardview.widget.CardView

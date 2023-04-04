@@ -83,7 +83,7 @@
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:src="@drawable/ic_timer_black_24dp"
-        android:tint="#42beb1"
+        app:tint="#42beb1"
         app:layout_constraintBottom_toBottomOf="@id/startTimeView"
         app:layout_constraintLeft_toLeftOf="@id/timingTitleView"
         app:layout_constraintTop_toTopOf="@id/startTimeView" />
@@ -107,7 +107,7 @@
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:src="@drawable/ic_timer_off_black_24dp"
-        android:tint="#8042be"
+        app:tint="#8042be"
         app:layout_constraintBottom_toBottomOf="@id/endTimeView"
         app:layout_constraintLeft_toLeftOf="@id/timingTitleView"
         app:layout_constraintTop_toTopOf="@id/endTimeView" />
@@ -144,7 +144,7 @@
         android:padding="12dp"
         android:scaleType="centerInside"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:tint="@color/btn_text_color"
+        app:tint="@color/btn_text_color"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:src="@drawable/ic_small_logo"

@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="liang.lollipop.lcountdown">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -14,7 +15,6 @@
 
     <application
         android:name=".LApplication"
-        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -29,8 +29,8 @@
         <activity
             android:name=".activity.MainActivity"
             android:excludeFromRecents="true"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
 
@@ -38,7 +38,8 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".widget.CountdownWidget">
+        <receiver android:name=".widget.CountdownWidget"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -48,7 +49,8 @@
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
 
-        <receiver android:name=".widget.CountdownWidgetWrapper1">
+        <receiver android:name=".widget.CountdownWidgetWrapper1"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -58,7 +60,8 @@
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
 
-        <receiver android:name=".widget.CountdownWidgetWrapper2">
+        <receiver android:name=".widget.CountdownWidgetWrapper2"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -68,7 +71,8 @@
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
 
-        <receiver android:name=".widget.CountdownWidgetWrapper3">
+        <receiver android:name=".widget.CountdownWidgetWrapper3"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -78,7 +82,8 @@
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
 
-        <receiver android:name=".widget.CountdownWidgetWrapper4">
+        <receiver android:name=".widget.CountdownWidgetWrapper4"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -88,7 +93,8 @@
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
 
-        <receiver android:name=".widget.CountdownWidgetWrapper5">
+        <receiver android:name=".widget.CountdownWidgetWrapper5"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -98,7 +104,8 @@
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
 
-        <receiver android:name=".widget.CountdownWidgetWrapper6">
+        <receiver android:name=".widget.CountdownWidgetWrapper6"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -108,7 +115,8 @@
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
 
-        <receiver android:name=".widget.CountdownWidgetWrapper7">
+        <receiver android:name=".widget.CountdownWidgetWrapper7"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -118,7 +126,8 @@
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
 
-        <receiver android:name=".widget.CountdownWidgetWrapper8">
+        <receiver android:name=".widget.CountdownWidgetWrapper8"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -128,7 +137,8 @@
                 android:resource="@xml/countdown_widget_provider_info" />
         </receiver>
 
-        <receiver android:name=".widget.CountdownWidgetWrapper9">
+        <receiver android:name=".widget.CountdownWidgetWrapper9"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -153,7 +163,8 @@
             android:name=".activity.WidgetListActivity"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_widget_list"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -179,7 +190,8 @@
         </service>
         <service
             android:name=".service.NotificationService"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
@@ -189,7 +201,8 @@
             android:name=".activity.QuickTimingActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
-            android:theme="@style/AppTheme.Transparent">
+            android:theme="@style/AppTheme.Transparent"
+            android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -199,7 +212,8 @@
             android:excludeFromRecents="true"
             android:label="@string/title_activity_timing_list"
             android:launchMode="singleInstance"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -234,7 +248,8 @@
             android:name=".activity.CrashActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

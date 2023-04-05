@@ -3,7 +3,11 @@ package liang.lollipop.lcountdown.view
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.Paint
+import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -15,13 +19,10 @@ import liang.lollipop.lcountdown.R
  * @author: lollipop
  * 可以在手指放上去的时候展开的按钮
  */
-class TextIconExpandButton(context: Context, attr: AttributeSet?,
-                           defStyleAttr: Int, defStyleRes: Int): ExpandButton(context, attr, defStyleAttr, defStyleRes),
-        ValueAnimator.AnimatorUpdateListener{
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context) : this(context, null)
+class TextIconExpandButton @JvmOverloads constructor(
+    context: Context, attr: AttributeSet? = null
+) : ExpandButton(context, attr),
+    ValueAnimator.AnimatorUpdateListener {
 
     companion object {
         private const val DEFAULT_ICON_TEXT_SIZE = 24F
@@ -46,12 +47,16 @@ class TextIconExpandButton(context: Context, attr: AttributeSet?,
         }
 
     private fun sp(value: Float) = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_SP, value, resources.displayMetrics)
+        TypedValue.COMPLEX_UNIT_SP, value, resources.displayMetrics
+    )
 
     init {
         if (attr != null) {
             val typedArray = context.obtainStyledAttributes(attr, R.styleable.TextIconExpandButton)
-            iconTextSize = typedArray.getDimensionPixelSize(R.styleable.TextIconExpandButton_iconTextSize, sp(DEFAULT_ICON_TEXT_SIZE).toInt())
+            iconTextSize = typedArray.getDimensionPixelSize(
+                R.styleable.TextIconExpandButton_iconTextSize,
+                sp(DEFAULT_ICON_TEXT_SIZE).toInt()
+            )
             val t = typedArray.getString(R.styleable.TextIconExpandButton_iconText) ?: ""
             iconText = if (TextUtils.isEmpty(t)) {
                 if (TextUtils.isEmpty(text)) {
@@ -67,7 +72,7 @@ class TextIconExpandButton(context: Context, attr: AttributeSet?,
         icon = textDrawable
     }
 
-    private class TextDrawable(size: Int): Drawable() {
+    private class TextDrawable(size: Int) : Drawable() {
 
         private val paint = Paint().apply {
             isAntiAlias = true
@@ -103,7 +108,7 @@ class TextIconExpandButton(context: Context, attr: AttributeSet?,
 
         override fun setTintList(tint: ColorStateList?) {
             super.setTintList(tint)
-            paint.color = tint?.defaultColor?:Color.BLACK
+            paint.color = tint?.defaultColor ?: Color.BLACK
         }
 
         override fun setAlpha(alpha: Int) {

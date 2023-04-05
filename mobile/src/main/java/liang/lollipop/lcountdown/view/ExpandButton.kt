@@ -3,7 +3,13 @@ package liang.lollipop.lcountdown.view
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.Paint
+import android.graphics.PixelFormat
+import android.graphics.Rect
+import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.Log
@@ -23,13 +29,9 @@ import kotlin.math.min
  * @author: lollipop
  * 可以在手指放上去的时候展开的按钮
  */
-open class ExpandButton(context: Context, attr: AttributeSet?,
-                   defStyleAttr: Int, defStyleRes: Int): ViewGroup(context, attr, defStyleAttr, defStyleRes),
-        ValueAnimator.AnimatorUpdateListener{
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context) : this(context, null)
+open class ExpandButton @JvmOverloads constructor(context: Context, attr: AttributeSet? = null) :
+    ViewGroup(context, attr),
+    ValueAnimator.AnimatorUpdateListener {
 
     companion object {
         private const val DEF_ICON_SIZE = 24F
@@ -150,7 +152,7 @@ open class ExpandButton(context: Context, attr: AttributeSet?,
     /**
      * icon 的缩放模式
      */
-    var scaleType:ImageView.ScaleType
+    var scaleType: ImageView.ScaleType
         set(value) {
             iconView.scaleType = value
         }
@@ -239,7 +241,9 @@ open class ExpandButton(context: Context, attr: AttributeSet?,
         iconView.onPressed {
             if (it) {
                 postDelayed(expandRunnable, DELAY_EXPAND)
-            } else { collapse() }
+            } else {
+                collapse()
+            }
         }
         iconView.setOnClickListener {
             if (!isExpand || !beakOnExpand) {
@@ -254,16 +258,25 @@ open class ExpandButton(context: Context, attr: AttributeSet?,
                 icon = resources.getDrawable(iconId, context.theme)
             }
             val iconSize = typedArray.getDimensionPixelSize(
-                    R.styleable.ExpandButton_iconSize, dp(DEF_ICON_SIZE).toInt())
+                R.styleable.ExpandButton_iconSize, dp(DEF_ICON_SIZE).toInt()
+            )
             iconWidth = iconSize
             iconHeight = iconSize
-            iconColor = ColorStateList.valueOf(typedArray.getColor(R.styleable.ExpandButton_iconColor, Color.WHITE))
+            iconColor = ColorStateList.valueOf(
+                typedArray.getColor(
+                    R.styleable.ExpandButton_iconColor,
+                    Color.WHITE
+                )
+            )
             text = typedArray.getText(R.styleable.ExpandButton_text) ?: ""
-            textSize = typedArray.getDimensionPixelSize(R.styleable.ExpandButton_textSize, sp(16F).toInt()).toFloat()
+            textSize =
+                typedArray.getDimensionPixelSize(R.styleable.ExpandButton_textSize, sp(16F).toInt())
+                    .toFloat()
             textColor = typedArray.getColor(R.styleable.ExpandButton_textColor, Color.WHITE)
-            color = typedArray.getColor(R.styleable.ExpandButton_btnColor,  Color.BLUE)
-            val gravity = typedArray.getInt(R.styleable.ExpandButton_exIconGravity, IconGravity.CENTER.value)
-            iconGravity = when(gravity) {
+            color = typedArray.getColor(R.styleable.ExpandButton_btnColor, Color.BLUE)
+            val gravity =
+                typedArray.getInt(R.styleable.ExpandButton_exIconGravity, IconGravity.CENTER.value)
+            iconGravity = when (gravity) {
                 IconGravity.TOP.value -> IconGravity.TOP
                 IconGravity.BOTTOM.value -> IconGravity.BOTTOM
                 else -> IconGravity.CENTER
@@ -289,14 +302,19 @@ open class ExpandButton(context: Context, attr: AttributeSet?,
         val heightSize = MeasureSpec.getSize(heightMeasureSpec)
         val heightMode = MeasureSpec.getMode(heightMeasureSpec)
 
-        iconView.measure(MeasureSpec.makeMeasureSpec(iconWidth, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(iconHeight, MeasureSpec.EXACTLY))
+        iconView.measure(
+            MeasureSpec.makeMeasureSpec(iconWidth, MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec(iconHeight, MeasureSpec.EXACTLY)
+        )
 
         val nameWidth = widthSize - paddingLeft - paddingRight - iconWidth
-        nameView.measure(MeasureSpec.makeMeasureSpec(nameWidth, widthMode),
-                MeasureSpec.makeMeasureSpec(heightSize, heightMode))
+        nameView.measure(
+            MeasureSpec.makeMeasureSpec(nameWidth, widthMode),
+            MeasureSpec.makeMeasureSpec(heightSize, heightMode)
+        )
 
-        var measuredWidth = iconWidth + interval + nameView.measuredWidth + paddingLeft + paddingRight
+        var measuredWidth =
+            iconWidth + interval + nameView.measuredWidth + paddingLeft + paddingRight
         var measuredHeight = max(iconHeight, nameView.measuredHeight) + paddingTop + paddingBottom
         if (widthMode == MeasureSpec.EXACTLY) {
             measuredWidth = widthSize
@@ -318,13 +336,15 @@ open class ExpandButton(context: Context, attr: AttributeSet?,
 
         val effectiveHeight = height - paddingBottom - paddingTop
         val effectiveWidth = r - l - paddingLeft - paddingRight
-        val iconTop = when(iconGravity) {
+        val iconTop = when (iconGravity) {
             IconGravity.TOP -> {
                 top
             }
+
             IconGravity.BOTTOM -> {
                 height - paddingBottom - iconHeight
             }
+
             else -> {
                 (effectiveHeight - iconHeight) / 2 + top
             }
@@ -362,9 +382,11 @@ open class ExpandButton(context: Context, attr: AttributeSet?,
     fun expand() {
         isExpand = true
         onExpendListener?.onExpend(this, isExpand)
-        startAnimator(((MAX_ANIMATOR_PROGRESS - animatorProgress) *
-                1F / (MAX_ANIMATOR_PROGRESS - MIN_ANIMATOR_PROGRESS) * animatorDuration).toLong(),
-                MAX_ANIMATOR_PROGRESS)
+        startAnimator(
+            ((MAX_ANIMATOR_PROGRESS - animatorProgress) *
+                    1F / (MAX_ANIMATOR_PROGRESS - MIN_ANIMATOR_PROGRESS) * animatorDuration).toLong(),
+            MAX_ANIMATOR_PROGRESS
+        )
     }
 
     fun collapse(isAnimator: Boolean = true) {
@@ -375,9 +397,11 @@ open class ExpandButton(context: Context, attr: AttributeSet?,
         isExpand = false
         onExpendListener?.onExpend(this, isExpand)
         if (isAnimator) {
-            startAnimator(((animatorProgress - MIN_ANIMATOR_PROGRESS) *
-                    1F / (MAX_ANIMATOR_PROGRESS - MIN_ANIMATOR_PROGRESS) * animatorDuration).toLong(),
-                    MIN_ANIMATOR_PROGRESS)
+            startAnimator(
+                ((animatorProgress - MIN_ANIMATOR_PROGRESS) *
+                        1F / (MAX_ANIMATOR_PROGRESS - MIN_ANIMATOR_PROGRESS) * animatorDuration).toLong(),
+                MIN_ANIMATOR_PROGRESS
+            )
         } else {
             valueAnimator.cancel()
             onProgressChange(MIN_ANIMATOR_PROGRESS)
@@ -391,7 +415,7 @@ open class ExpandButton(context: Context, attr: AttributeSet?,
         valueAnimator.start()
     }
 
-    override fun onAnimationUpdate(animation: ValueAnimator?) {
+    override fun onAnimationUpdate(animation: ValueAnimator) {
         if (animation == valueAnimator) {
             onProgressChange(valueAnimator.animatedValue as Float)
         }
@@ -429,10 +453,12 @@ open class ExpandButton(context: Context, attr: AttributeSet?,
     }
 
     private fun dp(value: Float) = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, value, resources.displayMetrics)
+        TypedValue.COMPLEX_UNIT_DIP, value, resources.displayMetrics
+    )
 
     private fun sp(value: Float) = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_SP, value, resources.displayMetrics)
+        TypedValue.COMPLEX_UNIT_SP, value, resources.displayMetrics
+    )
 
     private fun log(value: String) {
         Log.d("Lollipop", "ExpandButton: $value")
@@ -448,7 +474,7 @@ open class ExpandButton(context: Context, attr: AttributeSet?,
         fun onExpend(button: ExpandButton, isOpen: Boolean)
     }
 
-    private class ExpandBackground: Drawable() {
+    private class ExpandBackground : Drawable() {
 
         private val paint = Paint().apply {
             isAntiAlias = true
@@ -474,7 +500,7 @@ open class ExpandButton(context: Context, attr: AttributeSet?,
             canvas.drawRoundRect(drawBoundF, corner, corner, paint)
         }
 
-        override fun onBoundsChange(bounds: Rect?) {
+        override fun onBoundsChange(bounds: Rect) {
             super.onBoundsChange(bounds)
             drawBoundF.set(bounds)
             invalidateSelf()
@@ -491,9 +517,11 @@ open class ExpandButton(context: Context, attr: AttributeSet?,
         }
     }
 
-    private class PressedImageView(context: Context, attr: AttributeSet? = null,
-                                   defStyleAttr: Int = 0):
-            AppCompatImageView(context, attr, defStyleAttr) {
+    private class PressedImageView(
+        context: Context, attr: AttributeSet? = null,
+        defStyleAttr: Int = 0
+    ) :
+        AppCompatImageView(context, attr, defStyleAttr) {
 
         private var pressedListener: ((Boolean) -> Unit)? = null
 

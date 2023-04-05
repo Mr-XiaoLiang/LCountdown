@@ -44,7 +44,7 @@ class StyleSelectedForeDrawable(context: Context,private val bgDrawable: Drawabl
         invalidateSelf()
     }
 
-    override fun onBoundsChange(b: Rect?) {
+    override fun onBoundsChange(b: Rect) {
         super.onBoundsChange(b)
         bgDrawable?.bounds = bounds
         borderDrawable?.bounds = bounds

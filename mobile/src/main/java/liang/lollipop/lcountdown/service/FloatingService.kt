@@ -288,7 +288,7 @@ class FloatingService : Service() {
         private val valueView: TextView = view.findViewById(R.id.countdownValue)
         private val iconView: ImageView = view.findViewById(R.id.iconView)
 
-        private val updateTask = createTask {
+        private val updateTask = task {
             onTimeChange()
         }
 
@@ -324,7 +324,7 @@ class FloatingService : Service() {
 
         fun onStop() {
             timingInfo = null
-            removeTask(updateTask)
+            updateTask.cancel()
         }
 
         private fun onTimeChange() {
@@ -341,8 +341,8 @@ class FloatingService : Service() {
             }
             valueView.text = CountdownUtil.timer(
                     countdownBean, startTime, endTime).getTimerValue()
-            removeTask(updateTask)
-            onUIDelay(300, updateTask)
+            updateTask.cancel()
+            updateTask.delay(300)
         }
 
     }
@@ -389,7 +389,7 @@ class FloatingService : Service() {
             return this and 0xFFFFFF or (alpha shl 24)
         }
 
-        override fun onBoundsChange(b: Rect?) {
+        override fun onBoundsChange(b: Rect) {
             super.onBoundsChange(b)
             boundsF.set(bounds)
             corners = min(boundsF.width(), boundsF.height()) / 2

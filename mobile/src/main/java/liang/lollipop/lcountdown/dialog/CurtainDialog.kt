@@ -228,16 +228,16 @@ class CurtainDialog private constructor(
         }
     }
 
-    override fun onAnimationUpdate(animation: ValueAnimator?) {
+    override fun onAnimationUpdate(animation: ValueAnimator) {
         if (animation == valueAnimator) {
             progress = animation.animatedValue as Float
             onProgressChange()
         }
     }
 
-    override fun onAnimationRepeat(animation: Animator?) { }
+    override fun onAnimationRepeat(animation: Animator) { }
 
-    override fun onAnimationEnd(animation: Animator?) {
+    override fun onAnimationEnd(animation: Animator) {
         if (!pullCurtain) {
             dialogView.visibility = View.INVISIBLE
             if (once) {
@@ -256,9 +256,9 @@ class CurtainDialog private constructor(
         return true
     }
 
-    override fun onAnimationCancel(animation: Animator?) {  }
+    override fun onAnimationCancel(animation: Animator) {  }
 
-    override fun onAnimationStart(animation: Animator?) {
+    override fun onAnimationStart(animation: Animator) {
         if (pullCurtain) {
             dialogView.visibility = View.VISIBLE
             closeBtn.scaleX = 0F

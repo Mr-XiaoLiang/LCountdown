@@ -5,7 +5,6 @@ import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.widget.ImageView
 import kotlin.math.max
 import kotlin.math.min
 
@@ -14,15 +13,14 @@ import kotlin.math.min
  * @author Lollipop
  * @date 2019/09/05
  */
-class TransparencyPaletteView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
-    ImageView(context, attrs, defStyleAttr) {
-
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context) : this(context, null)
+class TransparencyPaletteView @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null
+) : androidx.appcompat.widget.AppCompatImageView(context, attrs) {
 
     private val transparencyPaletteDrawable = TransparencyPaletteDrawable()
 
-    private var transparencyCallback: ((alphaF: Float, alphaI: Int, isUser: Boolean) -> Unit)? = null
+    private var transparencyCallback: ((alphaF: Float, alphaI: Int, isUser: Boolean) -> Unit)? =
+        null
 
     init {
         setBackgroundColor(Color.WHITE)
@@ -34,13 +32,14 @@ class TransparencyPaletteView(context: Context, attrs: AttributeSet?, defStyleAt
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        event?:return super.onTouchEvent(event)
-        return when(event.action){
+        event ?: return super.onTouchEvent(event)
+        return when (event.action) {
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE, MotionEvent.ACTION_UP -> {
                 val alpha = transparencyPaletteDrawable.selectTo(event.x)
                 transparencyCallback?.invoke(alpha, (alpha * 255).toInt(), true)
                 true
             }
+
             else -> {
                 super.onTouchEvent(event)
             }
@@ -54,7 +53,7 @@ class TransparencyPaletteView(context: Context, attrs: AttributeSet?, defStyleAt
     }
 
 
-    private class TransparencyPaletteDrawable: Drawable() {
+    private class TransparencyPaletteDrawable : Drawable() {
 
         companion object {
             private const val spanY = 4
@@ -90,8 +89,10 @@ class TransparencyPaletteView(context: Context, attrs: AttributeSet?, defStyleAt
             }
 
             paint.shader = alphaShader
-            canvas.drawRect(bounds.left.toFloat(), bounds.top.toFloat(),
-                bounds.right.toFloat(), bounds.bottom.toFloat(), paint)
+            canvas.drawRect(
+                bounds.left.toFloat(), bounds.top.toFloat(),
+                bounds.right.toFloat(), bounds.bottom.toFloat(), paint
+            )
 
             paint.shader = null
             paint.color = Color.WHITE
@@ -116,12 +117,13 @@ class TransparencyPaletteView(context: Context, attrs: AttributeSet?, defStyleAt
             return selectedAlpha
         }
 
-        override fun onBoundsChange(bounds: Rect?) {
+        override fun onBoundsChange(bounds: Rect) {
             super.onBoundsChange(bounds)
-            bounds?:return
-            alphaShader = LinearGradient(bounds.left.toFloat(), bounds.top.toFloat(),
+            alphaShader = LinearGradient(
+                bounds.left.toFloat(), bounds.top.toFloat(),
                 bounds.right.toFloat(), bounds.top.toFloat(),
-                Color.TRANSPARENT, Color.BLACK, Shader.TileMode.CLAMP)
+                Color.TRANSPARENT, Color.BLACK, Shader.TileMode.CLAMP
+            )
             invalidateSelf()
         }
 

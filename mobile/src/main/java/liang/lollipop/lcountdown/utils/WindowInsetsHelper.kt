@@ -25,11 +25,11 @@ class WindowInsetsHelper (private val self: View) {
             rootParent = findRootParent(self)
         }
         self.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewDetachedFromWindow(v: View?) {
+            override fun onViewDetachedFromWindow(v: View) {
                 rootParent = null
             }
 
-            override fun onViewAttachedToWindow(v: View?) {
+            override fun onViewAttachedToWindow(v: View) {
                 rootParent = findRootParent(self)
             }
         })

@@ -44,7 +44,7 @@ class LinearGradientDrawable(private var orientation: Orientation = Orientation.
         callUpdate()
     }
 
-    override fun onBoundsChange(bounds: Rect?) {
+    override fun onBoundsChange(bounds: Rect) {
         super.onBoundsChange(bounds)
         callUpdate()
     }

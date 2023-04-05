@@ -7,18 +7,14 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.MotionEvent
-import android.widget.ImageView
 
 /**
  * Created by lollipop on 2018/1/23.
  * @author Lollipop
  * 饱和度和灰度的选择器
  */
-class SatValPaletteView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
-    ImageView(context, attrs, defStyleAttr) {
-
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context) : this(context, null)
+class SatValPaletteView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+    androidx.appcompat.widget.AppCompatImageView(context, attrs) {
 
     private val satValPaletteDrawable = SatValPaletteDrawable()
     private var hsvCallback: ((hsv: FloatArray, color: Int, isUser: Boolean) -> Unit)? = null
@@ -116,11 +112,8 @@ class SatValPaletteView(context: Context, attrs: AttributeSet?, defStyleAttr: In
             canvas.drawArc(oval, 180F, 90F, false, pointPaint)
         }
 
-        override fun onBoundsChange(bounds: Rect?) {
+        override fun onBoundsChange(bounds: Rect) {
             super.onBoundsChange(bounds)
-            if (bounds == null) {
-                return
-            }
             createNewValShader()
             onHueChange(hue)
         }

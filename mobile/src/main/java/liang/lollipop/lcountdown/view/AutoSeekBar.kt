@@ -370,7 +370,7 @@ class AutoSeekBar(context: Context, attr: AttributeSet?,
             invalidateSelf()
         }
 
-        override fun onBoundsChange(bounds: Rect?) {
+        override fun onBoundsChange(bounds: Rect) {
             super.onBoundsChange(bounds)
             onProgressChange()
         }

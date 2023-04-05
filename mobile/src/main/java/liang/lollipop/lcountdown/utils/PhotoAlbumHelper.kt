@@ -36,19 +36,19 @@ class PhotoAlbumHelper {
             return selected.size
         }
 
-    fun get(position: Int) : PhotoInfo {
+    fun get(position: Int): PhotoInfo {
         return data[position]
     }
 
-    fun selectedIndex(info: PhotoInfo) : Int {
+    fun selectedIndex(info: PhotoInfo): Int {
         return selected.indexOf(info)
     }
 
-    fun selectedIndexByPosition(position: Int) : Int {
+    fun selectedIndexByPosition(position: Int): Int {
         return selectedIndex(get(position))
     }
 
-    fun positionBySelectedIndex(index: Int) : Int {
+    fun positionBySelectedIndex(index: Int): Int {
         return data.indexOf(selected[index])
     }
 
@@ -88,9 +88,12 @@ class PhotoAlbumHelper {
             val columns = arrayOf(
                 MediaStore.Images.Media._ID,
                 MediaStore.Images.Media.SIZE,
-                MediaStore.Images.Media.DISPLAY_NAME)
-            val cursor = context.contentResolver.query(uri,
-                columns, selection, selectionArgs, sortOrder)
+                MediaStore.Images.Media.DISPLAY_NAME
+            )
+            val cursor = context.contentResolver.query(
+                uri,
+                columns, selection, selectionArgs, sortOrder
+            )
             data.clear()
             while (cursor?.moveToNext() == true) {
                 val id = cursor.getLongByColumn(MediaStore.Images.Media._ID)
@@ -108,15 +111,27 @@ class PhotoAlbumHelper {
     }
 
     private fun Cursor.getStringByColumn(col: String): String {
-        return getString(getColumnIndex(col))
+        val index = getColumnIndex(col)
+        if (index < 0) {
+            return ""
+        }
+        return getString(index)
     }
 
     private fun Cursor.getIntByColumn(col: String): Int {
-        return getInt(getColumnIndex(col))
+        val index = getColumnIndex(col)
+        if (index < 0) {
+            return 0
+        }
+        return getInt(index)
     }
 
     private fun Cursor.getLongByColumn(col: String): Long {
-        return getLong(getColumnIndex(col))
+        val index = getColumnIndex(col)
+        if (index < 0) {
+            return 0L
+        }
+        return getLong(index)
     }
 
 }

@@ -41,7 +41,7 @@ class TimingHolder(private val binding: ItemTimingBinding) : BaseHolder<TimingBe
     private var lastBean: TimingBean? = null
 
     //计时显示的Handler
-    private val timerTask = createTask {
+    private val timerTask = task {
         if (itemView.isAttachedToWindow) {
             onTimeChange()
         }
@@ -162,15 +162,15 @@ class TimingHolder(private val binding: ItemTimingBinding) : BaseHolder<TimingBe
             endTime
         ).getTimerValue()
 
-        removeTask(timerTask)
+        timerTask.cancel()
         if (lastBean?.endTime == 0L) {
-            onUIDelay(1000, timerTask)
+            timerTask.delay(1000)
         }
 
     }
 
     fun stopTiming() {
-        removeTask(timerTask)
+        timerTask.cancel()
     }
 
 }
